@@ -1,4 +1,4 @@
-name: Criar estrutura LUME
+name: Corrigir estrutura LUME
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ permissions:
   contents: write
 
 jobs:
-  criar-lume:
+  corrigir-lume:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,17 +19,19 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Executar script de criação
-        run: python criar_botql_ai_lab.py --nome LUME
+      - name: Corrigir extensões do LUME
+        run: python corrigir_lume.py
 
-      - name: Guardar estrutura no repositório
+      - name: Guardar alterações
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add LUME
+
+          git add -A LUME
+
           if git diff --cached --quiet; then
-            echo "Não há alterações novas para guardar."
+            echo "Nenhuma alteração necessária."
           else
-            git commit -m "Criar estrutura inicial do LUME"
+            git commit -m "Corrigir extensões e estrutura do LUME"
             git push
           fi
