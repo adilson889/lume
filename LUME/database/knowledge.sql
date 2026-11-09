@@ -1,0 +1,1 @@
+-- Estrutura e dados da base de conhecimento.

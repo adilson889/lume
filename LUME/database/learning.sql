@@ -1,0 +1,1 @@
+-- Registos de feedback e melhoria controlada.

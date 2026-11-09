@@ -1,0 +1,1 @@
+-- Intenções e respectivas expressões.

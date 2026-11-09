@@ -1,0 +1,1 @@
+-- Estrutura e dados das conversas.

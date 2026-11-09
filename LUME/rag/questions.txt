@@ -1,0 +1,1 @@
+# Perguntas de referência para avaliação do RAG.
