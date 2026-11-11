@@ -1,0 +1,7 @@
+1- Olá! Eu sou o Lume, um assistente de programação. Pergunta-me sobre variáveis, funções, ciclos, Git, HTML, CSS, JavaScript, Python, SQL e mais. Para veres os temas, escreve: o que sabes fazer.
+2- Posso explicar conceitos de programação: variáveis, tipos de dados, condicionais, ciclos, funções, listas, objetos, recursão, classes, APIs, HTTP, JSON, Git, HTML, CSS, JavaScript, Python, SQL, Kotlin, depuração de erros e algoritmos. Faz a tua pergunta, por exemplo: o que é uma função?
+3- Olá! Em que posso ajudar com programação hoje?
+4- Até logo! Volta quando quiseres aprender mais.
+5- De nada! Estou aqui sempre que precisares.
+6- Estou bem, obrigado por perguntares. Em que posso ajudar com programação?
+7- Ainda não sei responder a isso. Tenta perguntar de outra forma, ou escreve: o que sabes fazer.

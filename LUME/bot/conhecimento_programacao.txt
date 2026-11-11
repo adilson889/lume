@@ -1,0 +1,51 @@
+Variável: um nome que guarda um valor, como um número ou um texto, para usar e mudar mais tarde. Em JavaScript: let idade = 20; em Python: idade = 20. Uma variável tem nome, tipo e valor.
+
+Constante: como uma variável, mas o valor não muda depois de definido. Em JavaScript: const PI = 3.14; em Kotlin: val. Usa constante para valores fixos e variável quando o valor tem de mudar.
+
+Tipos de dados: dizem que valor uma variável guarda. Os principais: inteiro (int), decimal (float, double), texto (string), verdadeiro ou falso (boolean) e lista (array).
+
+Condicional (if, else, se, senão): o programa decide por uma condição. Se for verdadeira, corre um bloco; senão, corre outro. Em JavaScript: if (idade >= 18) { ... } else { ... }. Também existe switch (when em Kotlin).
+
+Ciclo for (loop, laço, repetição): repete um bloco um número conhecido de vezes. Em JavaScript: for (let i = 0; i < 5; i++) { ... }. Em Python: for i in range(5). O ciclo for percorre listas.
+
+Ciclo while (loop, laço, repetição): repete enquanto a condição for verdadeira, sem saber quantas vezes. Exemplo: while (tentativas < 3) { ... }. Cuidado com o ciclo infinito: algo dentro do while tem de mudar a condição.
+
+Função (método, procedimento): uma função é um bloco de código com nome que podes chamar quantas vezes quiseres, para não repetir código. Em JavaScript: function somar(a, b) { return a + b; }. Em Python: def somar(a, b). As funções organizam o programa.
+
+Parâmetros e retorno (return): os parâmetros são os valores recebidos, como a e b em somar(a, b); o return é o valor devolvido. Sem return, não há valor devolvido.
+
+Array (lista, vetor): guarda vários valores numa variável, por posição, começando no índice 0. Em JavaScript: let nomes = ['Ana', 'Rui']; nomes[0] dá 'Ana'. Em Python chama-se list. Percorre-se com um ciclo for.
+
+Objeto (dicionário, mapa, dict): guarda dados em pares de chave e valor. Em JavaScript: let pessoa = { nome: 'Ana', idade: 20 }; pessoa.nome dá 'Ana'. Em Python chama-se dicionário; em Kotlin, Map. É a base do JSON.
+
+Recursão (função recursiva): a recursão é quando uma função chama a si mesma, dividindo o problema em partes menores. Toda a recursão precisa de um caso base que pare as chamadas. Exemplo: factorial(n) = n * factorial(n - 1), com factorial(0) = 1.
+
+Classe (POO, programação orientada a objetos): o molde que define atributos e métodos; o objeto é uma instância criada da classe. Exemplo: a classe Carro tem cor e o método acelerar(); cada carro criado é um objeto. Ligados: herança, encapsulamento, polimorfismo.
+
+API (interface de programação): regras que deixam um programa pedir dados ou ações a outro, normalmente por HTTP. Exemplo: uma app de meteorologia pede a uma API a temperatura de uma cidade. A resposta da API costuma vir em JSON.
+
+HTTP e métodos: o método GET pede dados, o método POST envia dados novos, PUT atualiza, DELETE apaga. Códigos de estado: 200 sucesso, 404 não encontrado, 401 sem autorização, 500 erro no servidor.
+
+JSON: formato de texto para trocar dados, feito de objetos e listas. Exemplo: {"nome": "Ana", "idade": 20}. Chaves entre aspas duplas. Em JavaScript: JSON.parse converte texto em objeto e JSON.stringify converte objeto em texto.
+
+Git (controlo de versões, commit, branch): guarda o histórico do código. git add prepara, git commit guarda uma versão, git push envia para o GitHub, git pull traz alterações. Um branch (ramo) isola uma funcionalidade; o merge junta-a depois.
+
+HTML: linguagem da estrutura de uma página web, com etiquetas (tags): h1 títulos, p parágrafos, a ligações, img imagens, div agrupa. Só descreve o conteúdo; o estilo vem do CSS e o comportamento do JavaScript.
+
+CSS: linguagem do aspeto de uma página: cor, tamanho, espaçamento, posição, fonte. Exemplo para mudar a cor de um texto: p { color: red; font-size: 16px; }. Para alinhar elementos usa-se flexbox ou grid.
+
+JavaScript (JS): JavaScript é a linguagem que dá comportamento a páginas web e também corre no servidor com Node.js. O JavaScript reage a cliques, altera a página, valida formulários e fala com APIs.
+
+Python: linguagem simples e legível, usada em automação, dados e inteligência artificial. Usa indentação em vez de chavetas para marcar blocos. Exemplo: print('Olá') mostra texto.
+
+SQL (base de dados): SELECT lê dados, INSERT adiciona, UPDATE altera, DELETE apaga. Exemplo: SELECT nome FROM clientes WHERE idade >= 18; WHERE filtra e ORDER BY ordena.
+
+Kotlin e Android: Kotlin é a linguagem moderna oficial para apps Android, e corre na JVM. val para valores fixos, var para valores que mudam: val nome = "Ana". Tipos que aceitam null levam ?, como String?.
+
+Bug e depuração (debug): um bug é um erro que faz o programa comportar-se mal. Para encontrar um bug: lê a mensagem de erro (diz ficheiro e linha), reproduz o bug, isola a parte que falha e imprime valores com print ou console.log.
+
+Erros de sintaxe e erros de lógica: o erro de sintaxe é código que a linguagem não entende, como faltar um parêntese, e o programa nem arranca. O erro de lógica corre mas dá resultado errado e é mais difícil de achar.
+
+Algoritmo: uma sequência de passos claros para resolver um problema, como a receita de um bolo. Um bom algoritmo é correto, termina e gasta poucos recursos. Exemplos: procurar um número numa lista, ordenar nomes.
+
+Compilador e interpretador: o compilador traduz o código todo para linguagem de máquina antes de correr (C, Kotlin, Java); o interpretador executa linha a linha (Python, JavaScript). Compilado costuma ser mais rápido; interpretado é mais fácil de testar.

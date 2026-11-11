@@ -1,1 +1,56 @@
-// Ponto de entrada do bot. Adicionar aqui a sintaxe BotQL validada.
+-- Lume: ponto de entrada do bot.
+--
+-- Regras desta estrutura:
+-- 1. O BotQL so aceita nomes de ficheiro simples (sem pastas) em
+--    KEYWORDS, REPLY, THINK e WAITING. Por isso este ficheiro e todos os
+--    .txt que ele usa ficam juntos, nesta pasta (LUME/bot/).
+-- 2. So existe UM bloco ON MESSAGE, aqui. O BotQL corre todos os blocos
+--    ON MESSAGE em sequencia, por isso ficheiros importados nao devem ter
+--    o seu proprio ON MESSAGE.
+-- 3. O conteudo cresce nos ficheiros .txt (palavras-chave, respostas e
+--    conhecimento), nao neste ficheiro.
+-- 4. CONTAINS procura o texto dentro da mensagem, mesmo no meio de outra
+--    palavra. Por isso as palavras-chave de conversa sao frases
+--    especificas e nao palavras curtas como "oi" (que existe em "void").
+
+CREATE BOT "Lume"
+
+CREATE TABLE Context() PREVENT DEFAULT
+DEFAULT MESSAGE (respostas.txt, 1)
+
+ON MESSAGE {
+    INSERT INTO Context()
+
+    -- 1. Ver o que o bot sabe fazer
+    WHEN CONTAINS KEYWORDS(ajuda.txt) {
+        REPLY (respostas.txt, 2)
+    }
+
+    -- 2. Despedidas
+    WHEN CONTAINS KEYWORDS(despedidas.txt) {
+        REPLY (respostas.txt, 4)
+    }
+
+    -- 3. Agradecimentos
+    WHEN CONTAINS KEYWORDS(agradecimentos.txt) {
+        REPLY (respostas.txt, 5)
+    }
+
+    -- 4. Saudacoes
+    WHEN CONTAINS KEYWORDS(saudacoes.txt) {
+        REPLY (respostas.txt, 3)
+    }
+
+    -- 5. Como estas
+    WHEN CONTAINS KEYWORDS(estado.txt) {
+        REPLY (respostas.txt, 6)
+    }
+
+    -- 6. Tudo o resto: procura na base de conhecimento de programacao
+    OTHERWISE {
+        THINK(conhecimento_programacao.txt) WAITING(pensando.txt, 1) OR
+        REPLY (respostas.txt, 7)
+    }
+}
+
+RUN BOT

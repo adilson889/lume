@@ -1,0 +1,34 @@
+Casos de teste manual: conhecimento de programacao
+Formato: pergunta | resposta esperada (inicio do bloco, ou FALLBACK)
+Estado em 0.1.0: 25 de 30 certos. Falham: recursao, POST e 3 perguntas fora do tema.
+
+o que é uma variável? | Variável
+diferença entre constante e variável | Constante
+que tipos de dados existem | Tipos de dados
+como funciona o if else | Condicional
+como fazer um loop for | Ciclo for
+como funciona o while | Ciclo while
+o que é uma função? | Função
+o que é o return? | Parâmetros e retorno
+o que é um array? | Array
+o que é um dicionário? | Objeto
+como funciona recursão | Recursão
+o que é uma classe? | Classe
+o que é uma API? | API
+o que faz o método POST? | HTTP e métodos
+o que é JSON? | JSON
+como fazer commit no git | Git
+o que é HTML? | HTML
+como mudar a cor com css | CSS
+o que é JavaScript? | JavaScript
+o que é python? | Python
+como fazer select em sql | SQL
+o que é kotlin? | Kotlin e Android
+como encontrar um bug? | Bug e depuração
+o que é um erro de sintaxe? | Erros de sintaxe
+o que é um algoritmo? | Algoritmo
+compilador ou interpretador? | Compilador e interpretador
+quero uma pizza | FALLBACK
+qual a capital de Angola? | FALLBACK
+quem ganhou o jogo ontem? | FALLBACK
+como está o tempo hoje? | FALLBACK

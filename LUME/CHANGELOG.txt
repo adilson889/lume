@@ -1,0 +1,7 @@
+Lume - historico de versoes
+
+0.1.0
+- Ponto de entrada bot/main.sql com um unico ON MESSAGE.
+- Conversa base: saudacoes, despedidas, agradecimentos, como estas e ajuda.
+- Primeira base de conhecimento de programacao (conhecimento_programacao.txt, 26 temas) usada pelo THINK.
+- Casos de teste manual em tests/casos_programacao.txt (25 de 30 certos).
