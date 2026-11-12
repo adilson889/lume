@@ -12,6 +12,9 @@
 -- 4. CONTAINS procura o texto dentro da mensagem, mesmo no meio de outra
 --    palavra. Por isso as palavras-chave de conversa sao frases
 --    especificas e nao palavras curtas como "oi" (que existe em "void").
+-- 5. Toda a resposta mostra primeiro os 3 pontinhos de espera: WHEN usa
+--    WAITING("texto") sozinho (texto diferente por assunto) e o THINK usa
+--    WAITING acoplado. O tempo minimo e o padrao do BotQL (3 segundos).
 
 CREATE BOT "Lume"
 
@@ -23,32 +26,37 @@ ON MESSAGE {
 
     -- 1. Ver o que o bot sabe fazer
     WHEN CONTAINS KEYWORDS(ajuda.txt) {
+        WAITING("A ver o que sei fazer...")
         REPLY (respostas.txt, 2)
     }
 
     -- 2. Despedidas
     WHEN CONTAINS KEYWORDS(despedidas.txt) {
+        WAITING("A despedir-me...")
         REPLY (respostas.txt, 4)
     }
 
     -- 3. Agradecimentos
     WHEN CONTAINS KEYWORDS(agradecimentos.txt) {
+        WAITING("A responder...")
         REPLY (respostas.txt, 5)
     }
 
     -- 4. Saudacoes
     WHEN CONTAINS KEYWORDS(saudacoes.txt) {
+        WAITING("A cumprimentar...")
         REPLY (respostas.txt, 3)
     }
 
     -- 5. Como estas
     WHEN CONTAINS KEYWORDS(estado.txt) {
+        WAITING("A ver como estou...")
         REPLY (respostas.txt, 6)
     }
 
     -- 6. Tudo o resto: procura na base de conhecimento de programacao
     OTHERWISE {
-        THINK(conhecimento_programacao.txt) WAITING(pensando.txt, 1) OR
+        THINK(conhecimento_programacao.txt) WAITING("A procurar na base de programacao...") OR
         REPLY (respostas.txt, 7)
     }
 }

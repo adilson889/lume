@@ -10,3 +10,7 @@ Lume - historico de versoes
 - Corrigida a palavra-chave de ajuda "o que sabes", que apanhava "o que sabes sobre X".
 - Blocos de variavel, constante, tipos de dados, funcao, recursao e Python reescritos para vencerem o desempate sem o Ternlight.
 - Medido no chat real (sem Ternlight): 32 de 33 casos certos (tests/casos_programacao.txt).
+
+0.1.2
+- Todas as respostas mostram primeiro os 3 pontinhos de espera: WAITING("texto") sozinho em cada WHEN, com texto diferente por assunto, e WAITING acoplado ao THINK.
+- Removido pensando.txt (o texto passou para o main.sql).
