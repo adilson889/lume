@@ -158,23 +158,17 @@ button.chip:active{background:var(--bg3)}
 :root{--mola:cubic-bezier(.34,1.56,.64,1)}
 button{transition:transform .2s var(--mola),background-color .2s,color .2s,border-color .2s,opacity .2s}
 button:active{transform:scale(.94)}
-@keyframes entrar{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
-@keyframes entrarUsuario{from{opacity:0;transform:translateY(10px) scale(.88)}to{opacity:1;transform:none}}
-@keyframes entrarEsq{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:none}}
-@keyframes entrarDir{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+@keyframes entrar{from{transform:translateY(14px) scale(.97)}to{transform:none}}
+@keyframes entrarUsuario{from{transform:translateY(10px) scale(.88)}to{transform:none}}
+@keyframes entrarEsq{from{transform:translateX(-20px)}to{transform:none}}
+@keyframes entrarDir{from{transform:translateX(24px)}to{transform:none}}
 @keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.4)}100%{transform:scale(1)}}
-.msg.sistema,.msg-acoes,.msg.digitando{animation:entrar .45s var(--mola) both}
-.msg.usuario{transform-origin:100% 100%;animation:entrarUsuario .4s var(--mola) both}
-.conversa-item{animation:entrarEsq .4s var(--mola) both}
-.conversa-item:nth-child(2){animation-delay:.04s}
-.conversa-item:nth-child(3){animation-delay:.08s}
-.conversa-item:nth-child(4){animation-delay:.12s}
-.conversa-item:nth-child(5){animation-delay:.16s}
-#sidebar-conteudo,#sidebar-fixo{animation:entrarEsq .35s var(--mola) both}
-#sidebar-defs{animation:entrarDir .35s var(--mola) both}
-.defs-grupo{animation:entrarDir .4s var(--mola) both}
-.defs-grupo:nth-child(3){animation-delay:.05s}
-.defs-grupo:nth-child(4){animation-delay:.1s}
+.msg.sistema,.msg-acoes,.msg.digitando{animation:entrar .45s var(--mola)}
+.msg.usuario{transform-origin:100% 100%;animation:entrarUsuario .4s var(--mola)}
+.conversa-item{animation:entrarEsq .4s var(--mola)}
+#sidebar-conteudo,#sidebar-fixo{animation:entrarEsq .35s var(--mola)}
+#sidebar-defs{animation:entrarDir .35s var(--mola)}
+.defs-grupo{animation:entrarDir .4s var(--mola)}
 .msg-acao.ativo svg{animation:pop .35s var(--mola)}
 .chip.ativo{animation:pop .3s var(--mola)}
 .pv-pill{transition:border-color .2s,box-shadow .2s}
