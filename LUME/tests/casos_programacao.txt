@@ -1,6 +1,6 @@
 Casos de teste manual: conhecimento de programacao
 Formato: pergunta | resposta esperada (inicio do bloco, ou FALLBACK)
-Estado em 0.1.0: 25 de 30 certos. Falham: recursao, POST e 3 perguntas fora do tema.
+Estado em 0.1.1: medido no chat real (sem Ternlight, so BM25).
 
 o que é uma variável? | Variável
 diferença entre constante e variável | Constante
@@ -32,3 +32,6 @@ quero uma pizza | FALLBACK
 qual a capital de Angola? | FALLBACK
 quem ganhou o jogo ontem? | FALLBACK
 como está o tempo hoje? | FALLBACK
+o que sabes sobre variáveis? | Variável
+o que são funções | Função
+o que sabes sobre python? | Python

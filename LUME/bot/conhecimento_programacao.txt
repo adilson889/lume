@@ -1,8 +1,8 @@
-Variável: um nome que guarda um valor, como um número ou um texto, para usar e mudar mais tarde. Em JavaScript: let idade = 20; em Python: idade = 20. Uma variável tem nome, tipo e valor.
+Variável (variáveis): uma variável é um nome que guarda um valor, como um número ou um texto, para usar e mudar mais tarde. Em JavaScript: let idade = 20; em Python: idade = 20. Cada variável tem nome, tipo e valor. As variáveis servem para guardar os dados do programa.
 
-Constante: como uma variável, mas o valor não muda depois de definido. Em JavaScript: const PI = 3.14; em Kotlin: val. Usa constante para valores fixos e variável quando o valor tem de mudar.
+Constante (const, val): valor fixo que não muda depois de definido. Em JavaScript: const PI = 3.14; em Kotlin: val. Usa constante para valores fixos e, quando o valor tem de mudar, usa uma variável.
 
-Tipos de dados: dizem que valor uma variável guarda. Os principais: inteiro (int), decimal (float, double), texto (string), verdadeiro ou falso (boolean) e lista (array).
+Tipos de dados: dizem que espécie de valor se guarda. Os principais: inteiro (int), decimal (float, double), texto (string), verdadeiro ou falso (boolean) e lista (array). Cada tipo aceita operações diferentes, e cada variável tem um tipo.
 
 Condicional (if, else, se, senão): o programa decide por uma condição. Se for verdadeira, corre um bloco; senão, corre outro. Em JavaScript: if (idade >= 18) { ... } else { ... }. Também existe switch (when em Kotlin).
 
@@ -10,7 +10,7 @@ Ciclo for (loop, laço, repetição): repete um bloco um número conhecido de ve
 
 Ciclo while (loop, laço, repetição): repete enquanto a condição for verdadeira, sem saber quantas vezes. Exemplo: while (tentativas < 3) { ... }. Cuidado com o ciclo infinito: algo dentro do while tem de mudar a condição.
 
-Função (método, procedimento): uma função é um bloco de código com nome que podes chamar quantas vezes quiseres, para não repetir código. Em JavaScript: function somar(a, b) { return a + b; }. Em Python: def somar(a, b). As funções organizam o programa.
+Função (funções, método, procedimento): uma função é um bloco de código com nome que podes chamar quantas vezes quiseres, para não repetir código. Em JavaScript: function somar(a, b) { return a + b; }. Em Python: def somar(a, b). As funções organizam o programa e cada função faz uma tarefa.
 
 Parâmetros e retorno (return): os parâmetros são os valores recebidos, como a e b em somar(a, b); o return é o valor devolvido. Sem return, não há valor devolvido.
 
@@ -18,7 +18,7 @@ Array (lista, vetor): guarda vários valores numa variável, por posição, come
 
 Objeto (dicionário, mapa, dict): guarda dados em pares de chave e valor. Em JavaScript: let pessoa = { nome: 'Ana', idade: 20 }; pessoa.nome dá 'Ana'. Em Python chama-se dicionário; em Kotlin, Map. É a base do JSON.
 
-Recursão (função recursiva): a recursão é quando uma função chama a si mesma, dividindo o problema em partes menores. Toda a recursão precisa de um caso base que pare as chamadas. Exemplo: factorial(n) = n * factorial(n - 1), com factorial(0) = 1.
+Recursão (chamada recursiva, auto-chamada): a recursão é a técnica em que o código se chama a si mesmo, dividindo o problema em partes menores. Uma função recursiva precisa de um caso base que pare as chamadas. Exemplo: factorial(n) = n * factorial(n - 1), com factorial(0) = 1.
 
 Classe (POO, programação orientada a objetos): o molde que define atributos e métodos; o objeto é uma instância criada da classe. Exemplo: a classe Carro tem cor e o método acelerar(); cada carro criado é um objeto. Ligados: herança, encapsulamento, polimorfismo.
 
@@ -36,7 +36,7 @@ CSS: linguagem do aspeto de uma página: cor, tamanho, espaçamento, posição, 
 
 JavaScript (JS): JavaScript é a linguagem que dá comportamento a páginas web e também corre no servidor com Node.js. O JavaScript reage a cliques, altera a página, valida formulários e fala com APIs.
 
-Python: linguagem simples e legível, usada em automação, dados e inteligência artificial. Usa indentação em vez de chavetas para marcar blocos. Exemplo: print('Olá') mostra texto.
+Python (linguagem Python): Python é uma linguagem simples e legível, muito usada em automação, dados e inteligência artificial. Em Python os blocos de código são marcados pela indentação em vez de chavetas. Exemplo em Python: print('Olá') mostra texto.
 
 SQL (base de dados): SELECT lê dados, INSERT adiciona, UPDATE altera, DELETE apaga. Exemplo: SELECT nome FROM clientes WHERE idade >= 18; WHERE filtra e ORDER BY ordena.
 

@@ -5,3 +5,8 @@ Lume - historico de versoes
 - Conversa base: saudacoes, despedidas, agradecimentos, como estas e ajuda.
 - Primeira base de conhecimento de programacao (conhecimento_programacao.txt, 26 temas) usada pelo THINK.
 - Casos de teste manual em tests/casos_programacao.txt (25 de 30 certos).
+
+0.1.1
+- Corrigida a palavra-chave de ajuda "o que sabes", que apanhava "o que sabes sobre X".
+- Blocos de variavel, constante, tipos de dados, funcao, recursao e Python reescritos para vencerem o desempate sem o Ternlight.
+- Medido no chat real (sem Ternlight): 32 de 33 casos certos (tests/casos_programacao.txt).
