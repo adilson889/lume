@@ -14,3 +14,6 @@ Lume - historico de versoes
 0.1.2
 - Todas as respostas mostram primeiro os 3 pontinhos de espera: WAITING("texto") sozinho em cada WHEN, com texto diferente por assunto, e WAITING acoplado ao THINK.
 - Removido pensando.txt (o texto passou para o main.sql).
+
+0.1.3
+- WAITING com o tempo em segundos explicito em todos: WAITING("texto", 2) nas conversas e WAITING("texto", 3) no THINK.
