@@ -17,3 +17,6 @@ Lume - historico de versoes
 
 0.1.3
 - WAITING com o tempo em segundos explicito em todos: WAITING("texto", 2) nas conversas e WAITING("texto", 3) no THINK.
+
+0.1.4
+-Nova ui/UX do chat
