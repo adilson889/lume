@@ -174,6 +174,10 @@ button:active{transform:scale(.94)}
 .pv-pill{transition:border-color .2s,box-shadow .2s}
 .pv-pill:focus-within{border-color:var(--muted);box-shadow:0 2px 14px rgba(0,0,0,.08)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+.defs-historico{font-size:14px;line-height:1.5;color:var(--muted)}
+.defs-historico b{display:block;color:var(--text);font-size:15px;margin-bottom:4px}
+.defs-historico ul{margin:0 0 14px;padding-left:18px}
+.defs-historico li{margin-bottom:3px}
 </style>
 </head>
 <body>
@@ -238,6 +242,10 @@ Definições
 <div class=defs-grupo id=defs-sobre style=display:none>
 <div class=defs-rotulo>Sobre</div>
 <div class=chips><span class=chip id=chip-data></span></div>
+</div>
+<div class=defs-grupo>
+<div class=defs-rotulo>Versão 0.1.4</div>
+<div class=defs-historico><b>0.1.4</b><ul><li>Novo visual do chat: fundo branco, balões cinzentos, destaque preto e avatar no cabeçalho.</li><li>Definições dentro do menu lateral, com chips para tema, limpar conversa e sobre.</li><li>Avisos e diálogos como caixas centradas, com botões lado a lado e sem ícones.</li><li>Animações de entrada nas mensagens, no menu e nos diálogos.</li><li>Campo de mensagem com largura máxima de 720px e sem o botão de lixo.</li><li>Corrigido o botão ⋮ do item de conversa.</li></ul><b>0.1.3</b><ul><li>WAITING com o tempo em segundos explícito em todos: WAITING("texto", 2) nas conversas e WAITING("texto", 3) no THINK.</li></ul><b>0.1.2</b><ul><li>Todas as respostas mostram primeiro os 3 pontinhos de espera: WAITING("texto") sozinho em cada WHEN, com texto diferente por assunto, e WAITING acoplado ao THINK.</li><li>Removido pensando.txt (o texto passou para o main.sql).</li></ul><b>0.1.1</b><ul><li>Corrigida a palavra-chave de ajuda "o que sabes", que apanhava "o que sabes sobre X".</li><li>Blocos de variável, constante, tipos de dados, função, recursão e Python reescritos para vencerem o desempate sem o Ternlight.</li><li>Medido no chat real (sem Ternlight): 32 de 33 casos certos (tests/casos_programacao.txt).</li></ul><b>0.1.0</b><ul><li>Ponto de entrada bot/main.sql com um único ON MESSAGE.</li><li>Conversa base: saudações, despedidas, agradecimentos, como estás e ajuda.</li><li>Primeira base de conhecimento de programação (conhecimento_programacao.txt, 26 temas) usada pelo THINK.</li><li>Casos de teste manual em tests/casos_programacao.txt (25 de 30 certos).</li></ul></div>
 </div>
 </div>
 <div id=sidebar-fixo>
