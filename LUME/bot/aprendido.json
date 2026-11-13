@@ -1,13 +1,5 @@
 {
   "pendentes": {
-    "0c9d207dcc6c023a": {
-      "path": "aprendido.txt",
-      "t": "Python (gênero): Python é um gênero de répteis da família Pythonidae. Pode ser encontrado na Ásia e África. Popularmente são denominadas de pitão (português europeu) ou píton (português brasileiro). Nenhuma das serpentes desta família possui dentes inoculadores de veneno, porém possuem presas afiadas curvadas para dentro para agarrar sua presa. As pítons variam de 4,5 a 6 metros de comprimento. O pitão é retratado em diversos filmes como sendo \"gigante e sedenta por sangue\". Isso não acontece na realidade.",
-      "quem": [
-        "f204fb495a5cf018"
-      ],
-      "em": "2026-11-13T10:54:34.391Z"
-    },
     "729426665f0d8fba": {
       "path": "aprendido.txt",
       "t": "Monty Python ou The Pythons é um grupo de comédia britânico, que foram os criadores e intérpretes da série cômica Monty Python's Flying Circus, um programa de televisão britânico que foi ao ar pela primeira vez em 5 de outubro de 1969. Como série televisiva, consistiu de 45 episódios divididos em 4 temporadas. Entretanto o fenômeno Python não se limitou a apenas isso, espalhando-se por shows, filmes, programas de rádio e diversos jogos de computador e livros, além de lançar seus seis integrantes ao estrelato. Sua influência na comédia chegou a ser comparada ao impacto causado na música pelos B...",
@@ -93,6 +85,11 @@
         "h": "a9de635442fd918d",
         "t": "Python é uma linguagem de programação de alto nível, interpretada de script, imperativa, orientada a objetos, funcional, de tipagem dinâmica e forte. Foi lançada por Guido van Rossum em 1991. Atualmente, possui um modelo de desenvolvimento comunitário, aberto e gerenciado pela organização sem fins lucrativos Python Software Foundation. Apesar de várias partes da linguagem possuírem padrões e especificações formais, a linguagem, como um todo, não é formalmente especificada. O padrão na pratica é a implementação CPython. A linguagem foi projetada com a filosofia de enfatizar a importância do esf...",
         "em": "2026-11-13T13:53:24.263Z"
+      },
+      {
+        "h": "0c9d207dcc6c023a",
+        "t": "Python (gênero): Python é um gênero de répteis da família Pythonidae. Pode ser encontrado na Ásia e África. Popularmente são denominadas de pitão (português europeu) ou píton (português brasileiro). Nenhuma das serpentes desta família possui dentes inoculadores de veneno, porém possuem presas afiadas curvadas para dentro para agarrar sua presa. As pítons variam de 4,5 a 6 metros de comprimento. O pitão é retratado em diversos filmes como sendo \"gigante e sedenta por sangue\". Isso não acontece na realidade.",
+        "em": "2026-11-13T13:53:28.488Z"
       }
     ]
   }
