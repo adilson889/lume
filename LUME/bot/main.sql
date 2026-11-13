@@ -71,10 +71,10 @@ ON MESSAGE {
     --    e) nao sabe: pesquisa na web, grava em aprendido.txt e repete o passo d)
     --    f) nada encontrado: resposta de reserva
     OTHERWISE {
-        THINK(conhecimento_programacao.txt) WAITING("A procurar na base de programacao...", 3) OR
+        THINK(conhecimento_programacao.txt) WAITING("Pensando..", 3) OR
         THINK(aprendido.txt) OR
-        ASK(conhecimento_programacao.txt) AND REPLY "Qual destas queres dizer?" OR
-        ASK(aprendido.txt) AND REPLY "Qual destas queres dizer?" OR
+        ASK(conhecimento_programacao.txt) AND REPLY "Escolha a possível resposta:" OR
+        ASK(aprendido.txt) AND REPLY "Escolha a possível resposta:" OR
         SEARCH message INTO aprendido.txt OR
         REPLY (respostas.txt, 7)
     }
