@@ -1,13 +1,5 @@
 {
   "pendentes": {
-    "ef23bdf5364ded3d": {
-      "path": "aprendido.txt",
-      "t": "Rust pode referir-se a: Rust (linguagem de programação) Rust (jogo eletrônico) Rust (filme)",
-      "quem": [
-        "f8370511647d8cd5"
-      ],
-      "em": "2026-11-13T06:29:16.609Z"
-    },
     "a0bfff08dba4b7ab": {
       "path": "aprendido.txt",
       "t": "Elon Musk: Elon Reeve Musk (Pretória, 28 de junho de 1971) é um empresário e empreendedor sul-africano, naturalizado canadense e estadunidense, que dirige a SpaceX e a Tesla. Suas empresas trabalham com foguetes, veículos elétricos, energia e inteligência artificial. A Forbes o classificava como a pessoa mais rica do mundo em outubro de 2026, com um patrimônio estimado em 908,5 bilhões de dólares. Nascido em uma família de boas condições financeiras, Elon mudou-se para o Canadá em 1989 e estudou na Queen's University e na Universidade da Pensilvânia, onde obteve diplomas em física e economia....",
@@ -126,6 +118,11 @@
         "h": "45f11a12971a5f80",
         "t": "Rust (linguagem de programação): Rust é uma linguagem de programação multiparadigma compilada desenvolvida pela Mozilla. É projetada para ser \"segura, concorrente e prática\", mas diferente de outras linguagens seguras, Rust não usa coletor de lixo. Possui suporte nativo ao WebAssembly. A linguagem apareceu como um projeto pessoal de Graydon Hoare, empregado da Mozilla. A organização começou a apoiar o projeto em 2009 e anunciou-o em 2010. No mesmo ano, os esforços mudaram do compilador original (escrito em OCaml) para um auto-hospedado feito em Rust. Conhecido por rustc, conseguiu compilar-se...",
         "em": "2026-11-13T13:52:41.946Z"
+      },
+      {
+        "h": "ef23bdf5364ded3d",
+        "t": "Rust pode referir-se a: Rust (linguagem de programação) Rust (jogo eletrônico) Rust (filme)",
+        "em": "2026-11-13T13:52:54.136Z"
       }
     ]
   }
