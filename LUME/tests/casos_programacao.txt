@@ -1,6 +1,6 @@
 Casos de teste manual: conhecimento de programacao
 Formato: pergunta | resposta esperada (inicio do bloco, ou FALLBACK)
-Estado em 0.1.2: medido no chat real (sem Ternlight, so BM25).
+Estado em 0.1.5: medido no chat real (sem Ternlight, so BM25).
 
 o que é uma variável? | Variável
 diferença entre constante e variável | Constante

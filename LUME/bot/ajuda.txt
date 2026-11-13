@@ -1,4 +1,3 @@
-ajuda
 ajudas com algoritmos
 ajudas com android
 ajudas com api rest
@@ -395,7 +394,6 @@ fala sobre os áreas
 fala sobre ti
 fala-me de ti
 fala-me sobre ti
-help
 indica os assuntos
 indica os categorias
 indica os coisas
@@ -406,7 +404,6 @@ indica os matérias
 indica os temas
 indica os tópicos
 indica os áreas
-info
 informacoes
 informação
 lista comandos
@@ -432,7 +429,6 @@ lista-me os tópicos
 lista-me os áreas
 me diz o que sabes fazer
 me explica o que sabes fazer
-menu
 mostra as opções
 mostra o menu
 mostra opções
@@ -1381,61 +1377,6 @@ sabes react
 sabes recursão
 sabes regex
 sabes rust
-sabes sobre algoritmos
-sabes sobre android
-sabes sobre api rest
-sabes sobre apis
-sabes sobre arrays
-sabes sobre backend
-sabes sobre banco de dados
-sabes sobre bases de dados
-sabes sobre c
-sabes sobre c sharp
-sabes sobre c++
-sabes sobre ciclos
-sabes sobre classes
-sabes sobre condicionais
-sabes sobre css
-sabes sobre debugging
-sabes sobre depuração
-sabes sobre docker
-sabes sobre estrutura de dados
-sabes sobre estruturas de dados
-sabes sobre expressões regulares
-sabes sobre frontend
-sabes sobre funções
-sabes sobre git
-sabes sobre github
-sabes sobre go
-sabes sobre golang
-sabes sobre herança
-sabes sobre html
-sabes sobre if else
-sabes sobre java
-sabes sobre javascript
-sabes sobre kotlin
-sabes sobre linha de comando
-sabes sobre linux
-sabes sobre listas
-sabes sobre loops
-sabes sobre node
-sabes sobre nodejs
-sabes sobre objetos
-sabes sobre orientação a objetos
-sabes sobre php
-sabes sobre polimorfismo
-sabes sobre ponteiros
-sabes sobre python
-sabes sobre react
-sabes sobre recursão
-sabes sobre regex
-sabes sobre rust
-sabes sobre sql
-sabes sobre terminal
-sabes sobre testes
-sabes sobre typescript
-sabes sobre variáveis
-sabes sobre versionamento
 sabes sql
 sabes terminal
 sabes testes

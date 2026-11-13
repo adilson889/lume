@@ -20,3 +20,8 @@ Lume - historico de versoes
 
 0.1.4
 -Nova ui/UX do chat
+
+0.1.5
+- Chat: fundo F7F7F7, balao do utilizador e blocos de codigo brancos, barra de topo transparente com dois botoes flutuantes (menu e nova conversa).
+- ajuda.txt: removidas as frases "sabes sobre X" (escondiam as respostas de conhecimento) e as palavras curtas ajuda, help, info e menu (apanhavam frases normais).
+- Registo do 0.1.4 (feito pelo Rafael): nova UI do chat (fundo branco, balao F7F7F7, tema escuro) e ajuda.txt com 1623 frases.
