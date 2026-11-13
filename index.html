@@ -1,4 +1,4 @@
- <!doctype html>
+<!doctype html>
 <html lang=pt>
 <head>
 <meta charset=UTF-8>
@@ -72,7 +72,7 @@ html,body{position:fixed;top:0;left:0;width:100%}
 .msg-acao.ativo svg path{fill:var(--text)}
 .cabecalho-codigo{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--border)}
 .cabecalho-codigo .nome-linguagem{color:var(--muted);font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;text-transform:lowercase}
-.btn-copiar-codigo{background:0 0;border:none;padding:2px 4px;display:flex;align-items:center;gap:5px;cursor:pointer;color:var(--muted);font-family:inherit;font-size:13px} 
+.btn-copiar-codigo{background:0 0;border:none;padding:2px 4px;display:flex;align-items:center;gap:5px;cursor:pointer;color:var(--muted);font-family:inherit;font-size:13px}
 .btn-copiar-codigo:active{color:var(--text)}
 .btn-copiar-codigo svg{width:14px;height:14px}
 #toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%) translateY(10px);background:var(--text);color:var(--bg);padding:9px 18px;border-radius:20px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s,transform .4s var(--mola);z-index:960;white-space:nowrap}
@@ -216,6 +216,20 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:64px;backgrou
 #btn-enviar-chat svg{width:23px;height:23px}
 .btn-copiar-codigo svg{width:17px;height:17px}
 .conversa-menu{width:34px;height:34px}.conversa-menu svg{width:20px;height:20px}
+#sugestoes{position:fixed;left:0;right:0;top:calc(var(--vvt,0px) + 56px);height:calc(var(--vvh,100%) - 56px - 120px);display:flex;flex-direction:column;overflow-y:auto;padding:16px;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .25s,visibility 0s .25s;z-index:4}#sugestoes.show{opacity:1;visibility:visible;transition:opacity .3s}#sug-conteudo{margin:auto;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;max-width:360px}#sug-avatar{width:56px;height:56px;border-radius:50%;background:var(--r);color:var(--on);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:600;margin-bottom:4px}#sug-titulo{font-size:22px;font-weight:600;color:var(--text)}#sug-texto{color:var(--muted);font-size:15px;line-height:1.4;margin-bottom:8px}#sug-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}.sug-chip{border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:18px;padding:10px 14px;font:inherit;font-size:15px;cursor:pointer;pointer-events:auto;opacity:0;transform:translateY(10px);animation:sugEntra .45s cubic-bezier(.32,.72,0,1) forwards}.sug-chip:active{background:var(--bg3)}@keyframes sugEntra{to{opacity:1;transform:none}}
+.pv-botao-redondo.gravando{background:var(--text);animation:pulsoMic 1.3s ease-out infinite}.pv-botao-redondo.gravando svg path{stroke:var(--bg)}@keyframes pulsoMic{0%{box-shadow:0 0 0 0 rgba(120,120,120,.45)}100%{box-shadow:0 0 0 12px rgba(120,120,120,0)}}
+#btn-voz-modo{background:var(--text);overflow:hidden;transition:width .3s cubic-bezier(.32,.72,0,1),margin-left .3s cubic-bezier(.32,.72,0,1),opacity .22s,transform .3s cubic-bezier(.32,.72,0,1)}#btn-voz-modo svg path{stroke:var(--bg)}#btn-voz-modo.some{width:0;margin-left:-6px;opacity:0;transform:translateX(-14px) scale(.8);pointer-events:none}
+#voz-overlay{position:fixed;left:0;right:0;top:var(--vvt,0px);height:var(--vvh,100%);background:var(--bg);z-index:940;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;visibility:hidden;transform:translateY(28px);transition:opacity .3s,transform .4s cubic-bezier(.32,.72,0,1),visibility 0s .4s}#voz-overlay.show{opacity:1;visibility:visible;transform:none;transition:opacity .3s,transform .4s cubic-bezier(.32,.72,0,1)}
+#voz-centro{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:24px;width:100%;min-height:0}
+#voz-orb{width:150px;height:150px;border-radius:50%;background:var(--text);cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+#voz-orb.ouvindo{animation:orbOuvir 1.8s ease-in-out infinite}#voz-orb.pensando{animation:orbPensar 1.1s ease-in-out infinite}#voz-orb.falando{animation:orbFalar .9s ease-in-out infinite}#voz-orb.parado{opacity:.35}
+@keyframes orbOuvir{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(120,120,120,.35)}50%{transform:scale(1.07);box-shadow:0 0 0 26px rgba(120,120,120,0)}}
+@keyframes orbPensar{0%,100%{transform:scale(.88);opacity:.55}50%{transform:scale(.97);opacity:1}}
+@keyframes orbFalar{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+#voz-estado{font-size:20px;font-weight:600;color:var(--text);min-height:28px;text-align:center}
+#voz-texto{max-width:340px;max-height:30vh;overflow-y:auto;font-size:16px;line-height:1.5;color:var(--muted);text-align:center;min-height:24px;white-space:pre-line}
+#voz-dica{font-size:13px;color:var(--muted);margin-bottom:18px;text-align:center;padding:0 24px}
+#voz-fechar{width:64px;height:64px;border-radius:50%;border:1px solid var(--border);background:var(--card);color:var(--text);display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;margin-bottom:calc(36px + env(safe-area-inset-bottom,0px));box-shadow:0 4px 14px rgba(0,0,0,.12)}#voz-fechar:active{background:var(--bg3)}#voz-fechar svg{width:26px;height:26px}
 </style>
 </head>
 <body>
@@ -234,6 +248,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:64px;backgrou
 <span class=titulo id=titulo>{{BOT_NOME}}</span>
 </div>
 <div id=chat></div>
+<div id=sugestoes><div id=sug-conteudo><div id=sug-avatar>L</div><div id=sug-titulo>Olá!</div><div id=sug-texto>Escolhe uma sugestão ou escreve a tua pergunta.</div><div id=sug-chips></div></div></div>
 <div id=input-area>
 <button id=btn-fundo aria-label="Ir para o fim" onclick=irParaFim()><svg viewBox="0 0 24 24" fill=none><path d="M12 5v14M6 13l6 6 6-6" stroke=currentColor stroke-width=2.2 stroke-linecap=round stroke-linejoin=round /></svg></button>
 <div class=pv-pill>
@@ -246,6 +261,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:64px;backgrou
 <button class=pv-botao-redondo onclick=mensagemVoz() aria-label="Mensagem de voz">
 <svg viewBox="0 0 24 24" fill=none><path d="M12 3a3 3 0 0 1 3 3v5a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z" stroke=#8A8A8A stroke-width=2 /><path d="M6 11a6 6 0 0 0 12 0M12 17v3" stroke=#8A8A8A stroke-width=2 stroke-linecap=round /></svg>
 </button>
+<button id=btn-voz-modo class=pv-botao-redondo onclick=abrirModoVoz() aria-label="Modo de voz"><svg viewBox="0 0 24 24" fill=none><path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 11v2" stroke=#fff stroke-width=2.2 stroke-linecap=round /></svg></button>
 <button id=btn-enviar-chat class=pv-botao-redondo onclick=enviar() aria-label=Enviar>
 <svg viewBox="0 0 24 24" fill=none><path d="M12 19V5M6 11l6-6 6 6" stroke=#fff stroke-width=2.4 stroke-linecap=round stroke-linejoin=round /></svg>
 </button>
@@ -305,6 +321,15 @@ Definições
 <div id=modal-rodape></div>
 </div>
 </div>
+<div id=voz-overlay aria-hidden=true>
+<div id=voz-centro>
+<div id=voz-orb class=parado></div>
+<div id=voz-estado></div>
+<div id=voz-texto></div>
+</div>
+<div id=voz-dica>Toca no círculo para falar ou interromper</div>
+<button id=voz-fechar aria-label="Terminar conversa por voz"><svg viewBox="0 0 24 24" fill=none><path d="M6 6l12 12M18 6L6 18" stroke=currentColor stroke-width=2.4 stroke-linecap=round /></svg></button>
+</div>
 <div id=toast></div>
 <script src=https://cdn.jsdelivr.net/npm/marked@12/marked.min.js></script>
 <script src=https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js></script>
@@ -340,10 +365,10 @@ function renderizarListaConversas(){const el=document.getElementById('lista-conv
 // ===== FIM HISTÓRICO =====
 function adicionarMensagem(e,t,a,o){if(typeof guardarMensagem==='function')guardarMensagem(t,e,o||null);const n=document.createElement("div");if(n.className="msg "+t,o&&"undefined"!=typeof DOMPurify){n.classList.add("markdown");try{n.innerHTML=DOMPurify.sanitize(o,HTML_PERMITIDO),"undefined"!=typeof hljs&&n.querySelectorAll("pre code").forEach((e=>{try{hljs.highlightElement(e)}catch(e){}})),n.querySelectorAll("pre").forEach((e=>{adicionarBotaoCopiarCodigo(e)})),n.querySelectorAll("img").forEach((e=>{e.addEventListener("load",rolarParaFim)}))}catch(t){n.textContent=e}}else if(a&&"undefined"!=typeof marked&&"undefined"!=typeof DOMPurify){n.classList.add("markdown");try{const t=marked.parse(e),a=DOMPurify.sanitize(t,HTML_PERMITIDO);n.innerHTML=a,"undefined"!=typeof hljs&&n.querySelectorAll("pre code").forEach((e=>{try{hljs.highlightElement(e)}catch(e){}})),n.querySelectorAll("pre").forEach((e=>{adicionarBotaoCopiarCodigo(e)})),n.querySelectorAll("img").forEach((e=>{e.addEventListener("load",rolarParaFim)}))}catch(t){n.textContent=e}}else n.textContent=e;if(chatEl.appendChild(n),"sistema"===t){const t="m"+proximoIdMensagem++;n.dataset.msgId=t,chatEl.appendChild(criarAcoesMensagem(t,e))}return rolarParaFim(),n}
 function criarAcoesMensagem(e,t){const a=document.createElement("div");return a.className="msg-acoes",a.dataset.msgId=e,a.innerHTML='<button class="msg-acao" data-acao="copiar" aria-label="Copiar">'+SVG_COPIAR+'</button><button class="msg-acao" data-acao="like" aria-label="Gostei">'+SVG_LIKE+'</button><button class="msg-acao" data-acao="dislike" aria-label="Não gostei">'+SVG_DISLIKE+"</button>"+BOTOES_EXTRA,a.querySelector('[data-acao="copiar"]').addEventListener("click",(()=>{copiarTexto(t),mostrarToast("Mensagem copiada")})),a.querySelector('[data-acao="like"]').addEventListener("click",(o=>{registarFeedback(e,t,"like",o.currentTarget,a)})),a.querySelector('[data-acao="dislike"]').addEventListener("click",(o=>{registarFeedback(e,t,"dislike",o.currentTarget,a)})),a}let toastTimeoutId=null;function mostrarToast(e){const t=document.getElementById("toast");t.textContent=e,t.classList.add("show"),toastTimeoutId&&clearTimeout(toastTimeoutId),toastTimeoutId=setTimeout((()=>t.classList.remove("show")),1800)}function copiarTexto(e){if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(e).catch((()=>{}));else{const t=document.createElement("textarea");t.value=e,t.style.position="fixed",t.style.opacity="0",document.body.appendChild(t),t.select();try{document.execCommand("copy")}catch(e){}document.body.removeChild(t)}}function adicionarBotaoCopiarCodigo(e){const t=e.querySelector("code"),a=t?[...t.classList].find((e=>e.startsWith("language-"))):null,o=a?a.replace("language-",""):"texto",n=document.createElement("div");n.className="cabecalho-codigo";const r=document.createElement("span");r.className="nome-linguagem",r.textContent=o;const i=document.createElement("button");i.className="btn-copiar-codigo",i.innerHTML=SVG_COPIAR+"<span>Copiar</span>",i.addEventListener("click",(()=>{copiarTexto(t?t.textContent:e.textContent),i.innerHTML=SVG_CHECK+"<span>Copiado</span>",setTimeout((()=>{i.innerHTML=SVG_COPIAR+"<span>Copiar</span>"}),1500)})),n.appendChild(r),n.appendChild(i),e.insertBefore(n,e.firstChild)}async function registarFeedback(e,t,a,o,n){const r=o.classList.contains("ativo")?null:a;if(n.querySelectorAll('.msg-acao[data-acao="like"], .msg-acao[data-acao="dislike"]').forEach((e=>e.classList.remove("ativo"))),r&&o.classList.add("ativo"),mostrarToast("like"===r?"Obrigado pelo feedback":"dislike"===r?"Feedback registado":"Voto removido"),"like"===r&&contar("likes"),"dislike"===r&&contar("dislikes"),!MODO_CLIENTE)try{await fetch(URL_SERVIDOR+"/feedback",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cliente:CLIENTE,mensagem:t,valor:r})})}catch(e){}}function mostrarTextoEspera(e){const t=document.getElementById("digitando");if(!t)return;let a=t.querySelector(".texto-espera");a||(a=document.createElement("span"),a.className="texto-espera",t.appendChild(a));const o=String(e||"").trim();if(/</.test(o)&&"undefined"!=typeof DOMPurify)a.innerHTML=DOMPurify.sanitize(o,{ALLOWED_TAGS:["div","span","p","b","i","strong","em","br","style"],ALLOWED_ATTR:["class","style"]});else a.textContent=o;rolarParaFim()}
-function adicionarDigitando(){const e=document.createElement("div");e.className="msg digitando",e.id="digitando",e.innerHTML='<span class="ponto"></span><span class="ponto"></span><span class="ponto"></span>',chatEl.appendChild(e),rolarParaFim()}function esconderDigitando(){const e=document.getElementById("digitando");e&&e.remove()}function ajustarAltura(){window.atualizarBotaoEnviar&&atualizarBotaoEnviar(),inputEl.style.height="auto",inputEl.style.height=Math.min(inputEl.scrollHeight,120)+"px",rolarParaFim()}async function enviar(){const e=inputEl.value.trim();if(e)if(adicionarMensagem(e,"usuario",!1),inputEl.value="",ajustarAltura(),window.matchMedia&&matchMedia("(pointer:coarse)").matches&&inputEl.blur(),btnEnviar.disabled=!0,adicionarDigitando(),MODO_CLIENTE){if(botPausado)return esconderDigitando(),adicionarMensagem("Este bot está pausado no momento.","sistema",!1),btnEnviar.disabled=!1,void 0;try{if(!botInstancia)throw new Error("bot ainda não está pronto");contar("recebidas"),await botInstancia.receiveMessage(CLIENTE,e),esconderDigitando()}catch(e){esconderDigitando(),adicionarMensagem("[erro] "+(e.message||String(e)),"sistema",!1)}finally{btnEnviar.disabled=!1}}else try{const t=await fetch(URL_SERVIDOR+"/mensagem",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cliente:CLIENTE,texto:e})});if(esconderDigitando(),!t.ok)return void adicionarMensagem("[erro "+t.status+"]","sistema",!1);const a=await t.json();a.resposta&&adicionarMensagem(a.resposta,"sistema",!0,a.html)}catch(e){esconderDigitando();adicionarMensagem(URL_SERVIDOR?"Não foi possível falar com o bot agora. Quem criou este bot pode estar offline no momento — tenta novamente daqui a pouco.":"[erro de rede] "+e.message,"sistema",!1)}finally{btnEnviar.disabled=!1}}function abrirSidebar(){renderizarListaConversas();sidebar.classList.add("show"),sidebarOverlay.classList.add("show")}function fecharSidebar(){sidebar.classList.remove("show","defs"),sidebarOverlay.classList.remove("show")}function alternarTema(){document.documentElement.classList.toggle("tema-escuro"),localStorage.setItem("botql_chat_tema",document.documentElement.classList.contains("tema-escuro")?"escuro":"claro")}function pedirLimparConversa(){abrirModal("Limpar conversa","Apagar todas as mensagens desta conversa?",'<button class="destrutivo" onclick="confirmarLimparConversa()"><span class="modal-icone">'+SVG_LIXEIRA+'</span>Limpar</button><button onclick="fecharModal()"><span class="modal-icone">'+SVG_X+"</span>Cancelar</button>")}function confirmarLimparConversa(){chatEl.innerHTML="",produtosSelecionados.clear(),fecharModal()}function marcarChipsTema(){const e=document.documentElement.classList.contains("tema-escuro");document.getElementById("chip-escuro").classList.toggle("ativo",e),document.getElementById("chip-claro").classList.toggle("ativo",!e)}function definirTema(e){document.documentElement.classList.toggle("tema-escuro","escuro"===e),localStorage.setItem("botql_chat_tema",e),marcarChipsTema()}function abrirDefinicoes(){const e=(document.getElementById("sobre-data").textContent||"").trim(),t=document.getElementById("defs-sobre");t.style.display=e&&"-"!==e?"block":"none",document.getElementById("chip-data").textContent="Atualizado em "+e,marcarChipsTema(),sidebar.classList.add("defs")}function fecharDefinicoes(){sidebar.classList.remove("defs")}function anexarFicheiro(){modalAviso("Anexar ficheiro","Ainda não disponível.")}function mensagemVoz(){modalAviso("Mensagem de voz","Ainda não disponível.")}chatEl.addEventListener("click",(e=>{const t=e.target.closest("[data-botql-produto]");if(t){const e=t.dataset.botqlProduto;return produtosSelecionados.has(e)?produtosSelecionados.delete(e):produtosSelecionados.add(e),t.classList.toggle("selecionado",produtosSelecionados.has(e)),inputEl.value=produtosSelecionados.size?"quero comprar: "+[...produtosSelecionados].join(", "):"",void ajustarAltura()}const k=e.target.closest("[data-botql-ask]");if(k)return inputEl.value=k.dataset.botqlAsk,void enviar();const a=e.target.closest("[data-botql-categoria]");a&&(inputEl.value=a.dataset.botqlCategoria,enviar())})),"escuro"===localStorage.getItem("botql_chat_tema")&&document.documentElement.classList.add("tema-escuro"),btnEnviar.addEventListener("click",enviar),inputEl.addEventListener("input",ajustarAltura)</script>
+function adicionarDigitando(){const e=document.createElement("div");e.className="msg digitando",e.id="digitando",e.innerHTML='<span class="ponto"></span><span class="ponto"></span><span class="ponto"></span>',chatEl.appendChild(e),rolarParaFim()}function esconderDigitando(){const e=document.getElementById("digitando");e&&e.remove()}function ajustarAltura(){window.atualizarBotaoEnviar&&atualizarBotaoEnviar(),inputEl.style.height="auto",inputEl.style.height=Math.min(inputEl.scrollHeight,120)+"px",rolarParaFim()}async function enviar(){const e=inputEl.value.trim();if(e)if(adicionarMensagem(e,"usuario",!1),inputEl.value="",ajustarAltura(),window.matchMedia&&matchMedia("(pointer:coarse)").matches&&inputEl.blur(),btnEnviar.disabled=!0,adicionarDigitando(),MODO_CLIENTE){if(botPausado)return esconderDigitando(),adicionarMensagem("Este bot está pausado no momento.","sistema",!1),btnEnviar.disabled=!1,void 0;try{if(!botInstancia)throw new Error("bot ainda não está pronto");contar("recebidas"),await botInstancia.receiveMessage(CLIENTE,e),esconderDigitando()}catch(e){esconderDigitando(),adicionarMensagem("[erro] "+(e.message||String(e)),"sistema",!1)}finally{btnEnviar.disabled=!1}}else try{const t=await fetch(URL_SERVIDOR+"/mensagem",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cliente:CLIENTE,texto:e})});if(esconderDigitando(),!t.ok)return void adicionarMensagem("[erro "+t.status+"]","sistema",!1);const a=await t.json();a.resposta&&adicionarMensagem(a.resposta,"sistema",!0,a.html)}catch(e){esconderDigitando();adicionarMensagem(URL_SERVIDOR?"Não foi possível falar com o bot agora. Quem criou este bot pode estar offline no momento — tenta novamente daqui a pouco.":"[erro de rede] "+e.message,"sistema",!1)}finally{btnEnviar.disabled=!1}}function abrirSidebar(){renderizarListaConversas();sidebar.classList.add("show"),sidebarOverlay.classList.add("show")}function fecharSidebar(){sidebar.classList.remove("show","defs"),sidebarOverlay.classList.remove("show")}function alternarTema(){document.documentElement.classList.toggle("tema-escuro"),localStorage.setItem("botql_chat_tema",document.documentElement.classList.contains("tema-escuro")?"escuro":"claro")}function pedirLimparConversa(){abrirModal("Limpar conversa","Apagar todas as mensagens desta conversa?",'<button class="destrutivo" onclick="confirmarLimparConversa()"><span class="modal-icone">'+SVG_LIXEIRA+'</span>Limpar</button><button onclick="fecharModal()"><span class="modal-icone">'+SVG_X+"</span>Cancelar</button>")}function confirmarLimparConversa(){chatEl.innerHTML="",produtosSelecionados.clear(),fecharModal()}function marcarChipsTema(){const e=document.documentElement.classList.contains("tema-escuro");document.getElementById("chip-escuro").classList.toggle("ativo",e),document.getElementById("chip-claro").classList.toggle("ativo",!e)}function definirTema(e){document.documentElement.classList.toggle("tema-escuro","escuro"===e),localStorage.setItem("botql_chat_tema",e),marcarChipsTema()}function abrirDefinicoes(){const e=(document.getElementById("sobre-data").textContent||"").trim(),t=document.getElementById("defs-sobre");t.style.display=e&&"-"!==e?"block":"none",document.getElementById("chip-data").textContent="Atualizado em "+e,marcarChipsTema(),sidebar.classList.add("defs")}function fecharDefinicoes(){sidebar.classList.remove("defs")}function anexarFicheiro(){modalAviso("Anexar ficheiro","Ainda não disponível.")}function mensagemVoz(){window.ditar?ditar():modalAviso("Mensagem de voz","Ainda não disponível.")}chatEl.addEventListener("click",(e=>{const t=e.target.closest("[data-botql-produto]");if(t){const e=t.dataset.botqlProduto;return produtosSelecionados.has(e)?produtosSelecionados.delete(e):produtosSelecionados.add(e),t.classList.toggle("selecionado",produtosSelecionados.has(e)),inputEl.value=produtosSelecionados.size?"quero comprar: "+[...produtosSelecionados].join(", "):"",void ajustarAltura()}const k=e.target.closest("[data-botql-ask]");if(k)return inputEl.value=k.dataset.botqlAsk,void enviar();const a=e.target.closest("[data-botql-categoria]");a&&(inputEl.value=a.dataset.botqlCategoria,enviar())})),"escuro"===localStorage.getItem("botql_chat_tema")&&document.documentElement.classList.add("tema-escuro"),btnEnviar.addEventListener("click",enviar),inputEl.addEventListener("input",ajustarAltura)</script>
 <script>(function(){var t=document.getElementById("titulo"),a=document.getElementById("avatar");function s(){var n=(t.textContent||"").trim();a.textContent=n&&n.indexOf("{{")<0?n.charAt(0).toUpperCase():"B"}s();new MutationObserver(s).observe(t,{childList:true,characterData:true,subtree:true})})()</script>
 <script>(function(){var v=window.visualViewport;if(!v)return;var r=document.documentElement;function aj(){r.style.setProperty("--vvh",v.height+"px");r.style.setProperty("--vvt",v.offsetTop+"px");if(window.scrollY)window.scrollTo(0,0)}v.addEventListener("resize",aj);v.addEventListener("scroll",aj);window.addEventListener("scroll",aj);aj()})()</script>
-<script>(function(){var x0=0,y0=0,t0=0,ok=false;function livre(el){return!(el&&el.closest&&el.closest("pre,table,textarea,input,.cabecalho-codigo"))}function modalAberto(){return document.getElementById("modal-overlay").classList.contains("show")}document.addEventListener("touchstart",function(e){if(e.touches.length!==1){ok=false;return}var t=e.touches[0];x0=t.clientX;y0=t.clientY;t0=Date.now();ok=livre(e.target)&&!modalAberto()&&!String(window.getSelection())},{passive:true});document.addEventListener("touchend",function(e){if(!ok)return;ok=false;var t=e.changedTouches[0],dx=t.clientX-x0,dy=t.clientY-y0;if(Math.abs(dx)<60||Math.abs(dy)>Math.abs(dx)*.6||Date.now()-t0>700)return;var aberto=sidebar.classList.contains("show");if(dx>0&&!aberto)abrirSidebar();else if(dx<0&&aberto)fecharSidebar()},{passive:true})})()</script>
+<script>(function(){var x0=0,y0=0,t0=0,ok=false;function livre(el){return!(el&&el.closest&&el.closest("pre,table,textarea,input,.cabecalho-codigo"))}function modalAberto(){return document.getElementById("modal-overlay").classList.contains("show")}document.addEventListener("touchstart",function(e){if(e.touches.length!==1){ok=false;return}var t=e.touches[0];x0=t.clientX;y0=t.clientY;t0=Date.now();ok=livre(e.target)&&!modalAberto()&&!String(window.getSelection())&&!document.getElementById("voz-overlay").classList.contains("show")},{passive:true});document.addEventListener("touchend",function(e){if(!ok)return;ok=false;var t=e.changedTouches[0],dx=t.clientX-x0,dy=t.clientY-y0;if(Math.abs(dx)<60||Math.abs(dy)>Math.abs(dx)*.6||Date.now()-t0>700)return;var aberto=sidebar.classList.contains("show");if(dx>0&&!aberto)abrirSidebar();else if(dx<0&&aberto)fecharSidebar()},{passive:true})})()</script>
 <script>(function(){var b=document.getElementById("btn-fundo");function longe(){return chatEl.scrollHeight-chatEl.scrollTop-chatEl.clientHeight>160}function at(){b.classList.toggle("show",longe())}window.irParaFim=function(){chatEl.scrollTo({top:chatEl.scrollHeight,behavior:"smooth"})};chatEl.addEventListener("scroll",at,{passive:true});new MutationObserver(at).observe(chatEl,{childList:true});window.addEventListener("resize",at);at()})()</script>
 <script>(function(){
 /* Selecionar tudo: limita a seleção a UMA mensagem */
@@ -364,6 +389,109 @@ function repetir(acoes){var el=acoes.previousElementSibling;while(el&&!el.classL
 chatEl.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest(".msg-acao");if(!b)return;var ac=b.dataset.acao;if(ac!=="repetir"&&ac!=="partilhar"&&ac!=="voz")return;var acoes=b.closest(".msg-acoes"),msg=acoes&&acoes.previousElementSibling;if(ac==="repetir")repetir(acoes);else if(ac==="partilhar")partilhar(msg?textoMsg(msg):"");else if(ac==="voz")falar(b,msg?textoMsg(msg):"")});
 new MutationObserver(function(){if(vozBtn&&!vozBtn.isConnected)pararVoz()}).observe(chatEl,{childList:true});
 window.addEventListener("pagehide",pararVoz)})()</script>
-<script>(function(){window.atualizarBotaoEnviar=function(){var t=inputEl.value.trim().length>0;btnEnviar.classList.toggle("visivel",t);btnEnviar.setAttribute("aria-hidden",t?"false":"true");btnEnviar.tabIndex=t?0:-1};atualizarBotaoEnviar()})()</script>
+<script>(function(){window.atualizarBotaoEnviar=function(){var t=inputEl.value.trim().length>0;btnEnviar.classList.toggle("visivel",t);var w=document.getElementById("btn-voz-modo");if(w){w.classList.toggle("some",t);w.setAttribute("aria-hidden",t?"true":"false");w.tabIndex=t?-1:0}btnEnviar.setAttribute("aria-hidden",t?"false":"true");btnEnviar.tabIndex=t?0:-1};atualizarBotaoEnviar()})()</script>
+<script>(function(){
+/* ===== SUGESTÕES (edita esta lista à vontade) ===== */
+var SUGESTOES=["O que podes fazer?","Fala de Python","O que é uma função?","Explica o que é uma API"];
+var box=document.getElementById("sugestoes"),chips=document.getElementById("sug-chips"),visivel=false;
+function nomeBot(){var t=(document.getElementById("titulo").textContent||"").trim();return t&&t.indexOf("{{")<0?t:""}
+function mostrar(){var n=nomeBot();document.getElementById("sug-avatar").textContent=n?n.charAt(0).toUpperCase():"B";document.getElementById("sug-titulo").textContent=n?"Olá! Eu sou o "+n:"Olá!";chips.innerHTML="";SUGESTOES.forEach(function(t,i){var b=document.createElement("button");b.className="sug-chip";b.textContent=t;b.style.animationDelay=(.08*i+.05)+"s";b.addEventListener("click",function(){inputEl.value=t;ajustarAltura();enviar()});chips.appendChild(b)});box.classList.add("show")}
+function atualizar(){var vazio=chatEl.children.length===0&&telaCarregando.style.display==="none";if(vazio&&!visivel){visivel=true;mostrar()}else if(!vazio&&visivel){visivel=false;box.classList.remove("show")}}
+new MutationObserver(atualizar).observe(chatEl,{childList:true});
+new MutationObserver(atualizar).observe(telaCarregando,{attributes:true,attributeFilter:["style"]});
+new MutationObserver(function(){if(visivel){document.getElementById("sug-titulo").textContent=nomeBot()?"Olá! Eu sou o "+nomeBot():"Olá!";document.getElementById("sug-avatar").textContent=nomeBot()?nomeBot().charAt(0).toUpperCase():"B"}}).observe(document.getElementById("titulo"),{childList:true,characterData:true,subtree:true});
+atualizar();
+
+/* ===== DITADO POR VOZ ===== */
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition,mic=document.querySelector('[aria-label="Mensagem de voz"]'),rec=null,ativo=false,base="",ph=inputEl.placeholder;
+function fim(){ativo=false;rec=null;mic.classList.remove("gravando");mic.setAttribute("aria-pressed","false");inputEl.placeholder=ph}
+function abortar(){if(!ativo)return;ativo=false;try{rec&&rec.abort()}catch(_){}fim()}
+window.pararDitado=abortar;
+btnEnviar.addEventListener("click",abortar,true);
+window.ditar=function(){
+ if(!SR){modalAviso("Ditado por voz","Este navegador não suporta ditado por voz. Experimenta no Chrome ou no Safari.");return}
+ if(ativo){try{rec.stop()}catch(_){}return}
+ base=inputEl.value.trim();rec=new SR();rec.lang="pt-PT";rec.interimResults=true;rec.continuous=false;rec.maxAlternatives=1;
+ rec.onresult=function(e){if(!ativo)return;var t="";for(var i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;inputEl.value=(base?base+" ":"")+t.trim();ajustarAltura()};
+ rec.onerror=function(e){var m={"not-allowed":"Permite o microfone para ditar","service-not-allowed":"Permite o microfone para ditar","no-speech":"Não ouvi nada","audio-capture":"Microfone não encontrado","network":"Sem ligação para o ditado"}[e.error];if(m)mostrarToast(m)};
+ rec.onend=fim;
+ ativo=true;mic.classList.add("gravando");mic.setAttribute("aria-pressed","true");inputEl.placeholder="A ouvir...";
+ try{rec.start()}catch(_){fim()}
+};
+})()</script>
+<script>(function(){
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+var ov=document.getElementById("voz-overlay"),orb=document.getElementById("voz-orb"),est=document.getElementById("voz-estado"),txt=document.getElementById("voz-texto");
+var aberto=false,estado="parado",rec=null,semFala=0,coletadas=[],tColeta=null,tEspera=null,idFala=0;
+function set(e,t){estado=e;orb.className=e;est.textContent=t}
+function limpar(){clearTimeout(tColeta);clearTimeout(tEspera);tColeta=tEspera=null}
+function textoVoz(m){var c=m.cloneNode(true);c.querySelectorAll(".cabecalho-codigo,pre,style").forEach(function(x){x.remove()});var box=document.createElement("div");box.style.cssText="position:fixed;left:-9999px;top:0;width:320px;visibility:hidden;pointer-events:none";box.appendChild(c);document.body.appendChild(box);var t=(c.innerText||c.textContent||"").replace(/\s+/g," ").trim();box.remove();return t}
+function partir(t){var fr=t.match(/[^.!?…]+[.!?…]*\s*/g)||[t],out=[],cur="";fr.forEach(function(f){if((cur+f).length>180&&cur){out.push(cur.trim());cur=""}if(f.length>180){f.split(/(?<=,)\s+|\s+/).forEach(function(p){if((cur+" "+p).length>180&&cur){out.push(cur.trim());cur=""}cur+=(cur?" ":"")+p})}else cur+=f});if(cur.trim())out.push(cur.trim());return out}
+
+function ouvir(){
+ if(!aberto)return;
+ set("ouvindo","A ouvir…");txt.textContent="";
+ var r;try{r=new SR()}catch(_){fechar();return}
+ rec=r;r.lang="pt-PT";r.interimResults=true;r.continuous=false;
+ var final="";
+ r.onresult=function(e){var t="";for(var i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;final=t.trim();txt.textContent=final};
+ r.onerror=function(e){if(!aberto||rec!==r)return;var m={"not-allowed":"Permite o microfone para usar a voz","service-not-allowed":"Permite o microfone para usar a voz","audio-capture":"Microfone não encontrado","network":"Sem ligação para a voz"}[e.error];if(m){mostrarToast(m);fechar()}};
+ r.onend=function(){if(!aberto||rec!==r)return;if(final){semFala=0;enviarVoz(final)}else{semFala++;if(semFala>=3){set("parado","Toca no círculo para falar");txt.textContent=""}else setTimeout(ouvir,250)}};
+ try{r.start()}catch(_){set("parado","Toca no círculo para falar")}
+}
+
+function enviarVoz(t){
+ set("pensando","A pensar…");coletadas=[];limpar();
+ inputEl.value=t;ajustarAltura();enviar();
+ tEspera=setTimeout(function(){if(aberto&&estado==="pensando"&&!coletadas.length){mostrarToast("O bot não respondeu");ouvir()}},30000)
+}
+function agendar(){clearTimeout(tColeta);tColeta=setTimeout(function(){if(document.getElementById("digitando")){agendar();return}falarRespostas()},700)}
+new MutationObserver(function(ms){if(!aberto||estado!=="pensando")return;ms.forEach(function(m){m.addedNodes.forEach(function(n){if(n.nodeType===1&&n.classList.contains("msg")&&n.classList.contains("sistema")){coletadas.push(n);agendar()}})})}).observe(chatEl,{childList:true});
+
+function falarRespostas(){
+ clearTimeout(tEspera);
+ var t=coletadas.map(textoVoz).filter(Boolean).join(". ");coletadas=[];
+ if(!aberto)return;
+ if(!t){ouvir();return}
+ if(!("speechSynthesis"in window)){mostrarToast("Voz não suportada neste navegador");ouvir();return}
+ set("falando","A falar…");txt.textContent=t;
+ var ch=partir(t),i=0,meu=++idFala;
+ try{speechSynthesis.cancel()}catch(_){}
+ function prox(){
+  if(!aberto||meu!==idFala)return;
+  if(i>=ch.length){ouvir();return}
+  var u=new SpeechSynthesisUtterance(ch[i++]);u.lang="pt-PT";
+  try{var v=speechSynthesis.getVoices().find(function(x){return/^pt/i.test(x.lang)});if(v)u.voice=v}catch(_){}
+  u.onend=prox;u.onerror=function(e){if(e&&(e.error==="interrupted"||e.error==="canceled"))return;prox()};
+  speechSynthesis.speak(u)
+ }
+ setTimeout(prox,60)
+}
+
+function abrir(){
+ if(!SR){modalAviso("Modo de voz","Este navegador não suporta reconhecimento de voz. Experimenta no Chrome ou no Safari.");return}
+ if(aberto)return;
+ window.pararDitado&&pararDitado();try{inputEl.blur()}catch(_){}try{fecharSidebar()}catch(_){}
+ aberto=true;semFala=0;ov.classList.add("show");ov.setAttribute("aria-hidden","false");
+ ouvir()
+}
+function fechar(){
+ if(!aberto&&!ov.classList.contains("show"))return;
+ aberto=false;limpar();idFala++;coletadas=[];
+ try{rec&&rec.abort()}catch(_){}rec=null;
+ try{window.speechSynthesis&&speechSynthesis.cancel()}catch(_){}
+ ov.classList.remove("show");ov.setAttribute("aria-hidden","true");set("parado","");txt.textContent=""
+}
+window.abrirModoVoz=abrir;window.fecharModoVoz=fechar;
+orb.addEventListener("click",function(){
+ if(estado==="falando"){idFala++;try{speechSynthesis.cancel()}catch(_){}ouvir()}
+ else if(estado==="parado"){semFala=0;ouvir()}
+ else if(estado==="ouvindo"){try{rec&&rec.stop()}catch(_){}}
+});
+document.getElementById("voz-fechar").addEventListener("click",fechar);
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&aberto)fechar()});
+document.addEventListener("visibilitychange",function(){if(document.visibilityState==="hidden"&&aberto)fechar()});
+window.addEventListener("pagehide",fechar);
+})()</script>
 </body>
 </html>
