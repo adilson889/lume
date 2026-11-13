@@ -75,10 +75,10 @@ ON MESSAGE {
         THINK(conhecimento_programacao.txt) WAITING("Pensando", 3)
         THINK(aprendido.txt) 
         WAITING("Pensando", 3)
-        WAITING("Tentando possível resposta", 3) OR
-        ASK(conhecimento_programacao.txt) AND REPLY "Seleccione a possível resposta:" OR
+        WAITING("Tentando possível resposta", 3) 
+        ASK(conhecimento_programacao.txt) AND REPLY "Seleccione a possível resposta:" 
         ASK(aprendido.txt) AND 
-REPLY "Seleccione a possível resposta:" OR
+REPLY "Seleccione a possível resposta:" 
         SEARCH message INTO aprendido.txt OR
         REPLY (respostas.txt, 7)
     }
