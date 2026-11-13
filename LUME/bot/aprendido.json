@@ -1,15 +1,5 @@
 {
-  "pendentes": {
-    "4c280f583ca40787": {
-      "path": "aprendido.txt",
-      "t": "Oi: Olá,como posso ajudá-lo hoje?",
-      "quem": [
-        "8aab2ca7ef1c9fac"
-      ],
-      "em": "2026-11-13T14:28:08.431Z",
-      "ensinado": true
-    }
-  },
+  "pendentes": {},
   "aprovados": {
     "aprendido.txt": [
       {
@@ -51,6 +41,11 @@
         "h": "7ebf2f7a89bd14e5",
         "t": "Barcelona (em catalão: AFI: /bərsəˈɫonə/; em castelhano: AFI: /barθeˈlona/) é a capital da comunidade autônoma da Catalunha, Espanha, bem como o segundo município mais populoso do país, com uma população de 1,6 milhão dentro dos limites da cidade. A sua área urbana se estende para além dos limites administrativos da cidade com uma população de cerca de 4,7 milhões de pessoas, sendo a sexta área urbana mais populosa da União Europeia, depois de Paris, Londres, Madri, Vale do Ruhr e Milão. É a maior metrópole do Mar Mediterrâneo, localizada na costa entre as foz dos rios Llobregat e Besòs, e lim...",
         "em": "2026-11-13T13:54:10.829Z"
+      },
+      {
+        "h": "4c280f583ca40787",
+        "t": "Oi: Olá,como posso ajudá-lo hoje?",
+        "em": "2026-11-13T14:29:02.753Z"
       }
     ]
   }
