@@ -95,6 +95,22 @@
         "f8370511647d8cd5"
       ],
       "em": "2026-11-13T06:34:40.165Z"
+    },
+    "c590d1f1ddb47ad0": {
+      "path": "aprendido.txt",
+      "t": "Física (do grego antigo: φύσις physis \"natureza\") é a ciência que estuda a natureza e analisa as relações e propriedades dos seus fenômenos, além de descrever e explicar a maior parte das consequências deles. Busca a compreensão científica dos comportamentos naturais e gerais do mundo em nosso entorno, desde as partículas elementares até o universo como um todo. Com o amparo do método científico e da lógica, e tendo a matemática como linguagem natural, esta ciência descreve a natureza por meio de modelos científicos. É considerada a ciência fundamental, sinônimo de ciência natural: as ciências...",
+      "quem": [
+        "9088ddd97e96db92"
+      ],
+      "em": "2026-11-13T08:47:21.185Z"
+    },
+    "54095a7221e6d8cc": {
+      "path": "aprendido.txt",
+      "t": "Educação física é uma área do conhecimento humano que estuda as práticas corporais desenvolvidas historicamente pela sociedade, envolvendo dimensões como lazer, esporte, saúde, educação e reabilitação. Mais do que a simples execução de exercícios físicos, trata-se de um campo pedagógico, científico e terapêutico, que contribui para a formação do ser humano e para sua integração social. A atuação da Educação física abrange o desenvolvimento motor, emocional, cognitivo e social dos indivíduos, desde a infância até a vida adulta. Está presente em contextos escolares, clínicos, esportivos e sociai...",
+      "quem": [
+        "9088ddd97e96db92"
+      ],
+      "em": "2026-11-13T08:47:21.185Z"
     }
   },
   "aprovados": {
