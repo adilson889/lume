@@ -1,13 +1,5 @@
 {
   "pendentes": {
-    "a9de635442fd918d": {
-      "path": "aprendido.txt",
-      "t": "Python é uma linguagem de programação de alto nível, interpretada de script, imperativa, orientada a objetos, funcional, de tipagem dinâmica e forte. Foi lançada por Guido van Rossum em 1991. Atualmente, possui um modelo de desenvolvimento comunitário, aberto e gerenciado pela organização sem fins lucrativos Python Software Foundation. Apesar de várias partes da linguagem possuírem padrões e especificações formais, a linguagem, como um todo, não é formalmente especificada. O padrão na pratica é a implementação CPython. A linguagem foi projetada com a filosofia de enfatizar a importância do esf...",
-      "quem": [
-        "f204fb495a5cf018"
-      ],
-      "em": "2026-11-13T10:54:34.391Z"
-    },
     "0c9d207dcc6c023a": {
       "path": "aprendido.txt",
       "t": "Python (gênero): Python é um gênero de répteis da família Pythonidae. Pode ser encontrado na Ásia e África. Popularmente são denominadas de pitão (português europeu) ou píton (português brasileiro). Nenhuma das serpentes desta família possui dentes inoculadores de veneno, porém possuem presas afiadas curvadas para dentro para agarrar sua presa. As pítons variam de 4,5 a 6 metros de comprimento. O pitão é retratado em diversos filmes como sendo \"gigante e sedenta por sangue\". Isso não acontece na realidade.",
@@ -96,6 +88,11 @@
         "h": "a0bfff08dba4b7ab",
         "t": "Elon Musk: Elon Reeve Musk (Pretória, 28 de junho de 1971) é um empresário e empreendedor sul-africano, naturalizado canadense e estadunidense, que dirige a SpaceX e a Tesla. Suas empresas trabalham com foguetes, veículos elétricos, energia e inteligência artificial. A Forbes o classificava como a pessoa mais rica do mundo em outubro de 2026, com um patrimônio estimado em 908,5 bilhões de dólares. Nascido em uma família de boas condições financeiras, Elon mudou-se para o Canadá em 1989 e estudou na Queen's University e na Universidade da Pensilvânia, onde obteve diplomas em física e economia....",
         "em": "2026-11-13T13:52:58.687Z"
+      },
+      {
+        "h": "a9de635442fd918d",
+        "t": "Python é uma linguagem de programação de alto nível, interpretada de script, imperativa, orientada a objetos, funcional, de tipagem dinâmica e forte. Foi lançada por Guido van Rossum em 1991. Atualmente, possui um modelo de desenvolvimento comunitário, aberto e gerenciado pela organização sem fins lucrativos Python Software Foundation. Apesar de várias partes da linguagem possuírem padrões e especificações formais, a linguagem, como um todo, não é formalmente especificada. O padrão na pratica é a implementação CPython. A linguagem foi projetada com a filosofia de enfatizar a importância do esf...",
+        "em": "2026-11-13T13:53:24.263Z"
       }
     ]
   }
