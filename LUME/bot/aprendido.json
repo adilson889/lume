@@ -56,11 +56,6 @@
         "h": "b2bd056385e7d299",
         "t": "O que é uma função recursiva?:\n1-{\nFunção recursiva é uma função que chama a si mesma.\nPrecisa de duas coisas:\n1. Caso base: O if que a faz parar (senão dá erro de Stack Overflow).\n2. Chamada recursiva: Ela chamando a si mesma com um valor menor.\n```javascript\nfunction contagem(n) {\n  if (n === 0) return; // Caso base\n  console.log(n);\n  contagem(n - 1);     // Chamada recursiva\n}\ncontagem(3); // 3, 2, 1\n```\n}",
         "em": "2026-11-13T15:33:24.558Z"
-      },
-      {
-        "h": "4e73152d4c804bd1",
-        "t": "Como imprimir um código em JS?:\n1-{\nPara imprimir algo no console do JavaScript, utiliza a função console.log().\n```javascript\n// Imprimir um texto simples\nconsole.log(\"Olá, Mundo!\");\n// Imprimir o valor de uma variável\nlet nome = \"Lume\";\nconsole.log(nome);\n// Imprimir um objeto\nconsole.log({ status: \"ativo\", id: 1 });\n```\n}",
-        "em": "2026-11-13T17:57:26.200Z"
       }
     ]
   },
