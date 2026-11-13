@@ -2,8 +2,8 @@
 --
 -- Regras desta estrutura:
 -- 1. O BotQL so aceita nomes de ficheiro simples (sem pastas) em
---    KEYWORDS, REPLY, THINK e WAITING. Por isso este ficheiro e todos os
---    .txt que ele usa ficam juntos, nesta pasta (LUME/bot/).
+--    KEYWORDS, REPLY, THINK, ASK, SEARCH e WAITING. Por isso este ficheiro
+--    e todos os .txt que ele usa ficam juntos, nesta pasta (LUME/bot/).
 -- 2. So existe UM bloco ON MESSAGE, aqui. O BotQL corre todos os blocos
 --    ON MESSAGE em sequencia, por isso ficheiros importados nao devem ter
 --    o seu proprio ON MESSAGE.
@@ -15,8 +15,14 @@
 -- 5. Toda a resposta mostra primeiro os 3 pontinhos de espera: WHEN usa
 --    WAITING("texto") sozinho (texto diferente por assunto) e o THINK usa
 --    WAITING acoplado. Todos levam o tempo minimo em segundos: WAITING("texto", segundos).
+-- 6. APRENDIZAGEM: tudo o que o SEARCH encontra na web e gravado em
+--    aprendido.txt (separado do conhecimento escrito a mao). O chat
+--    partilha esses blocos com os outros visitantes (ver o index e a API).
+--    O ficheiro aprendido.txt tem de existir (pode estar vazio).
 
 CREATE BOT "Lume"
+
+CONNECT SEARCH WIKI, STACKOVERFLOW
 
 CREATE TABLE Context() PREVENT DEFAULT
 
@@ -57,9 +63,19 @@ ON MESSAGE {
         REPLY (respostas.txt, 6)
     }
 
-    -- 6. Tudo o resto: procura na base de conhecimento de programacao
+    -- 6. Tudo o resto: se um passo falha, o seguinte atua.
+    --    a) base escrita a mao (resposta direta)
+    --    b) o que o Lume ja aprendeu (resposta direta)
+    --    c) duvida na base: mostra opcoes para escolher
+    --    d) duvida no aprendido: mostra opcoes para escolher
+    --    e) nao sabe: pesquisa na web, grava em aprendido.txt e repete o passo d)
+    --    f) nada encontrado: resposta de reserva
     OTHERWISE {
         THINK(conhecimento_programacao.txt) WAITING("A procurar na base de programacao...", 3) OR
+        THINK(aprendido.txt) OR
+        ASK(conhecimento_programacao.txt) AND REPLY "Qual destas queres dizer?" OR
+        ASK(aprendido.txt) AND REPLY "Qual destas queres dizer?" OR
+        SEARCH message INTO aprendido.txt OR
         REPLY (respostas.txt, 7)
     }
 
