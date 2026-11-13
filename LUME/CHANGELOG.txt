@@ -45,3 +45,8 @@ Lume - historico de versoes
 - Pesquisa na web: a pergunta e reduzida ao tema ("o que sabes sobre o React Native?" passa a "react native") antes de ir a Wikipedia e ao Stack Overflow.
 - So se grava em aprendido.txt o resultado cujo titulo tem a ver com o tema. O Stack Overflow so entra quando a mensagem parece um problema de codigo.
 - Mensagens sem tema ("eu nao sei", "ok") ja nao disparam pesquisa nenhuma.
+
+0.2.3
+- O chat tira o envoltorio da pergunta antes de a entregar ao bot ("preciso saber o que e Kotlin" -> "o que e Kotlin"; "preciso de ajuda com recursao" -> "recursao"; "o que sabes sobre python?" -> "python?"). Resolve as sondagens "Qual destas queres dizer?" que apareciam para perguntas claras e a lista de ajuda que tapava perguntas com "ajuda com".
+- "o que sabes fazer" e "preciso de ajuda" nao mudam.
+- Medido no chat real com o motor novo: ja responde direto a Kotlin, Python, recursao e variaveis; pizza continua a cair na resposta de reserva.
