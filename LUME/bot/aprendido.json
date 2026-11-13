@@ -1,5 +1,15 @@
 {
-  "pendentes": {},
+  "pendentes": {
+    "4c280f583ca40787": {
+      "path": "aprendido.txt",
+      "t": "Oi: Olá,como posso ajudá-lo hoje?",
+      "quem": [
+        "8aab2ca7ef1c9fac"
+      ],
+      "em": "2026-11-13T14:28:08.431Z",
+      "ensinado": true
+    }
+  },
   "aprovados": {
     "aprendido.txt": [
       {
