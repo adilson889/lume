@@ -59,7 +59,6 @@ ON MESSAGE {
         THINK(conhecimento_programacao.txt) WAITING("A procurar na base de programacao...", 3) OR
         REPLY (respostas.txt, 7)
     }
- }
 
 UPDATE Context
     SET reply = lastMsg
