@@ -51,6 +51,11 @@
         "h": "3433e84d584f89a7",
         "t": "Fixe?: Fixe?? Kkk por aqui está tudo bem.😅 Como posso ajudar?",
         "em": "2026-11-13T14:40:39.203Z"
+      },
+      {
+        "h": "b2bd056385e7d299",
+        "t": "O que é uma função recursiva?:\n1-{\nFunção recursiva é uma função que chama a si mesma.\nPrecisa de duas coisas:\n1. Caso base: O if que a faz parar (senão dá erro de Stack Overflow).\n2. Chamada recursiva: Ela chamando a si mesma com um valor menor.\n```javascript\nfunction contagem(n) {\n  if (n === 0) return; // Caso base\n  console.log(n);\n  contagem(n - 1);     // Chamada recursiva\n}\ncontagem(3); // 3, 2, 1\n```\n}",
+        "em": "2026-11-13T15:33:24.558Z"
       }
     ]
   },
