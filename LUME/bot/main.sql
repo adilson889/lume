@@ -76,8 +76,9 @@ ON MESSAGE {
         THINK(aprendido.txt) 
         WAITING("Pensando", 3)
         WAITING("Tentando possível resposta", 3) OR
-        ASK(conhecimento_programacao.txt) AND REPLY "Seleccione a possível resposta:?" OR
-        ASK(aprendido.txt) AND REPLY "Qual destas queres dizer?" OR
+        ASK(conhecimento_programacao.txt) AND REPLY "Seleccione a possível resposta:" OR
+        ASK(aprendido.txt) AND 
+REPLY "Seleccione a possível resposta:" OR
         SEARCH message INTO aprendido.txt OR
         REPLY (respostas.txt, 7)
     }
