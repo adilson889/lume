@@ -76,8 +76,8 @@ html,body{position:fixed;top:0;left:0;width:100%}
 .btn-copiar-codigo:active{color:var(--text)}
 .msg-pedido{font-size:11px;color:var(--muted);margin:-2px 0 10px 4px}
 .msg .ask-intro{font-size:17px;font-weight:700;line-height:1.35;color:var(--text);margin:2px 0 14px;padding-left:12px;border-left:4px solid var(--r)}
-.msg .ask-opcoes{counter-reset:ask;display:flex;flex-direction:column;gap:10px;margin:6px 0}
-.msg .ask-opcao{counter-increment:ask;display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 14px;font-size:15px;line-height:1.45;color:var(--text);cursor:pointer;transition:transform .12s}
+.msg .ask-opcoes{counter-reset:ask;display:grid;grid-template-columns:minmax(0,1fr);grid-auto-rows:1fr;gap:10px;margin:6px 0}
+.msg .ask-opcao{counter-increment:ask;display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 14px;font-size:15px;line-height:1.45;color:var(--text);cursor:pointer;transition:transform .12s}
 .msg .ask-opcao::before{content:counter(ask);flex:none;width:26px;height:26px;border-radius:50%;background:var(--r);color:var(--on);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center}
 .msg .ask-opcao:active{transform:scale(.98)}
 .msg-ensinar{display:flex;flex-direction:column;gap:8px;margin:-2px 0 10px}
@@ -227,7 +227,7 @@ button:active{transform:scale(.94)}
 #btn-nova svg path{stroke:var(--text)}
 #chat{top:var(--vvt,0px);height:var(--vvh,100%);padding-top:64px}
 .msg.usuario{background:var(--card);border:1px solid var(--border)}
-.msg.sistema.markdown pre{background:var(--card)}
+.msg.sistema.markdown pre{background:transparent}
 .msg.sistema.markdown code{background:var(--card);border:1px solid var(--border)}
 .msg.sistema.markdown pre code{border:none}
 #input-area{background:linear-gradient(to top,var(--bg) 70%,transparent)}
