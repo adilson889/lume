@@ -35,3 +35,7 @@ Lume - historico de versoes
 
 0.1.8
 - Chat: balao do utilizador em azul claro (E6EDFB; escuro 25304B), icones maiores e com traco mais fino e arredondado, botoes do topo sem circulo e com desvanecimento por baixo, icone de menu em duas linhas.
+
+0.2.1
+-O botão preto com as barrinhas abre o modo de voz: uma conversa falada, sem usar as mãos. Você fala, eu respondo em voz alta, e continuamos assim sem digitar nada.
+-Novos comandos: ASK, SESRCH.etc. O index já está integrado para criar formulários 
