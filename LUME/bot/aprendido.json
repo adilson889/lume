@@ -1,13 +1,5 @@
 {
   "pendentes": {
-    "54095a7221e6d8cc": {
-      "path": "aprendido.txt",
-      "t": "Educação física é uma área do conhecimento humano que estuda as práticas corporais desenvolvidas historicamente pela sociedade, envolvendo dimensões como lazer, esporte, saúde, educação e reabilitação. Mais do que a simples execução de exercícios físicos, trata-se de um campo pedagógico, científico e terapêutico, que contribui para a formação do ser humano e para sua integração social. A atuação da Educação física abrange o desenvolvimento motor, emocional, cognitivo e social dos indivíduos, desde a infância até a vida adulta. Está presente em contextos escolares, clínicos, esportivos e sociai...",
-      "quem": [
-        "9088ddd97e96db92"
-      ],
-      "em": "2026-11-13T08:47:21.185Z"
-    },
     "a9de635442fd918d": {
       "path": "aprendido.txt",
       "t": "Python é uma linguagem de programação de alto nível, interpretada de script, imperativa, orientada a objetos, funcional, de tipagem dinâmica e forte. Foi lançada por Guido van Rossum em 1991. Atualmente, possui um modelo de desenvolvimento comunitário, aberto e gerenciado pela organização sem fins lucrativos Python Software Foundation. Apesar de várias partes da linguagem possuírem padrões e especificações formais, a linguagem, como um todo, não é formalmente especificada. O padrão na pratica é a implementação CPython. A linguagem foi projetada com a filosofia de enfatizar a importância do esf...",
