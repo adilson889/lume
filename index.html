@@ -29,8 +29,8 @@ html,body{position:fixed;top:0;left:0;width:100%}
 .msg.sistema.markdown em{font-style:italic}
 .msg.sistema.markdown a{color:var(--text);text-decoration:underline}
 .msg.sistema.markdown code{background:var(--bg3);padding:2px 6px;border-radius:6px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.9em}
-.msg.sistema.markdown pre{background:var(--bg3);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin:8px 0;position:relative}
-.msg.sistema.markdown pre code{display:block;background:0 0;padding:12px;overflow-x:auto;color:var(--text);border-radius:0}
+.msg.sistema.markdown pre{background:transparent;border:none;border-radius:0;overflow:hidden;margin:8px 0;position:relative}
+.msg.sistema.markdown pre code{display:block;background:0 0;padding:8px 0;overflow-x:auto;color:var(--text);border-radius:0}
 .msg.sistema.markdown blockquote{border-left:3px solid var(--r);margin:6px 0;padding:2px 10px;opacity:.85}
 .msg.sistema.markdown table{border-collapse:collapse;margin:8px 0;font-size:15px}
 .msg.sistema.markdown td,.msg.sistema.markdown th{border:1px solid var(--border);padding:6px 10px;text-align:left}
@@ -70,7 +70,7 @@ html,body{position:fixed;top:0;left:0;width:100%}
 .msg-acao svg{width:16px;height:16px}
 .msg-acao.ativo{color:var(--text)}
 .msg-acao.ativo svg path{fill:var(--text)}
-.cabecalho-codigo{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--border)}
+.cabecalho-codigo{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:none}
 .cabecalho-codigo .nome-linguagem{color:var(--muted);font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;text-transform:lowercase}
 .btn-copiar-codigo{background:0 0;border:none;padding:2px 4px;display:flex;align-items:center;gap:5px;cursor:pointer;color:var(--muted);font-family:inherit;font-size:13px}
 .btn-copiar-codigo:active{color:var(--text)}
