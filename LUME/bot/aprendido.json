@@ -1,13 +1,5 @@
 {
   "pendentes": {
-    "269335ff5e073834": {
-      "path": "aprendido.txt",
-      "t": "Problema com as actions no reduxsauce: Eu estou fazendo uma app simples de cadastro de receitas em react native e estou utilizando o redux com duck pattern e reduxsauce, segue o código: //DUCK DE RECEITA import { createActions, createReducer … E eu não encontrei nada sobre esse problema. Alguém sabe o que pode estar causando isso? …",
-      "quem": [
-        "bf9cca77bbaa9a71"
-      ],
-      "em": "2026-11-13T05:41:36.748Z"
-    },
     "d9e18cd2c7bb5674": {
       "path": "aprendido.txt",
       "t": "Aaliyah Dana Haughton (Nova Iorque, 16 de janeiro de 1979 – Marsh Harbour, 25 de agosto de 2001), conhecida mononimamente como Aaliyah, foi uma cantora, atriz, compositora, dançarina, produtora, coreógrafa e modelo estadunidense. Ela é creditada por ajudar a redefinir o R&B contemporâneo, o pop e o hip hop, adquirindo assim os apelidos de \"Princesa do R&B\" e \"Rainha do Pop Urbano\". Nascida no Brooklyn e criada em Detroit, ela ganhou reconhecimento pela primeira vez aos 10 anos, quando apareceu no programa Star Search e se apresentou ao lado de Gladys Knight em um concerto ocorrido em Las Vegas...",
