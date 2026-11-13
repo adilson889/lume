@@ -36,6 +36,12 @@ Lume - historico de versoes
 0.1.8
 - Chat: balao do utilizador em azul claro (E6EDFB; escuro 25304B), icones maiores e com traco mais fino e arredondado, botoes do topo sem circulo e com desvanecimento por baixo, icone de menu em duas linhas.
 
+
 0.2.1
--O botão preto com as barrinhas abre o modo de voz: uma conversa falada, sem usar as mãos. Você fala, eu respondo em voz alta, e continuamos assim sem digitar nada.
--Novos comandos: ASK, SESRCH.etc. O index já está integrado para criar formulários 
+- O botão preto com as barrinhas abre o modo de voz: uma conversa falada, sem usar as mãos. Você fala, eu respondo em voz alta, e continuamos assim sem digitar nada.
+- Novos comandos: ASK, SEARCH.etc. O index já está integrado para criar formulários 
+
+0.2.2
+- Pesquisa na web: a pergunta e reduzida ao tema ("o que sabes sobre o React Native?" passa a "react native") antes de ir a Wikipedia e ao Stack Overflow.
+- So se grava em aprendido.txt o resultado cujo titulo tem a ver com o tema. O Stack Overflow so entra quando a mensagem parece um problema de codigo.
+- Mensagens sem tema ("eu nao sei", "ok") ja nao disparam pesquisa nenhuma.
