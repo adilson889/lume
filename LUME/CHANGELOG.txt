@@ -29,3 +29,6 @@ Lume - historico de versoes
 0.1.6
 - Saudacao passa a ser ON START (aparece ao abrir o chat) em vez de DEFAULT MESSAGE, que engolia a primeira pergunta de cada sessao.
 - UPDATE Context SET reply = lastMsg no fim do ON MESSAGE (feito pelo Rafael).
+
+0.1.7
+- Chat: o texto do WAITING passa a aparecer ao lado dos 3 pontinhos (o index.html tinha onThinking desligado, por isso o texto nunca era mostrado).
