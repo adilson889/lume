@@ -1,13 +1,5 @@
 {
   "pendentes": {
-    "077051c42e710b1d": {
-      "path": "aprendido.txt",
-      "t": "Donald Trump: Donald John Trump (Nova Iorque, 14 de junho de 1946) é um empresário, personalidade televisiva e político americano. Filiado ao Partido Republicano, é o atual presidente dos Estados Unidos. Venceu as eleições de 2016 contra Hillary Clinton no número de delegados do colégio eleitoral, apesar de ter sofrido a maior derrota no voto popular de um presidente que conseguiu ser eleito no país. Foi empossado para o cargo em 20 de janeiro de 2017 e presidiu até 20 de janeiro de 2021, após perder as eleições de 2020 para Joe Biden e encerrar seu primeiro mandato com níveis históricos de im...",
-      "quem": [
-        "bf9cca77bbaa9a71"
-      ],
-      "em": "2026-11-13T05:41:36.748Z"
-    },
     "269335ff5e073834": {
       "path": "aprendido.txt",
       "t": "Problema com as actions no reduxsauce: Eu estou fazendo uma app simples de cadastro de receitas em react native e estou utilizando o redux com duck pattern e reduxsauce, segue o código: //DUCK DE RECEITA import { createActions, createReducer … E eu não encontrei nada sobre esse problema. Alguém sabe o que pode estar causando isso? …",
