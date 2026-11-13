@@ -5,8 +5,8 @@
 <meta name=viewport content="width=device-width,initial-scale=1,user-scalable=no,interactive-widget=resizes-content">
 <title>{{BOT_NOME}}</title>
 <style>
-:root{--bg:#FFFFFF;--bg2:#FFFFFF;--bg3:#F7F7F7;--border:#E8E8E8;--text:#111111;--muted:#8A8A8A;--r:#111111;--on:#FFFFFF;--bot-texto:#111111;--bot-tamanho:16px}
-.tema-escuro{--bg:#111111;--bg2:#1A1A1A;--bg3:#222222;--border:#333333;--text:#F2F2F2;--muted:#9A9A9A;--r:#F2F2F2;--on:#111111;--bot-texto:#F2F2F2}
+:root{--bg:#F7F7F7;--bg2:#FFFFFF;--bg3:#EDEDED;--card:#FFFFFF;--border:#E4E4E4;--text:#111111;--muted:#8A8A8A;--r:#111111;--on:#FFFFFF;--bot-texto:#111111;--bot-tamanho:16px}
+.tema-escuro{--bg:#111111;--bg2:#1A1A1A;--bg3:#262626;--card:#1E1E1E;--border:#333333;--text:#F2F2F2;--muted:#9A9A9A;--r:#F2F2F2;--on:#111111;--bot-texto:#F2F2F2}
 *{margin:0;padding:0;box-sizing:border-box}
 body,html{background:var(--bg);color:var(--text);font-family:-apple-system,'Inter',Roboto,'Segoe UI',Helvetica,Arial,sans-serif;height:100%;overflow:hidden;overscroll-behavior:none;transition:background .2s,color .2s}
 html,body{position:fixed;top:0;left:0;width:100%}
@@ -180,6 +180,22 @@ button:active{transform:scale(.94)}
 .msg-acao.falando{color:var(--text);background:var(--bg3)}.msg.usuario{cursor:pointer}
 #btn-enviar-chat{width:0;min-width:0;margin-left:-6px;overflow:hidden;opacity:0;transform:translateX(26px) scale(.8);pointer-events:none;transition:width .3s cubic-bezier(.32,.72,0,1),margin-left .3s cubic-bezier(.32,.72,0,1),opacity .22s,transform .3s cubic-bezier(.32,.72,0,1)}#btn-enviar-chat.visivel{width:36px;margin-left:0;opacity:1;transform:none;pointer-events:auto}
 </style>
+<style>
+#statusbar{background:transparent;border:none;height:0;padding:0;pointer-events:none}
+#statusbar .avatar,#statusbar .titulo{display:none}
+#btn-menu,#btn-nova{position:fixed;top:calc(var(--vvt,0px) + 10px);width:38px;height:38px;border-radius:50%;background:var(--card);border:1px solid var(--border);padding:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;pointer-events:auto;z-index:11;color:var(--text)}
+#btn-menu{left:12px}
+#btn-nova{right:12px}
+#btn-menu:active,#btn-nova:active{background:var(--bg3)}
+#btn-menu svg,#btn-nova svg{width:100%;height:100%}
+#btn-nova svg path{stroke:var(--text)}
+#chat{top:var(--vvt,0px);height:var(--vvh,100%);padding-top:64px}
+.msg.usuario{background:var(--card);border:1px solid var(--border)}
+.msg.sistema.markdown pre{background:var(--card)}
+.msg.sistema.markdown code{background:var(--card);border:1px solid var(--border)}
+.msg.sistema.markdown pre code{border:none}
+#input-area{background:linear-gradient(to top,var(--bg) 70%,transparent)}
+</style>
 </head>
 <body>
 <div id=tela-carregando>
@@ -189,6 +205,9 @@ button:active{transform:scale(.94)}
 <div id=statusbar>
 <button id=btn-menu onclick=abrirSidebar() aria-label=Menu>
 <svg viewBox="0 0 24 24" fill=none><path d="M4 7h16M4 12h16M4 17h16" stroke=#fff stroke-width=2 stroke-linecap=round /></svg>
+</button>
+<button id=btn-nova onclick=novaConversa() aria-label="Nova conversa">
+<svg viewBox="0 0 24 24" fill=none><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.5L3 20.5l1.5-5.2A8.5 8.5 0 1 1 21 11.5zM12 8.5v6M9 11.5h6" stroke=currentColor stroke-width=2 stroke-linecap=round stroke-linejoin=round /></svg>
 </button>
 <span class=avatar id=avatar>L</span>
 <span class=titulo id=titulo>{{BOT_NOME}}</span>
