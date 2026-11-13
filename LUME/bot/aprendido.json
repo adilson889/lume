@@ -1,13 +1,5 @@
 {
   "pendentes": {
-    "b2a6bfdefeca23e5": {
-      "path": "aprendido.txt",
-      "t": "Biologia (do grego antigo: βίος / bios \"vida\" e λόγος / logos \"discurso\") é o estudo científico da vida e dos organismos vivos. É uma ciência natural ampla que abrange uma vasta gama de campos e princípios unificadores que explicam a estrutura, função, crescimento, origem, evolução e distribuição da vida. No centro da biologia estão cinco temas fundamentais: a célula como unidade básica da vida, os genes e a hereditariedade como base da transmissão genética, a evolução como motor da diversidade biológica, a transformação de energia para sustentar os processos vitais e a manutenção da estabilid...",
-      "quem": [
-        "9391bc0dfa834fd8"
-      ],
-      "em": "2026-11-13T11:21:00.302Z"
-    },
     "99db1a009ff6af49": {
       "path": "aprendido.txt",
       "t": "Família (biologia): Na Biologia, família (em latim: familia, plural familiae) é um táxon integrado no sistema taxonómico criado por Lineu no século XVIII. A família agrupa um conjunto de géneros, podendo incluir subfamílias, e está incluída numa ordem.",
@@ -82,6 +74,11 @@
         "h": "0c9d207dcc6c023a",
         "t": "Python (gênero): Python é um gênero de répteis da família Pythonidae. Pode ser encontrado na Ásia e África. Popularmente são denominadas de pitão (português europeu) ou píton (português brasileiro). Nenhuma das serpentes desta família possui dentes inoculadores de veneno, porém possuem presas afiadas curvadas para dentro para agarrar sua presa. As pítons variam de 4,5 a 6 metros de comprimento. O pitão é retratado em diversos filmes como sendo \"gigante e sedenta por sangue\". Isso não acontece na realidade.",
         "em": "2026-11-13T13:53:28.488Z"
+      },
+      {
+        "h": "b2a6bfdefeca23e5",
+        "t": "Biologia (do grego antigo: βίος / bios \"vida\" e λόγος / logos \"discurso\") é o estudo científico da vida e dos organismos vivos. É uma ciência natural ampla que abrange uma vasta gama de campos e princípios unificadores que explicam a estrutura, função, crescimento, origem, evolução e distribuição da vida. No centro da biologia estão cinco temas fundamentais: a célula como unidade básica da vida, os genes e a hereditariedade como base da transmissão genética, a evolução como motor da diversidade biológica, a transformação de energia para sustentar os processos vitais e a manutenção da estabilid...",
+        "em": "2026-11-13T13:53:44.230Z"
       }
     ]
   }
