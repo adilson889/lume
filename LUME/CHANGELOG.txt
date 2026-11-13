@@ -53,3 +53,6 @@ Lume - historico de versoes
 
 0.2.4
 - A sondagem desaparece depois de escolher uma opcao (junto com os icones de acao dela).
+
+0.2.5
+- Nova ordem do fluxo no main.sql: primeiro o aprendido (resposta direta ou sondagem), depois a pesquisa na web (que grava em aprendido.txt e pode lancar sondagem), depois a base escrita a mao (resposta direta ou sondagem) e por fim a resposta de reserva.

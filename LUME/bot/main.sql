@@ -66,18 +66,19 @@ ON MESSAGE {
     }
 
     -- 6. Tudo o resto: se um passo falha, o seguinte atua.
-    --    a) base escrita a mao (resposta direta)
-    --    b) o que o Lume ja aprendeu (resposta direta)
-    --    c) duvida na base: mostra opcoes para escolher
-    --    d) duvida no aprendido: mostra opcoes para escolher
-    --    e) nao sabe: pesquisa na web, grava em aprendido.txt e repete o passo d)
+    --    a) o que o Lume ja aprendeu (resposta direta)
+    --    b) duvida no aprendido: mostra opcoes para escolher
+    --    c) nao sabe: pesquisa na web, grava em aprendido.txt e repete a) e b)
+    --       (se houver varias respostas, lanca a sondagem)
+    --    d) base escrita a mao (resposta direta)
+    --    e) duvida na base: mostra opcoes para escolher
     --    f) nada encontrado: resposta de reserva
     OTHERWISE {
-        THINK(conhecimento_programacao.txt) WAITING("Pensando..", 3) OR
-        THINK(aprendido.txt) OR
-        ASK(conhecimento_programacao.txt) AND REPLY "Escolha a possível resposta:" OR
+        THINK(aprendido.txt) WAITING("Pensando..", 3) OR
         ASK(aprendido.txt) AND REPLY "Escolha a possível resposta:" OR
         SEARCH message INTO aprendido.txt OR
+        THINK(conhecimento_programacao.txt) OR
+        ASK(conhecimento_programacao.txt) AND REPLY "Escolha a possível resposta:" OR
         REPLY (respostas.txt, 7)
     }
 
