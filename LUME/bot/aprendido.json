@@ -1,13 +1,5 @@
 {
   "pendentes": {
-    "a0bfff08dba4b7ab": {
-      "path": "aprendido.txt",
-      "t": "Elon Musk: Elon Reeve Musk (Pretória, 28 de junho de 1971) é um empresário e empreendedor sul-africano, naturalizado canadense e estadunidense, que dirige a SpaceX e a Tesla. Suas empresas trabalham com foguetes, veículos elétricos, energia e inteligência artificial. A Forbes o classificava como a pessoa mais rica do mundo em outubro de 2026, com um patrimônio estimado em 908,5 bilhões de dólares. Nascido em uma família de boas condições financeiras, Elon mudou-se para o Canadá em 1989 e estudou na Queen's University e na Universidade da Pensilvânia, onde obteve diplomas em física e economia....",
-      "quem": [
-        "f8370511647d8cd5"
-      ],
-      "em": "2026-11-13T06:34:40.165Z"
-    },
     "d92a39afcb44f024": {
       "path": "aprendido.txt",
       "t": "Fortuna de Elon Musk: Elon Musk é a pessoa mais rica do mundo cuja fortuna foi verificada, com um patrimônio líquido estimado em US$ 971 bilhões, segundo o Bloomberg Billionaires Index, e em US$ 1.4 trilhão, segundo a Forbes, em junho de 2026, principalmente em razão de suas participações acionárias na SpaceX e na Tesla. Tendo sido incluído pela primeira vez na Forbes Billionaires List em 2012, cerca de 75% da riqueza de Musk era derivada de ações da Tesla em novembro de 2020, embora ele se descreva como \"pobre em dinheiro\". De acordo com a Forbes, ele se tornou a primeira pessoa no mundo a at...",
@@ -123,6 +115,11 @@
         "h": "ef23bdf5364ded3d",
         "t": "Rust pode referir-se a: Rust (linguagem de programação) Rust (jogo eletrônico) Rust (filme)",
         "em": "2026-11-13T13:52:54.136Z"
+      },
+      {
+        "h": "a0bfff08dba4b7ab",
+        "t": "Elon Musk: Elon Reeve Musk (Pretória, 28 de junho de 1971) é um empresário e empreendedor sul-africano, naturalizado canadense e estadunidense, que dirige a SpaceX e a Tesla. Suas empresas trabalham com foguetes, veículos elétricos, energia e inteligência artificial. A Forbes o classificava como a pessoa mais rica do mundo em outubro de 2026, com um patrimônio estimado em 908,5 bilhões de dólares. Nascido em uma família de boas condições financeiras, Elon mudou-se para o Canadá em 1989 e estudou na Queen's University e na Universidade da Pensilvânia, onde obteve diplomas em física e economia....",
+        "em": "2026-11-13T13:52:58.687Z"
       }
     ]
   }
