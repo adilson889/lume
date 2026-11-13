@@ -1,14 +1,5 @@
 {
-  "pendentes": {
-    "672d2af503754600": {
-      "path": "aprendido.txt",
-      "t": "Barcelona Sporting Club: O Barcelona Sporting Club, também conhecido como Barcelona SC ou Barcelona de Guayaquil, é um clube de futebol equatoriano sediado na cidade de Guayaquil, fundado em 1 de maio de 1925. Sua cor principal é o amarelo. Manda seus jogos no Estádio Monumental Isidro Romero Carbo, que tem capacidade para 57.267 espectadores. É o clube mais popular do Equador com 43% da preferência nacional, sendo também o clube mais vezes campeão nacional e ostentando um vice-campeonato da Copa Libertadores da América como o seu maior destaque internacional.",
-      "quem": [
-        "9391bc0dfa834fd8"
-      ],
-      "em": "2026-11-13T11:28:01.471Z"
-    }
-  },
+  "pendentes": {},
   "aprovados": {
     "aprendido.txt": [
       {
