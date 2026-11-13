@@ -32,3 +32,6 @@ Lume - historico de versoes
 
 0.1.7
 - Chat: o texto do WAITING passa a aparecer ao lado dos 3 pontinhos (o index.html tinha onThinking desligado, por isso o texto nunca era mostrado).
+
+0.1.8
+- Chat: balao do utilizador em azul claro (E6EDFB; escuro 25304B), icones maiores e com traco mais fino e arredondado, botoes do topo sem circulo e com desvanecimento por baixo, icone de menu em duas linhas.
