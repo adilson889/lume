@@ -1,3 +1,5 @@
+
+
 -- Lume: ponto de entrada do bot.
 --
 -- Regras desta estrutura:
@@ -63,13 +65,19 @@ ON MESSAGE {
         REPLY (respostas.txt, 6)
     }
 
-    -- 6. Tudo o resto: prioridade para o aprendido e sondagens
+    -- 6. Tudo o resto: se um passo falha, o seguinte atua.
+    --    a) base escrita a mao (resposta direta)
+    --    b) o que o Lume ja aprendeu (resposta direta)
+    --    c) duvida na base: mostra opcoes para escolher
+    --    d) duvida no aprendido: mostra opcoes para escolher
+    --    e) nao sabe: pesquisa na web, grava em aprendido.txt e repete o passo d)
+    --    f) nada encontrado: resposta de reserva
     OTHERWISE {
-        THINK(aprendido.txt) WAITING("A verificar o que já aprendi...", 2) OR
-        THINK(conhecimento_programacao.txt) WAITING("A procurar na base de programação...", 3) OR
-        ASK(aprendido.txt) AND REPLY "Encontrei estas opções no que já aprendi. Qual destas queres dizer?" OR
-        ASK(conhecimento_programacao.txt) AND REPLY "Encontrei estas opções na base de programação. Qual destas queres dizer?" OR
-        SEARCH message INTO aprendido.txt WAITING("A pesquisar na internet...", 4) OR
+        THINK(conhecimento_programacao.txt) WAITING("Pensando..", 3) OR
+        THINK(aprendido.txt) OR
+        ASK(conhecimento_programacao.txt) AND REPLY "Escolha a possível resposta:" OR
+        ASK(aprendido.txt) AND REPLY "Escolha a possível resposta:" OR
+        SEARCH message INTO aprendido.txt OR
         REPLY (respostas.txt, 7)
     }
 
@@ -79,3 +87,4 @@ UPDATE Context
 }
 
 RUN BOT
+
