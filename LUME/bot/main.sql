@@ -63,30 +63,13 @@ ON MESSAGE {
         REPLY (respostas.txt, 6)
     }
 
-    -- 6. Tudo o resto: se um passo falha, o seguinte atua.
-    --    a) o que o Lume ja aprendeu (resposta direta - PRIORIDADE MÁXIMA)
-    --    b) base escrita a mao (resposta direta)
-    --    c) duvida no aprendido: mostra opcoes para escolher (Sondagem Prioritária)
-    --    d) duvida na base: mostra opcoes para escolher
-    --    e) nao sabe: pesquisa na web, grava em aprendido.txt e repete o passo c)
-    --    f) nada encontrado: resposta de reserva
+    -- 6. Tudo o resto: prioridade para o aprendido e sondagens
     OTHERWISE {
-        -- a) Tenta resposta direta no aprendizado
         THINK(aprendido.txt) WAITING("A verificar o que já aprendi...", 2) OR
-        
-        -- b) Tenta resposta direta na base de programação
         THINK(conhecimento_programacao.txt) WAITING("A procurar na base de programação...", 3) OR
-        
-        -- c) Sondagem no aprendizado (opções para o utilizador escolher)
         ASK(aprendido.txt) AND REPLY "Encontrei estas opções no que já aprendi. Qual destas queres dizer?" OR
-        
-        -- d) Sondagem na base de programação
         ASK(conhecimento_programacao.txt) AND REPLY "Encontrei estas opções na base de programação. Qual destas queres dizer?" OR
-        
-        -- e) Pesquisa na web e guarda
         SEARCH message INTO aprendido.txt WAITING("A pesquisar na internet...", 4) OR
-        
-        -- f) Fallback
         REPLY (respostas.txt, 7)
     }
 
