@@ -76,6 +76,11 @@
         "h": "36e86c448e1bad4f",
         "t": "Onde joga atualimente o Lamine Yamal?: Atualimente,**Lamine Yamal** atua pelo **FC Barcelona**",
         "em": "2026-11-13T20:08:57.790Z"
+      },
+      {
+        "h": "f9e992cf3eb20a14",
+        "t": "Podemos falar do numpy?:\n1-{\nO NumPy (Numerical Python) é uma biblioteca fundamental do Python para computação científica e matemática. Ele é usado para trabalhar com arrays multidimensionais (matrizes) e funções matemáticas de alta performance.\nPrincipais vantagens e usos:\n· Arrays: Em vez de listas normais, o NumPy usa o objeto ndarray, que é muito mais rápido e consome menos memória.\n· Operações Matemáticas: Permite fazer cálculos em matrizes inteiras de uma só vez (sem precisar de ciclos for), o que se chama vetorização.\n· Base para outras bibliotecas: O Pandas, Matplotlib, Scikit-learn e o TensorFlow dependem todos do NumPy.\n```\nimport numpy as np\n# Criar um array\nmeu_array = np.array([1, 2, 3, 4, 5])\n# Operação matemática direta (multiplica tudo por 2)\nprint(meu_array * 2)\n# Cria uma matriz 2x2\nmatriz = np.array([[1, 2], [3, 4]])\nprint(matriz.shape) # Retorna (2, 2)\n```\n}",
+        "em": "2026-11-13T21:13:13.495Z"
       }
     ]
   },
