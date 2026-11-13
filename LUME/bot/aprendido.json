@@ -56,6 +56,21 @@
         "h": "29bc7d99a581d1b3",
         "t": "Como imprimir um código em JS?:\n1-{\nPara imprimir algo no console do JavaScript, utiliza a função **console.log().**\n```\n// Imprimir um texto simples\nconsole.log(\"Olá, Mundo!\");\n// Imprimir o valor de uma variável\nlet nome = \"Lume\";\nconsole.log(nome);\n// Imprimir um objeto\nconsole.log({ status: \"ativo\", id: 1 });\n```\n- Achou alguma dúvida?🤔\n}",
         "em": "2026-11-13T19:12:17.079Z"
+      },
+      {
+        "h": "62e625233c2d683f",
+        "t": "Ronaldo Nazário: Ronaldo Luís Nazário de Lima (Itaguaí, 18 de setembro de 1976), conhecido como Ronaldo Fenômeno ou simplesmente Ronaldo, é um empresário e ex-futebolista brasileiro que atuava como centroavante. Amplamente reconhecido como um dos melhores jogadores da história do futebol, destacou-se pelas arrancadas, dribles e finalizações, e foi eleito Melhor Jogador do Mundo pela FIFA em 1996, 1997 e 2002. Após encerrar a carreira, tornou-se empresário e presidiu o Valladolid, da Espanha, entre 2018 e 2025, quando vendeu sua participação majoritária. Iniciou no futsal do Valqueire Tênis Clu...",
+        "em": "2026-11-13T20:01:29.660Z"
+      },
+      {
+        "h": "58b377f5d36ee85b",
+        "t": "Cristiano Ronaldo dos Santos Aveiro (Funchal, 5 de fevereiro de 1985) é um futebolista português que joga como avançado no Al-Nassr. Tornou-se o maior goleador da história do futebol, simultaneamente por clubes e seleções, trajetória que o levou ao recorde de cinco nomeações ao prémio de melhor goleador do mundo pela Federação Internacional de História e Estatísticas do Futebol (IFFHS). Durante a sua passagem pela Europa, tornou-se o melhor jogador histórico e maior recordista da Liga dos Campeões, Liga das Nações e Campeonato Europeu de Futebol, sendo este último o título inédito e mais impor...",
+        "em": "2026-11-13T20:01:29.660Z"
+      },
+      {
+        "h": "ddc02b14a4fb68aa",
+        "t": "Ronaldo pode referir-se a:",
+        "em": "2026-11-13T20:01:29.660Z"
       }
     ]
   },
