@@ -53,11 +53,6 @@
         "em": "2026-11-13T14:40:39.203Z"
       },
       {
-        "h": "5ffacb1ff9dfeaa3",
-        "t": "Como imprimir um código em JS?:\n1-{\n//Para imprimir algo no console do JavaScript, utiliza a função console.log().\n// Imprimir um texto simples\nconsole.log(\"Olá, Mundo!\");\n// Imprimir o valor de uma variável\nlet nome = \"Lume\";\nconsole.log(nome);\n// Imprimir um objeto\nconsole.log({ status: \"ativo\", id: 1 });\n}",
-        "em": "2026-11-13T18:15:19.337Z"
-      },
-      {
         "h": "29bc7d99a581d1b3",
         "t": "Como imprimir um código em JS?:\n1-{\nPara imprimir algo no console do JavaScript, utiliza a função **console.log().**\n```\n// Imprimir um texto simples\nconsole.log(\"Olá, Mundo!\");\n// Imprimir o valor de uma variável\nlet nome = \"Lume\";\nconsole.log(nome);\n// Imprimir um objeto\nconsole.log({ status: \"ativo\", id: 1 });\n```\n- Achou alguma dúvida?🤔\n}",
         "em": "2026-11-13T19:12:17.079Z"
