@@ -72,7 +72,7 @@ ON MESSAGE {
     --    f) nada encontrado: resposta de reserva
 
     OTHERWISE {
-        THINK(conhecimento_programacao.txt) WAITING("Pensando", 3) OR
+        THINK(conhecimento_programacao.txt) WAITING("Pensando", 3)
         THINK(aprendido.txt) 
         WAITING("Pensando", 3)
         WAITING("Tentando possível resposta", 3) OR
