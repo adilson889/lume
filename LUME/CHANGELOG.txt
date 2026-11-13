@@ -25,3 +25,7 @@ Lume - historico de versoes
 - Chat: fundo F7F7F7, balao do utilizador e blocos de codigo brancos, barra de topo transparente com dois botoes flutuantes (menu e nova conversa).
 - ajuda.txt: removidas as frases "sabes sobre X" (escondiam as respostas de conhecimento) e as palavras curtas ajuda, help, info e menu (apanhavam frases normais).
 - Registo do 0.1.4 (feito pelo Rafael): nova UI do chat (fundo branco, balao F7F7F7, tema escuro) e ajuda.txt com 1623 frases.
+
+0.1.6
+- Saudacao passa a ser ON START (aparece ao abrir o chat) em vez de DEFAULT MESSAGE, que engolia a primeira pergunta de cada sessao.
+- UPDATE Context SET reply = lastMsg no fim do ON MESSAGE (feito pelo Rafael).

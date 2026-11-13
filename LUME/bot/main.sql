@@ -19,7 +19,10 @@
 CREATE BOT "Lume"
 
 CREATE TABLE Context() PREVENT DEFAULT
-DEFAULT MESSAGE (respostas.txt, 1)
+
+ON START {
+    REPLY (respostas.txt, 1)
+}
 
 ON MESSAGE {
     INSERT INTO Context()
