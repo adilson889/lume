@@ -4,7 +4,7 @@
 
 <h1 align="center">Lume</h1>
 
-<p align="center"><b>A conversational assistant written in BotQL, with programming as its test domain.</b></p>
+<p align="center"><b>A conversational BOT built entirely with BotQL.</b></p>
 
 <p align="center">
   <a href="https://github.com/adilson889/lume/stargazers"><img src="https://img.shields.io/github/stars/adilson889/lume?style=flat-square&color=8b0000" alt="Stars"></a>
@@ -12,76 +12,71 @@
   <a href="https://github.com/adilson889/lume/commits/main"><img src="https://img.shields.io/github/last-commit/adilson889/lume?style=flat-square&color=8b0000" alt="Last commit"></a>
   <img src="https://img.shields.io/badge/feito%20com-BotQL-8b0000?style=flat-square" alt="BotQL">
   <img src="https://img.shields.io/badge/inten%C3%A7%C3%A3o-NLP.js-8b0000?style=flat-square" alt="NLP.js">
-  <img src="https://img.shields.io/badge/p%C3%A1gina-est%C3%A1tica-8b0000?style=flat-square" alt="static">
+  <img src="https://img.shields.io/badge/p%C3%A1gina-est%C3%A1tica-8b0000?style=flat-square" alt="Static page">
 </p>
 
 <p align="center"><a href="README.md">Português</a> &nbsp;|&nbsp; <a href="README.en.md">English</a> &nbsp;|&nbsp; <a href="README.zh.md">中文</a></p>
 
 ---
 
-## What it is
+## What is Lume?
 
-<p align="justify">
-Lume is a chatbot built entirely with <a href="https://github.com/adilson889/botql">BotQL</a>, a declarative, rules-based language. It is not a trained language model: it combines rules, a hand-written knowledge base, what it has learned from users and web search, and it works out the intent of each message to decide what to do with it.
-</p>
+Lume is a **conversational BOT**, built entirely with <a href="https://github.com/adilson889/botql">BotQL</a>, a declarative, rules-based language. It is not a trained language model, nor is it intended to be presented as an autonomous AI. It is a bot that combines conversation rules, knowledge files, content taught by users, and web search to interpret messages and decide what to do.
 
-<p align="justify">
-The test domain is programming: variables, functions, loops, classes, APIs, Git, SQL, HTML, CSS and other introductory topics. The goal is a solid, scalable base where growing means adding text files rather than rewriting logic.
-</p>
+But Lume's purpose goes beyond answering questions: **it can also ask humans for help**.
 
-## How it answers
+When it cannot find a suitable answer, Lume can acknowledge that limitation and give someone the opportunity to teach it. The information it receives can be reviewed, corrected, and approved before becoming part of its knowledge base. Humans are therefore not just people who ask questions; they also take part in the bot's growth.
 
-<p align="justify">
-Every message first goes through conversation rules (help, greetings, farewells, thanks, status). Whatever is left follows a chain in which each step acts only when the previous one fails:
-</p>
+> Lume starts without knowing everything. Humans help it grow.
 
-1. **Hand-written base** (`conhecimento_programacao.txt`): a direct answer.
-2. **Learned** (`aprendido.txt`): what Lume has already learned, answered directly or, when in doubt, through a poll that lets the user choose.
-3. **Web search** (Wikipedia): runs only when the message looks like a programming question. The result is saved into the learned file.
-4. **Base poll**, when several answers are possible.
-5. **Fallback reply**, when nothing fits.
+## How it works
 
-<p align="justify">
-The poll lists the possible answers with numbers and disappears as soon as the user picks one.
-</p>
+Every message first goes through conversation rules (help, greetings, farewells, thanks, and status). The remaining messages follow a lookup sequence:
+
+1. **Knowledge base** (`conhecimento_programacao.txt`): looks for an answer in the prepared content.
+2. **Learned knowledge** (`aprendido.txt`): checks content Lume has already learned and that is available for use.
+3. **Web search** (Wikipedia): triggered when a message is identified as a programming question not yet covered by the knowledge base. The result can be saved for later use.
+4. **Poll**: when several answers are possible, Lume can show them and let the user choose.
+5. **Request for help or fallback reply**: when it cannot find enough information, it can ask for help or provide a fallback response.
+
+The poll displays numbered options and ends as soon as the user makes a choice.
 
 ## Message intent
 
-<p align="justify">
-The chat uses <a href="https://github.com/axa-group/nlp.js">NLP.js</a>, bundled into a single file (<code>LUME/vendor/nlp.min.js</code>, 127 KB), to classify each message as a topic from the base, small talk, off-topic, or programming the base does not cover yet. It trains when the page opens, in under a second, from the base topics and the examples in <code>LUME/bot/intencoes.txt</code>. This way a question such as "who is Messi?" does not go to the web and bring back noise.
-</p>
+The chat uses <a href="https://github.com/axa-group/nlp.js">NLP.js</a>, bundled into a single file (`LUME/vendor/nlp.min.js`, 127 KB), to classify messages. Categories include known topics, small talk, out-of-domain messages, and programming questions not yet covered by the knowledge base.
 
-<p align="justify">
-To teach an intent, add lines in the form <code>intent | example phrase</code> to <code>intencoes.txt</code>.
-</p>
+The classifier is trained when the page opens, using the knowledge-base topics and examples from `LUME/bot/intencoes.txt`. This helps, for example, prevent an unrelated question from triggering an unnecessary web search.
 
-## Learning from users
+To teach an intent, add lines in the format `intent | example phrase` to `intencoes.txt`.
 
-<p align="justify">
-Every answer can get a thumbs up or down. After a thumbs down, the user can teach the right answer in an editor with formatting, preview and validation (length, HTML only inside code blocks, links only to Wikipedia and Stack Overflow). What is taught or learned can be reviewed, approved or removed in a management panel.
-</p>
+## Teaching and correcting Lume
+
+Users can rate answers with positive or negative votes. When an answer receives a negative rating, they can teach an alternative through an editor with formatting, preview, and validation.
+
+Taught or collected content can be reviewed in the management panel, where it can be approved or removed. **Content should only be treated as available knowledge after passing the validation process defined by the system.**
+
+This mechanism represents learning through knowledge collection, validation, and persistence. It does not mean that the bot autonomously changes its own parameters or trains itself like a language model.
 
 ## Repository layout
 
 ```text
-index.html                  chat (static page, no build step)
+index.html                      chat (static page, no build step)
 LUME/
-  bot/                      main.sql and the text files it uses
-    arquivos.json           list of files the chat loads
+  bot/                          main.sql and the text files it uses
+    arquivos.json               list of files loaded by the chat
     conhecimento_programacao.txt
     intencoes.txt
     aprendido.txt
-  vendor/nlp.min.js         NLP.js as a single file
+  vendor/nlp.min.js             NLP.js bundled as a single file
   assets/logo.png
   tests/casos_programacao.txt   test cases (question | expected answer)
-  CHANGELOG.txt, VERSION
+  CHANGELOG.txt
+  VERSION
 ```
 
 ## Run locally
 
-<p align="justify">
-Lume is a static page that loads the BotQL engine over the network. Just serve it over HTTP (opening the file directly does not work, because of the <code>fetch</code> requests):
-</p>
+Lume is a static page that loads the BotQL engine over the network. It must be served over HTTP; opening the file directly will not work because of the `fetch` requests.
 
 ```bash
 git clone https://github.com/adilson889/lume.git
@@ -92,18 +87,14 @@ python3 -m http.server 8000
 
 ## Adding knowledge
 
-<p align="justify">
-Each topic in the base is a block separated by a blank line, in the form <code>Topic (synonyms): answer text</code>. When you create a new file, list it in <code>LUME/bot/arquivos.json</code>, because the chat only loads what is on that list. BotQL file names are plain: letters, numbers and underscores, no folders.
-</p>
+Each knowledge-base topic is a block separated by a blank line, in the format `Topic (synonyms): answer text`.
+
+When creating a new file, add it to `LUME/bot/arquivos.json`, because the chat only loads files listed there. BotQL file names should be simple: letters, numbers, and underscores, with no folders.
 
 ## Versions
 
-<p align="justify">
-The changes in each version are in <a href="LUME/CHANGELOG.txt">LUME/CHANGELOG.txt</a>, and the current version is in <a href="LUME/VERSION">LUME/VERSION</a>.
-</p>
+Changes for each version are listed in <a href="LUME/CHANGELOG.txt">LUME/CHANGELOG.txt</a>, and the current version is in <a href="LUME/VERSION">LUME/VERSION</a>.
 
 ## License
 
-<p align="justify">
-Released under the Apache 2.0 license. See <a href="LICENSE">LICENSE</a>. NLP.js, bundled in <code>LUME/vendor</code>, is released under the MIT license.
-</p>
+Released under the Apache 2.0 license. See <a href="LICENSE">LICENSE</a>. NLP.js, included in `LUME/vendor`, is released under the MIT license.
