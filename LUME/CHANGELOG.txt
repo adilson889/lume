@@ -67,3 +67,6 @@ Lume - historico de versoes
 
 0.3.1
 - As respostas do aprendido mostram so a resposta, sem o prefixo "pergunta:" ou "titulo:" ("Oi: Ola, como posso ajuda-lo" passa a "Ola, como posso ajuda-lo"). Prefixos com parenteses por fechar (ex.: "Barcelona (pronuncia catala: ...") ja nao sao cortados, e a resposta comeca com maiuscula.
+
+0.3.2
+- README em portugues, ingles e chines, com logotipo centrado, etiquetas e paragrafos justificados. Logotipo em LUME/assets/logo.png.
