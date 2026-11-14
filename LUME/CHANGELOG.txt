@@ -91,3 +91,6 @@ Lume - historico de versoes
 
 0.3.7
 - Enquanto o microfone esta ligado (a gravar), o botao mostra o icone de pausa em vez do microfone.
+
+0.3.8
+- Os modais voltam a ficar sem icones nos botoes (Renomear, Apagar, etc.). Os icones ficam so no menu de tres pontos das conversas.
