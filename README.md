@@ -4,7 +4,7 @@
 
 <h1 align="center">Lume</h1>
 
-<p align="center"><b>Um BOT conversacional construído integralmente com BotQL.</b></p>
+<p align="center"><b>Bot conversacional que cresce com a ajuda dos humanos.</b></p>
 
 <p align="center">
   <a href="https://github.com/adilson889/lume/stargazers"><img src="https://img.shields.io/github/stars/adilson889/lume?style=flat-square&color=8b0000" alt="Estrelas"></a>
