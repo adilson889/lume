@@ -4,3 +4,155 @@ como vais
 como vai
 tudo bem
 tudo bom
+estou bem
+estou muito bem
+estou ótimo
+estou ótima
+estou excelente
+estou feliz
+estou contente
+estou tranquilo
+estou tranquila
+estou calmo
+estou calma
+estou satisfeito
+estou satisfeita
+estou animado
+estou animada
+estou motivado
+estou motivada
+estou preparado
+estou preparada
+estou disponível
+estou presente
+estou atento
+estou atenta
+estou concentrado
+estou concentrada
+estou ocupado
+estou ocupada
+estou um pouco ocupado
+estou um pouco ocupada
+estou cansado
+estou cansada
+estou com sono
+estou com fome
+estou com sede
+estou preocupado
+estou preocupada
+estou nervoso
+estou nervosa
+estou ansioso
+estou ansiosa
+estou triste
+estou desanimado
+estou desanimada
+estou aborrecido
+estou aborrecida
+estou doente
+não estou muito bem
+não estou bem
+hoje estou bem
+hoje estou muito bem
+hoje estou cansado
+hoje estou cansada
+hoje estou feliz
+hoje estou triste
+hoje estou ocupado
+hoje estou ocupada
+está tudo bem comigo
+está tudo tranquilo comigo
+está tudo em ordem
+está tudo certo
+está tudo ótimo
+está tudo excelente
+está tudo normal
+está tudo a correr bem
+está tudo a correr normalmente
+as coisas estão bem
+as coisas estão a correr bem
+estou a sentir-me bem
+estou a sentir-me melhor
+estou a sentir-me feliz
+estou a sentir-me cansado
+estou a sentir-me cansada
+estou a recuperar
+estou a melhorar
+estou a descansar
+estou a trabalhar
+estou a estudar
+estou a aprender
+estou a resolver um problema
+estou a tratar de alguns assuntos
+estou a fazer uma tarefa
+estou a terminar uma tarefa
+estou a começar uma atividade
+estou a conversar
+estou a pensar
+estou a analisar a situação
+estou a prestar atenção
+estou a acompanhar
+estou à espera
+estou sem tempo neste momento
+tenho algum tempo disponível
+tenho pouco tempo disponível
+estou livre neste momento
+não estou disponível neste momento
+posso conversar agora
+não posso conversar agora
+posso ajudar neste momento
+preciso de algum tempo
+preciso de descansar
+preciso de ajuda
+estou com algumas dúvidas
+tenho uma dúvida
+estou com dificuldades
+estou com um problema
+estou a tentar compreender
+já compreendi
+agora compreendo
+ainda não compreendi
+não compreendi muito bem
+estou satisfeito com o resultado
+não estou satisfeito com o resultado
+estou confiante
+não estou muito confiante
+estou em segurança
+estou em casa
+estou no trabalho
+estou na escola
+estou na rua
+estou a caminho
+já cheguei
+ainda estou a caminho
+estou pronto para continuar
+estou pronta para continuar
+estou pronto para começar
+estou pronta para começar
+estou pronto para ajudar
+estou pronta para ajudar
+estou a funcionar normalmente
+o meu estado é normal
+o meu estado está estável
+neste momento estou bem
+neste momento estou ocupado
+neste momento estou ocupada
+por enquanto está tudo bem
+por enquanto estou bem
+não há novidades
+não tenho novidades
+tenho boas notícias
+tenho uma novidade
+o meu dia está a correr bem
+o meu dia está a correr normalmente
+o meu dia está a ser difícil
+o meu dia está a ser agradável
+estou melhor do que antes
+estou pior do que antes
+estou a sentir algum desconforto
+estou a sentir-me cansado hoje
+estou a sentir-me cansada hoje
+estou bem, obrigado
+estou bem, obrigada
+estou ótimo, obrigado
+estou ótima, obrigada
