@@ -4,7 +4,7 @@
 
 <h1 align="center">Lume</h1>
 
-<p align="center"><b>完全使用 BotQL 构建的对话机器人。</b></p>
+<p align="center"><b>一个在人类帮助下不断成长的对话机器人。</b></p>
 
 <p align="center">
   <a href="https://github.com/adilson889/lume/stargazers"><img src="https://img.shields.io/github/stars/adilson889/lume?style=flat-square&color=8b0000" alt="星标"></a>
