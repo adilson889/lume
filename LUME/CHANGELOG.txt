@@ -73,3 +73,11 @@ Lume - historico de versoes
 
 0.3.3
 - Limpeza de estrutura morta: removidas as pastas database/ e rag/, os testes .sql de placeholder, os ficheiros conversation.sql, fallback.sql, personality.sql e reasoning.sql (nunca eram usados pelo main.sql), o README.txt antigo, o corrigir_lume.py e os workflows do GitHub Actions. arquivos.json atualizado.
+
+0.3.4
+- Input do chat em forma de pilula, de uma linha: + a esquerda, texto ao meio, microfone e botao de voz a direita (ao escrever, o botao de voz passa a seta de enviar). Ao escrever cresce ate 5 linhas e depois rola por dentro.
+- Menu de tres pontos de cada conversa, com icones: Abrir, Renomear, Fixar no topo, Duplicar, Selecionar varios e Apagar (a vermelho). Um titulo renomeado ja nao e trocado pelo titulo automatico.
+- Itens da lista de conversas com icone (balao; pino nas fixadas). Selecionar varios permite apagar varias conversas de uma vez.
+- Modais com icones nos botoes. No Apagar, o botao Apagar fica vermelho suave e o Cancelar passa a principal.
+- Saudacao inicial sem os icones de acao e sem o rodape de reacao, com 4 perguntas de exemplo para tocar por baixo. A saudacao (respostas.txt) deixa de mandar escrever "o que sabes fazer".
+- Registo do que ja estava no index.html sem entrada aqui: rodape "Por favor, da uma reacao a cada resposta"; like aprova e dislike remove o bloco aprendido; "ensine-me a resposta certa" (fica pendente); painel escondido por frase secreta. As rotas /voto e /ensinar vivem no repo da API.

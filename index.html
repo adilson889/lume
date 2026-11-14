@@ -175,7 +175,7 @@ button.chip:active{background:var(--bg3)}
 #modal-rodape button{background:transparent;border:1px solid var(--border);border-radius:999px;padding:14px 18px;font-family:inherit;font-size:16px;font-weight:600;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:10px;align-self:stretch;justify-content:center}
 #modal-rodape button:active{opacity:.8}
 #modal-rodape button.primario,#modal-rodape button.destrutivo{background:var(--r);border-color:var(--r);color:var(--on)}
-#modal-rodape .modal-icone{display:none}
+#modal-rodape .modal-icone{display:inline-flex;width:20px;height:20px;flex-shrink:0}
 #modal-rodape .modal-icone svg{width:100%;height:100%;display:block}
 #modal-rodape button.primario .modal-icone svg,#modal-rodape button.destrutivo .modal-icone svg{stroke:var(--on)}
 #tela-carregando{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:999;color:var(--muted);font-size:14px;font-weight:600;text-align:center;padding:30px}
@@ -288,6 +288,48 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:64px;backgrou
 #sidebar-cabecalho{display:flex;align-items:center;gap:12px}#sidebar-cabecalho::before{content:'';width:34px;height:34px;flex-shrink:0;background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Cdefs%3E%3CradialGradient%20id%3D%27g%27%20cx%3D%2750%25%27%20cy%3D%2730%25%27%20r%3D%2775%25%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%23B3171D%27%2F%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%232A0000%27%2F%3E%3C%2FradialGradient%3E%3C%2Fdefs%3E%3Ccircle%20cx%3D%2750%27%20cy%3D%2750%27%20r%3D%2750%27%20fill%3D%27url%28%23g%29%27%2F%3E%3Cpath%20d%3D%27M40%2020h12l-6%2042h26l-2%2010H32z%27%20fill%3D%27%23fff%27%2F%3E%3Cpath%20d%3D%27M70%2042c5%205%209%209%207%2016a9%209%200%200%201-16%200c0-4%203-7%205-10%201%203%202%204%203%203%201-2%200-6%201-9z%27%20fill%3D%27%23E53935%27%2F%3E%3C%2Fsvg%3E") center/contain no-repeat}
 #sidebar-fixo{display:flex;align-items:center;justify-content:space-between;gap:8px}#sidebar-fixo button{width:auto}#btn-nova-sb{order:2;background:var(--r)!important;color:var(--on)!important;border-radius:999px!important;padding:12px 18px!important;gap:8px!important;font-weight:600!important;white-space:nowrap}#btn-nova-sb:active{opacity:.85}#btn-nova-sb .sidebar-icone{width:20px;height:20px}#btn-nova-sb svg path{stroke:var(--on)}
 #sug-avatar{background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Cdefs%3E%3CradialGradient%20id%3D%27g%27%20cx%3D%2750%25%27%20cy%3D%2730%25%27%20r%3D%2775%25%27%3E%3Cstop%20offset%3D%270%27%20stop-color%3D%27%23B3171D%27%2F%3E%3Cstop%20offset%3D%271%27%20stop-color%3D%27%232A0000%27%2F%3E%3C%2FradialGradient%3E%3C%2Fdefs%3E%3Ccircle%20cx%3D%2750%27%20cy%3D%2750%27%20r%3D%2750%27%20fill%3D%27url%28%23g%29%27%2F%3E%3Cpath%20d%3D%27M40%2020h12l-6%2042h26l-2%2010H32z%27%20fill%3D%27%23fff%27%2F%3E%3Cpath%20d%3D%27M70%2042c5%205%209%209%207%2016a9%209%200%200%201-16%200c0-4%203-7%205-10%201%203%202%204%203%203%201-2%200-6%201-9z%27%20fill%3D%27%23E53935%27%2F%3E%3C%2Fsvg%3E") center/contain no-repeat;color:transparent;font-size:0;width:72px;height:72px}
+</style>
+<style id="estilo-034">
+/* 0.3.4 - input em pilula */
+#input-area .pv-pill{flex-direction:row;align-items:flex-end;gap:4px;padding:6px 6px 6px 8px;border-radius:30px}
+#input-area .pv-linha-botoes{display:contents}
+#input-area .pv-espaco{display:none}
+#input-area #chat-input{order:1;flex:1;min-width:0;width:auto;box-sizing:border-box;padding:9px 6px;min-height:40px;max-height:132px;line-height:1.4}
+#input-area .pv-linha-botoes>button:first-child{order:0;width:40px;height:40px}
+#input-area .pv-linha-botoes>button:not(:first-child){order:2;height:40px}
+#input-area .pv-linha-botoes>button[aria-label="Mensagem de voz"]{width:40px}
+#btn-voz-modo:not(.some){width:40px}
+#btn-enviar-chat.visivel{width:40px}
+/* saudacao sem icones e sugestoes por baixo */
+#chat:not(:has(.msg.usuario)) .msg-acoes,#chat:not(:has(.msg.usuario)) .msg-pedido{display:none}
+#sugestoes.so-chips #sug-avatar,#sugestoes.so-chips #sug-titulo,#sugestoes.so-chips #sug-texto{display:none}
+#sugestoes.so-chips #sug-conteudo{margin:auto auto 0}
+/* lista de conversas com icones */
+.conversa-icone{width:20px;height:20px;flex-shrink:0;color:var(--muted);display:flex;align-items:center;justify-content:center}
+.conversa-icone svg{width:100%;height:100%}
+.conversa-icone.sel{width:22px;height:22px;box-sizing:border-box;border:2px solid var(--muted);border-radius:50%}
+.conversa-icone.sel svg{width:14px;height:14px}
+.conversa-icone.sel.marcada{background:var(--r);border-color:var(--r);color:var(--on)}
+/* menu de tres pontos */
+#menu-conv-fundo{position:fixed;inset:0;z-index:960;background:transparent}
+#menu-conv{position:fixed;z-index:961;min-width:236px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:8px;box-shadow:0 8px 24px rgba(0,0,0,.14),0 24px 64px rgba(0,0,0,.18);transform-origin:top right;animation:menuConvEntra .22s var(--mola)}
+@keyframes menuConvEntra{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+.menu-conv-item{display:flex;align-items:center;gap:16px;width:100%;border:0;background:transparent;color:var(--text);font:inherit;font-size:16px;padding:13px 14px;border-radius:14px;cursor:pointer;text-align:left}
+.menu-conv-item:active{background:var(--bg3)}
+.menu-conv-item svg{width:22px;height:22px;flex-shrink:0}
+.menu-conv-item.perigo{color:#B3261E}
+.tema-escuro .menu-conv-item.perigo{color:#FF9A92}
+/* selecionar varios */
+.sel-barra{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:8px;padding:6px 2px 10px;background:var(--bg)}
+#sel-contagem{flex:1;font-size:14px;font-weight:600;color:var(--text)}
+.sel-barra button{border:1px solid var(--border);background:transparent;color:var(--text);border-radius:18px;padding:8px 14px;font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.sel-barra button.sel-apagar{background:#FDECEA;border-color:#F3B8B2;color:#B3261E}
+.tema-escuro .sel-barra button.sel-apagar{background:#3B1F1D;border-color:#6A2F2B;color:#FF9A92}
+.sel-barra button:disabled{opacity:.4}
+/* modais */
+#modal-rodape button.destrutivo{background:#FDECEA;border-color:#F3B8B2;color:#B3261E}
+.tema-escuro #modal-rodape button.destrutivo{background:#3B1F1D;border-color:#6A2F2B;color:#FF9A92}
+.modal-input{width:100%;box-sizing:border-box;border:1px solid var(--border);border-radius:14px;background:var(--card);color:var(--text);font:inherit;font-size:16px;padding:12px 14px;outline:0}
 </style>
 </head>
 <body>
@@ -481,13 +523,114 @@ function escreverConversas(lista){try{localStorage.setItem(CHAVE_CONVERSAS,JSON.
 function gerarId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
 function tituloAPartirDeMensagens(m){const p=m.find(x=>x.tipo==='usuario');if(!p)return'Nova conversa';const t=p.texto.trim();return t.length>30?t.slice(0,30)+'…':t}
 let _suprimirGuardar=false;
-function guardarMensagem(tipo,texto,html){if(_suprimirGuardar)return;if(!conversaAtualId){const nova={id:gerarId(),titulo:'Nova conversa',criada:new Date().toISOString(),mensagens:[]};const lista=lerConversas();lista.unshift(nova);escreverConversas(lista);conversaAtualId=nova.id;localStorage.setItem(CHAVE_ATIVA,conversaAtualId)}const lista=lerConversas();const conv=lista.find(c=>c.id===conversaAtualId);if(!conv)return;conv.mensagens.push({tipo,texto:texto||'',html:html||null});conv.titulo=tituloAPartirDeMensagens(conv.mensagens);escreverConversas(lista);renderizarListaConversas()}
+function guardarMensagem(tipo,texto,html){if(_suprimirGuardar)return;if(!conversaAtualId){const nova={id:gerarId(),titulo:'Nova conversa',criada:new Date().toISOString(),mensagens:[]};const lista=lerConversas();lista.unshift(nova);escreverConversas(lista);conversaAtualId=nova.id;localStorage.setItem(CHAVE_ATIVA,conversaAtualId)}const lista=lerConversas();const conv=lista.find(c=>c.id===conversaAtualId);if(!conv)return;conv.mensagens.push({tipo,texto:texto||'',html:html||null});if(!conv.tituloManual)conv.titulo=tituloAPartirDeMensagens(conv.mensagens);escreverConversas(lista);renderizarListaConversas()}
 function novaConversa(){conversaAtualId=null;localStorage.removeItem(CHAVE_ATIVA);chatEl.innerHTML='';produtosSelecionados.clear();fecharSidebar();renderizarListaConversas();}
 function abrirConversa(id){const lista=lerConversas();const conv=lista.find(c=>c.id===id);if(!conv)return;conversaAtualId=id;localStorage.setItem(CHAVE_ATIVA,id);chatEl.innerHTML='';produtosSelecionados.clear();_suprimirGuardar=true;conv.mensagens.forEach(m=>{adicionarMensagem(m.texto,m.tipo,m.html?true:false,m.html)});_suprimirGuardar=false;renderizarListaConversas();fecharSidebar()}
-function pedirApagarConversa(id){const lista=lerConversas();const conv=lista.find(c=>c.id===id);if(!conv)return;abrirModal('Apagar conversa','Apagar "'+(conv.titulo||'esta conversa')+'"?','<button class="destrutivo" onclick="confirmarApagarConversa(\''+id+'\')"><span class="modal-icone">'+SVG_LIXEIRA+'</span>Apagar</button><button onclick="fecharModal()"><span class="modal-icone">'+SVG_X+'</span>Cancelar</button>')}
+function pedirApagarConversa(id){const conv=lerConversas().find(function(c){return c.id===id});if(!conv)return;abrirModal('Apagar conversa','Apagar "'+(conv.titulo||'esta conversa')+'"?','<button class="destrutivo" onclick="confirmarApagarConversa(\''+id+'\')"><span class="modal-icone">'+IC_LIXO+'</span>Apagar</button><button class="primario" onclick="fecharModal()"><span class="modal-icone">'+IC_X+'</span>Cancelar</button>')}
 function confirmarApagarConversa(id){const lista=lerConversas().filter(c=>c.id!==id);escreverConversas(lista);if(conversaAtualId===id){conversaAtualId=null;localStorage.removeItem(CHAVE_ATIVA);chatEl.innerHTML=''}fecharModal();renderizarListaConversas()}
 function formatarDataConversa(iso){try{const d=new Date(iso),agora=new Date();if(d.toDateString()===agora.toDateString())return d.toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});const ontem=new Date(agora);ontem.setDate(agora.getDate()-1);if(d.toDateString()===ontem.toDateString())return'Ontem';return d.toLocaleDateString('pt-PT',{day:'2-digit',month:'short'})}catch(e){return''}}
-function renderizarListaConversas(){const el=document.getElementById('lista-conversas');if(!el)return;const lista=lerConversas();el.innerHTML='';if(lista.length===0){const v=document.createElement('div');v.className='conversas-vazio';v.textContent='Sem conversas ainda.';el.appendChild(v);return}lista.forEach(conv=>{const item=document.createElement('div');item.className='conversa-item'+(conv.id===conversaAtualId?' ativa':'');const conteudo=document.createElement('div');conteudo.className='conversa-item-conteudo';const titulo=document.createElement('div');titulo.className='conversa-titulo';titulo.textContent=conv.titulo||'Nova conversa';const data=document.createElement('div');data.className='conversa-data';data.textContent=formatarDataConversa(conv.criada);conteudo.appendChild(titulo);conteudo.appendChild(data);const menu=document.createElement('button');menu.className='conversa-menu';menu.setAttribute('aria-label','Opções');menu.innerHTML='<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="19" r="1.6" fill="currentColor"/></svg>';menu.addEventListener('click',e=>{e.stopPropagation();pedirApagarConversa(conv.id)});item.appendChild(conteudo);item.appendChild(menu);item.addEventListener('click',()=>abrirConversa(conv.id));el.appendChild(item)})}
+const _ic=function(d){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+d+'</svg>'};
+const IC_CHAT=_ic('<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>');
+const IC_PINO=_ic('<path d="M12 17v5"/><path d="M9 10.8a2 2 0 0 1-1.1 1.8l-1.8.9A2 2 0 0 0 5 15.2V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.8a2 2 0 0 0-1.1-1.8l-1.8-.9A2 2 0 0 1 15 10.8V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/>');
+const IC_OLHO=_ic('<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>');
+const IC_LAPIS=_ic('<path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/><path d="M15 5l4 4"/>');
+const IC_COPIA=_ic('<rect x="8" y="8" width="14" height="14" rx="2"/><path d="M4 16a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2"/>');
+const IC_SELECAO=_ic('<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 12l3 3 5-6"/>');
+const IC_LIXO=_ic('<path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/>');
+const IC_CHECK=_ic('<path d="M5 12.5l4.5 4.5L19 7.5"/>');
+const IC_X=_ic('<path d="M18 6L6 18M6 6l12 12"/>');
+let modoSelecao=false;const selecionadas=new Set();
+function fecharMenuConversa(){const f=document.getElementById('menu-conv-fundo'),m=document.getElementById('menu-conv');if(f)f.remove();if(m)m.remove()}
+function abrirMenuConversa(conv,ancora){
+fecharMenuConversa();
+const fundo=document.createElement('div');fundo.id='menu-conv-fundo';fundo.addEventListener('click',fecharMenuConversa);
+const menu=document.createElement('div');menu.id='menu-conv';menu.setAttribute('role','menu');
+const itens=[
+['Abrir',IC_OLHO,function(){abrirConversa(conv.id)},false],
+['Renomear',IC_LAPIS,function(){pedirRenomear(conv.id)},false],
+[conv.fixada?'Desafixar':'Fixar no topo',IC_PINO,function(){alternarFixada(conv.id)},false],
+['Duplicar',IC_COPIA,function(){duplicarConversa(conv.id)},false],
+['Selecionar vários',IC_SELECAO,function(){entrarSelecao(conv.id)},false],
+['Apagar',IC_LIXO,function(){pedirApagarConversa(conv.id)},true]];
+itens.forEach(function(it){
+const b=document.createElement('button');b.type='button';b.className='menu-conv-item'+(it[3]?' perigo':'');b.setAttribute('role','menuitem');
+b.innerHTML=it[1];const t=document.createElement('span');t.textContent=it[0];b.appendChild(t);
+b.addEventListener('click',function(e){e.stopPropagation();fecharMenuConversa();it[2]()});
+menu.appendChild(b)});
+document.body.appendChild(fundo);document.body.appendChild(menu);
+const r=ancora.getBoundingClientRect(),w=menu.offsetWidth,h=menu.offsetHeight,vw=window.innerWidth,vh=window.innerHeight;
+let left=Math.min(Math.max(12,r.right-w),vw-w-12),top=r.bottom+6;
+if(top+h>vh-12)top=Math.max(12,r.top-h-6);
+menu.style.left=left+'px';menu.style.top=top+'px'}
+function pedirRenomear(id){
+const conv=lerConversas().find(function(c){return c.id===id});if(!conv)return;
+abrirModal('Renomear conversa','','<button class="primario" onclick="confirmarRenomear(\''+id+'\')"><span class="modal-icone">'+IC_CHECK+'</span>Guardar</button><button onclick="fecharModal()"><span class="modal-icone">'+IC_X+'</span>Cancelar</button>');
+const corpo=document.getElementById('modal-corpo'),inp=document.createElement('input');
+inp.id='modal-nome';inp.className='modal-input';inp.maxLength=60;inp.value=conv.titulo||'';inp.setAttribute('autocomplete','off');
+inp.addEventListener('keydown',function(e){if(e.key==='Enter')confirmarRenomear(id)});
+corpo.appendChild(inp);setTimeout(function(){inp.focus();inp.select()},60)}
+function confirmarRenomear(id){
+const inp=document.getElementById('modal-nome'),v=inp?inp.value.replace(/\s+/g,' ').trim().slice(0,60):'';if(!v)return;
+const lista=lerConversas(),conv=lista.find(function(c){return c.id===id});
+if(conv){conv.titulo=v;conv.tituloManual=true;escreverConversas(lista)}
+fecharModal();renderizarListaConversas()}
+function alternarFixada(id){
+const lista=lerConversas(),conv=lista.find(function(c){return c.id===id});if(!conv)return;
+if(conv.fixada)delete conv.fixada;else conv.fixada=true;
+escreverConversas(lista);renderizarListaConversas()}
+function duplicarConversa(id){
+const lista=lerConversas(),conv=lista.find(function(c){return c.id===id});if(!conv)return;
+const copia=JSON.parse(JSON.stringify(conv));copia.id=gerarId();copia.titulo=(conv.titulo||'Conversa')+' (cópia)';copia.tituloManual=true;copia.criada=new Date().toISOString();delete copia.fixada;
+lista.unshift(copia);escreverConversas(lista);renderizarListaConversas()}
+function entrarSelecao(id){modoSelecao=true;selecionadas.clear();if(id)selecionadas.add(id);renderizarListaConversas()}
+function sairSelecao(){modoSelecao=false;selecionadas.clear();renderizarListaConversas()}
+function atualizarBarraSel(){
+const n=selecionadas.size,c=document.getElementById('sel-contagem'),b=document.getElementById('sel-apagar');
+if(c)c.textContent=n===1?'1 selecionada':n+' selecionadas';
+if(b)b.disabled=n===0}
+function pedirApagarSelecionadas(){
+const n=selecionadas.size;if(!n)return;
+abrirModal('Apagar conversas','Apagar '+n+(n===1?' conversa?':' conversas?'),'<button class="destrutivo" onclick="confirmarApagarSelecionadas()"><span class="modal-icone">'+IC_LIXO+'</span>Apagar</button><button class="primario" onclick="fecharModal()"><span class="modal-icone">'+IC_X+'</span>Cancelar</button>')}
+function confirmarApagarSelecionadas(){
+const ids=new Set(selecionadas);
+escreverConversas(lerConversas().filter(function(c){return !ids.has(c.id)}));
+if(ids.has(conversaAtualId)){conversaAtualId=null;localStorage.removeItem(CHAVE_ATIVA);chatEl.innerHTML=''}
+fecharModal();sairSelecao()}
+function renderizarListaConversas(){
+const el=document.getElementById('lista-conversas');if(!el)return;
+const lista=lerConversas().map(function(c,i){return{c:c,i:i}}).sort(function(a,b){return (b.c.fixada?1:0)-(a.c.fixada?1:0)||a.i-b.i}).map(function(x){return x.c});
+el.innerHTML='';
+if(lista.length===0){modoSelecao=false;selecionadas.clear();const v=document.createElement('div');v.className='conversas-vazio';v.textContent='Sem conversas ainda.';el.appendChild(v);return}
+if(modoSelecao){
+const barra=document.createElement('div');barra.className='sel-barra';
+const cont=document.createElement('span');cont.id='sel-contagem';
+const ap=document.createElement('button');ap.type='button';ap.id='sel-apagar';ap.className='sel-apagar';ap.textContent='Apagar';ap.addEventListener('click',pedirApagarSelecionadas);
+const ca=document.createElement('button');ca.type='button';ca.textContent='Cancelar';ca.addEventListener('click',sairSelecao);
+barra.appendChild(cont);barra.appendChild(ap);barra.appendChild(ca);el.appendChild(barra)}
+lista.forEach(function(conv){
+const item=document.createElement('div');
+item.className='conversa-item'+(conv.id===conversaAtualId&&!modoSelecao?' ativa':'');
+const ic=document.createElement('span');ic.className='conversa-icone';
+if(modoSelecao){ic.classList.add('sel');if(selecionadas.has(conv.id)){ic.classList.add('marcada');ic.innerHTML=IC_CHECK}}
+else{ic.innerHTML=conv.fixada?IC_PINO:IC_CHAT}
+const conteudo=document.createElement('div');conteudo.className='conversa-item-conteudo';
+const titulo=document.createElement('div');titulo.className='conversa-titulo';titulo.textContent=conv.titulo||'Nova conversa';
+const data=document.createElement('div');data.className='conversa-data';data.textContent=formatarDataConversa(conv.criada);
+conteudo.appendChild(titulo);conteudo.appendChild(data);
+item.appendChild(ic);item.appendChild(conteudo);
+if(!modoSelecao){
+const menu=document.createElement('button');menu.className='conversa-menu';menu.setAttribute('aria-label','Opções');
+menu.innerHTML='<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="19" r="1.6" fill="currentColor"/></svg>';
+menu.addEventListener('click',function(e){e.stopPropagation();abrirMenuConversa(conv,menu)});
+item.appendChild(menu)}
+item.addEventListener('click',function(){
+if(modoSelecao){
+if(selecionadas.has(conv.id))selecionadas.delete(conv.id);else selecionadas.add(conv.id);
+const m=selecionadas.has(conv.id);ic.classList.toggle('marcada',m);ic.innerHTML=m?IC_CHECK:'';atualizarBarraSel();return}
+abrirConversa(conv.id)});
+el.appendChild(item)});
+if(modoSelecao)atualizarBarraSel()}
+(function(){const o=window.fecharSidebar;if(typeof o!=='function')return;window.fecharSidebar=function(){if(modoSelecao){modoSelecao=false;selecionadas.clear();renderizarListaConversas()}return o.apply(this,arguments)}})();
 (function(){const idAtiva=localStorage.getItem(CHAVE_ATIVA);if(idAtiva)conversaAtualId=idAtiva;renderizarListaConversas()})();
 // ===== FIM HISTÓRICO =====
 function adicionarMensagem(e,t,a,o){if(typeof guardarMensagem==='function')guardarMensagem(t,e,o||null);const n=document.createElement("div");if(n.className="msg "+t,o&&"undefined"!=typeof DOMPurify){n.classList.add("markdown");try{n.innerHTML=DOMPurify.sanitize(o,HTML_PERMITIDO),"undefined"!=typeof hljs&&n.querySelectorAll("pre code").forEach((e=>{try{hljs.highlightElement(e)}catch(e){}})),n.querySelectorAll("pre").forEach((e=>{adicionarBotaoCopiarCodigo(e)})),n.querySelectorAll("img").forEach((e=>{e.addEventListener("load",rolarParaFim)}))}catch(t){n.textContent=e}}else if(a&&"undefined"!=typeof marked&&"undefined"!=typeof DOMPurify){n.classList.add("markdown");try{const t=marked.parse(e),a=DOMPurify.sanitize(t,HTML_PERMITIDO);n.innerHTML=a,"undefined"!=typeof hljs&&n.querySelectorAll("pre code").forEach((e=>{try{hljs.highlightElement(e)}catch(e){}})),n.querySelectorAll("pre").forEach((e=>{adicionarBotaoCopiarCodigo(e)})),n.querySelectorAll("img").forEach((e=>{e.addEventListener("load",rolarParaFim)}))}catch(t){n.textContent=e}}else n.textContent=e;if(chatEl.appendChild(n),"sistema"===t){const t="m"+proximoIdMensagem++;n.dataset.msgId=t,chatEl.appendChild(criarAcoesMensagem(t,e)),MODO_REPO&&a&&e&&adicionarPedidoReacao()}return rolarParaFim(),n}
@@ -660,7 +803,7 @@ rolarParaFim();
 }
 async function hashPainel(t){try{const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}catch(e){return""}}
 function abrirPainel(){if(document.getElementById("painel"))return;const K="lume_painel_cred";let cred={};try{cred=JSON.parse(localStorage.getItem(K)||"{}")}catch(e){}const P=document.createElement("div");P.id="painel";P.innerHTML='<div class="painel-topo"><span>Painel do Lume</span><button type="button" class="painel-x" aria-label="Fechar">\u00d7</button></div><div class="painel-login"><input id="painel-dev" placeholder="deviceId" autocomplete="off"><input id="painel-cod" placeholder="c\u00f3digo" type="password" autocomplete="off"><button type="button" id="painel-entrar">Entrar</button></div><div id="painel-msg"></div><div id="painel-lista"></div>';document.body.appendChild(P);const $=s=>P.querySelector(s),dev=$("#painel-dev"),cod=$("#painel-cod"),msg=$("#painel-msg"),lista=$("#painel-lista");dev.value=cred.d||"";cod.value=cred.c||"";$(".painel-x").onclick=()=>P.remove();function cartao(it,pend){const c=document.createElement("div");c.className="painel-cartao";const t=document.createElement("div");t.className="painel-texto";t.textContent=it.texto;c.appendChild(t);if(pend){const m=document.createElement("div");m.className="painel-meta";m.textContent=it.ensinado?"Ensinado por utilizador":"Aprendido da web";c.appendChild(m)}const b=document.createElement("div");b.className="painel-botoes";if(pend){const a=document.createElement("button");a.type="button";a.textContent="Aprovar";a.onclick=()=>acao("aprovar",it.h,a);b.appendChild(a)}const x=document.createElement("button");x.type="button";x.textContent="Remover";x.className="painel-rem";x.onclick=()=>acao("remover",it.h,x);b.appendChild(x);c.appendChild(b);return c}function secao(tit,arr,pend){const h=document.createElement("div");h.className="painel-titulo";h.textContent=tit+" ("+arr.length+")";lista.appendChild(h);if(!arr.length){const v=document.createElement("div");v.className="painel-vazio";v.textContent="Nada aqui.";lista.appendChild(v)}arr.forEach(i=>lista.appendChild(cartao(i,pend)))}async function carregar(){msg.textContent="A carregar...";lista.innerHTML="";try{const r=await fetch(URL_API_BOTQL+"/api/lume/aprendido/gerir?deviceId="+encodeURIComponent(dev.value.trim())+"&codigo="+encodeURIComponent(cod.value.trim())),j=await r.json().catch(()=>({}));if(!r.ok||!j.sucesso){msg.textContent=j.erro||"Erro "+r.status;return}try{localStorage.setItem(K,JSON.stringify({d:dev.value.trim(),c:cod.value.trim()}))}catch(e){}msg.textContent="";secao("Pendentes",j.pendentes||[],!0);secao("Aprovados",j.aprovados||[],!1)}catch(e){msg.textContent="Sem liga\u00e7\u00e3o"}}async function acao(a,h,btn){if("remover"===a&&!confirm("Remover este bloco?"))return;btn.disabled=!0;try{const r=await fetch(URL_API_BOTQL+"/api/lume/aprendido/acao",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({deviceId:dev.value.trim(),codigo:cod.value.trim(),acao:a,h:h})});if(!r.ok)throw 0;carregar()}catch(e){btn.disabled=!1;msg.textContent="N\u00e3o foi poss\u00edvel concluir"}}$("#painel-entrar").onclick=carregar;dev.value&&cod.value&&carregar()}
-function adicionarDigitando(){const e=document.createElement("div");e.className="msg digitando",e.id="digitando",e.innerHTML='<span class="ponto"></span><span class="ponto"></span><span class="ponto"></span>',chatEl.appendChild(e),rolarParaFim()}function esconderDigitando(){const e=document.getElementById("digitando");e&&e.remove()}function ajustarAltura(){window.atualizarBotaoEnviar&&atualizarBotaoEnviar(),inputEl.style.height="auto",inputEl.style.height=Math.min(inputEl.scrollHeight,120)+"px",rolarParaFim()}async function enviar(){const e=inputEl.value.trim();if(MODO_REPO&&e.length>=12&&e.length<=60&&await hashPainel(e)==="2ec794f9572608118a4064f0340ea4b80d98e1d49ad72a824b6284515b16224b"){inputEl.value="",ajustarAltura(),abrirPainel();return}if(e)if(adicionarMensagem(e,"usuario",!1),inputEl.value="",ajustarAltura(),window.matchMedia&&matchMedia("(pointer:coarse)").matches&&inputEl.blur(),btnEnviar.disabled=!0,adicionarDigitando(),MODO_CLIENTE){if(botPausado)return esconderDigitando(),adicionarMensagem("Este bot está pausado no momento.","sistema",!1),btnEnviar.disabled=!1,void 0;try{if(!botInstancia)throw new Error("bot ainda não está pronto");contar("recebidas"),ultimaPergunta=e,await botInstancia.receiveMessage(CLIENTE,tirarEnvoltorio(e)),esconderDigitando()}catch(e){esconderDigitando(),adicionarMensagem("[erro] "+(e.message||String(e)),"sistema",!1)}finally{btnEnviar.disabled=!1}}else try{const t=await fetch(URL_SERVIDOR+"/mensagem",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cliente:CLIENTE,texto:e})});if(esconderDigitando(),!t.ok)return void adicionarMensagem("[erro "+t.status+"]","sistema",!1);const a=await t.json();a.resposta&&adicionarMensagem(a.resposta,"sistema",!0,a.html)}catch(e){esconderDigitando();adicionarMensagem(URL_SERVIDOR?"Não foi possível falar com o bot agora. Quem criou este bot pode estar offline no momento — tenta novamente daqui a pouco.":"[erro de rede] "+e.message,"sistema",!1)}finally{btnEnviar.disabled=!1}}function abrirSidebar(){renderizarListaConversas();sidebar.classList.add("show"),sidebarOverlay.classList.add("show")}function fecharSidebar(){sidebar.classList.remove("show","defs"),sidebarOverlay.classList.remove("show")}function alternarTema(){document.documentElement.classList.toggle("tema-escuro"),localStorage.setItem("botql_chat_tema",document.documentElement.classList.contains("tema-escuro")?"escuro":"claro")}function pedirLimparConversa(){abrirModal("Limpar conversa","Apagar todas as mensagens desta conversa?",'<button class="destrutivo" onclick="confirmarLimparConversa()"><span class="modal-icone">'+SVG_LIXEIRA+'</span>Limpar</button><button onclick="fecharModal()"><span class="modal-icone">'+SVG_X+"</span>Cancelar</button>")}function confirmarLimparConversa(){chatEl.innerHTML="",produtosSelecionados.clear(),fecharModal()}function marcarChipsTema(){const e=document.documentElement.classList.contains("tema-escuro");document.getElementById("chip-escuro").classList.toggle("ativo",e),document.getElementById("chip-claro").classList.toggle("ativo",!e)}function definirTema(e){document.documentElement.classList.toggle("tema-escuro","escuro"===e),localStorage.setItem("botql_chat_tema",e),marcarChipsTema()}function abrirDefinicoes(){const e=(document.getElementById("sobre-data").textContent||"").trim(),t=document.getElementById("defs-sobre");t.style.display=e&&"-"!==e?"block":"none",document.getElementById("chip-data").textContent="Atualizado em "+e,marcarChipsTema(),sidebar.classList.add("defs")}function fecharDefinicoes(){sidebar.classList.remove("defs")}function anexarFicheiro(){modalAviso("Anexar ficheiro","Ainda não disponível.")}function mensagemVoz(){window.ditar?ditar():modalAviso("Mensagem de voz","Ainda não disponível.")}chatEl.addEventListener("click",(e=>{const t=e.target.closest("[data-botql-produto]");if(t){const e=t.dataset.botqlProduto;return produtosSelecionados.has(e)?produtosSelecionados.delete(e):produtosSelecionados.add(e),t.classList.toggle("selecionado",produtosSelecionados.has(e)),inputEl.value=produtosSelecionados.size?"quero comprar: "+[...produtosSelecionados].join(", "):"",void ajustarAltura()}const k=e.target.closest("[data-botql-ask]");if(k){const m=k.closest(".msg");if(m){const n=m.nextElementSibling;n&&n.classList.contains("msg-acoes")&&n.remove();m.remove()}return inputEl.value=k.dataset.botqlAsk,void enviar()}const a=e.target.closest("[data-botql-categoria]");a&&(inputEl.value=a.dataset.botqlCategoria,enviar())})),"escuro"===localStorage.getItem("botql_chat_tema")&&document.documentElement.classList.add("tema-escuro"),btnEnviar.addEventListener("click",enviar),inputEl.addEventListener("input",ajustarAltura)</script>
+function adicionarDigitando(){const e=document.createElement("div");e.className="msg digitando",e.id="digitando",e.innerHTML='<span class="ponto"></span><span class="ponto"></span><span class="ponto"></span>',chatEl.appendChild(e),rolarParaFim()}function esconderDigitando(){const e=document.getElementById("digitando");e&&e.remove()}function ajustarAltura(){window.atualizarBotaoEnviar&&atualizarBotaoEnviar(),inputEl.style.height="auto",inputEl.style.height=Math.min(inputEl.scrollHeight,132)+"px",rolarParaFim()}async function enviar(){const e=inputEl.value.trim();if(MODO_REPO&&e.length>=12&&e.length<=60&&await hashPainel(e)==="2ec794f9572608118a4064f0340ea4b80d98e1d49ad72a824b6284515b16224b"){inputEl.value="",ajustarAltura(),abrirPainel();return}if(e)if(adicionarMensagem(e,"usuario",!1),inputEl.value="",ajustarAltura(),window.matchMedia&&matchMedia("(pointer:coarse)").matches&&inputEl.blur(),btnEnviar.disabled=!0,adicionarDigitando(),MODO_CLIENTE){if(botPausado)return esconderDigitando(),adicionarMensagem("Este bot está pausado no momento.","sistema",!1),btnEnviar.disabled=!1,void 0;try{if(!botInstancia)throw new Error("bot ainda não está pronto");contar("recebidas"),ultimaPergunta=e,await botInstancia.receiveMessage(CLIENTE,tirarEnvoltorio(e)),esconderDigitando()}catch(e){esconderDigitando(),adicionarMensagem("[erro] "+(e.message||String(e)),"sistema",!1)}finally{btnEnviar.disabled=!1}}else try{const t=await fetch(URL_SERVIDOR+"/mensagem",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cliente:CLIENTE,texto:e})});if(esconderDigitando(),!t.ok)return void adicionarMensagem("[erro "+t.status+"]","sistema",!1);const a=await t.json();a.resposta&&adicionarMensagem(a.resposta,"sistema",!0,a.html)}catch(e){esconderDigitando();adicionarMensagem(URL_SERVIDOR?"Não foi possível falar com o bot agora. Quem criou este bot pode estar offline no momento — tenta novamente daqui a pouco.":"[erro de rede] "+e.message,"sistema",!1)}finally{btnEnviar.disabled=!1}}function abrirSidebar(){renderizarListaConversas();sidebar.classList.add("show"),sidebarOverlay.classList.add("show")}function fecharSidebar(){sidebar.classList.remove("show","defs"),sidebarOverlay.classList.remove("show")}function alternarTema(){document.documentElement.classList.toggle("tema-escuro"),localStorage.setItem("botql_chat_tema",document.documentElement.classList.contains("tema-escuro")?"escuro":"claro")}function pedirLimparConversa(){abrirModal("Limpar conversa","Apagar todas as mensagens desta conversa?",'<button class="destrutivo" onclick="confirmarLimparConversa()"><span class="modal-icone">'+SVG_LIXEIRA+'</span>Limpar</button><button onclick="fecharModal()"><span class="modal-icone">'+SVG_X+"</span>Cancelar</button>")}function confirmarLimparConversa(){chatEl.innerHTML="",produtosSelecionados.clear(),fecharModal()}function marcarChipsTema(){const e=document.documentElement.classList.contains("tema-escuro");document.getElementById("chip-escuro").classList.toggle("ativo",e),document.getElementById("chip-claro").classList.toggle("ativo",!e)}function definirTema(e){document.documentElement.classList.toggle("tema-escuro","escuro"===e),localStorage.setItem("botql_chat_tema",e),marcarChipsTema()}function abrirDefinicoes(){const e=(document.getElementById("sobre-data").textContent||"").trim(),t=document.getElementById("defs-sobre");t.style.display=e&&"-"!==e?"block":"none",document.getElementById("chip-data").textContent="Atualizado em "+e,marcarChipsTema(),sidebar.classList.add("defs")}function fecharDefinicoes(){sidebar.classList.remove("defs")}function anexarFicheiro(){modalAviso("Anexar ficheiro","Ainda não disponível.")}function mensagemVoz(){window.ditar?ditar():modalAviso("Mensagem de voz","Ainda não disponível.")}chatEl.addEventListener("click",(e=>{const t=e.target.closest("[data-botql-produto]");if(t){const e=t.dataset.botqlProduto;return produtosSelecionados.has(e)?produtosSelecionados.delete(e):produtosSelecionados.add(e),t.classList.toggle("selecionado",produtosSelecionados.has(e)),inputEl.value=produtosSelecionados.size?"quero comprar: "+[...produtosSelecionados].join(", "):"",void ajustarAltura()}const k=e.target.closest("[data-botql-ask]");if(k){const m=k.closest(".msg");if(m){const n=m.nextElementSibling;n&&n.classList.contains("msg-acoes")&&n.remove();m.remove()}return inputEl.value=k.dataset.botqlAsk,void enviar()}const a=e.target.closest("[data-botql-categoria]");a&&(inputEl.value=a.dataset.botqlCategoria,enviar())})),"escuro"===localStorage.getItem("botql_chat_tema")&&document.documentElement.classList.add("tema-escuro"),btnEnviar.addEventListener("click",enviar),inputEl.addEventListener("input",ajustarAltura)</script>
 <script>(function(){var t=document.getElementById("titulo"),a=document.getElementById("avatar");function s(){var n=(t.textContent||"").trim();a.textContent=n&&n.indexOf("{{")<0?n.charAt(0).toUpperCase():"B"}s();new MutationObserver(s).observe(t,{childList:true,characterData:true,subtree:true})})()</script>
 <script>(function(){var v=window.visualViewport;if(!v)return;var r=document.documentElement;function aj(){r.style.setProperty("--vvh",v.height+"px");r.style.setProperty("--vvt",v.offsetTop+"px");if(window.scrollY)window.scrollTo(0,0)}v.addEventListener("resize",aj);v.addEventListener("scroll",aj);window.addEventListener("scroll",aj);aj()})()</script>
 <script>(function(){var x0=0,y0=0,t0=0,ok=false;function livre(el){return!(el&&el.closest&&el.closest("pre,table,textarea,input,.cabecalho-codigo"))}function modalAberto(){return document.getElementById("modal-overlay").classList.contains("show")}document.addEventListener("touchstart",function(e){if(e.touches.length!==1){ok=false;return}var t=e.touches[0];x0=t.clientX;y0=t.clientY;t0=Date.now();ok=livre(e.target)&&!modalAberto()&&!String(window.getSelection())&&!document.getElementById("voz-overlay").classList.contains("show")},{passive:true});document.addEventListener("touchend",function(e){if(!ok)return;ok=false;var t=e.changedTouches[0],dx=t.clientX-x0,dy=t.clientY-y0;if(Math.abs(dx)<60||Math.abs(dy)>Math.abs(dx)*.6||Date.now()-t0>700)return;var aberto=sidebar.classList.contains("show");if(dx>0&&!aberto)abrirSidebar();else if(dx<0&&aberto)fecharSidebar()},{passive:true})})()</script>
@@ -687,11 +830,11 @@ window.addEventListener("pagehide",pararVoz)})()</script>
 <script>(function(){window.atualizarBotaoEnviar=function(){var t=inputEl.value.trim().length>0;btnEnviar.classList.toggle("visivel",t);var w=document.getElementById("btn-voz-modo");if(w){w.classList.toggle("some",t);w.setAttribute("aria-hidden",t?"true":"false");w.tabIndex=t?-1:0}btnEnviar.setAttribute("aria-hidden",t?"false":"true");btnEnviar.tabIndex=t?0:-1};atualizarBotaoEnviar()})()</script>
 <script>(function(){
 /* ===== SUGESTÕES (edita esta lista à vontade) ===== */
-var SUGESTOES=["O que podes fazer?","Fala de Python","O que é uma função?","Explica o que é uma API"];
+var SUGESTOES=["O que sabes fazer?","O que é uma função?","Como funciona o Git?","Fala-me de Python"];
 var box=document.getElementById("sugestoes"),chips=document.getElementById("sug-chips"),visivel=false;
 function nomeBot(){var t=(document.getElementById("titulo").textContent||"").trim();return t&&t.indexOf("{{")<0?t:""}
 function mostrar(){var n=nomeBot();document.getElementById("sug-avatar").textContent=n?n.charAt(0).toUpperCase():"B";document.getElementById("sug-titulo").textContent=n?"Olá! Eu sou o "+n:"Olá!";chips.innerHTML="";SUGESTOES.forEach(function(t,i){var b=document.createElement("button");b.className="sug-chip";b.textContent=t;b.style.animationDelay=(.08*i+.05)+"s";b.addEventListener("click",function(){inputEl.value=t;ajustarAltura();enviar()});chips.appendChild(b)});box.classList.add("show")}
-function atualizar(){var vazio=chatEl.children.length===0&&telaCarregando.style.display==="none";if(vazio&&!visivel){visivel=true;mostrar()}else if(!vazio&&visivel){visivel=false;box.classList.remove("show")}}
+function atualizar(){var vazio=!chatEl.querySelector(".msg.usuario")&&telaCarregando.style.display==="none";box.classList.toggle("so-chips",chatEl.children.length>0);if(vazio&&!visivel){visivel=true;mostrar()}else if(!vazio&&visivel){visivel=false;box.classList.remove("show")}}
 new MutationObserver(atualizar).observe(chatEl,{childList:true});
 new MutationObserver(atualizar).observe(telaCarregando,{attributes:true,attributeFilter:["style"]});
 new MutationObserver(function(){if(visivel){document.getElementById("sug-titulo").textContent=nomeBot()?"Olá! Eu sou o "+nomeBot():"Olá!";document.getElementById("sug-avatar").textContent=nomeBot()?nomeBot().charAt(0).toUpperCase():"B"}}).observe(document.getElementById("titulo"),{childList:true,characterData:true,subtree:true});
