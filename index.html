@@ -352,6 +352,11 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:64px;backgrou
 .msg-acao svg{width:15px;height:15px}
 .msg.sistema{font-family:Georgia,'Times New Roman',Times,serif}
 .msg-acao[data-acao="mais"]{margin-left:auto}
+#menu-conv{max-height:70vh;overflow-y:auto}
+#exec-ov{position:fixed;inset:0;z-index:970;background:var(--bg);display:flex;flex-direction:column}
+.exec-topo{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;font-weight:600;border-bottom:1px solid var(--border);color:var(--text)}
+.exec-topo button{border:0;background:0 0;color:var(--text);font-size:28px;line-height:1;padding:0 4px;cursor:pointer}
+#exec-ov iframe{flex:1;border:0;background:#fff;width:100%}
 </style>
 </head>
 <body>
@@ -1021,9 +1026,21 @@ document.addEventListener("visibilitychange",function(){if(document.visibilitySt
 window.addEventListener("pagehide",fechar);
 })()</script>
 <script>(function(){
-var T="",M=null;
+var T="",M=null,A=null;
 function texto(m){var c=m.cloneNode(true);c.querySelectorAll(".cabecalho-codigo,style").forEach(function(x){x.remove()});return(c.textContent||"").replace(/\n{3,}/g,"\n\n").trim()}
-window.traduzirPara=function(l){fecharModal();window.open("https://translate.google.com/?sl=pt&tl="+l+"&text="+encodeURIComponent(T.slice(0,1500))+"&op=translate","_blank","noopener")};
+var ORIG=new WeakMap();
+async function trad(t,l){var ps=t.match(/[^.!?\n]+[.!?]*\s*/g)||[t],gr=[],c="";ps.forEach(function(x){if((c+x).length>900&&c){gr.push(c);c=""}c+=x});if(c)gr.push(c);var out="";for(var i=0;i<gr.length;i++){var lead=gr[i].match(/^\s*/)[0],trail=gr[i].match(/\s*$/)[0],core=gr[i].trim();if(!core){out+=gr[i];continue}var r=await fetch("https://translate.googleapis.com/translate_a/single?client=gtx&sl=pt&tl="+l+"&dt=t&q="+encodeURIComponent(core));if(!r.ok)throw 0;var j=await r.json();out+=lead+j[0].map(function(x){return x[0]||""}).join("")+trail}return out}
+window.traduzirPara=async function(l){fecharModal();var m=M;if(!m)return;
+ var d=ORIG.get(m);
+ if(d){d.n.forEach(function(x,i){x.nodeValue=d.v[i]});if(l==="pt"){ORIG.delete(m);return}}
+ else if(l==="pt")return;
+ var w=document.createTreeWalker(m,NodeFilter.SHOW_TEXT),n=[],x;
+ while((x=w.nextNode())){if(x.nodeValue.trim().length>1&&!(x.parentElement&&x.parentElement.closest("pre,code,style,.cabecalho-codigo")))n.push(x)}
+ if(!d){if(!n.length){mostrarToast("Nada para traduzir");return}d={n:n,v:n.map(function(x){return x.nodeValue})};ORIG.set(m,d)}
+ m.style.opacity=".55";mostrarToast("A traduzir...");
+ try{var rs=await Promise.all(d.n.map(function(x,i){return trad(d.v[i],l)}));d.n.forEach(function(x,i){x.nodeValue=rs[i]})}
+ catch(e){d.n.forEach(function(x,i){x.nodeValue=d.v[i]});ORIG.delete(m);mostrarToast("Não foi possível traduzir agora")}
+ m.style.opacity=""};
 window.confirmarDenuncia=function(){fecharModal();if(typeof votarLume==="function"&&MODO_REPO)votarLume(T,"dislike");mostrarToast("Denúncia registada")};
 window.baixarTexto=function(){dl("resposta.txt",T,"text/plain")};
 function dl(n,c,t){var b=new Blob([c],{type:t+";charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=n;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href)},1500)}
@@ -1054,7 +1071,28 @@ function paraSvg(){var esc2=document.documentElement.classList.contains("tema-es
  var h=ls.length*26+64,svg='<svg xmlns="http://www.w3.org/2000/svg" width="720" height="'+h+'" viewBox="0 0 720 '+h+'"><rect width="720" height="'+h+'" rx="20" fill="'+bg+'"/><text font-family="Georgia,serif" font-size="17" fill="'+fg+'" xml:space="preserve">';
  ls.forEach(function(l,i){svg+='<tspan x="32" y="'+(46+i*26)+'">'+esc(l)+'</tspan>'});return svg+"</text></svg>"}
 function paraHtml(){return'<!doctype html><html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Resposta</title><style>body{font-family:Georgia,serif;max-width:720px;margin:24px auto;padding:0 16px;line-height:1.6}pre{background:#f3f3f3;padding:12px;border-radius:12px;overflow-x:auto}</style></head><body>'+limpo().innerHTML+'</body></html>'}
+var SVG_PLAY='<svg viewBox="0 0 24 24" fill="none"><path d="M7 4.5v15l12-7.5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>';
+function lg(c){var k=[].slice.call(c.classList).find(function(x){return x.indexOf("language-")===0});return k?k.slice(9).toLowerCase():""}
+function fonteTexto(){
+ var as=[].slice.call(M.querySelectorAll("a[href]")).map(function(a){return a.href}).filter(function(u,i,x){return x.indexOf(u)===i});
+ return as.length?as.join("\n"):"sem ligações externas; base do bot ou aprendida de utilizadores"}
+function executar(){
+ var bl=[].slice.call(M.querySelectorAll("pre code")),h=bl.find(function(c){return lg(c)==="html"}),j=bl.find(function(c){return/^(js|javascript)$/.test(lg(c))});
+ if(!h&&!j){mostrarToast("Sem código HTML ou JavaScript para executar");return}
+ var doc=h?h.textContent:'<!doctype html><meta charset="utf-8"><body style="font:14px monospace;margin:12px"><pre id="o" style="white-space:pre-wrap"></pre><script>var o=document.getElementById("o");function w(a){o.textContent+=[].map.call(a,function(x){try{return typeof x==="object"?JSON.stringify(x):String(x)}catch(e){return String(x)}}).join(" ")+"\\n"}console.log=console.info=console.error=console.warn=function(){w(arguments)};window.onerror=function(m){w(["Erro: "+m])};try{'+j.textContent.replace(/<\/script/gi,"<\\/script")+'\n}catch(e){w(["Erro: "+e.message])}<\/script>';
+ var old=document.getElementById("exec-ov");if(old)old.remove();
+ var ov=document.createElement("div");ov.id="exec-ov";
+ ov.innerHTML='<div class="exec-topo"><span>Executar código</span><button type="button" aria-label="Fechar">×</button></div>';
+ var f=document.createElement("iframe");f.setAttribute("sandbox","allow-scripts");f.srcdoc=doc;ov.appendChild(f);
+ ov.querySelector("button").addEventListener("click",function(){ov.remove()});
+ document.body.appendChild(ov)}
+function ensinar(){
+ if(!MODO_REPO){mostrarToast("Disponível só no Lume");return}
+ var n=A.nextElementSibling;while(n&&(n.classList.contains("msg-pedido")||n.classList.contains("msg-ensinar"))){var q=n.nextElementSibling;n.remove();n=q}
+ abrirEnsinar(A)}
 var ITENS=[
+ ["Ensinar correção",IC_LAPIS,ensinar],
+ ["Executar código",SVG_PLAY,executar],
  ["Transferir como texto (.txt)",SVG_PARTILHAR,function(){dl("resposta.txt",T,"text/plain")}],
  ["Transferir como Markdown (.md)",SVG_PARTILHAR,function(){dl("resposta.md",paraMd(),"text/markdown")}],
  ["Transferir como HTML (.html)",SVG_PARTILHAR,function(){dl("resposta.html",paraHtml(),"text/html")}],
@@ -1076,10 +1114,10 @@ chatEl.addEventListener("click",function(e){
  var b=e.target.closest&&e.target.closest(".msg-acao");if(!b)return;
  var ac=b.dataset.acao;if(["denunciar","traduzir","info","mais"].indexOf(ac)<0)return;
  var acoes=b.closest(".msg-acoes"),msg=acoes&&acoes.previousElementSibling;if(!msg)return;
- T=texto(msg);M=msg;
+ T=texto(msg);M=msg;A=acoes;
  if(ac==="denunciar")abrirModal("Denunciar resposta","Marcar esta resposta como errada ou imprópria?",'<button class="destrutivo" onclick="confirmarDenuncia()"><span class="modal-icone">'+SVG_BANDEIRA+'</span>Denunciar</button><button onclick="fecharModal()"><span class="modal-icone">'+SVG_X+'</span>Cancelar</button>');
- else if(ac==="traduzir")abrirModal("Traduzir para","Escolhe o idioma.",'<button onclick="traduzirPara(\'en\')">Inglês</button><button onclick="traduzirPara(\'es\')">Espanhol</button><button onclick="traduzirPara(\'fr\')">Francês</button><button onclick="fecharModal()">Cancelar</button>');
- else if(ac==="info"){var h=new Date(+acoes.dataset.hora||Date.now()).toLocaleTimeString("pt-PT",{hour:"2-digit",minute:"2-digit"});modalAviso("Informações","Hora: "+h+"\nPalavras: "+(T?T.split(/\s+/).length:0)+"\nCaracteres: "+T.length)}
+ else if(ac==="traduzir")abrirModal("Traduzir para","Escolhe o idioma.",'<button onclick="traduzirPara(\'en\')">Inglês</button><button onclick="traduzirPara(\'es\')">Espanhol</button><button onclick="traduzirPara(\'fr\')">Francês</button><button onclick="traduzirPara(\'pt\')">Original</button><button onclick="fecharModal()">Cancelar</button>');
+ else if(ac==="info"){var h=new Date(+acoes.dataset.hora||Date.now()).toLocaleTimeString("pt-PT",{hour:"2-digit",minute:"2-digit"});modalAviso("Informações","Hora: "+h+"\nPalavras: "+(T?T.split(/\s+/).length:0)+"\nCaracteres: "+T.length+"\nFonte: "+fonteTexto())}
  else menuMais(b)});
 })()</script>
 </body>
