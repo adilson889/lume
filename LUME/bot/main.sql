@@ -45,25 +45,53 @@ ON MESSAGE {
 WHEN CONTAINS KEYWORDS (calculo.txt) {
  WAITING("Calculando")
     REPLY (
-        <if condition="n >= 2">
-    <if condition="includes(lower(msg), 'dividido') && n2 == 0">
-        <print>Não dá para dividir por zero.</print>
+        <if condition="n > 6">
+    <print>Consigo fazer contas com até 6 números de cada vez.</print>
+</if>
+<elseif condition="n >= 2">
+    <array name="nums" value="[n1, n2, n3, n4, n5, n6]"></array>
+    <var name="op" value="'+'"></var>
+    <if condition="includes(lower(msg), 'dividido')">
+        <set name="op" value="'÷'"></set>
     </if>
-    <elseif condition="includes(lower(msg), 'dividido')">
-        <print>{n1} ÷ {n2} = {n1 / n2}</print>
-    </elseif>
     <elseif condition="includes(lower(msg), 'vezes')">
-        <print>{n1} × {n2} = {n1 * n2}</print>
+        <set name="op" value="'×'"></set>
     </elseif>
     <elseif condition="includes(lower(msg), 'menos')">
-        <print>{n1} − {n2} = {n1 - n2}</print>
+        <set name="op" value="'−'"></set>
     </elseif>
+    <var name="total" value="nums[0]"></var>
+    <var name="expr" value="'' + nums[0]"></var>
+    <var name="erro" value="false"></var>
+    <for var="i" from="1" to="n - 1">
+        <set name="expr" value="expr + ' ' + op + ' ' + nums[i]"></set>
+        <if condition="op == '+'">
+            <set name="total" value="total + nums[i]"></set>
+        </if>
+        <elseif condition="op == '−'">
+            <set name="total" value="total - nums[i]"></set>
+        </elseif>
+        <elseif condition="op == '×'">
+            <set name="total" value="total * nums[i]"></set>
+        </elseif>
+        <else>
+            <if condition="nums[i] == 0">
+                <set name="erro" value="true"></set>
+            </if>
+            <else>
+                <set name="total" value="total / nums[i]"></set>
+            </else>
+        </else>
+    </for>
+    <if condition="erro">
+        <print>Não dá para dividir por zero.</print>
+    </if>
     <else>
-        <print>{n1} + {n2} = {n1 + n2}</print>
+        <print>{expr} = {total}</print>
     </else>
-</if>
+</elseif>
 <else>
-    <print>Diz-me dois números, por exemplo: quanto é 4 mais 5?</print>
+    <print>Diz-me dois ou mais números, por exemplo: quanto é 4 mais 5?</print>
 </else>
     )
 }
