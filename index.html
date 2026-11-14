@@ -4,6 +4,37 @@
 <meta charset=UTF-8>
 <meta name=viewport content="width=device-width,initial-scale=1,user-scalable=no,interactive-widget=resizes-content">
 <title>{{BOT_NOME}}</title>
+<script>
+/* Ponte com a app Android (MainActivity.java): so ativa quando existe window.LumeNativo */
+(function(){
+window.baixarFicheiro=function(n,c,t){
+ var N=window.LumeNativo;
+ if(N&&N.guardarFicheiro){try{N.guardarFicheiro(n,c,t);return}catch(e){}}
+ var b=new Blob([c],{type:t+";charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=n;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href)},1500)};
+var N=window.LumeNativo;if(!N||!N.ditarIniciar)return;
+var U={},seq=0;
+window.__lumeVoz={atual:null,
+ res:function(t,f){var r=this.atual;if(r&&r.onresult){try{r.onresult({results:[[{transcript:t}]],resultIndex:0})}catch(e){}}},
+ err:function(c){var r=this.atual;if(r&&r.onerror){try{r.onerror({error:c})}catch(e){}}},
+ fim:function(){var r=this.atual;this.atual=null;if(r&&r.onend){try{r.onend()}catch(e){}}},
+ tts:function(id,ev){var u=U[id];if(!u)return;delete U[id];
+  if(ev==="end"){if(u.onend)u.onend({})}else if(u.onerror)u.onerror({error:ev==="stop"?"interrupted":"synthesis-failed"})}};
+function SR(){this.lang="pt-PT";this.interimResults=true;this.continuous=false;this.maxAlternatives=1;this.onresult=null;this.onerror=null;this.onend=null}
+SR.prototype.start=function(){window.__lumeVoz.atual=this;N.ditarIniciar(this.lang||"pt-PT")};
+SR.prototype.stop=function(){N.ditarParar()};
+SR.prototype.abort=function(){N.ditarCancelar()};
+window.SpeechRecognition=SR;window.webkitSpeechRecognition=SR;
+function Utt(t){this.text=t;this.lang="pt-PT";this.volume=1;this.rate=1;this.pitch=1;this.voice=null;this.onend=null;this.onerror=null}
+window.SpeechSynthesisUtterance=Utt;
+var S={speaking:false,pending:false,paused:false,onvoiceschanged:null,
+ speak:function(u){var id="u"+(++seq);U[id]=u;N.falar(id,String(u.text||""),u.lang||"pt-PT",u.volume==null?1:Number(u.volume))},
+ cancel:function(){var o=U;U={};N.pararFala();Object.keys(o).forEach(function(k){var u=o[k];if(u.onerror)setTimeout(function(){u.onerror({error:"interrupted"})},0)})},
+ getVoices:function(){return[]},pause:function(){},resume:function(){}};
+try{Object.defineProperty(window,"speechSynthesis",{value:S,configurable:true})}catch(e){try{window.speechSynthesis=S}catch(_){}}
+try{Object.defineProperty(navigator,"share",{value:function(d){N.partilhar(String((d&&(d.text||d.url))||""));return Promise.resolve()},configurable:true})}catch(e){}
+try{Object.defineProperty(navigator,"clipboard",{value:{writeText:function(t){N.copiar(String(t));return Promise.resolve()}},configurable:true})}catch(e){}
+})();
+</script>
 <style>
 :root{--bolha:#D4D4D4;--bg:#E6E6E6;--bg2:#F3F3F3;--bg3:#D4D4D4;--card:#F3F3F3;--border:#CBCBCB;--text:#111111;--muted:#6A6A6A;--r:#111111;--on:#FFFFFF;--bot-texto:#111111;--bot-tamanho:16px}
 .tema-escuro{--bolha:#25304B;--bg:#111111;--bg2:#1A1A1A;--bg3:#262626;--card:#1E1E1E;--border:#333333;--text:#F2F2F2;--muted:#9A9A9A;--r:#F2F2F2;--on:#111111;--bot-texto:#F2F2F2}
@@ -1074,7 +1105,7 @@ window.traduzirPara=async function(l,el){if(!el)fecharModal();var m=el||M;if(!m)
  m.style.opacity=""};
 window.confirmarDenuncia=function(){fecharModal();if(typeof votarLume==="function"&&MODO_REPO)votarLume(T,"dislike");mostrarToast("Denúncia registada")};
 window.baixarTexto=function(){dl("resposta.txt",T,"text/plain")};
-function dl(n,c,t){var b=new Blob([c],{type:t+";charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=n;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href)},1500)}
+function dl(n,c,t){window.baixarFicheiro(n,c,t)}
 function limpo(){var c=M.cloneNode(true);c.querySelectorAll(".cabecalho-codigo,style").forEach(function(x){x.remove()});return c}
 function md(n){var o="";n.childNodes.forEach(function(c){
  if(c.nodeType===3){o+=c.textContent;return}if(c.nodeType!==1)return;
@@ -1166,7 +1197,7 @@ window.seletorIdioma=function(tit,sub,atualCod,cb,fixo){
  document.querySelectorAll("#modal-rodape .idiomas button").forEach(function(x){x.addEventListener("click",function(){fecharModal();cb(x.dataset.l)})})};
 function baixarConversa(){var ls=[];[].slice.call(chatEl.children).forEach(function(n){if(!n.classList.contains("msg")||n.classList.contains("digitando"))return;var c=n.cloneNode(true);c.querySelectorAll(".cabecalho-codigo,style").forEach(function(x){x.remove()});var t=(c.textContent||"").trim();if(t)ls.push((n.classList.contains("usuario")?"Eu: ":"Bot: ")+t)});
  if(!ls.length){mostrarToast("Conversa vazia");return}
- var b=new Blob([ls.join("\n\n")],{type:"text/plain;charset=utf-8"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="conversa.txt";document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href)},1500)}
+ window.baixarFicheiro("conversa.txt",ls.join("\n\n"),"text/plain")}
 var ITENS=[["Tradução automática",SVG_TRADUZIR,abrirTrad],["Alternar tema",SVG_SOL,function(){alternarTema()}],["Transferir conversa (.txt)",SVG_PARTILHAR,baixarConversa],["Limpar conversa",IC_LIXO,function(){pedirLimparConversa()}]];
 function menu(btn){
  fecharMenuConversa();
