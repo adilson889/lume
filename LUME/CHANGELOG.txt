@@ -85,3 +85,6 @@ Lume - historico de versoes
 0.3.5
 - Input do chat como no Claude: fechado e vazio fica numa linha so (+, texto, microfone, voz); ao tocar para escrever (teclado aberto) ou com texto, o texto passa para cima, com a largura toda, e os botoes ficam numa linha por baixo. Volta a uma linha quando perde o foco e fica vazio.
 - Botoes + e microfone com fundo cinzento redondo.
+
+0.3.6
+- Corrigido: o microfone deixou de ficar preto enquanto grava (o fundo cinzento do 0.3.5 tapava o estado "a gravar").
