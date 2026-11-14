@@ -102,3 +102,6 @@ Lume - historico de versoes
 - Nova paleta, baseada no verde-azeitona da app Loja: fundo #EDEEE8, superficies #F6F6EE e #E4E4DA, texto #1A1B13, cor de destaque #455A0B. O balao do utilizador passa a verde claro (#DCE4C4). Tema escuro em tons de verde muito escuro (#12140D) com destaque verde claro (#B3CC6B).
 - O botao de voz e o modo de voz (anel, onda e pilula) passam a usar a cor de destaque, em vez de preto e roxo.
 - Corrigido: o botao "Nova conversa" da barra lateral aparecia cortado na borda esquerda com a barra fechada. A barra fechada fica agora escondida.
+
+0.4.1
+- "Fala-me de Python", "explica recursao", "diz-me sobre git" e "fala de funcoes" passam a ser percebidos pelo tema, sem as palavras de enquadramento (fala, diz, conta, explica, com ou sem -me e sobre/de/do/da). Antes davam uma sondagem ou uma resposta de outro tema.
