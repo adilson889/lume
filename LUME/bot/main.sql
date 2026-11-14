@@ -39,32 +39,34 @@ ON MESSAGE {
     }
 
 
---TESTEXLANG 
+--XLANG
 
 
-WHEN CONTAINS "vvv" {
+WHEN CONTAINS KEYWORDS (calculo.txt) {
+ WAITING("Calculando")
     REPLY (
-        <var name="escolha" value=""></var>
-        <print>
-            <h3>Escolhe uma opcao</h3>
-            <button id="btn-sim">Sim</button>
-            <button id="btn-nao">Nao</button>
-            <p id="saida"></p>
-        </print>
-        <fun name="escolherSim">
-            <set name="escolha" value="'sim'"></set>
-            <print id="saida">Escolheste: {escolha}</print>
-        </fun>
-        <fun name="escolherNao">
-            <set name="escolha" value="'nao'"></set>
-            <print id="saida">Escolheste: {escolha}</print>
-        </fun>
-        <on event="click" target="btn-sim" call="escolherSim"></on>
-        <on event="click" target="btn-nao" call="escolherNao"></on>
+        <if condition="n >= 2">
+    <if condition="includes(lower(msg), 'dividido') && n2 == 0">
+        <print>Não dá para dividir por zero.</print>
+    </if>
+    <elseif condition="includes(lower(msg), 'dividido')">
+        <print>{n1} ÷ {n2} = {n1 / n2}</print>
+    </elseif>
+    <elseif condition="includes(lower(msg), 'vezes')">
+        <print>{n1} × {n2} = {n1 * n2}</print>
+    </elseif>
+    <elseif condition="includes(lower(msg), 'menos')">
+        <print>{n1} − {n2} = {n1 - n2}</print>
+    </elseif>
+    <else>
+        <print>{n1} + {n2} = {n1 + n2}</print>
+    </else>
+</if>
+<else>
+    <print>Diz-me dois números, por exemplo: quanto é 4 mais 5?</print>
+</else>
     )
 }
-
---TESTEXLANG 
 
     -- 6. Tudo o resto: se um passo falha, o seguinte atua.
     --    a) base escrita a mao (resposta direta)
