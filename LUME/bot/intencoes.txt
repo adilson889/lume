@@ -1,0 +1,132 @@
+-- Exemplos para o Lume perceber a intencao da mensagem.
+-- Formato: intencao | frase de exemplo   (uma por linha)
+-- Os temas da base (conhecimento_programacao.txt) entram sozinhos; aqui ficam as intencoes extra.
+-- Intencoes: conversa, fora_do_tema, programacao_outra. Podes juntar mais exemplos a qualquer uma.
+
+conversa | tudo bem
+conversa | tudo bem?
+conversa | bom dia
+conversa | boa tarde
+conversa | boa noite
+conversa | olá
+conversa | oi
+conversa | ola lume
+conversa | lume
+conversa | e aí
+conversa | como estás
+conversa | como vai
+conversa | obrigado
+conversa | muito obrigado
+conversa | valeu
+conversa | ok
+conversa | certo
+conversa | entendi
+conversa | tá bom
+conversa | bom
+conversa | fixe
+conversa | adeus
+conversa | tchau
+conversa | até logo
+conversa | até amanhã
+conversa | quem és tu
+conversa | como te chamas
+conversa | o que podes fazer
+conversa | ajuda
+conversa | preciso de ajuda
+conversa | sim
+conversa | não
+conversa | talvez
+conversa | kkk
+conversa | haha
+fora_do_tema | quem é messi
+fora_do_tema | quem é cristiano ronaldo
+fora_do_tema | quem é elon musk
+fora_do_tema | quem é neymar
+fora_do_tema | quem é o presidente de angola
+fora_do_tema | quem ganhou o jogo ontem
+fora_do_tema | resultado do benfica
+fora_do_tema | qual a capital de angola
+fora_do_tema | qual a capital de portugal
+fora_do_tema | qual a população do brasil
+fora_do_tema | que horas são
+fora_do_tema | como está o tempo hoje
+fora_do_tema | vai chover amanhã
+fora_do_tema | quero uma pizza
+fora_do_tema | receita de bolo
+fora_do_tema | receita de arroz de cabidela
+fora_do_tema | como cozinhar feijão
+fora_do_tema | como fazer funge
+fora_do_tema | o que é amor
+fora_do_tema | o que é a vida
+fora_do_tema | o que é democracia
+fora_do_tema | o que é a felicidade
+fora_do_tema | o que é deus
+fora_do_tema | conta-me uma piada
+fora_do_tema | conta uma história
+fora_do_tema | canta uma música
+fora_do_tema | letra de uma música
+fora_do_tema | filme bom para ver
+fora_do_tema | série para assistir
+fora_do_tema | quanto custa um iphone
+fora_do_tema | preço do dólar hoje
+fora_do_tema | como emagrecer
+fora_do_tema | dicas de saúde
+fora_do_tema | tenho dor de cabeça
+fora_do_tema | como ganhar dinheiro
+fora_do_tema | como arranjar namorada
+fora_do_tema | horóscopo de hoje
+fora_do_tema | significado de um sonho
+fora_do_tema | quem descobriu o brasil
+fora_do_tema | história de angola
+fora_do_tema | quem foi napoleão
+fora_do_tema | o que é um buraco negro
+fora_do_tema | qual é o maior animal do mundo
+fora_do_tema | quanto é dois mais dois
+fora_do_tema | tradução de uma frase em inglês
+fora_do_tema | notícias de hoje
+fora_do_tema | onde fica a cidade de luanda
+fora_do_tema | como chegar ao aeroporto
+fora_do_tema | mensagem de aniversário
+fora_do_tema | frase de motivação
+programacao_outra | o que é rust
+programacao_outra | o que é go
+programacao_outra | o que é golang
+programacao_outra | o que é php
+programacao_outra | o que é c++
+programacao_outra | o que é c#
+programacao_outra | o que é typescript
+programacao_outra | o que é react
+programacao_outra | o que é react native
+programacao_outra | o que é flutter
+programacao_outra | o que é node
+programacao_outra | o que é docker
+programacao_outra | o que é linux
+programacao_outra | o que é android studio
+programacao_outra | o que é um framework
+programacao_outra | o que é uma biblioteca
+programacao_outra | o que é um servidor
+programacao_outra | o que é um ponteiro
+programacao_outra | o que é um compilador
+programacao_outra | o que é um banco de dados
+programacao_outra | o que é git e github
+programacao_outra | o que é uma api rest
+programacao_outra | como instalar o node
+programacao_outra | como usar o npm
+programacao_outra | como programar
+programacao_outra | como aprender a programar
+programacao_outra | como criar um site
+programacao_outra | como criar um app
+programacao_outra | como corrigir um erro no código
+programacao_outra | erro ao compilar
+programacao_outra | o que significa este erro
+programacao_outra | explica este código
+programacao_outra | qual a melhor linguagem de programação
+programacao_outra | como funciona um servidor web
+programacao_outra | o que é a internet
+programacao_outra | o que é um algoritmo de ordenação
+programacao_outra | como usar o terminal
+programacao_outra | diferença entre java e javascript
+programacao_outra | o que é programação orientada a objetos
+programacao_outra | o que é inteligência artificial
+programacao_outra | o que é machine learning
+programacao_outra | como fazer um bot

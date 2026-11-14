@@ -5,11 +5,12 @@
   "conversation.sql",
   "despedidas.txt",
   "estado.txt",
+  "intencoes.txt",
   "fallback.sql",
   "main.sql",
   "personality.sql",
   "reasoning.sql",
   "respostas.txt",
-"aprendido.txt",
+  "aprendido.txt",
   "saudacoes.txt"
 ]
