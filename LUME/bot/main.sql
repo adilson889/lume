@@ -1,27 +1,3 @@
-
-
--- Lume: ponto de entrada do bot.
---
--- Regras desta estrutura:
--- 1. O BotQL so aceita nomes de ficheiro simples (sem pastas) em
---    KEYWORDS, REPLY, THINK, ASK, SEARCH e WAITING. Por isso este ficheiro
---    e todos os .txt que ele usa ficam juntos, nesta pasta (LUME/bot/).
--- 2. So existe UM bloco ON MESSAGE, aqui. O BotQL corre todos os blocos
---    ON MESSAGE em sequencia, por isso ficheiros importados nao devem ter
---    o seu proprio ON MESSAGE.
--- 3. O conteudo cresce nos ficheiros .txt (palavras-chave, respostas e
---    conhecimento), nao neste ficheiro.
--- 4. CONTAINS procura o texto dentro da mensagem, mesmo no meio de outra
---    palavra. Por isso as palavras-chave de conversa sao frases
---    especificas e nao palavras curtas como "oi" (que existe em "void").
--- 5. Toda a resposta mostra primeiro os 3 pontinhos de espera: WHEN usa
---    WAITING("texto") sozinho (texto diferente por assunto) e o THINK usa
---    WAITING acoplado. Todos levam o tempo minimo em segundos: WAITING("texto", segundos).
--- 6. APRENDIZAGEM: tudo o que o SEARCH encontra na web e gravado em
---    aprendido.txt (separado do conhecimento escrito a mao). O chat
---    partilha esses blocos com os outros visitantes (ver o index e a API).
---    O ficheiro aprendido.txt tem de existir (pode estar vazio).
-
 CREATE BOT "Lume"
 
 CREATE TABLE Context() PREVENT DEFAULT
