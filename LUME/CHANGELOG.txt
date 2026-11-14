@@ -81,3 +81,7 @@ Lume - historico de versoes
 - Modais com icones nos botoes. No Apagar, o botao Apagar fica vermelho suave e o Cancelar passa a principal.
 - Saudacao inicial sem os icones de acao e sem o rodape de reacao, com 4 perguntas de exemplo para tocar por baixo. A saudacao (respostas.txt) deixa de mandar escrever "o que sabes fazer".
 - Registo do que ja estava no index.html sem entrada aqui: rodape "Por favor, da uma reacao a cada resposta"; like aprova e dislike remove o bloco aprendido; "ensine-me a resposta certa" (fica pendente); painel escondido por frase secreta. As rotas /voto e /ensinar vivem no repo da API.
+
+0.3.5
+- Input do chat como no Claude: fechado e vazio fica numa linha so (+, texto, microfone, voz); ao tocar para escrever (teclado aberto) ou com texto, o texto passa para cima, com a largura toda, e os botoes ficam numa linha por baixo. Volta a uma linha quando perde o foco e fica vazio.
+- Botoes + e microfone com fundo cinzento redondo.
