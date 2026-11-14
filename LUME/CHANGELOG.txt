@@ -70,3 +70,6 @@ Lume - historico de versoes
 
 0.3.2
 - README em portugues, ingles e chines, com logotipo centrado, etiquetas e paragrafos justificados. Logotipo em LUME/assets/logo.png.
+
+0.3.3
+- Limpeza de estrutura morta: removidas as pastas database/ e rag/, os testes .sql de placeholder, os ficheiros conversation.sql, fallback.sql, personality.sql e reasoning.sql (nunca eram usados pelo main.sql), o README.txt antigo, o corrigir_lume.py e os workflows do GitHub Actions. arquivos.json atualizado.

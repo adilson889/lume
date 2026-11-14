@@ -1,1 +1,0 @@
-# Casos de teste: pergunta, resposta esperada e contexto.

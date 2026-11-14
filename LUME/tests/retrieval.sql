@@ -1,1 +1,0 @@
--- Testes de recuperação de conhecimento.

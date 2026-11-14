@@ -1,1 +1,0 @@
--- Testes de manutenção e recuperação de contexto.
