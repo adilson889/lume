@@ -108,3 +108,8 @@ Lume - historico de versoes
 
 0.4.2
 - Convite no "nao sei": quando o Lume responde "Ainda nao sei responder a isso", aparece por baixo "Sabes a resposta? Ensinar ao Lume", que abre o editor de ensinar com a pergunta ja associada. O convite desaparece ao tocar, e so aparece na ultima resposta.
+
+0.4.3
+- Mensagem claramente fora de programacao (ex.: "quanto custa um iphone") deixa de mostrar uma sondagem com temas sem relacao: o Lume responde "Ainda nao sei" e oferece "Ensinar ao Lume". A sondagem mantem-se quando alguma opcao vem do que ja foi aprendido (ex.: "o que e amor"). O texto do "nao sei" passa a vir do respostas.txt (linha 7).
+- Sugestoes iniciais novas: "O que e recursao?", "Como funciona um ciclo for?", "O que e o Rust?" (mostra a pesquisa e a sondagem) e, em destaque a verde, "Ensinar o Lume". O texto do inicio passa a "Pergunta-me algo ou ensina-me o que eu ainda nao sei."
+- "Ensinar o Lume": o Lume pede a pergunta, o utilizador escreve-a e abre-se o editor da resposta.
