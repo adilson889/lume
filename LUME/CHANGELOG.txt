@@ -94,3 +94,6 @@ Lume - historico de versoes
 
 0.3.8
 - Os modais voltam a ficar sem icones nos botoes (Renomear, Apagar, etc.). Os icones ficam so no menu de tres pontos das conversas.
+
+0.3.9
+- O ecra de carregamento passa a ser um splash com o logotipo do Lume a pulsar suavemente, sem rodinha nem texto visivel (o texto fica so para leitores de ecra). Desaparece com um fade quando o bot esta pronto.
