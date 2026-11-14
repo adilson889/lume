@@ -64,3 +64,6 @@ Lume - historico de versoes
 - O Lume passa a perceber a intencao da mensagem com o NLP.js (ficheiro unico LUME/vendor/nlp.min.js, 127 KB). Treina ao abrir com os temas da base e com LUME/bot/intencoes.txt (conversa, fora_do_tema, programacao_outra).
 - A pesquisa na web so corre quando a mensagem parece ser de programacao: "quem e Messi", "o que e amor" e conversa ja nao vao a Wikipedia. "o que e rust" e "como instalar o node" continuam a pesquisar.
 - Para ensinar a intencao basta juntar linhas "intencao | frase" em LUME/bot/intencoes.txt.
+
+0.3.1
+- As respostas do aprendido mostram so a resposta, sem o prefixo "pergunta:" ou "titulo:" ("Oi: Ola, como posso ajuda-lo" passa a "Ola, como posso ajuda-lo"). Prefixos com parenteses por fechar (ex.: "Barcelona (pronuncia catala: ...") ja nao sao cortados, e a resposta comeca com maiuscula.
