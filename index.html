@@ -303,6 +303,8 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:64px;backgrou
 #input-area .pv-linha-botoes>button:first-child,#input-area .pv-linha-botoes>button[aria-label="Mensagem de voz"]{background:var(--bg3)}
 #input-area .pv-linha-botoes>button:first-child:active,#input-area .pv-linha-botoes>button[aria-label="Mensagem de voz"]:active{background:var(--border)}
 #input-area .pv-linha-botoes>button[aria-label="Mensagem de voz"].gravando{background:var(--text)}
+#input-area .pv-linha-botoes>button.gravando svg{display:none}
+#input-area .pv-linha-botoes>button.gravando::after{content:"";width:16px;height:16px;box-sizing:border-box;border-left:5px solid var(--bg);border-right:5px solid var(--bg);border-radius:1px}
 #input-area .pv-pill.expandido{flex-direction:column;align-items:stretch;gap:4px;padding:12px 12px 8px 16px;border-radius:26px}
 #input-area .pv-pill.expandido .pv-linha-botoes{display:flex;align-items:center;gap:6px}
 #input-area .pv-pill.expandido .pv-espaco{display:block;flex:1}

@@ -88,3 +88,6 @@ Lume - historico de versoes
 
 0.3.6
 - Corrigido: o microfone deixou de ficar preto enquanto grava (o fundo cinzento do 0.3.5 tapava o estado "a gravar").
+
+0.3.7
+- Enquanto o microfone esta ligado (a gravar), o botao mostra o icone de pausa em vez do microfone.
