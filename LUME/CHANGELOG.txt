@@ -56,3 +56,6 @@ Lume - historico de versoes
 
 0.2.5
 - Nova ordem do fluxo no main.sql: primeiro o aprendido (resposta direta ou sondagem), depois a pesquisa na web (que grava em aprendido.txt e pode lancar sondagem), depois a base escrita a mao (resposta direta ou sondagem) e por fim a resposta de reserva.
+
+0.2.6
+- Ordem do fluxo corrigida: base escrita a mao, aprendido (resposta direta e sondagem), pesquisa na web, sondagem da base e resposta de reserva. O aprendido a frente da base apanhava perguntas por palavras soltas (ex.: "funcao", "Lume").
