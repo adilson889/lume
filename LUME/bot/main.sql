@@ -28,9 +28,6 @@ CREATE TABLE Context() PREVENT DEFAULT
 
 CONNECT SEARCH WIKI
 
-ON START {
-    REPLY (respostas.txt, 1)
-}
 
 ON MESSAGE {
     INSERT INTO Context()
