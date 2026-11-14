@@ -105,3 +105,6 @@ Lume - historico de versoes
 
 0.4.1
 - "Fala-me de Python", "explica recursao", "diz-me sobre git" e "fala de funcoes" passam a ser percebidos pelo tema, sem as palavras de enquadramento (fala, diz, conta, explica, com ou sem -me e sobre/de/do/da). Antes davam uma sondagem ou uma resposta de outro tema.
+
+0.4.2
+- Convite no "nao sei": quando o Lume responde "Ainda nao sei responder a isso", aparece por baixo "Sabes a resposta? Ensinar ao Lume", que abre o editor de ensinar com a pergunta ja associada. O convite desaparece ao tocar, e so aparece na ultima resposta.
