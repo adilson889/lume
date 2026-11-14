@@ -38,6 +38,32 @@ ON MESSAGE {
         REPLY (respostas.txt, 6)
     }
 
+
+--TESTEXLANG 
+
+
+WHEN CONTAINS "vvv" {
+        REPLY (
+            <var name="escolha" value=""></var>
+            <print>  
+                <h3>Escolhe uma opcao</h3>
+                <button id="btn-sim">Sim</button>
+                <button id="btn-nao">Nao</button>
+                <p>Escolheste: {escolha}</p>
+            </print>
+            <fun name="escolherSim">
+                <set name="escolha" value="'sim'"></set>
+            </fun>
+            <fun name="escolherNao">
+                <set name="escolha" value="'nao'"></set>
+            </fun>
+            <on event="click" target="btn-sim" call="escolherSim"></on>
+            <on event="click" target="btn-nao" call="escolherNao"></on>
+        )
+    }
+
+--TESTEXLANG 
+
     -- 6. Tudo o resto: se um passo falha, o seguinte atua.
     --    a) base escrita a mao (resposta direta)
     --    b) o que o Lume ja aprendeu (resposta direta)
