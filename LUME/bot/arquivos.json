@@ -1,8 +1,8 @@
 [
   "agradecimentos.txt",
   "ajuda.txt",
-"animais.txt",
-"casas.txt",
+  "animais.txt",
+  "casas.txt",
   "conhecimento_programacao.txt",
   "despedidas.txt",
   "estado.txt",
@@ -16,6 +16,8 @@
   "templates.txt",
   "palavras_loja.txt",
   "desenhos.txt",
-"libdesenho.txt",
-  "palavras_desenho.txt"
+  "libdesenho.txt",
+  "palavras_desenho.txt",
+  "pedidos_combinados.txt",
+  "combinacoes.txt"
 ]
