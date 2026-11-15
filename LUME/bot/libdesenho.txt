@@ -1,105 +1,90 @@
 1-{
 <program>
 <import name="xlang.math"></import>
+<var name="m" value="lower(msg)"></var>
+<var name="pts" value="''"></var>
+<var name="d" value="''"></var>
+<var name="a" value="0"></var>
+<var name="raio" value="0"></var>
+<var name="pontas" value="5"></var>
+<var name="x" value="0"></var>
+<var name="y" value="0"></var>
 
-<!-- =========================================================
-     1. DICIONÁRIO DE FORMAS (Em vez de ler ficheiros)
-     ========================================================= -->
-<var name="db_animais" value="gato:<ellipse cx='0' cy='10' rx='12' ry='8' fill='#f39c12'></ellipse><circle cx='0' cy='-5' r='9' fill='#f39c12'></circle><polygon points='-8,-10 -4,-20 0,-10' fill='#f39c12'></polygon><polygon points='8,-10 4,-20 0,-10' fill='#f39c12'></polygon>|cao:<rect x='-10' y='0' width='20' height='12' rx='3' fill='#8d6e3f'></rect><circle cx='10' cy='2' r='7' fill='#8d6e3f'></circle>"></var>
-<var name="db_casas" value="casa_simples:<rect x='-20' y='-25' width='40' height='25' fill='#f4d9a8' stroke='#8d6e3f' stroke-width='1.5'></rect><polygon points='-24,-25 0,-45 24,-25' fill='#c0392b' stroke='#7b241c' stroke-width='1.5'></polygon>"></var>
-
-<!-- =========================================================
-     2. CLASSES BASE
-     ========================================================= -->
-<class name="ObjetoDesenhavel">
-    <var name="nome" value="''"></var>
-    <var name="x" value="0"></var>
-    <var name="y" value="0"></var>
-    <init params="nome, x, y">
-        <set name="this.nome" value="nome"></set>
-        <set name="this.x" value="x"></set>
-        <set name="this.y" value="y"></set>
-    </init>
-    <fun name="desenhar"><return value="''"></return></fun>
-</class>
-
-<class name="Animal" extends="ObjetoDesenhavel">
-    <override fun name="desenhar">
-        <!-- Procura no dicionário de animais em vez de ficheiro -->
-        <var name="partes" value="split(db_animais, '|')"></var>
-        <foreach var="item" in="partes">
-            <var name="par" value="split(item, ':')"></var>
-            <if condition="par[0] == this.nome">
-                <return value="'<g transform=\"translate(' + this.x + ',' + this.y + ')\">' + par[1] + '</g>'"></return>
-            </if>
-        </foreach>
-        <return value="''"></return>
-    </override>
-</class>
-
-<class name="Casa" extends="ObjetoDesenhavel">
-    <override fun name="desenhar">
-        <var name="partes" value="split(db_casas, '|')"></var>
-        <foreach var="item" in="partes">
-            <var name="par" value="split(item, ':')"></var>
-            <if condition="par[0] == this.nome">
-                <return value="'<g transform=\"translate(' + this.x + ',' + this.y + ')\">' + par[1] + '</g>'"></return>
-            </if>
-        </foreach>
-        <return value="''"></return>
-    </override>
-</class>
-
-<!-- =========================================================
-     3. A CENA
-     ========================================================= -->
-<class name="Cena">
-    <var name="objetos" value="[]"></var>
-    <var name="palco" value="<rect x='0' y='0' width='100' height='100' fill='#dff1ff'></rect><rect x='0' y='75' width='100' height='25' fill='#7cb342'></rect>"></var>
-    <fun name="adicionar" params="obj">
-        <push name="this.objetos" value="obj"></push>
-    </fun>
-    <fun name="renderizar">
-        <var name="svgFinal" value="this.palco"></var>
-        <foreach var="obj" in="this.objetos">
-            <set name="svgFinal" value="svgFinal + obj.desenhar()"></set>
-        </foreach>
-        <return value="svgFinal"></return>
-    </fun>
-</class>
-
-<!-- =========================================================
-     4. LÓGICA
-     ========================================================= -->
-<fun name="desenhar_cena" params="pedido">
-    <var name="m" value="lower(pedido)"></var>
-    <var name="minhaCena" value="<new class='Cena'>"></var>
-
-    <if condition="includes(m, 'sol')">
-        <set name="minhaCena.palco" value="minhaCena.palco + '<circle cx=\"80\" cy=\"20\" r=\"8\" fill=\"gold\"></circle>'"></set>
+<!-- ESTRELA -->
+<if condition="includes(m, 'estrela')">
+    <if condition="n >= 1 && nums[n - 1] >= 3">
+        <set name="pontas" value="min(round(nums[n - 1]), 24)"></set>
     </if>
+    <for var="i" from="0" to="pontas * 2 - 1">
+        <set name="raio" value="19 + 27 * (1 - i % 2)"></set>
+        <set name="a" value="(i * 180 / pontas - 90) * PI() / 180"></set>
+        <set name="pts" value="pts + round((50 + raio * cos(a)) * 100) / 100 + ',' + round((50 + raio * sin(a)) * 100) / 100 + ' '"></set>
+    </for>
+    <print>Aqui está a tua estrela de {pontas} pontas:</print>
+    <print><svg viewBox="0 0 100 100" width="220" height="220"><polygon points="{pts}" fill="gold" stroke="orange" stroke-width="2" stroke-linejoin="round"></polygon></svg></print>
+</if>
 
-    <if condition="includes(m, 'gato')">
-        <call name="minhaCena.adicionar" args="<new class='Animal' args='gato, 25, 80'>"></call>
+<!-- CASA COM SOL -->
+<elseif condition="includes(m, 'casa')">
+    <for var="i" from="0" to="7">
+        <set name="a" value="i * 45 * PI() / 180"></set>
+        <set name="d" value="d + 'M' + round((84 + 9 * cos(a)) * 100) / 100 + ' ' + round((16 + 9 * sin(a)) * 100) / 100 + 'L' + round((84 + 14 * cos(a)) * 100) / 100 + ' ' + round((16 + 14 * sin(a)) * 100) / 100"></set>
+    </for>
+    <print>Uma casa com sol:</print>
+    <print><svg viewBox="0 0 100 100" width="240" height="240"><rect x="0" y="0" width="100" height="100" fill="#dff1ff"></rect><circle cx="84" cy="16" r="7" fill="gold"></circle><path d="{d}" stroke="orange" stroke-width="2" stroke-linecap="round" fill="none"></path><rect x="0" y="85" width="100" height="15" fill="#7cb342"></rect><rect x="25" y="50" width="50" height="38" fill="#f4d9a8" stroke="#8d6e3f" stroke-width="2"></rect><polygon points="20,52 50,25 80,52" fill="#c0392b" stroke="#7b241c" stroke-width="2" stroke-linejoin="round"></polygon><rect x="45" y="66" width="12" height="22" fill="#8d6e3f"></rect><rect x="30" y="58" width="10" height="10" fill="#bde3ff" stroke="#8d6e3f"></rect><rect x="62" y="58" width="10" height="10" fill="#bde3ff" stroke="#8d6e3f"></rect></svg></print>
+</elseif>
+
+<!-- SOL -->
+<elseif condition="includes(m, 'sol')">
+    <for var="i" from="0" to="11">
+        <set name="a" value="i * 30 * PI() / 180"></set>
+        <set name="d" value="d + 'M' + round((50 + 32 * cos(a)) * 100) / 100 + ' ' + round((50 + 32 * sin(a)) * 100) / 100 + 'L' + round((50 + 46 * cos(a)) * 100) / 100 + ' ' + round((50 + 46 * sin(a)) * 100) / 100"></set>
+    </for>
+    <print>Aqui está o sol:</print>
+    <print><svg viewBox="0 0 100 100" width="220" height="220"><circle cx="50" cy="50" r="24" fill="gold"></circle><path d="{d}" stroke="orange" stroke-width="4" stroke-linecap="round" fill="none"></path></svg></print>
+</elseif>
+
+<!-- GATO -->
+<elseif condition="includes(m, 'gato')">
+    <print>Aqui está o teu gato:</print>
+    <print><svg viewBox="0 0 100 100" width="220" height="220"><rect x="0" y="85" width="100" height="15" fill="#7cb342"></rect><ellipse cx="50" cy="80" rx="20" ry="12" fill="#f39c12"></ellipse><circle cx="50" cy="60" r="14" fill="#f39c12"></circle><polygon points="38,52 44,38 50,52" fill="#f39c12"></polygon><polygon points="62,52 56,38 50,52" fill="#f39c12"></polygon><circle cx="45" cy="58" r="2" fill="#333"></circle><circle cx="55" cy="58" r="2" fill="#333"></circle><path d="M45,65 Q50,68 55,65" stroke="#333" stroke-width="1.5" fill="none"></path><path d="M30,80 Q15,70 20,60" stroke="#f39c12" stroke-width="4" stroke-linecap="round" fill="none"></path></svg></print>
+</elseif>
+
+<!-- CÃO -->
+<elseif condition="includes(m, 'cão') || includes(m, 'cao')">
+    <print>Aqui está o teu cão:</print>
+    <print><svg viewBox="0 0 100 100" width="220" height="220"><rect x="0" y="85" width="100" height="15" fill="#7cb342"></rect><rect x="35" y="65" width="30" height="18" rx="5" fill="#8d6e3f"></rect><circle cx="65" cy="68" r="10" fill="#8d6e3f"></circle><polygon points="60,60 66,50 70,60" fill="#5d4037"></polygon><rect x="38" y="83" width="6" height="10" fill="#5d4037"></rect><rect x="56" y="83" width="6" height="10" fill="#5d4037"></rect><circle cx="68" cy="66" r="2" fill="#333"></circle></svg></print>
+</elseif>
+
+<!-- CARRO -->
+<elseif condition="includes(m, 'carro')">
+    <print>Aqui está o teu carro:</print>
+    <print><svg viewBox="0 0 100 100" width="220" height="220"><rect x="0" y="85" width="100" height="15" fill="#7cb342"></rect><rect x="20" y="60" width="60" height="20" rx="5" fill="#e74c3c"></rect><rect x="30" y="45" width="40" height="20" rx="5" fill="#c0392b"></rect><rect x="35" y="48" width="12" height="12" fill="#bde3ff"></rect><rect x="53" y="48" width="12" height="12" fill="#bde3ff"></rect><circle cx="35" cy="80" r="8" fill="#333"></circle><circle cx="65" cy="80" r="8" fill="#333"></circle></svg></print>
+</elseif>
+
+<!-- GRÁFICOS -->
+<elseif condition="includes(m, 'grafico') || includes(m, 'gráfico')">
+    <if condition="includes(m, 'seno') || includes(m, 'sin')">
+        <for var="i" from="0" to="60">
+            <set name="x" value="-2 * PI() + i * 4 * PI() / 60"></set>
+            <set name="pts" value="pts + round((100 + x * 14.3) * 100) / 100 + ',' + round((100 - sin(x) * 70) * 100) / 100 + ' '"></set>
+        </for>
+        <print>Gráfico de y = sen(x):</print>
+        <print><svg viewBox="0 0 200 200" width="260" height="260"><rect x="0" y="0" width="200" height="200" fill="#fbfbf4" stroke="#c9ceb8"></rect><line x1="0" y1="100" x2="200" y2="100" stroke="#999" stroke-width="1"></line><line x1="100" y1="0" x2="100" y2="200" stroke="#999" stroke-width="1"></line><polyline points="{pts}" fill="none" stroke="#c0392b" stroke-width="2.5" stroke-linejoin="round"></polyline></svg></print>
     </if>
-    <if condition="includes(m, 'cao') || includes(m, 'cão')">
-        <call name="minhaCena.adicionar" args="<new class='Animal' args='cao, 50, 80'>"></call>
-    </if>
+    <else>
+        <for var="i" from="0" to="40">
+            <set name="x" value="-5 + i * 0.25"></set>
+            <set name="pts" value="pts + round((100 + x * 18) * 100) / 100 + ',' + round((190 - x * x * 7) * 100) / 100 + ' '"></set>
+        </for>
+        <print>Gráfico de y = x²:</print>
+        <print><svg viewBox="0 0 200 200" width="260" height="260"><rect x="0" y="0" width="200" height="200" fill="#fbfbf4" stroke="#c9ceb8"></rect><line x1="0" y1="190" x2="200" y2="190" stroke="#999" stroke-width="1"></line><line x1="100" y1="0" x2="100" y2="200" stroke="#999" stroke-width="1"></line><polyline points="{pts}" fill="none" stroke="#2e6bd6" stroke-width="2.5" stroke-linejoin="round"></polyline></svg></print>
+    </else>
+</elseif>
 
-    <if condition="includes(m, 'casa')">
-        <call name="minhaCena.adicionar" args="<new class='Casa' args='casa_simples, 75, 85'>"></call>
-    </if>
-
-    <print>Aqui está o teu desenho:</print>
-    <print>
-        <svg viewBox="0 0 100 100" width="240" height="240">
-            {minhaCena.renderizar()}
-        </svg>
-    </print>
-</fun>
-
-<!-- Chama a função com a mensagem do utilizador -->
-<call name="desenhar_cena" args="message"></call>
-
+<!-- FALLBACK -->
+<else>
+    <print>Consigo desenhar: uma <b>estrela</b>, o <b>sol</b>, uma <b>casa</b>, um <b>gato</b>, um <b>cão</b>, um <b>carro</b> ou o <b>gráfico</b> de x² ou do seno.</print>
+</else>
 </program>
 }
