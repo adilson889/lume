@@ -1,0 +1,48 @@
+1-{
+<program>
+<import name="xlang.math"></import>
+
+<!-- 1. O UTILIZADOR PEDE ALGO -->
+<var name="m" value="lower(msg)"></var>
+
+<!-- 2. OS DICIONÁRIOS DE CÓDIGO (As peças) -->
+<array name="tags" value="['h1', 'h2', 'p', 'div', 'span', 'button']"></array>
+<array name="cores" value="['red', 'blue', 'green', 'gold', 'purple', '#333']"></array>
+<array name="textos" value="['Olá Mundo', 'Clique aqui', 'Bem-vindo', 'Lume', 'Teste', 'Sucesso']"></array>
+
+<!-- 3. A CAPACIDADE (O que ele vai fazer?) -->
+<if condition="includes(m, 'botao') || includes(m, 'button')">
+    
+    <!-- Escolhe peças aleatórias -->
+    <var name="cor_escolhida" value="cores[random(0, 5)]"></var>
+    <var name="texto_escolhido" value="textos[random(0, 5)]"></var>
+    
+    <!-- Monta o código HTML (O Relator) -->
+    <var name="codigo_final" value="'<button style=\"background: ' + cor_escolhida + '; padding: 10px; border-radius: 5px;\">' + texto_escolhido + '</button>'"></var>
+
+    <print>Aqui está o teu botão gerado:</print>
+    <!-- O Markdown para o chat pintar a caixa de código -->
+    <print>
+        ```html
+        {codigo_final}
+        ```
+    </print>
+
+</if>
+<elseif condition="includes(m, 'titulo') || includes(m, 'h1')">
+    <var name="texto_escolhido" value="textos[random(0, 5)]"></var>
+    
+    <var name="codigo_final" value="'<h1>' + texto_escolhido + '</h1>'"></var>
+
+    <print>Aqui está o teu título:</print>
+    <print>
+        ```html
+        {codigo_final}
+        ```
+    </print>
+</elseif>
+<else>
+    <print>Consigo gerar: botões, títulos e parágrafos. Pede algo como "Gera um botão azul".</print>
+</else>
+</program>
+}
