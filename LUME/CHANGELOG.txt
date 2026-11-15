@@ -156,3 +156,8 @@ Lume - historico de versoes
 - Primeira camada de despacho de capacidades no main.sql: pedidos que combinam cálculo e gráfico são encaminhados antes das operações individuais.
 - Novo fluxo combinado em combinacoes.txt: reutiliza xlang.math para calcular e HTMLx-lang para desenhar um gráfico SVG.
 - Novos gatilhos em pedidos_combinados.txt e registo dos ficheiros em arquivos.json. BotQL e HTMLx-lang não foram alterados.
+
+0.3.21
+- Nova composição de desenhos: o Lume pode combinar casa, árvore, sol, nuvem, flor, gato, cão e carro numa única imagem SVG.
+- Criados pedidos_desenhos_compostos.txt e desenhos_compostos.txt; a nova rota é verificada antes das rotas de desenho individual.
+- BotQL e HTMLx-lang mantêm-se inalterados.
