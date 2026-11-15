@@ -1,127 +1,90 @@
-1-{
+1{
 <program>
-<import name="xlang.math"></import>
+            <import name="xlang.math"></import>
 
-<!-- =========================================================
-     CLASSES BASE (Herança e Polimorfismo)
-     ========================================================= -->
+            <!-- ================= CLASSES ================= -->
+            <class name="ObjetoDesenhavel">
+                <var name="nome" value="''"></var>
+                <var name="x" value="0"></var>
+                <var name="y" value="0"></var>
+                <init params="nome, x, y">
+                    <set name="this.nome" value="nome"></set>
+                    <set name="this.x" value="x"></set>
+                    <set name="this.y" value="y"></set>
+                </init>
+                <fun name="desenhar"><return value="''"></return></fun>
+            </class>
 
-<!-- A Classe Mãe -->
-<class name="ObjetoDesenhavel">
-    <var name="nome" value="''"></var>
-    <var name="x" value="0"></var>
-    <var name="y" value="0"></var>
+            <class name="Animal" extends="ObjetoDesenhavel">
+                <override fun name="desenhar">
+                    <var name="linhas" value="split(readFile('animais.txt'), '\n')"></var>
+                    <foreach var="linha" in="linhas">
+                        <var name="l" value="trim(linha)"></var>
+                        <!-- Usa o split para separar o nome do SVG -->
+                        <var name="partes" value="split(l, ' = ')"></var>
+                        <!-- Se a primeira parte for o nome do animal -->
+                        <if condition="partes[0] == this.nome">
+                            <return value="'<g transform=\"translate(' + this.x + ',' + this.y + ')\">' + partes[1] + '</g>'"></return>
+                        </if>
+                    </foreach>
+                    <return value="''"></return>
+                </override>
+            </class>
 
-    <init params="nome, x, y">
-        <set name="this.nome" value="nome"></set>
-        <set name="this.x" value="x"></set>
-        <set name="this.y" value="y"></set>
-    </init>
+            <class name="Casa" extends="ObjetoDesenhavel">
+                <override fun name="desenhar">
+                    <var name="linhas" value="split(readFile('casas.txt'), '\n')"></var>
+                    <foreach var="linha" in="linhas">
+                        <var name="l" value="trim(linha)"></var>
+                        <var name="partes" value="split(l, ' = ')"></var>
+                        <if condition="partes[0] == this.nome">
+                            <return value="'<g transform=\"translate(' + this.x + ',' + this.y + ')\">' + partes[1] + '</g>'"></return>
+                        </if>
+                    </foreach>
+                    <return value="''"></return>
+                </override>
+            </class>
 
-    <fun name="desenhar">
-        <return value="''"></return>
-    </fun>
-</class>
+            <!-- ================= CENA ================= -->
+            <class name="Cena">
+                <var name="objetos" value="[]"></var>
+                <var name="palco" value="<rect x='0' y='0' width='100' height='100' fill='#dff1ff'></rect><rect x='0' y='75' width='100' height='25' fill='#7cb342'></rect>"></var>
+                <fun name="adicionar" params="obj">
+                    <push name="this.objetos" value="obj"></push>
+                </fun>
+                <fun name="renderizar">
+                    <var name="svgFinal" value="this.palco"></var>
+                    <foreach var="obj" in="this.objetos">
+                        <set name="svgFinal" value="svgFinal + obj.desenhar()"></set>
+                    </foreach>
+                    <return value="svgFinal"></return>
+                </fun>
+            </class>
 
-<!-- A Classe Animal (Herda de ObjetoDesenhavel) -->
-<class name="Animal" extends="ObjetoDesenhavel">
-    <override fun name="desenhar">
-        <!-- Lê o ficheiro animais.txt -->
-        <var name="linhas" value="split(readFile('animais.txt'), '\n')"></var>
-        <foreach var="linha" in="linhas">
-            <var name="l" value="trim(linha)"></var>
-            <!-- SOLUÇÃO: Usa o split para separar nome e SVG -->
-            <var name="partes" value="split(l, ' = ')"></var>
-            
-            <!-- Se a primeira parte for o nome do animal -->
-            <if condition="partes[0] == this.nome">
-                <var name="svg" value="partes[1]"></var>
-                <return value="'<g transform=\"translate(' + this.x + ',' + this.y + ')\">' + svg + '</g>'"></return>
+            <!-- ================= LÓGICA ================= -->
+            <var name="m" value="lower(message)"></var>
+            <var name="minhaCena" value="<new class='Cena'>"></var>
+
+            <if condition="includes(m, 'sol')">
+                <set name="minhaCena.palco" value="minhaCena.palco + '<circle cx=\"80\" cy=\"20\" r=\"8\" fill=\"gold\"></circle>'"></set>
             </if>
-        </foreach>
-        <return value="''"></return>
-    </override>
-</class>
-
-<!-- A Classe Casa (Herda de ObjetoDesenhavel) -->
-<class name="Casa" extends="ObjetoDesenhavel">
-    <override fun name="desenhar">
-        <var name="linhas" value="split(readFile('casas.txt'), '\n')"></var>
-        <foreach var="linha" in="linhas">
-            <var name="l" value="trim(linha)"></var>
-            <var name="partes" value="split(l, ' = ')"></var>
             
-            <if condition="partes[0] == this.nome">
-                <var name="svg" value="partes[1]"></var>
-                <return value="'<g transform=\"translate(' + this.x + ',' + this.y + ')\">' + svg + '</g>'"></return>
+            <if condition="includes(m, 'gato')">
+                <call name="minhaCena.adicionar" args="<new class='Animal' args='gato, 25, 80'>"></call>
             </if>
-        </foreach>
-        <return value="''"></return>
-    </override>
-</class>
+            <if condition="includes(m, 'cao') || includes(m, 'cão')">
+                <call name="minhaCena.adicionar" args="<new class='Animal' args='cao, 50, 80'>"></call>
+            </if>
+            <if condition="includes(m, 'casa')">
+                <call name="minhaCena.adicionar" args="<new class='Casa' args='casa_simples, 75, 85'>"></call>
+            </if>
 
-<!-- =========================================================
-     A CENA (Polimorfismo)
-     ========================================================= -->
-<class name="Cena">
-    <var name="objetos" value="[]"></var>
+            <print>Aqui está o teu desenho:</print>
+            <print>
+                <svg viewBox="0 0 100 100" width="240" height="240">
+                    {minhaCena.renderizar()}
+                </svg>
+            </print>
+        </program>
     
-    <!-- O cenário base (Céu e Relva) -->
-    <var name="palco" value="<rect x='0' y='0' width='100' height='100' fill='#dff1ff'></rect><rect x='0' y='75' width='100' height='25' fill='#7cb342'></rect>"></var>
-
-    <fun name="adicionar" params="obj">
-        <push name="this.objetos" value="obj"></push>
-    </fun>
-
-    <fun name="renderizar">
-        <var name="svgFinal" value="this.palco"></var>
-        <foreach var="obj" in="this.objetos">
-            <set name="svgFinal" value="svgFinal + obj.desenhar()"></set>
-        </foreach>
-        <return value="svgFinal"></return>
-    </fun>
-</class>
-
-<!-- =========================================================
-     A FUNÇÃO PÚBLICA
-     ========================================================= -->
-<fun name="desenhar_cena" params="pedido">
-    <var name="m" value="lower(pedido)"></var>
-    <var name="minhaCena" value="<new class='Cena'>"></var>
-
-    <!-- 1. O Sol (desenhado diretamente no palco para não precisar de classe) -->
-    <if condition="includes(m, 'sol')">
-        <var name="solSVG" value="<circle cx='80' cy='20' r='8' fill='gold'></circle><path d='M80 8 L80 2 M80 32 L80 38 M68 20 L62 20 M92 20 L98 20 M71.5 11.5 L67.5 7.5 M88.5 28.5 L92.5 32.5 M88.5 11.5 L92.5 7.5 M71.5 28.5 L67.5 32.5' stroke='orange' stroke-width='2' stroke-linecap='round'></path>"></var>
-        <set name="minhaCena.palco" value="minhaCena.palco + solSVG"></set>
-    </if>
-
-    <!-- 2. Animais -->
-    <if condition="includes(m, 'gato')">
-        <call name="minhaCena.adicionar" args="<new class='Animal' args='gato, 25, 80'>"></call>
-    </if>
-    <if condition="includes(m, 'cão') || includes(m, 'cao')">
-        <call name="minhaCena.adicionar" args="<new class='Animal' args='cao, 50, 80'>"></call>
-    </if>
-    <if condition="includes(m, 'pássaro') || includes(m, 'passaro')">
-        <call name="minhaCena.adicionar" args="<new class='Animal' args='passaro, 20, 30'>"></call>
-    </if>
-
-    <!-- 3. Casas -->
-    <if condition="includes(m, 'casa')">
-        <call name="minhaCena.adicionar" args="<new class='Casa' args='casa_simples, 75, 85'>"></call>
-    </if>
-    <if condition="includes(m, 'castelo')">
-        <call name="minhaCena.adicionar" args="<new class='Casa' args='castelo, 50, 85'>"></call>
-    </if>
-
-    <!-- 4. Renderização -->
-    <print>Aqui está o teu desenho:</print>
-    <print>
-        <svg viewBox="0 0 100 100" width="240" height="240">
-            {minhaCena.renderizar()}
-        </svg>
-    </print>
-</fun>
-
-</program>
 }
