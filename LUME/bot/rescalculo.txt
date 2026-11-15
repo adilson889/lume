@@ -1,4 +1,4 @@
-1-{xlang}
+1-{
 
 <import name="xlang.math"></import>
 <if condition="temconta">
