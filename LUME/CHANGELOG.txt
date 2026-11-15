@@ -134,3 +134,8 @@ Lume - historico de versoes
 0.3.14
 - Corrigido: SVG vinha em branco no chat. A lista de HTML permitido (DOMPurify) nao tinha as tags SVG; agora aceita svg, g, rect, circle, ellipse, line, polyline, polygon, path, text, gradientes e os atributos de desenho (viewBox, fill, stroke, x, y, cx, cy, r, d, points, transform...).
 - Respostas de ficheiro (REPLY (ficheiro.txt, N)) que comecem por <program> passam a correr como XLang. Formato da entrada: N-{ <program> ... </program> }, com as chaves a envolver tudo.
+
+0.3.15
+- O chat passa a correr paginas HTML com JavaScript. Entradas de ficheiro que comecam por <!doctype html> ou <html> abrem numa iframe isolada (sandbox sem allow-same-origin e CSP sem rede), por isso o JS nao toca no chat, nas cookies nem na API. A altura da iframe ajusta-se sozinha.
+- Interpolacao nos templates: {{nome}} (nome pedido, ex.: "nome do site AX COMERCE") e {{msg}}.
+- Primeiro template: loja e-commerce (templates.txt, entrada 1) com carrinho; disparada por palavras_loja.txt.

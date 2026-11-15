@@ -56,6 +56,11 @@ WHEN CONTAINS "sv" {
     REPLY (rescalculo.txt, 3)
 }
 
+WHEN CONTAINS KEYWORDS(palavras_loja.txt) {
+ WAITING("A montar a loja")
+    REPLY (templates.txt, 1)
+}
+
 WHEN CONTAINS "pagina teste" {
  WAITING("A montar a página")
     REPLY (rescalculo.txt, 4)
