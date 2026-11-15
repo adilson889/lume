@@ -1475,25 +1475,36 @@ enviar=function(){
 })()</script>
 
 
-
 <script>(function(){
-var N=window.LumeNativo;
-if(!N||!N.scrollEstado)return;
-var ult="";
-function enviar(){
- var t=chatEl.scrollTop<=1,
-     f=chatEl.scrollHeight-chatEl.scrollTop-chatEl.clientHeight<=2,
-     k=t+","+f;
- if(k===ult)return;
- ult=k;
- try{N.scrollEstado(t,f)}catch(e){}
+var el=chatEl,y0=0,pull=0,on=false;
+function topo(){return el.scrollTop<=0}
+function fundo(){return el.scrollHeight-el.scrollTop-el.clientHeight<=1}
+function ap(v){
+ pull=v;
+ if(!v){el.style.transform="";return}
+ var r=Math.min(Math.abs(v)*0.5/el.clientHeight,1);
+ el.style.transformOrigin=v>0?"50% 0":"50% 100%";
+ el.style.transform="scaleY("+(1+0.3*r)+")";
 }
-chatEl.addEventListener("scroll",enviar,{passive:true});
-chatEl.addEventListener("touchstart",enviar,{passive:true});
-new MutationObserver(enviar).observe(chatEl,{childList:true,subtree:true});
-window.addEventListener("resize",enviar);
-enviar();
+el.addEventListener("touchstart",function(e){
+ if(e.touches.length!==1){on=false;return}
+ on=true;y0=e.touches[0].clientY;el.style.transition="none";
+},{passive:true});
+el.addEventListener("touchmove",function(e){
+ if(!on||e.touches.length!==1)return;
+ var y=e.touches[0].clientY,dy=y-y0;
+ if(dy>0&&topo())ap(dy);
+ else if(dy<0&&fundo())ap(dy);
+ else{ap(0);y0=y}
+},{passive:true});
+function fim(){
+ if(!on)return;on=false;
+ if(pull){el.style.transition="transform .3s cubic-bezier(.32,.72,0,1)";ap(0)}
+}
+el.addEventListener("touchend",fim,{passive:true});
+el.addEventListener("touchcancel",fim,{passive:true});
 })()</script>
+
 
 
 <script src="LUME/despachante.js"></script>
