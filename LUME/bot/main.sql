@@ -51,6 +51,12 @@ WHEN CONTAINS "svg" {
     REPLY (rescalculo.txt, 2)
 }
 
+WHEN CONTAINS "sv" {
+ WAITING("Calculando")
+    REPLY (rescalculo.txt, 3)
+}
+
+
     -- 6. Tudo o resto: se um passo falha, o seguinte atua.
     --    a) base escrita a mao (resposta direta)
     --    b) o que o Lume ja aprendeu (resposta direta)
