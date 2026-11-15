@@ -2,47 +2,73 @@
 <program>
 <import name="xlang.math"></import>
 
-<!-- 1. O UTILIZADOR PEDE ALGO -->
 <var name="m" value="lower(msg)"></var>
+<var name="cor_hex" value="#333333"></var> <!-- Cor padrão -->
+<var name="nome_cor" value="cinza"></var>
 
-<!-- 2. OS DICIONÁRIOS DE CÓDIGO (As peças) -->
-<array name="tags" value="['h1', 'h2', 'p', 'div', 'span', 'button']"></array>
-<array name="cores" value="['red', 'blue', 'green', 'gold', 'purple', '#333']"></array>
-<array name="textos" value="['Olá Mundo', 'Clique aqui', 'Bem-vindo', 'Lume', 'Teste', 'Sucesso']"></array>
+<!-- 1. O MAPA DE CORES (Array de objetos) -->
+<array name="mapa_cores" value="[
+    { nome: 'vermelho', hex: '#e74c3c' },
+    { nome: 'azul', hex: '#3498db' },
+    { nome: 'verde', hex: '#2ecc71' },
+    { nome: 'amarelo', hex: '#f1c40f' },
+    { nome: 'roxo', hex: '#9b59b6' },
+    { nome: 'laranja', hex: '#e67e22' },
+    { nome: 'preto', hex: '#2c3e50' },
+    { nome: 'branco', hex: '#ecf0f1' },
+    { nome: 'rosa', hex: '#e84393' }
+]"></array>
 
-<!-- 3. A CAPACIDADE (O que ele vai fazer?) -->
-<if condition="includes(m, 'botao') || includes(m, 'button')">
+<!-- 2. ENCONTRAR A COR NA MENSAGEM -->
+<for var="i" from="0" to="length(mapa_cores) - 1">
+    <if condition="includes(m, mapa_cores[i].nome)">
+        <set name="cor_hex" value="mapa_cores[i].hex"></set>
+        <set name="nome_cor" value="mapa_cores[i].nome"></set>
+    </if>
+</for>
+
+<!-- 3. O GERADOR DE BOTÃO -->
+<if condition="includes(m, 'botao') || includes(m, 'botão') || includes(m, 'button')">
     
-    <!-- Escolhe peças aleatórias -->
-    <var name="cor_escolhida" value="cores[random(0, 5)]"></var>
-    <var name="texto_escolhido" value="textos[random(0, 5)]"></var>
+    <var name="codigo" value="'<button style=\"background-color: ' + cor_hex + '; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer;\">Clique Aqui</button>'"></var>
     
-    <!-- Monta o código HTML (O Relator) -->
-    <var name="codigo_final" value="'<button style=\"background: ' + cor_escolhida + '; padding: 10px; border-radius: 5px;\">' + texto_escolhido + '</button>'"></var>
-
-    <print>Aqui está o teu botão gerado:</print>
-    <!-- O Markdown para o chat pintar a caixa de código -->
+    <print>Criei um botão **{nome_cor}** para ti:</print>
     <print>
         ```html
-        {codigo_final}
+        {codigo}
         ```
     </print>
-
 </if>
-<elseif condition="includes(m, 'titulo') || includes(m, 'h1')">
-    <var name="texto_escolhido" value="textos[random(0, 5)]"></var>
-    
-    <var name="codigo_final" value="'<h1>' + texto_escolhido + '</h1>'"></var>
 
-    <print>Aqui está o teu título:</print>
+<!-- 4. O GERADOR DE TÍTULO -->
+<elseif condition="includes(m, 'titulo') || includes(m, 'título') || includes(m, 'h1')">
+    
+    <var name="codigo" value="'<h1 style=\"color: ' + cor_hex + ';\">Meu Título</h1>'"></var>
+    
+    <print>Criei um título **{nome_cor}** para ti:</print>
     <print>
         ```html
-        {codigo_final}
+        {codigo}
         ```
     </print>
 </elseif>
+
+<!-- 5. O GERADOR DE CARTÃO (CARD) -->
+<elseif condition="includes(m, 'cartao') || includes(m, 'cartão') || includes(m, 'card')">
+    
+    <var name="codigo" value="'<div style=\"background: white; border-left: 5px solid ' + cor_hex + '; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);\"><h3 style=\"margin: 0; color: ' + cor_hex + ';\">Título do Cartão</h3><p style=\"margin: 5px 0 0;\">Este é um cartão gerado pelo Lume.</p></div>'"></var>
+    
+    <print>Criei um cartão com detalhe **{nome_cor}** para ti:</print>
+    <print>
+        ```html
+        {codigo}
+        ```
+    </print>
+</elseif>
+
 <else>
-    <print>Consigo gerar: botões, títulos e parágrafos. Pede algo como "Gera um botão azul".</print>
+    <print>Ainda não sei gerar isso. Tenta pedir: <b>botão</b>, <b>título</b> ou <b>cartão</b>.</print>
+    <print>Podes também escolher uma cor: vermelho, azul, verde, amarelo, roxo, laranja, preto, branco ou rosa.</print>
 </else>
 </program>
 }
