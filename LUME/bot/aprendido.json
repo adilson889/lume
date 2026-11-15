@@ -171,6 +171,11 @@
         "h": "8520be1b9f4d50fe",
         "t": "O que está fazendo?: Estou a processar as tuas mensagens, a aprender coisas novas e a preparar os meus desenhos. Em que posso ser útil agora?",
         "em": "2026-11-15T19:18:19.705Z"
+      },
+      {
+        "h": "fc9baefacf976034",
+        "t": "Quais linguagem entendes?: Entendo **BotQL** para a lógica e **XLang** para criar desenhos, cálculos e interfaces. Também gero código **HTML, CSS e JavaScript**.\nQueres ensinar-me outra linguagem?",
+        "em": "2026-11-15T19:21:14.922Z"
       }
     ]
   },
