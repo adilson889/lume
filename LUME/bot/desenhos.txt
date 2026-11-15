@@ -207,9 +207,108 @@
 
 
 
+<!-- BOLO -->
+<elseif condition="includes(m, 'bolo')">
+    <print>Aqui está o teu bolo:</print>
+    <print><svg viewBox="0 0 100 100" width="220" height="220"><rect x="0" y="85" width="100" height="15" fill="#7cb342"></rect><rect x="20" y="50" width="60" height="35" rx="5" fill="#f8bbd0"></rect><rect x="20" y="45" width="60" height="10" rx="3" fill="#e91e63"></rect><circle cx="35" cy="40" r="5" fill="#e74c3c"></circle><circle cx="50" cy="35" r="5" fill="#e74c3c"></circle><circle cx="65" cy="40" r="5" fill="#e74c3c"></circle></svg></print>
+</elseif>
+
+<!-- SORVETE -->
+<elseif condition="includes(m, 'sorvete')">
+    <print>Aqui está o teu sorvete:</print>
+    <print><svg viewBox="0 0 100 100" width="220" height="220"><rect x="0" y="0" width="100" height="100" fill="#fbfbf4"></rect><polygon points="40,50 60,50 50,90" fill="#e0a96d"></polygon><circle cx="50" cy="40" r="15" fill="#f8bbd0"></circle><circle cx="42" cy="30" r="10" fill="#81d4fa"></circle><circle cx="58" cy="30" r="10" fill="#a5d6a7"></circle></svg></print>
+</elseif>
+
+<!-- CAFÉ -->
+<elseif condition="includes(m, 'café') || includes(m, 'cafe')">
+    <print>Aqui está o teu café:</print>
+    <print><svg viewBox="0 0 100 100" width="220" height="220"><rect x="0" y="0" width="100" height="100" fill="#fbfbf4"></rect><rect x="25" y="40" width="50" height="40" rx="5" fill="#8d6e3f"></rect><path d="M75 45 Q90 45 90 60 Q90 75 75 75" stroke="#8d6e3f" fill="none" stroke-width="5"></path><path d="M35 25 Q45 15 40 5 M50 25 Q60 15 55 5 M65 25 Q75 15 70 5" stroke="#bdc3c7" fill="none" stroke-width="2"></path></svg></print>
+</elseif>
+
+<!-- MAÇÃ -->
+<elseif condition="includes(m, 'maçã') || includes(m, 'maca')">
+    <print>Aqui está a tua maçã:</print>
+    <print><svg viewBox="0 0 100 100" width="220" height="220"><rect x="0" y="0" width="100" height="100" fill="#fbfbf4"></rect><circle cx="50" cy="55" r="25" fill="#e74c3c"></circle><path d="M50 30 Q55 15 65 15" stroke="#8d6e3f" fill="none" stroke-width="3"></path><path d="M50 25 Q60 25 60 15 Q50 15 50 25" fill="#43a047"></path></svg></print>
+</elseif>
+
+<!-- BANANA -->
+<elseif condition="includes(m, 'banana')">
+    <print>Aqui está a tua banana:</print>
+    <print><svg viewBox="0 0 100 100" width="220" height="220"><rect x="0" y="0" width="100" height="100" fill="#fbfbf4"></rect><path d="M20 20 Q20 80 80 80 Q90 80 90 70 Q80 70 70 60 Q40 30 20 20" fill="#f1c40f" stroke="#f39c12" stroke-width="2"></path></svg></print>
+</elseif>
+
+<!-- AVIAO -->
+<elseif condition="includes(m, 'avião') || includes(m, 'aviao')">
+    <print>Aqui está o teu avião:</print>
+    <print><svg viewBox="0 0 100 100" width="220" height="220"><rect x="0" y="0" width="100" height="100" fill="#dff1ff"></rect><ellipse cx="50" cy="50" rx="30" ry="8" fill="#ecf0f1"></ellipse><polygon points="50,50 30,20 40,20 60,50" fill="#bdc3c7"></polygon><polygon points="50,50 30,80 40,80 60,50" fill="#bdc3c7"></polygon><polygon points="20,50 10,40 15,40 25,50" fill="#bdc3c7"></polygon></svg></print>
+</elseif>
+
+<!-- BARCO -->
+<elseif condition="includes(m, 'barco')">
+    <print>Aqui está o teu barco:</print>
+    <print><svg viewBox="0 0 100 100" width="220" height="220"><rect x="0" y="0" width="100" height="70" fill="#dff1ff"></rect><rect x="0" y="70" width="100" height="30" fill="#2980b9"></rect><path d="M20 70 L80 70 L70 85 L30 85 Z" fill="#8d6e3f"></path><polygon points="50,30 50,70 30,70" fill="white"></polygon><polygon points="50,30 50,70 70,70" fill="#ecf0f1"></polygon></svg></print>
+</elseif>
+
+<!-- BICICLETA -->
+<elseif condition="includes(m, 'bicicleta') || includes(m, 'bike')">
+    <print>Aqui está a tua bicicleta:</print>
+    <print><svg viewBox="0 0 100 100" width="220" height="220"><rect x="0" y="85" width="100" height="15" fill="#7cb342"></rect><circle cx="25" cy="70" r="15" stroke="#333" stroke-width="3" fill="none"></circle><circle cx="75" cy="70" r="15" stroke="#333" stroke-width="3" fill="none"></circle><path d="M25 70 L45 40 L70 40 L75 70 M45 40 L55 70 L25 70" stroke="#e74c3c" stroke-width="3" fill="none"></path></svg></print>
+</elseif>
+
+<!-- CHAPEU -->
+<elseif condition="includes(m, 'chapéu') || includes(m, 'chapeu')">
+    <print>Aqui está o teu chapéu:</print>
+    <print><svg viewBox="0 0 100 100" width="220" height="220"><rect x="0" y="0" width="100" height="100" fill="#fbfbf4"></rect><ellipse cx="50" cy="70" rx="40" ry="10" fill="#2c3e50"></ellipse><path d="M30 70 Q30 20 50 20 Q70 20 70 70" fill="#2c3e50"></path><rect x="30" y="60" width="40" height="10" fill="#e74c3c"></rect></svg></print>
+</elseif>
+
+<!-- PRESENTE -->
+<elseif condition="includes(m, 'presente')">
+    <print>Aqui está o teu presente:</print>
+    <print><svg viewBox="0 0 100 100" width="220" height="220"><rect x="0" y="0" width="100" height="100" fill="#fbfbf4"></rect><rect x="20" y="40" width="60" height="40" fill="#e74c3c"></rect><rect x="15" y="30" width="70" height="10" fill="#c0392b"></rect><rect x="45" y="40" width="10" height="40" fill="#f1c40f"></rect><path d="M50 30 Q30 10 30 30 Q30 40 50 40 Q70 40 70 30 Q70 10 50 30" fill="#f1c40f"></path></svg></print>
+</elseif>
+
+<!-- CHUVEIRO DE NUVEM -->
+<elseif condition="includes(m, 'chuva') || includes(m, 'tempestade')">
+    <print>Aqui está a chuva:</print>
+    <print><svg viewBox="0 0 100 100" width="220" height="220"><rect x="0" y="0" width="100" height="100" fill="#7f8c8d"></rect><circle cx="40" cy="30" r="15" fill="#95a5a6"></circle><circle cx="60" cy="25" r="20" fill="#95a5a6"></circle><circle cx="75" cy="35" r="12" fill="#95a5a6"></circle><rect x="40" y="30" width="35" height="17" fill="#95a5a6"></rect><line x1="30" y1="60" x2="25" y2="75" stroke="#3498db" stroke-width="2"></line><line x1="50" y1="60" x2="45" y2="75" stroke="#3498db" stroke-width="2"></line><line x1="70" y1="60" x2="65" y2="75" stroke="#3498db" stroke-width="2"></line></svg></print>
+</elseif>
+
+<!-- CORUJA -->
+<elseif condition="includes(m, 'coruja')">
+    <print>Aqui está a tua coruja:</print>
+    <print><svg viewBox="0 0 100 100" width="220" height="220"><rect x="0" y="0" width="100" height="100" fill="#2c3e50"></rect><ellipse cx="50" cy="55" rx="25" ry="30" fill="#8d6e3f"></ellipse><circle cx="40" cy="45" r="10" fill="#ecf0f1"></circle><circle cx="60" cy="45" r="10" fill="#ecf0f1"></circle><circle cx="40" cy="45" r="4" fill="#333"></circle><circle cx="60" cy="45" r="4" fill="#333"></circle><polygon points="45,55 55,55 50,65" fill="#f39c12"></polygon></svg></print>
+</elseif>
+
+<!-- TARTARUGA -->
+<elseif condition="includes(m, 'tartaruga')">
+    <print>Aqui está a tua tartaruga:</print>
+    <print><svg viewBox="0 0 100 100" width="220" height="220"><rect x="0" y="85" width="100" height="15" fill="#7cb342"></rect><ellipse cx="50" cy="70" rx="30" ry="15" fill="#43a047"></ellipse><circle cx="80" cy="70" r="7" fill="#388e3c"></circle><circle cx="78" cy="68" r="1" fill="#333"></circle><rect x="30" y="80" width="6" height="8" fill="#388e3c"></rect><rect x="64" y="80" width="6" height="8" fill="#388e3c"></rect></svg></print>
+</elseif>
+
+<!-- FOGO -->
+<elseif condition="includes(m, 'fogo') || includes(m, 'chama')">
+    <print>Aqui está o teu fogo:</print>
+    <print><svg viewBox="0 0 100 100" width="220" height="220"><rect x="0" y="0" width="100" height="100" fill="#2c3e50"></rect><path d="M50 10 Q70 40 60 70 Q55 85 50 90 Q45 85 40 70 Q30 40 50 10" fill="#e74c3c"></path><path d="M50 40 Q60 60 55 80 Q52 85 50 85 Q48 85 45 80 Q40 60 50 40" fill="#f1c40f"></path></svg></print>
+</elseif>
+
+<!-- CARTA -->
+<elseif condition="includes(m, 'carta') || includes(m, 'envelope')">
+    <print>Aqui está a tua carta:</print>
+    <print><svg viewBox="0 0 100 100" width="220" height="220"><rect x="0" y="0" width="100" height="100" fill="#fbfbf4"></rect><rect x="15" y="30" width="70" height="40" fill="#ecf0f1" stroke="#bdc3c7" stroke-width="2"></rect><polyline points="15,30 50,55 85,30" fill="none" stroke="#bdc3c7" stroke-width="2"></polyline></svg></print>
+</elseif>
+
+
+
+
+
 <!-- FALLBACK -->
 <else>
-    <print>Consigo desenhar: <b>estrela</b>, <b>sol</b>, <b>casa</b>, <b>gato</b>, <b>cão</b>, <b>carro</b>, <b>flor</b>, <b>nuvem</b>, <b>foguete</b>, <b>peixe</b>, <b>robô</b>, <b>pizza</b> ou um <b>gráfico</b>.</print>
+    <print>Consigo desenhar muita coisa! Tenta pedir:<br><br>
+    <b>Natureza:</b> sol, lua, estrela, estrela cadente, nuvem, chuva, montanha, mar, árvore, flor, fogo.<br>
+    <b>Animais:</b> gato, cão, pássaro, peixe, borboleta, coelho, porco, coruja, tartaruga.<br>
+    <b>Objetos:</b> casa, carro, avião, barco, bicicleta, robô, foguete, nave.<br>
+    <b>Comida/Outros:</b> pizza, bolo, sorvete, café, maçã, banana, coração, diamante, coroa, presente, carta.<br>
+    Ou pede um <b>gráfico</b> de x² ou seno!</print>
 </else>
 </program>
 }
