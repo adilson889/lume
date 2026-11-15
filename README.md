@@ -70,6 +70,8 @@ LUME/
   vendor/nlp.min.js             NLP.js num único ficheiro
   assets/logo.png
   tests/casos_programacao.txt   casos de teste (pergunta | resposta esperada)
+  editor/editor.html            mini editor/navegador das apps HTML (interface)
+  editor/lume-editor.js         ponte do editor no chat (cartões de ficheiro)
   TEMPLATES.md                  como criar templates (páginas HTML/JS e XLang)
   CHANGELOG.txt
   VERSION

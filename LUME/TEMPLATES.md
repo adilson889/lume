@@ -175,3 +175,14 @@ Fora de uma página (`<!doctype html>`), o HTML de uma resposta normal passa por
 - A regra no `main.sql` está antes do `OTHERWISE` e usa palavras específicas.
 - Os estilos usam classes próprias; numa página isolada isso é seguro, em respostas normais use um prefixo (por exemplo `.meusite-`).
 - Testado no chat com um pedido real, incluindo um nome com acentos.
+
+## 9. Onde está o editor
+
+O editor das apps é independente do `index.html`:
+
+| Ficheiro | Função |
+|---|---|
+| `LUME/editor/editor.html` | a interface: barra de topo, ver o site, ver o código, menu de três pontos |
+| `LUME/editor/lume-editor.js` | no chat: cria os cartões de ficheiro, abre o editor e atende copiar, descarregar e fechar |
+
+O `index.html` só carrega `lume-editor.js`. O `editor.html` corre numa iframe isolada e conversa com o chat por `postMessage`, com três pedidos: `copiar`, `baixar` e `fechar`. Para acrescentar uma função ao editor (por exemplo guardar a app no Lume), basta tratar a nova mensagem nos dois ficheiros.

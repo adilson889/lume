@@ -145,3 +145,6 @@ Lume - historico de versoes
 
 0.3.17
 - As apps HTML/JS deixam de aparecer dentro da conversa: a resposta e um cartao de ficheiro (ex.: ax-comerce.html). Ao tocar, abre um editor em ecra inteiro com icones no topo para ver o site e ver o codigo fonte, e um menu de 3 pontos com Copiar codigo, Copiar como Markdown, Transferir como HTML, Transferir como texto e Recarregar o site.
+
+0.3.18
+- O editor de apps sai do index.html e passa a ser independente: LUME/editor/editor.html (a interface: topo, ver site, ver codigo, menu de 3 pontos) e LUME/editor/lume-editor.js (ponte no chat: cartoes de ficheiro e pedidos de copiar, descarregar e fechar). O index.html so carrega um script. O editor corre numa iframe isolada e fala com o chat por postMessage.
