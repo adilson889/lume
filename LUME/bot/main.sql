@@ -1,3 +1,7 @@
+
+IMPORT {animais.sql}
+
+
 CREATE BOT "Lume"
 
 CREATE TABLE Context() PREVENT DEFAULT
