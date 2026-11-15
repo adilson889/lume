@@ -1,6 +1,4 @@
 
-IMPORT {animais.sql}
-
 
 CREATE BOT "Lume"
 
