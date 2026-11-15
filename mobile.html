@@ -410,6 +410,17 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:64px;backgrou
 #modal-rodape .idiomas button.atual span{color:var(--on);opacity:.7}
 #modal-rodape button.ghost{flex-basis:100%;border-color:transparent;color:var(--muted);font-weight:500}
 #sidebar{visibility:hidden;transition:transform .45s cubic-bezier(.32,.72,0,1),visibility 0s linear .45s}#sidebar.show{visibility:visible;transition:transform .45s cubic-bezier(.32,.72,0,1),visibility 0s}#btn-nova-sb{padding:12px 14px!important;font-size:14px!important;min-width:0}.msg-convite{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin:2px 0 10px 0;align-self:flex-start;font-size:14px;color:var(--muted)}.msg-convite button{border:0;border-radius:18px;padding:9px 18px;font:inherit;font-weight:600;background:var(--r);color:var(--on);cursor:pointer}.msg-convite button:active{opacity:.85}.sug-chip.sug-ensinar{background:var(--r);color:var(--on);border-color:var(--r);font-weight:600}.sug-chip.sug-ensinar:active{opacity:.85;background:var(--r)}</style>
+<style id="estilo-app-selecao">
+/* App (mobile.html): so se pode selecionar texto no campo de escrita e nas respostas do bot */
+html,body,body *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+input,textarea,[contenteditable="true"],
+#chat-input,.ens-ta,.modal-input,
+.msg.sistema,.msg.sistema *{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+/* dentro das respostas, botoes e opcoes clicaveis continuam sem selecao */
+.msg.sistema button,.msg.sistema .cabecalho-codigo,.msg.sistema .cabecalho-codigo *,
+.msg.sistema .ask-opcao,.msg.sistema .ask-opcao *,
+.msg.sistema [data-botql-ask],.msg.sistema [data-botql-categoria],.msg.sistema [data-botql-produto]{-webkit-user-select:none;user-select:none}
+</style>
 </head>
 <body>
 <div id=tela-carregando>
