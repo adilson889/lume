@@ -43,7 +43,7 @@ ON MESSAGE {
 
 WHEN CONTAINS KEYWORDS (calculo.txt) {
  WAITING("Calculando")
-    REPLY (res-calculo.txt, 1)
+    REPLY (rescalculo.txt, 1)
 }
 
     -- 6. Tudo o resto: se um passo falha, o seguinte atua.
