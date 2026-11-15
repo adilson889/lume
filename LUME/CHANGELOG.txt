@@ -151,3 +151,8 @@ Lume - historico de versoes
 
 0.3.19
 - Editor de apps mais profissional: barra so com icones (fechar, desfazer, refazer, executar, site, codigo, mais), realce de sintaxe para HTML, CSS e JavaScript, numeros de linha, edicao do codigo (Tab indenta, Enter mantem a indentacao), barra de estado com linha:coluna, linhas e caracteres, indicador de alteracoes no nome, executar o codigo editado e repor o original. Copiar e transferir usam o codigo editado.
+
+0.3.20
+- Primeira camada de despacho de capacidades no main.sql: pedidos que combinam cálculo e gráfico são encaminhados antes das operações individuais.
+- Novo fluxo combinado em combinacoes.txt: reutiliza xlang.math para calcular e HTMLx-lang para desenhar um gráfico SVG.
+- Novos gatilhos em pedidos_combinados.txt e registo dos ficheiros em arquivos.json. BotQL e HTMLx-lang não foram alterados.
