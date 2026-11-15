@@ -200,3 +200,21 @@ nome | sinónimo 1, sinónimo 2 | fragmento SVG desenhado numa caixa de 100x100
 O chat injeta `pecas_nome`, `pecas_svg`, `pecas_chaves`, `pecas_mapa` e `pecas_nchaves` em qualquer bloco XLang que mencione `pecas_`, e `desenhos_compostos.txt` percorre-as com um único ciclo. Para ensinar uma peça nova ao Lume basta acrescentar uma linha a `pecas.txt` (o ficheiro já está em `arquivos.json`). Os sinónimos são comparados com e sem acentos.
 
 Nota técnica: o `<print>` do XLang escapa sempre o que interpola, por isso um SVG guardado numa variável não pode ser impresso diretamente. Para montar SVG a partir de dados, escreva `<g data-raw="{elementos}"></g>` dentro do `<svg>`: o chat insere o conteúdo da variável como markup SVG, depois de o limpar com o DOMPurify.
+
+## 11. Capacidades e despachante
+
+O Lume decide o que fazer a partir de `LUME/bot/capacidades.txt`, um registo de capacidades em vez de frases decoradas:
+
+```
+nome | verbos | objetos | requer | resposta | aviso
+```
+
+| Campo | Significado |
+|---|---|
+| `verbos` | palavras que ativam a capacidade (sem acentos) |
+| `objetos` | assunto do pedido; `numeros` e `pecas` são medidores (quantos números e quantas peças de `pecas.txt` há na pergunta); vazio = qualquer |
+| `requer` | condições sobre os medidores, por exemplo `pecas>=2`; `-` = nenhuma |
+| `resposta` | `ficheiro,número` da entrada que executa a capacidade |
+| `aviso` | o que o Lume diz quando entendeu o pedido mas falta algo (só se o pedido juntar elementos com " e ", " com " ou vírgula). `{lista}` e `{pecas}` são preenchidos |
+
+O despachante (`LUME/despachante.js`) corre antes do bot. Se os verbos da pergunta pertencem a uma só capacidade e as condições se cumprem, executa a resposta; se falta algo e há `aviso`, diz o que falta; em qualquer outro caso (incluindo pedidos que misturam capacidades) entrega a pergunta ao bot, que continua a decidir pelas regras do `main.sql`. Para acrescentar uma capacidade nova basta uma linha em `capacidades.txt` e a entrada da resposta.

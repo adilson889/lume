@@ -182,3 +182,7 @@ Lume - historico de versoes
 
 0.3.27
 - O codigo das paginas geradas a partir de SVG deixa de ser uma linha longa: o editor formata (indenta) o HTML, o CSS e o SVG ao abrir esses ficheiros. Novo item "Formatar codigo" no menu de tres pontos para formatar qualquer pagina. O CSS fica uma regra por linha e as tags curtas (title, p, h1...) ficam numa so linha.
+
+0.4.0
+- Despachante de capacidades (passo 1 da VISAO.md). LUME/bot/capacidades.txt regista o que o Lume sabe fazer como dados (nome | verbos | objetos | requer | resposta | aviso) e LUME/despachante.js decide, para cada pergunta, que capacidade executar, se o pedido tem o que e preciso e o que dizer quando falta algo. Capacidades iniciais: calcular, desenhar (juntar pecas de pecas.txt) e loja (template).
+- Se os verbos da pergunta pertencem a mais de uma capacidade, ou nenhuma se aplica, o pedido segue para o bot como antes. As regras antigas do main.sql ficam como rede de seguranca.
