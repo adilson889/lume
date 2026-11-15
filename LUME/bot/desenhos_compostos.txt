@@ -8,56 +8,56 @@
 <!-- CASA -->
 <if condition="includes(m, 'casa')">
     <set name="x" value="20 + pos * 90"></set>
-    <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' 15) scale(0.8)\"><rect x=\"25\" y=\"50\" width=\"50\" height=\"38\" fill=\"#f4d9a8\" stroke=\"#8d6e3f\" stroke-width=\"2\"/><polygon points=\"20,52 50,25 80,52\" fill=\"#c0392b\" stroke=\"#7b241c\" stroke-width=\"2\" stroke-linejoin=\"round\"/><rect x=\"45\" y=\"66\" width=\"12\" height=\"22\" fill=\"#8d6e3f\"/><rect x=\"30\" y=\"58\" width=\"10\" height=\"10\" fill=\"#bde3ff\" stroke=\"#8d6e3f\"/><rect x=\"62\" y=\"58\" width=\"10\" height=\"10\" fill=\"#bde3ff\" stroke=\"#8d6e3f\"/></g>'"></set>
+    <set name="elementos" value="elementos + '<g transform=&quot;translate(' + x + ' 15) scale(0.8)&quot;><rect x=&quot;25&quot; y=&quot;50&quot; width=&quot;50&quot; height=&quot;38&quot; fill=&quot;#f4d9a8&quot; stroke=&quot;#8d6e3f&quot; stroke-width=&quot;2&quot;/><polygon points=&quot;20,52 50,25 80,52&quot; fill=&quot;#c0392b&quot; stroke=&quot;#7b241c&quot; stroke-width=&quot;2&quot; stroke-linejoin=&quot;round&quot;/><rect x=&quot;45&quot; y=&quot;66&quot; width=&quot;12&quot; height=&quot;22&quot; fill=&quot;#8d6e3f&quot;/><rect x=&quot;30&quot; y=&quot;58&quot; width=&quot;10&quot; height=&quot;10&quot; fill=&quot;#bde3ff&quot; stroke=&quot;#8d6e3f&quot;/><rect x=&quot;62&quot; y=&quot;58&quot; width=&quot;10&quot; height=&quot;10&quot; fill=&quot;#bde3ff&quot; stroke=&quot;#8d6e3f&quot;/></g>'"></set>
     <set name="pos" value="pos + 1"></set>
 </if>
 
 <!-- ÁRVORE -->
 <if condition="includes(m, 'árvore') || includes(m, 'arvore')">
     <set name="x" value="20 + pos * 90"></set>
-    <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' 15) scale(0.8)\"><rect x=\"45\" y=\"55\" width=\"10\" height=\"35\" fill=\"#8d6e3f\"/><circle cx=\"50\" cy=\"40\" r=\"25\" fill=\"#43a047\"/><circle cx=\"35\" cy=\"57\" r=\"15\" fill=\"#388e3c\"/><circle cx=\"65\" cy=\"57\" r=\"15\" fill=\"#388e3c\"/></g>'"></set>
+    <set name="elementos" value="elementos + '<g transform=&quot;translate(' + x + ' 15) scale(0.8)&quot;><rect x=&quot;45&quot; y=&quot;55&quot; width=&quot;10&quot; height=&quot;35&quot; fill=&quot;#8d6e3f&quot;/><circle cx=&quot;50&quot; cy=&quot;40&quot; r=&quot;25&quot; fill=&quot;#43a047&quot;/><circle cx=&quot;35&quot; cy=&quot;57&quot; r=&quot;15&quot; fill=&quot;#388e3c&quot;/><circle cx=&quot;65&quot; cy=&quot;57&quot; r=&quot;15&quot; fill=&quot;#388e3c&quot;/></g>'"></set>
     <set name="pos" value="pos + 1"></set>
 </if>
 
 <!-- SOL -->
 <if condition="includes(m, 'sol')">
     <set name="x" value="20 + pos * 90"></set>
-    <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' 15) scale(0.8)\"><circle cx=\"50\" cy=\"50\" r=\"23\" fill=\"#ffd54f\"/><g stroke=\"#f9a825\" stroke-width=\"4\" stroke-linecap=\"round\"><path d=\"M50 8V20 M50 80V92 M8 50H20 M80 50H92 M20 20L29 29 M71 71L80 80 M80 20L71 29 M29 71L20 80\"/></g></g>'"></set>
+    <set name="elementos" value="elementos + '<g transform=&quot;translate(' + x + ' 15) scale(0.8)&quot;><circle cx=&quot;50&quot; cy=&quot;50&quot; r=&quot;23&quot; fill=&quot;#ffd54f&quot;/><g stroke=&quot;#f9a825&quot; stroke-width=&quot;4&quot; stroke-linecap=&quot;round&quot;><path d=&quot;M50 8V20 M50 80V92 M8 50H20 M80 50H92 M20 20L29 29 M71 71L80 80 M80 20L71 29 M29 71L20 80&quot;/></g></g>'"></set>
     <set name="pos" value="pos + 1"></set>
 </if>
 
 <!-- NUVEM -->
 <if condition="includes(m, 'nuvem')">
     <set name="x" value="20 + pos * 90"></set>
-    <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' 15) scale(0.8)\"><path d=\"M20 65 Q12 65 12 55 Q12 45 24 43 Q28 22 49 28 Q62 12 77 29 Q94 30 91 49 Q100 66 82 68Z\" fill=\"#ffffff\" stroke=\"#90a4ae\" stroke-width=\"2\"/></g>'"></set>
+    <set name="elementos" value="elementos + '<g transform=&quot;translate(' + x + ' 15) scale(0.8)&quot;><path d=&quot;M20 65 Q12 65 12 55 Q12 45 24 43 Q28 22 49 28 Q62 12 77 29 Q94 30 91 49 Q100 66 82 68Z&quot; fill=&quot;#ffffff&quot; stroke=&quot;#90a4ae&quot; stroke-width=&quot;2&quot;/></g>'"></set>
     <set name="pos" value="pos + 1"></set>
 </if>
 
 <!-- FLOR -->
 <if condition="includes(m, 'flor')">
     <set name="x" value="20 + pos * 90"></set>
-    <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' 15) scale(0.8)\"><path d=\"M50 52V92\" stroke=\"#388e3c\" stroke-width=\"5\"/><ellipse cx=\"39\" cy=\"68\" rx=\"12\" ry=\"6\" fill=\"#66bb6a\" transform=\"rotate(25 39 68)\"/><ellipse cx=\"50\" cy=\"32\" rx=\"10\" ry=\"19\" fill=\"#ec407a\"/><ellipse cx=\"50\" cy=\"32\" rx=\"19\" ry=\"10\" fill=\"#ec407a\"/><circle cx=\"50\" cy=\"32\" r=\"8\" fill=\"#ffca28\"/></g>'"></set>
+    <set name="elementos" value="elementos + '<g transform=&quot;translate(' + x + ' 15) scale(0.8)&quot;><path d=&quot;M50 52V92&quot; stroke=&quot;#388e3c&quot; stroke-width=&quot;5&quot;/><ellipse cx=&quot;39&quot; cy=&quot;68&quot; rx=&quot;12&quot; ry=&quot;6&quot; fill=&quot;#66bb6a&quot; transform=&quot;rotate(25 39 68)&quot;/><ellipse cx=&quot;50&quot; cy=&quot;32&quot; rx=&quot;10&quot; ry=&quot;19&quot; fill=&quot;#ec407a&quot;/><ellipse cx=&quot;50&quot; cy=&quot;32&quot; rx=&quot;19&quot; ry=&quot;10&quot; fill=&quot;#ec407a&quot;/><circle cx=&quot;50&quot; cy=&quot;32&quot; r=&quot;8&quot; fill=&quot;#ffca28&quot;/></g>'"></set>
     <set name="pos" value="pos + 1"></set>
 </if>
 
 <!-- GATO -->
 <if condition="includes(m, 'gato')">
     <set name="x" value="20 + pos * 90"></set>
-    <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' 15) scale(0.8)\"><ellipse cx=\"50\" cy=\"76\" rx=\"22\" ry=\"15\" fill=\"#f39c12\"/><circle cx=\"50\" cy=\"52\" r=\"17\" fill=\"#f39c12\"/><path d=\"M36 42L39 23L49 38 M51 38L62 23L65 43\" fill=\"#f39c12\" stroke=\"#b66a08\" stroke-width=\"2\"/><circle cx=\"44\" cy=\"51\" r=\"2.5\"/><circle cx=\"56\" cy=\"51\" r=\"2.5\"/><path d=\"M45 61Q50 66 55 61\" fill=\"none\" stroke=\"#333\" stroke-width=\"2\"/></g>'"></set>
+    <set name="elementos" value="elementos + '<g transform=&quot;translate(' + x + ' 15) scale(0.8)&quot;><ellipse cx=&quot;50&quot; cy=&quot;76&quot; rx=&quot;22&quot; ry=&quot;15&quot; fill=&quot;#f39c12&quot;/><circle cx=&quot;50&quot; cy=&quot;52&quot; r=&quot;17&quot; fill=&quot;#f39c12&quot;/><path d=&quot;M36 42L39 23L49 38 M51 38L62 23L65 43&quot; fill=&quot;#f39c12&quot; stroke=&quot;#b66a08&quot; stroke-width=&quot;2&quot;/><circle cx=&quot;44&quot; cy=&quot;51&quot; r=&quot;2.5&quot;/><circle cx=&quot;56&quot; cy=&quot;51&quot; r=&quot;2.5&quot;/><path d=&quot;M45 61Q50 66 55 61&quot; fill=&quot;none&quot; stroke=&quot;#333&quot; stroke-width=&quot;2&quot;/></g>'"></set>
     <set name="pos" value="pos + 1"></set>
 </if>
 
 <!-- CÃO -->
 <if condition="includes(m, 'cão') || includes(m, 'cao')">
     <set name="x" value="20 + pos * 90"></set>
-    <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' 15) scale(0.8)\"><rect x=\"29\" y=\"52\" width=\"40\" height=\"35\" rx=\"12\" fill=\"#a87945\"/><circle cx=\"50\" cy=\"42\" r=\"20\" fill=\"#b88955\"/><ellipse cx=\"33\" cy=\"40\" rx=\"8\" ry=\"16\" fill=\"#79502f\"/><ellipse cx=\"67\" cy=\"40\" rx=\"8\" ry=\"16\" fill=\"#79502f\"/><circle cx=\"43\" cy=\"40\" r=\"2.5\"/><circle cx=\"57\" cy=\"40\" r=\"2.5\"/><ellipse cx=\"50\" cy=\"51\" rx=\"7\" ry=\"5\" fill=\"#333\"/></g>'"></set>
+    <set name="elementos" value="elementos + '<g transform=&quot;translate(' + x + ' 15) scale(0.8)&quot;><rect x=&quot;29&quot; y=&quot;52&quot; width=&quot;40&quot; height=&quot;35&quot; rx=&quot;12&quot; fill=&quot;#a87945&quot;/><circle cx=&quot;50&quot; cy=&quot;42&quot; r=&quot;20&quot; fill=&quot;#b88955&quot;/><ellipse cx=&quot;33&quot; cy=&quot;40&quot; rx=&quot;8&quot; ry=&quot;16&quot; fill=&quot;#79502f&quot;/><ellipse cx=&quot;67&quot; cy=&quot;40&quot; rx=&quot;8&quot; ry=&quot;16&quot; fill=&quot;#79502f&quot;/><circle cx=&quot;43&quot; cy=&quot;40&quot; r=&quot;2.5&quot;/><circle cx=&quot;57&quot; cy=&quot;40&quot; r=&quot;2.5&quot;/><ellipse cx=&quot;50&quot; cy=&quot;51&quot; rx=&quot;7&quot; ry=&quot;5&quot; fill=&quot;#333&quot;/></g>'"></set>
     <set name="pos" value="pos + 1"></set>
 </if>
 
 <!-- CARRO -->
 <if condition="includes(m, 'carro')">
     <set name="x" value="20 + pos * 90"></set>
-    <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' 15) scale(0.8)\"><path d=\"M15 60L23 42H72L86 60V78H15Z\" fill=\"#e74c3c\" stroke=\"#922b21\" stroke-width=\"2\"/><path d=\"M31 43L38 29H63L74 43Z\" fill=\"#bde3ff\" stroke=\"#922b21\" stroke-width=\"2\"/><circle cx=\"32\" cy=\"78\" r=\"9\" fill=\"#333\"/><circle cx=\"70\" cy=\"78\" r=\"9\" fill=\"#333\"/></g>'"></set>
+    <set name="elementos" value="elementos + '<g transform=&quot;translate(' + x + ' 15) scale(0.8)&quot;><path d=&quot;M15 60L23 42H72L86 60V78H15Z&quot; fill=&quot;#e74c3c&quot; stroke=&quot;#922b21&quot; stroke-width=&quot;2&quot;/><path d=&quot;M31 43L38 29H63L74 43Z&quot; fill=&quot;#bde3ff&quot; stroke=&quot;#922b21&quot; stroke-width=&quot;2&quot;/><circle cx=&quot;32&quot; cy=&quot;78&quot; r=&quot;9&quot; fill=&quot;#333&quot;/><circle cx=&quot;70&quot; cy=&quot;78&quot; r=&quot;9&quot; fill=&quot;#333&quot;/></g>'"></set>
     <set name="pos" value="pos + 1"></set>
 </if>
 
