@@ -10,4 +10,4 @@ calcular | calcula, calcule, calcular, quanto e, quanto da, soma, somar, multipl
 desenhar | desenha, desenhe, desenhar | pecas | pecas>=2 | desenhos_compostos.txt,1 | So encontrei {pecas} peca que sei juntar. Sei combinar: {lista}. Pede, por exemplo, uma casa com arvore e sol.
 loja | cria, crie, criar, monta, montar, gera, gere, gerar, constroi, construir | loja, lojas, e-comerce, e-commerce, ecommerce, ecomerce, loja online, loja virtual, site de loja | - | templates.txt,1 |
 frases | gera, gere, gerar, inventa, inventar, escreve, escrever, improvisa, compoe, compor, diz, dizer | frase, frases | - | frases.txt,1 |
-codigo | gera, gere, gerar, cria, crie, criar, faz, faca, fazer, monta, montar, constroi, construir, escreve, escrever | botao, botão, button, titulo, título, h1, cartao, cartão, card, html, css, codigo, código | - | gerador_codigo.txt,1 |
+codigo | gera, gere, gerar, cria, crie, criar, faz, faca, fazer, monta, montar, constroi, construir, escreve, escrever | botao, botão, button, titulo, título, h1, cartao, cartão, card, html, css, codigo, código | - | gerar_codigo.txt,1 |
