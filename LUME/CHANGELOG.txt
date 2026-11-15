@@ -127,3 +127,6 @@ Lume - historico de versoes
 - Contas passam a ser uma formula: o index transforma a mensagem numa formula segura (so digitos, espacos e + - * / ( ) . ,) a partir de simbolos ("2+3*4", "(2+3)*4", "2 x 3") ou de palavras ("dois mais tres vezes quatro", "quanto e 7 dividido por 2") e entrega-a ao XLang, que a calcula com a precedencia certa e os parenteses.
 - Resposta com a conta escrita e o resultado a negrito: "O resultado de 2 + 3 × 4 é 14." Decimais com virgula, ruido de ponto flutuante arredondado, divisao por zero com aviso.
 - Fica de fora (continua nas regras antigas): media, e mensagens que nao sejam so uma conta. Datas como "12-05-2026" nao sao tratadas como conta. Substitui o expressaoParaFrase do 0.3.11.
+
+0.3.13
+- Corrigido: ao reabrir uma conversa, as respostas de contas eram recalculadas com a pergunta mais recente e podiam mostrar valores errados. Agora o codigo XLang da resposta e guardado ja com as variaveis da pergunta que a gerou (marcador <!--lume-vars-->, que o XLang ignora como comentario). Respostas guardadas antes desta versao continuam a ser recalculadas como antes.
