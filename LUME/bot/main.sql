@@ -46,7 +46,7 @@ WHEN CONTAINS KEYWORDS (calculo.txt) {
     REPLY (rescalculo.txt, 1)
 }
 
-WHEN CONTAINS "svg " {
+WHEN CONTAINS "svg" {
  WAITING("Calculando")
     REPLY (rescalculo.txt, 2)
 }
