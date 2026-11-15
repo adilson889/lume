@@ -42,6 +42,12 @@ ON MESSAGE {
 
 
 
+-- COMPOSIÇÃO DE VÁRIOS DESENHOS NUM ÚNICO SVG
+WHEN CONTAINS KEYWORDS(pedidos_desenhos_compostos.txt) {
+    WAITING("A juntar os desenhos num só SVG...", 2)
+    REPLY (desenhos_compostos.txt, 1)
+}
+
 -- DESPACHANTE DE CAPACIDADES
 -- Primeiro verifica se o pedido combina mais de uma capacidade.
 WHEN CONTAINS KEYWORDS(pedidos_combinados.txt) {
