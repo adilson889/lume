@@ -51,7 +51,7 @@ WHEN CONTAINS KEYWORDS (calculo.txt) {
 WHEN CONTAINS "svg" {
     WAITING("A desenhar...")
     REPLY (
-        <import name="mainlib"></import>
+        <import name="libdesenho"></import>
         <call name="desenhar_cena" args="message"></call>
     )
 }
