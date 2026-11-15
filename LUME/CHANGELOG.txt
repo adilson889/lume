@@ -186,3 +186,6 @@ Lume - historico de versoes
 0.4.0
 - Despachante de capacidades (passo 1 da VISAO.md). LUME/bot/capacidades.txt regista o que o Lume sabe fazer como dados (nome | verbos | objetos | requer | resposta | aviso) e LUME/despachante.js decide, para cada pergunta, que capacidade executar, se o pedido tem o que e preciso e o que dizer quando falta algo. Capacidades iniciais: calcular, desenhar (juntar pecas de pecas.txt) e loja (template).
 - Se os verbos da pergunta pertencem a mais de uma capacidade, ou nenhuma se aplica, o pedido segue para o bot como antes. As regras antigas do main.sql ficam como rede de seguranca.
+
+0.4.1
+- VISAO.md: nova secao sobre o registo de capacidades e o despachante, com o plano de cinco passos (registo, cadeias, mais capacidades, capacidades ensinadas por pessoas, retirar as regras antigas).
