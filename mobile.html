@@ -1473,8 +1473,6 @@ enviar=function(){
  return Promise.resolve();
 };
 })()</script>
-
-
 <script>(function(){
 var el=chatEl,y0=0,pull=0,on=false;
 function topo(){return el.scrollTop<=0}
@@ -1504,9 +1502,70 @@ function fim(){
 el.addEventListener("touchend",fim,{passive:true});
 el.addEventListener("touchcancel",fim,{passive:true});
 })()</script>
-
-
-
+<style>
+#anexo-chip{display:none;align-items:center;gap:10px;max-width:720px;margin:0 auto 8px;padding:8px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;font-size:14px;color:var(--text)}
+#anexo-chip.show{display:flex}
+#anexo-chip img{width:36px;height:36px;border-radius:8px;object-fit:cover}
+#anexo-chip .nome{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#anexo-chip button{border:0;background:0 0;color:var(--muted);font-size:22px;line-height:1;padding:0 4px;cursor:pointer}
+</style>
+<script>(function(){
+var IC_IMG=_ic('<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="1.5"/><path d="M21 15l-5-5L5 21"/>');
+var IC_FIC=_ic('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/>');
+var MAX=102400,chip=document.createElement("div");
+chip.id="anexo-chip";
+document.getElementById("input-area").insertBefore(chip,document.querySelector(".pv-pill"));
+window.anexo=null;
+function limpar(){window.anexo=null;chip.className="";chip.innerHTML=""}
+function mostrar(a,thumb){
+ window.anexo=a;chip.innerHTML="";
+ if(thumb){var im=document.createElement("img");im.src=thumb;chip.appendChild(im)}
+ var n=document.createElement("span");n.className="nome";n.textContent=a.nome;chip.appendChild(n);
+ var x=document.createElement("button");x.type="button";x.setAttribute("aria-label","Remover");x.textContent="×";x.onclick=limpar;chip.appendChild(x);
+ chip.className="show";rolarParaFim();
+}
+function escolher(accept,tipo){
+ var f=document.createElement("input");f.type="file";f.accept=accept;
+ f.onchange=function(){
+  var a=f.files&&f.files[0];if(!a)return;
+  var r=new FileReader();
+  if(tipo==="imagem"){
+   r.onload=function(){mostrar({nome:a.name,tipo:"imagem",dados:r.result},r.result)};
+   r.readAsDataURL(a);
+  }else{
+   if(a.size>MAX){mostrarToast("Ficheiro demasiado grande (máx. 100 KB)");return}
+   r.onload=function(){
+    mostrar({nome:a.name,tipo:"texto",dados:r.result});
+    var cod="```\n"+r.result.replace(/\s+$/,"")+"\n```";
+    inputEl.value=(inputEl.value?inputEl.value+"\n":"")+cod;ajustarAltura();
+   };
+   r.readAsText(a);
+  }
+ };
+ f.click();
+}
+var ITENS=[
+ ["Imagem",IC_IMG,function(){escolher("image/*","imagem")}],
+ ["Ficheiro",IC_FIC,function(){escolher(".txt,.js,.html,.css,.json,.java,.kt,.py,.sql,.md,text/*","texto")}]
+];
+if(typeof MODO_REPO!=="undefined"&&MODO_REPO)ITENS.push(["Ensinar ao Lume",IC_LAPIS,function(){window.iniciarEnsinar&&window.iniciarEnsinar()}]);
+window.anexarFicheiro=function(){
+ var btn=document.querySelector('[aria-label="Anexar"]');if(!btn)return;
+ fecharMenuConversa();
+ var f=document.createElement("div");f.id="menu-conv-fundo";f.addEventListener("click",fecharMenuConversa);
+ var m=document.createElement("div");m.id="menu-conv";m.style.minWidth="200px";m.style.transformOrigin="bottom left";
+ ITENS.forEach(function(it){
+  var b=document.createElement("button");b.type="button";b.className="menu-conv-item";
+  b.innerHTML=it[1];var t=document.createElement("span");t.textContent=it[0];b.appendChild(t);
+  b.addEventListener("click",function(e){e.stopPropagation();fecharMenuConversa();it[2]()});
+  m.appendChild(b);
+ });
+ document.body.appendChild(f);document.body.appendChild(m);
+ var r=btn.getBoundingClientRect(),h=m.offsetHeight;
+ m.style.left=Math.max(12,r.left)+"px";
+ m.style.top=Math.max(12,r.top-h-8)+"px";
+};
+})()</script>
 <script src="LUME/despachante.js"></script>
 <script src="LUME/editor/lume-editor.js"></script>
 </body>
