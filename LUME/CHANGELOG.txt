@@ -161,3 +161,6 @@ Lume - historico de versoes
 - Nova composição de desenhos: o Lume pode combinar casa, árvore, sol, nuvem, flor, gato, cão e carro numa única imagem SVG.
 - Criados pedidos_desenhos_compostos.txt e desenhos_compostos.txt; a nova rota é verificada antes das rotas de desenho individual.
 - BotQL e HTMLx-lang mantêm-se inalterados.
+
+0.3.22
+- Novo documento LUME/VISAO.md com a visao do Lume: capacidades em vez de comandos, arquitetura (BotQL, HTMLx-lang, Command Dispatcher, Lume) e a regra de nao inventar capacidades. So documentacao, sem alteracoes de codigo.
