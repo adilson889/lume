@@ -176,6 +176,11 @@
         "h": "fc9baefacf976034",
         "t": "Quais linguagem entendes?: Entendo **BotQL** para a lógica e **XLang** para criar desenhos, cálculos e interfaces. Também gero código **HTML, CSS e JavaScript**.\nQueres ensinar-me outra linguagem?",
         "em": "2026-11-15T19:21:14.922Z"
+      },
+      {
+        "h": "193d65402e4fecb1",
+        "t": "O que é o BotQL?:\n1-{\nO **BotQL** (Bot Query Language) é uma linguagem de regras inspirada em SQL para criar bots sem escrever código tradicional.\nOs comandos são escritos em **MAIÚSCULAS** e os blocos com mais de uma ação usam chavetas `{ }`. Os ficheiros têm a extensão `.sql` e o bot corre localmente (no servidor do utilizador), sem depender de servidores de terceiros.\nUm exemplo simples de código BotQL:\n```sql\nCREATE BOT \"MyBot\"\nON MESSAGE {\n    WHEN CONTAINS \"hello\" {\n        REPLY \"Hi!\"\n    }\n}\nRUN BOT\n```\n<br/>\nO BotQL pode ser usado em Node.js, no browser (via CDN), em React, TypeScript, Python e PHP\n}",
+        "em": "2026-11-15T19:31:05.109Z"
       }
     ]
   },
