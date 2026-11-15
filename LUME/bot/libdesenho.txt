@@ -1,0 +1,91 @@
+<program>
+<import name="xlang.math"></import>
+
+<!-- =========================================================
+     BIBLIOTECA DE DESENHOS (XLang Canvas/Art)
+     Estilo: Flat Design minimalista com fundo de céu e relva.
+     ========================================================= -->
+
+<!-- Estado global do quadro (acumula as tags SVG) -->
+<var name="quadro" value="''"></var>
+
+<!-- ---------------------------------------------------------
+     FUNÇÕES AUXILIARES PRIVADAS (Os "Tijolos")
+     --------------------------------------------------------- -->
+
+<!-- Inicia o palco com céu e chão -->
+<private fun name="_iniciarPalco">
+    <set name="quadro" value="<rect x='0' y='0' width='100' height='100' fill='#dff1ff'></rect><rect x='0' y='85' width='100' height='15' fill='#7cb342'></rect>"></set>
+</private>
+
+<!-- Desenha o Sol -->
+<private fun name="_desenharSol" params="x, y, r">
+    <var name="raios" value="''"></var>
+    <for var="i" from="0" to="7">
+        <var name="ang" value="i * 45 * PI() / 180"></var>
+        <!-- Calcula o início e fim de cada raio -->
+        <var name="x1" value="round((x + (r + 4) * cos(ang)) * 100) / 100"></var>
+        <var name="y1" value="round((y + (r + 4) * sin(ang)) * 100) / 100"></var>
+        <var name="x2" value="round((x + (r + 10) * cos(ang)) * 100) / 100"></var>
+        <var name="y2" value="round((y + (r + 10) * sin(ang)) * 100) / 100"></var>
+        
+        <set name="raios" value="raios + 'M' + x1 + ' ' + y1 + 'L' + x2 + ' ' + y2"></set>
+    </for>
+    <set name="quadro" value="quadro + '<circle cx=' + x + ' cy=' + y + ' r=' + r + ' fill=gold></circle><path d=' + raios + ' stroke=orange stroke-width=2 stroke-linecap=round fill=none></path>'"></set>
+</private>
+
+<!-- Desenha a Casa (Baseada no teu exemplo) -->
+<private fun name="_desenharCasa" params="x, y">
+    <set name="quadro" value="quadro + '<rect x=' + (x - 25) + ' y=' + (y - 35) + ' width=50 height=35 fill=#f4d9a8 stroke=#8d6e3f stroke-width=2></rect><polygon points=\"' + (x - 30) + ',' + (y - 35) + ' ' + x + ',' + (y - 60) + ' ' + (x + 30) + ',' + (y - 35) + '\" fill=#c0392b stroke=#7b241c stroke-width=2 stroke-linejoin=round></polygon><rect x=' + (x - 6) + ' y=' + (y - 18) + ' width=12 height=18 fill=#8d6e3f></rect><rect x=' + (x - 18) + ' y=' + (y - 25) + ' width=8 height=8 fill=#bde3ff stroke=#8d6e3f></rect><rect x=' + (x + 10) + ' y=' + (y - 25) + ' width=8 height=8 fill=#bde3ff stroke=#8d6e3f></rect>'"></set>
+</private>
+
+<!-- Desenha uma Árvore -->
+<private fun name="_desenharArvore" params="x, y">
+    <set name="quadro" value="quadro + '<rect x=' + (x - 3) + ' y=' + (y - 15) + ' width=6 height=15 fill=#8d6e3f></rect><circle cx=' + x + ' cy=' + (y - 22) + ' r=14 fill=#43a047></circle><circle cx=' + (x - 8) + ' cy=' + (y - 12) + ' r=10 fill=#388e3c></circle><circle cx=' + (x + 8) + ' cy=' + (y - 12) + ' r=10 fill=#388e3c></circle>'"></set>
+</private>
+
+<!-- Desenha uma Nuvem -->
+<private fun name="_desenharNuvem" params="x, y">
+    <set name="quadro" value="quadro + '<path d=\"M' + x + ' ' + y + ' a6 6 0 0 1 12 0 a8 8 0 0 1 14 0 a6 6 0 0 1 0 12 h-26 a6 6 0 0 1 0-12\" fill=white stroke=#ccc stroke-width=0.5></path>'"></set>
+</private>
+
+<!-- ---------------------------------------------------------
+     FUNÇÃO PÚBLICA (O que o BotQL vai chamar)
+     --------------------------------------------------------- -->
+<fun name="desenhar_cena" params="pedido">
+    <var name="m" value="lower(pedido)"></var>
+    
+    <!-- Limpar o quadro antes de desenhar -->
+    <set name="quadro" value="''"></set>
+    
+    <!-- 1. Preparar o cenário -->
+    <call name="_iniciarPalco"></call>
+    
+    <!-- 2. Desenhar elementos com base no texto -->
+    <if condition="includes(m, 'sol')">
+        <call name="_desenharSol" args="80, 20, 7"></call>
+    </if>
+
+    <if condition="includes(m, 'nuvem') || includes(m, 'ceu')">
+        <call name="_desenharNuvem" args="25, 15"></call>
+        <call name="_desenharNuvem" args="60, 25"></call>
+    </if>
+
+    <if condition="includes(m, 'casa')">
+        <call name="_desenharCasa" args="35, 85"></call>
+    </if>
+
+    <if condition="includes(m, 'árvore') || includes(m, 'arvore') || includes(m, 'floresta')">
+        <call name="_desenharArvore" args="80, 85"></call>
+        <call name="_desenharArvore" args="15, 85"></call>
+    </if>
+    
+    <!-- 3. Renderizar o SVG final -->
+    <print>
+        <svg viewBox="0 0 100 100" width="240" height="240">
+            {quadro}
+        </svg>
+    </print>
+</fun>
+
+</program>
