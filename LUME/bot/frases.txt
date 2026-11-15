@@ -1,0 +1,68 @@
+1-{
+<program>
+<import name="xlang.math"></import>
+<var name="m" value="lower(msg)"></var>
+<var name="qtd" value="1"></var>
+<var name="mate" value="false"></var>
+<var name="v" value="0"></var>
+<var name="a" value="0"></var>
+<var name="b" value="0"></var>
+<var name="c" value="0"></var>
+<var name="d" value="0"></var>
+<var name="k" value="0"></var>
+<var name="p" value="0"></var>
+<var name="q" value="0"></var>
+<array name="sujeitos" value="['O Lume', 'Um programador', 'A Maria', 'O gato do vizinho', 'Um robô curioso', 'A estrela da manhã', 'O professor', 'Uma formiga']"></array>
+<array name="verbos" value="['inventa', 'desenha', 'calcula', 'procura', 'descobre', 'esconde', 'sonha com', 'explica']"></array>
+<array name="complementos" value="['um número primo', 'uma estrela dourada', 'um mapa antigo', 'uma conta impossível', 'um poema curto', 'o segredo do universo', 'uma ponte de luz', 'um algoritmo elegante']"></array>
+<array name="circunstancias" value="['ao amanhecer', 'sem pressa', 'debaixo da chuva', 'na biblioteca', 'em silêncio', 'com muita calma', 'antes do almoço']"></array>
+<if condition="includes(m, 'matem') || includes(m, 'numero') || includes(m, 'número') || includes(m, 'conta')">
+    <set name="mate" value="true"></set>
+</if>
+<if condition="n >= 1">
+    <set name="qtd" value="clamp(round(nums[n - 1]), 1, 5)"></set>
+    <if condition="nums[n - 1] > 5">
+        <print>Fico-me por 5 frases de cada vez.</print>
+    </if>
+</if>
+<for var="i" from="1" to="qtd">
+    <if condition="mate">
+        <set name="v" value="random(0, 4)"></set>
+        <if condition="v == 0">
+            <set name="k" value="random(2, 50)"></set>
+            <if condition="isPrime(k)">
+                <print>O número {k} é primo: só se divide por 1 e por si próprio.</print>
+            </if>
+            <else>
+                <print>O número {k} não é primo.</print>
+            </else>
+        </if>
+        <elseif condition="v == 1">
+            <set name="k" value="random(2, 20)"></set>
+            <print>{k} ao quadrado dá {sqr(k)}.</print>
+        </elseif>
+        <elseif condition="v == 2">
+            <set name="k" value="random(3, 8)"></set>
+            <print>O factorial de {k} é {factorial(k)}.</print>
+        </elseif>
+        <elseif condition="v == 3">
+            <set name="p" value="random(2, 60)"></set>
+            <set name="q" value="random(2, 60)"></set>
+            <print>O máximo divisor comum de {p} e {q} é {gcd(p, q)}.</print>
+        </elseif>
+        <else>
+            <set name="p" value="random(3, 12)"></set>
+            <set name="q" value="random(3, 12)"></set>
+            <print>Um triângulo com catetos {p} e {q} tem hipotenusa {round(hypot(p, q) * 100) / 100}.</print>
+        </else>
+    </if>
+    <else>
+        <set name="a" value="random(0, 7)"></set>
+        <set name="b" value="random(0, 7)"></set>
+        <set name="c" value="random(0, 7)"></set>
+        <set name="d" value="random(0, 6)"></set>
+        <print>{sujeitos[a]} {verbos[b]} {complementos[c]} {circunstancias[d]}.</print>
+    </else>
+</for>
+</program>
+}

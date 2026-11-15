@@ -85,6 +85,11 @@ WHEN CONTAINS KEYWORDS(palavras_desenho.txt) {
     REPLY (desenhos.txt, 1)
 }
 
+WHEN CONTAINS KEYWORDS(palavras_frases.txt) {
+ WAITING("A inventar uma frase", 1)
+    REPLY (frases.txt, 1)
+}
+
 
     -- 6. Tudo o resto: se um passo falha, o seguinte atua.
     --    a) base escrita a mao (resposta direta)
