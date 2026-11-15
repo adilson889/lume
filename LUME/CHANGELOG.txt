@@ -118,3 +118,7 @@ Lume - historico de versoes
 - Contas: a regra do main.sql passa a usar o modulo xlang.math (import name="xlang.math") em vez de laços: soma sum(...nums), vezes product(...nums), media avg(...nums), menos sub(n1, n2), dividido div(n1, n2) com aviso para divisao por zero. O limite de 6 numeros desaparece.
 - O index injeta a lista nums com todos os numeros da pergunta (alem de n e n1 a n6, que sub e div usam).
 - calculo.txt: acrescentadas "média de" e "media de" para a regra da media disparar.
+
+0.3.11
+- Contas escritas so com simbolos ("1+7", "5*3", "2 x 3", "10/2", "8-3") passam a ser entendidas: o index transforma a mensagem inteira em "calcule 1 mais 7" antes de a enviar ao bot. Aceita +, - , *, x, ×, / e ÷. Mistura de operadores fica de fora, e "-" e "/" so com dois numeros. Textos como "ES6+" ou "Node 18+" nao disparam.
+- Resultado com frase de acompanhamento no main.sql: "O resultado é" e o numero a negrito.

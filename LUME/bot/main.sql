@@ -52,20 +52,20 @@ WHEN CONTAINS KEYWORDS (calculo.txt) {
             <print>Não dá para dividir por zero.</print>
         </if>
         <else>
-            <print>{div(n1, n2)}</print>
+            <print>O resultado é <b>{div(n1, n2)}</b>.</print>
         </else>
     </if>
     <elseif condition="includes(lower(msg), 'vezes')">
-        <print>{product(...nums)}</print>
+        <print>O resultado é <b>{product(...nums)}</b>.</print>
     </elseif>
     <elseif condition="includes(lower(msg), 'menos')">
-        <print>{sub(n1, n2)}</print>
+        <print>O resultado é <b>{sub(n1, n2)}</b>.</print>
     </elseif>
     <elseif condition="includes(lower(msg), 'média') || includes(lower(msg), 'media')">
-        <print>{avg(...nums)}</print>
+        <print>O resultado é <b>{avg(...nums)}</b>.</print>
     </elseif>
     <else>
-        <print>{sum(...nums)}</print>
+        <print>O resultado é <b>{sum(...nums)}</b>.</print>
     </else>
 </if>
 <else>
