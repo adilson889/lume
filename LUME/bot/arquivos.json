@@ -19,5 +19,7 @@
   "libdesenho.txt",
   "palavras_desenho.txt",
   "pedidos_combinados.txt",
-  "combinacoes.txt"
+  "combinacoes.txt",
+  "pedidos_desenhos_compostos.txt",
+  "desenhos_compostos.txt"
 ]
