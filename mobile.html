@@ -1180,7 +1180,7 @@ function aguardarSvgParaFicheiro(titulo){
  obs.observe(alvo,{childList:true,subtree:true});
  setTimeout(function(){obs.disconnect()},20000);
 }
-async function enviar(){const e=inputEl.value.trim();if(MODO_REPO&&e.length>=12&&e.length<=60&&await hashPainel(e)==="2ec794f9572608118a4064f0340ea4b80d98e1d49ad72a824b6284515b16224b"){inputEl.value="",ajustarAltura(),abrirPainel();return}if(e)if(adicionarMensagem(e,"usuario",!1),inputEl.value="",ajustarAltura(),window.matchMedia&&matchMedia("(pointer:coarse)").matches&&inputEl.blur(),btnEnviar.disabled=!0,adicionarDigitando(),MODO_CLIENTE){if(botPausado)return esconderDigitando(),adicionarMensagem("Este bot está pausado no momento.","sistema",!1),btnEnviar.disabled=!1,void 0;try{if(!botInstancia)throw new Error("bot ainda não está pronto");contar("recebidas");const q0=await paraPortugues(e);let pedido=q0;const rot=ROTULOS_ENTREGA[semAcentos(e).replace(/\s+/g," ").trim()];if(rot&&desenhoPendente){entregaAtual=rot;pedido=desenhoPendente;desenhoPendente=null}else{entregaAtual=null;desenhoPendente=null;if(pedidoDeDesenho(q0)){desenhoPendente=q0;esconderDigitando();perguntarEntregaDesenho();return}}contaAtual=formulaDaMensagem(pedido);const q=contaAtual?"calcule "+contaAtual.m:pedido;ultimaPergunta=q,fontesMsg=[],grupoRespostas=[],window.ultimaMsgSistema=null,foraDoTemaAtual=await mensagemForaDoTema(tirarEnvoltorio(q));try{if(!(window.LumeDespachante&&await window.LumeDespachante.tentar(q)))await botInstancia.receiveMessage(CLIENTE,tirarEnvoltorio(q))}finally{soltarRespostas()}if(entregaAtual==="ficheiro")aguardarSvgParaFicheiro(tituloDoDesenho(pedido));esconderDigitando()}catch(e){mostrarFalha(e)}finally{btnEnviar.disabled=!1}}else try{const t=await fetch(URL_SERVIDOR+"/mensagem",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cliente:CLIENTE,texto:e})});if(esconderDigitando(),!t.ok)return void adicionarMensagem("[erro "+t.status+"]","sistema",!1);const a=await t.json();a.resposta&&adicionarMensagem(a.resposta,"sistema",!0,a.html)}catch(e){esconderDigitando();adicionarMensagem(URL_SERVIDOR?"Não foi possível falar com o bot agora. Quem criou este bot pode estar offline no momento — tenta novamente daqui a pouco.":"[erro de rede] "+e.message,"sistema",!1)}finally{btnEnviar.disabled=!1}}function abrirSidebar(){renderizarListaConversas();sidebar.classList.add("show"),sidebarOverlay.classList.add("show")}function fecharSidebar(){sidebar.classList.remove("show","defs"),sidebarOverlay.classList.remove("show")}function alternarTema(){document.documentElement.classList.toggle("tema-escuro"),localStorage.setItem("botql_chat_tema",document.documentElement.classList.contains("tema-escuro")?"escuro":"claro")}function pedirLimparConversa(){abrirModal("Limpar conversa","Apagar todas as mensagens desta conversa?",'<button class="destrutivo" onclick="confirmarLimparConversa()"><span class="modal-icone">'+SVG_LIXEIRA+'</span>Limpar</button><button onclick="fecharModal()"><span class="modal-icone">'+SVG_X+"</span>Cancelar</button>")}function confirmarLimparConversa(){chatEl.innerHTML="",produtosSelecionados.clear(),fecharModal()}function marcarChipsTema(){const e=document.documentElement.classList.contains("tema-escuro");document.getElementById("chip-escuro").classList.toggle("ativo",e),document.getElementById("chip-claro").classList.toggle("ativo",!e)}function definirTema(e){document.documentElement.classList.toggle("tema-escuro","escuro"===e),localStorage.setItem("botql_chat_tema",e),marcarChipsTema()}function abrirDefinicoes(){const e=(document.getElementById("sobre-data").textContent||"").trim(),t=document.getElementById("defs-sobre");t.style.display=e&&"-"!==e?"block":"none",document.getElementById("chip-data").textContent="Atualizado em "+e,marcarChipsTema(),sidebar.classList.add("defs")}function fecharDefinicoes(){sidebar.classList.remove("defs")}function anexarFicheiro(){modalAviso("Anexar ficheiro","Ainda não disponível.")}function mensagemVoz(){window.ditar?ditar():modalAviso("Mensagem de voz","Ainda não disponível.")}chatEl.addEventListener("click",(e=>{const t=e.target.closest("[data-botql-produto]");if(t){const e=t.dataset.botqlProduto;return produtosSelecionados.has(e)?produtosSelecionados.delete(e):produtosSelecionados.add(e),t.classList.toggle("selecionado",produtosSelecionados.has(e)),inputEl.value=produtosSelecionados.size?"quero comprar: "+[...produtosSelecionados].join(", "):"",void ajustarAltura()}const k=e.target.closest("[data-botql-ask]");if(k){const m=k.closest(".msg");if(m){const n=m.nextElementSibling;n&&n.classList.contains("msg-acoes")&&n.remove();m.remove()}return inputEl.value=k.dataset.botqlAsk,void enviar()}const a=e.target.closest("[data-botql-categoria]");a&&(inputEl.value=a.dataset.botqlCategoria,enviar())})),"escuro"===localStorage.getItem("botql_chat_tema")&&document.documentElement.classList.add("tema-escuro"),btnEnviar.addEventListener("click",enviar),inputEl.addEventListener("input",ajustarAltura)</script>
+async function enviar(){const e0=inputEl.value.trim(),ax=window.anexo,axt=ax&&ax.tipo==="texto"&&ax.dados?ax.dados.replace(/\s+$/,""):"",e=axt?(e0?e0+"\n":"")+"```\n"+axt+"\n```":e0;if(MODO_REPO&&e0.length>=12&&e0.length<=60&&await hashPainel(e0)==="2ec794f9572608118a4064f0340ea4b80d98e1d49ad72a824b6284515b16224b"){inputEl.value="",ajustarAltura(),abrirPainel();return}if(e)if(ax?adicionarMensagemAnexo(e0,ax):adicionarMensagem(e,"usuario",!1),window.limparAnexo&&window.limparAnexo(),inputEl.value="",ajustarAltura(),window.matchMedia&&matchMedia("(pointer:coarse)").matches&&inputEl.blur(),btnEnviar.disabled=!0,adicionarDigitando(),MODO_CLIENTE){if(botPausado)return esconderDigitando(),adicionarMensagem("Este bot está pausado no momento.","sistema",!1),btnEnviar.disabled=!1,void 0;try{if(!botInstancia)throw new Error("bot ainda não está pronto");contar("recebidas");const q0=await paraPortugues(e);let pedido=q0;const rot=ROTULOS_ENTREGA[semAcentos(e).replace(/\s+/g," ").trim()];if(rot&&desenhoPendente){entregaAtual=rot;pedido=desenhoPendente;desenhoPendente=null}else{entregaAtual=null;desenhoPendente=null;if(pedidoDeDesenho(q0)){desenhoPendente=q0;esconderDigitando();perguntarEntregaDesenho();return}}contaAtual=formulaDaMensagem(pedido);const q=contaAtual?"calcule "+contaAtual.m:pedido;ultimaPergunta=q,fontesMsg=[],grupoRespostas=[],window.ultimaMsgSistema=null,foraDoTemaAtual=await mensagemForaDoTema(tirarEnvoltorio(q));try{if(!(window.LumeDespachante&&await window.LumeDespachante.tentar(q)))await botInstancia.receiveMessage(CLIENTE,tirarEnvoltorio(q))}finally{soltarRespostas()}if(entregaAtual==="ficheiro")aguardarSvgParaFicheiro(tituloDoDesenho(pedido));esconderDigitando()}catch(e){mostrarFalha(e)}finally{btnEnviar.disabled=!1}}else try{const t=await fetch(URL_SERVIDOR+"/mensagem",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cliente:CLIENTE,texto:e})});if(esconderDigitando(),!t.ok)return void adicionarMensagem("[erro "+t.status+"]","sistema",!1);const a=await t.json();a.resposta&&adicionarMensagem(a.resposta,"sistema",!0,a.html)}catch(e){esconderDigitando();adicionarMensagem(URL_SERVIDOR?"Não foi possível falar com o bot agora. Quem criou este bot pode estar offline no momento — tenta novamente daqui a pouco.":"[erro de rede] "+e.message,"sistema",!1)}finally{btnEnviar.disabled=!1}}function abrirSidebar(){renderizarListaConversas();sidebar.classList.add("show"),sidebarOverlay.classList.add("show")}function fecharSidebar(){sidebar.classList.remove("show","defs"),sidebarOverlay.classList.remove("show")}function alternarTema(){document.documentElement.classList.toggle("tema-escuro"),localStorage.setItem("botql_chat_tema",document.documentElement.classList.contains("tema-escuro")?"escuro":"claro")}function pedirLimparConversa(){abrirModal("Limpar conversa","Apagar todas as mensagens desta conversa?",'<button class="destrutivo" onclick="confirmarLimparConversa()"><span class="modal-icone">'+SVG_LIXEIRA+'</span>Limpar</button><button onclick="fecharModal()"><span class="modal-icone">'+SVG_X+"</span>Cancelar</button>")}function confirmarLimparConversa(){chatEl.innerHTML="",produtosSelecionados.clear(),fecharModal()}function marcarChipsTema(){const e=document.documentElement.classList.contains("tema-escuro");document.getElementById("chip-escuro").classList.toggle("ativo",e),document.getElementById("chip-claro").classList.toggle("ativo",!e)}function definirTema(e){document.documentElement.classList.toggle("tema-escuro","escuro"===e),localStorage.setItem("botql_chat_tema",e),marcarChipsTema()}function abrirDefinicoes(){const e=(document.getElementById("sobre-data").textContent||"").trim(),t=document.getElementById("defs-sobre");t.style.display=e&&"-"!==e?"block":"none",document.getElementById("chip-data").textContent="Atualizado em "+e,marcarChipsTema(),sidebar.classList.add("defs")}function fecharDefinicoes(){sidebar.classList.remove("defs")}function anexarFicheiro(){modalAviso("Anexar ficheiro","Ainda não disponível.")}function mensagemVoz(){window.ditar?ditar():modalAviso("Mensagem de voz","Ainda não disponível.")}chatEl.addEventListener("click",(e=>{const t=e.target.closest("[data-botql-produto]");if(t){const e=t.dataset.botqlProduto;return produtosSelecionados.has(e)?produtosSelecionados.delete(e):produtosSelecionados.add(e),t.classList.toggle("selecionado",produtosSelecionados.has(e)),inputEl.value=produtosSelecionados.size?"quero comprar: "+[...produtosSelecionados].join(", "):"",void ajustarAltura()}const k=e.target.closest("[data-botql-ask]");if(k){const m=k.closest(".msg");if(m){const n=m.nextElementSibling;n&&n.classList.contains("msg-acoes")&&n.remove();m.remove()}return inputEl.value=k.dataset.botqlAsk,void enviar()}const a=e.target.closest("[data-botql-categoria]");a&&(inputEl.value=a.dataset.botqlCategoria,enviar())})),"escuro"===localStorage.getItem("botql_chat_tema")&&document.documentElement.classList.add("tema-escuro"),btnEnviar.addEventListener("click",enviar),inputEl.addEventListener("input",ajustarAltura)</script>
 <script>(function(){var t=document.getElementById("titulo"),a=document.getElementById("avatar");function s(){var n=(t.textContent||"").trim();a.textContent=n&&n.indexOf("{{")<0?n.charAt(0).toUpperCase():"B"}s();new MutationObserver(s).observe(t,{childList:true,characterData:true,subtree:true})})()</script>
 <script>(function(){var v=window.visualViewport;if(!v)return;var r=document.documentElement;function aj(){r.style.setProperty("--vvh",v.height+"px");r.style.setProperty("--vvt",v.offsetTop+"px");if(window.scrollY)window.scrollTo(0,0)}v.addEventListener("resize",aj);v.addEventListener("scroll",aj);window.addEventListener("scroll",aj);aj()})()</script>
 <script>(function(){var x0=0,y0=0,t0=0,ok=false;function livre(el){return!(el&&el.closest&&el.closest("pre,table,textarea,input,.cabecalho-codigo"))}function modalAberto(){return document.getElementById("modal-overlay").classList.contains("show")}document.addEventListener("touchstart",function(e){if(e.touches.length!==1){ok=false;return}var t=e.touches[0];x0=t.clientX;y0=t.clientY;t0=Date.now();ok=livre(e.target)&&!modalAberto()&&!String(window.getSelection())&&!document.getElementById("voz-overlay").classList.contains("show")},{passive:true});document.addEventListener("touchend",function(e){if(!ok)return;ok=false;var t=e.changedTouches[0],dx=t.clientX-x0,dy=t.clientY-y0;if(Math.abs(dx)<60||Math.abs(dy)>Math.abs(dx)*.6||Date.now()-t0>700)return;var aberto=sidebar.classList.contains("show");if(dx>0&&!aberto)abrirSidebar();else if(dx<0&&aberto)fecharSidebar()},{passive:true})})()</script>
@@ -1192,7 +1192,7 @@ function msgDe(n){var el=n&&(n.nodeType===1?n:n.parentElement);return el&&el.clo
 document.addEventListener("selectionchange",function(){var s=window.getSelection();if(!s||s.rangeCount===0)return;if(s.isCollapsed){ultima=null;return}var ae=document.activeElement;if(ae&&(ae.tagName==="TEXTAREA"||ae.tagName==="INPUT"))return;var r=s.getRangeAt(0);if(!r.intersectsNode(chatEl))return;var a=msgDe(s.anchorNode),f=msgDe(s.focusNode);if(a&&a===f){ultima=a;return}var alvo=ultima&&ultima.isConnected?ultima:(a||f);if(!alvo)return;var nr=document.createRange();nr.selectNodeContents(alvo);s.removeAllRanges();s.addRange(nr)});
 
 /* Tocar na minha mensagem: abre o campo para editar */
-chatEl.addEventListener("click",function(e){var m=e.target.closest&&e.target.closest(".msg.usuario");if(!m)return;if(String(window.getSelection()))return;inputEl.value=m.textContent;ajustarAltura();inputEl.focus();try{inputEl.setSelectionRange(inputEl.value.length,inputEl.value.length)}catch(_){}});
+chatEl.addEventListener("click",function(e){var m=e.target.closest&&e.target.closest(".msg.usuario");if(!m)return;if(String(window.getSelection()))return;var _tx=m.querySelector(".anexo-texto");inputEl.value=_tx?_tx.textContent:(m.querySelector(".anexo-card")?"":m.textContent);ajustarAltura();inputEl.focus();try{inputEl.setSelectionRange(inputEl.value.length,inputEl.value.length)}catch(_){}});
 
 /* Ações extra: repetir, partilhar, voz */
 function textoMsg(m){var c=m.cloneNode(true);c.querySelectorAll(".cabecalho-codigo").forEach(function(x){x.remove()});var box=document.createElement("div");box.style.cssText="position:fixed;left:-9999px;top:0;width:320px;visibility:hidden;pointer-events:none";box.appendChild(c);document.body.appendChild(box);var t=(c.innerText||c.textContent||"").trim();box.remove();return t}
@@ -1204,7 +1204,7 @@ function repetir(acoes){var el=acoes.previousElementSibling;while(el&&!el.classL
 chatEl.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest(".msg-acao");if(!b)return;var ac=b.dataset.acao;if(ac!=="repetir"&&ac!=="partilhar"&&ac!=="voz")return;var acoes=b.closest(".msg-acoes"),msg=acoes&&acoes.previousElementSibling;if(ac==="repetir")repetir(acoes);else if(ac==="partilhar")partilhar(msg?textoMsg(msg):"");else if(ac==="voz")falar(b,msg?textoMsg(msg):"")});
 new MutationObserver(function(){if(vozBtn&&!vozBtn.isConnected)pararVoz()}).observe(chatEl,{childList:true});
 window.addEventListener("pagehide",pararVoz)})()</script>
-<script>(function(){window.atualizarBotaoEnviar=function(){var t=inputEl.value.trim().length>0;btnEnviar.classList.toggle("visivel",t);var w=document.getElementById("btn-voz-modo");if(w){w.classList.toggle("some",t);w.setAttribute("aria-hidden",t?"true":"false");w.tabIndex=t?-1:0}btnEnviar.setAttribute("aria-hidden",t?"false":"true");btnEnviar.tabIndex=t?0:-1};atualizarBotaoEnviar()})()</script>
+<script>(function(){window.atualizarBotaoEnviar=function(){var t=inputEl.value.trim().length>0||!!(window.anexo&&window.anexo.tipo==="texto");btnEnviar.classList.toggle("visivel",t);var w=document.getElementById("btn-voz-modo");if(w){w.classList.toggle("some",t);w.setAttribute("aria-hidden",t?"true":"false");w.tabIndex=t?-1:0}btnEnviar.setAttribute("aria-hidden",t?"false":"true");btnEnviar.tabIndex=t?0:-1};atualizarBotaoEnviar()})()</script>
 <script>(function(){
 /* ===== SUGESTÕES (edita esta lista à vontade) ===== */
 var SUGESTOES=["O que é recursão?","Como funciona um ciclo for?","O que é o Rust?"];
@@ -1503,26 +1503,63 @@ el.addEventListener("touchend",fim,{passive:true});
 el.addEventListener("touchcancel",fim,{passive:true});
 })()</script>
 <style>
-#anexo-chip{display:none;align-items:center;gap:10px;max-width:720px;margin:0 auto 8px;padding:8px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;font-size:14px;color:var(--text)}
-#anexo-chip.show{display:flex}
-#anexo-chip img{width:36px;height:36px;border-radius:8px;object-fit:cover}
-#anexo-chip .nome{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#anexo-chip button{border:0;background:0 0;color:var(--muted);font-size:22px;line-height:1;padding:0 4px;cursor:pointer}
+.anexo-card{position:relative;display:block;width:76px;height:76px;border-radius:16px;overflow:hidden;background:var(--bg2);border:1px solid var(--border);box-sizing:border-box;flex:none}
+.anexo-card img{width:100%;height:100%;object-fit:cover;display:block}
+.anexo-card .ext{position:absolute;left:0;right:0;top:16px;text-align:center;font-weight:600;font-size:18px;letter-spacing:.5px;color:var(--text)}
+.anexo-card .nome{position:absolute;left:6px;right:6px;bottom:7px;text-align:center;font-size:10px;line-height:1.2;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#anexo-chip{display:none;position:relative;order:-1;align-self:flex-start;width:76px;height:76px;margin:2px 0 6px;flex:none}
+#anexo-chip.show{display:block}
+#anexo-chip .remover{position:absolute;top:-6px;right:-6px;width:22px;height:22px;padding:0;border:0;border-radius:50%;background:var(--text);color:var(--bg);font-size:15px;line-height:22px;text-align:center;cursor:pointer}
+#input-area .pv-pill.com-anexo{flex-direction:column;align-items:stretch;gap:4px;padding:12px 12px 8px 16px;border-radius:26px}
+#input-area .pv-pill.com-anexo .pv-linha-botoes{display:flex;align-items:center;gap:6px}
+#input-area .pv-pill.com-anexo .pv-espaco{display:block;flex:1}
+#input-area .pv-pill.com-anexo #chat-input{order:0;flex:none;width:100%;padding:2px 4px 8px;min-height:34px;max-height:132px}
+#input-area .pv-pill.com-anexo .pv-linha-botoes>button:not(:first-child){order:0}
+.msg.usuario .anexo-card{background:var(--bg);margin:0 0 8px auto}
+.msg.usuario .anexo-card:last-child{margin-bottom:0}
+.msg.usuario .anexo-texto{white-space:pre-wrap;word-break:break-word}
 </style>
 <script>(function(){
 var IC_IMG=_ic('<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="1.5"/><path d="M21 15l-5-5L5 21"/>');
 var IC_FIC=_ic('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/>');
-var MAX=102400,chip=document.createElement("div");
+var MAX=102400,THUMB=192;
+var pill=document.querySelector(".pv-pill"),chip=document.createElement("div");
 chip.id="anexo-chip";
-document.getElementById("input-area").insertBefore(chip,document.querySelector(".pv-pill"));
+pill.insertBefore(chip,pill.firstChild);
 window.anexo=null;
-function limpar(){window.anexo=null;chip.className="";chip.innerHTML=""}
-function mostrar(a,thumb){
- window.anexo=a;chip.innerHTML="";
- if(thumb){var im=document.createElement("img");im.src=thumb;chip.appendChild(im)}
- var n=document.createElement("span");n.className="nome";n.textContent=a.nome;chip.appendChild(n);
- var x=document.createElement("button");x.type="button";x.setAttribute("aria-label","Remover");x.textContent="×";x.onclick=limpar;chip.appendChild(x);
- chip.className="show";rolarParaFim();
+function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function ext(n){var m=/\.([A-Za-z0-9]{1,5})$/.exec(n||"");return m?m[1].toUpperCase():"TXT"}
+/* O mesmo quadrado aparece no input e no balao do utilizador. */
+function cartao(a){
+ var h='<div class="anexo-card">';
+ if(a.miniatura)h+='<img src="'+a.miniatura+'">';
+ else h+='<span class="ext">'+esc(ext(a.nome))+'</span><span class="nome">'+esc(a.nome)+'</span>';
+ return h+'</div>';
+}
+function atualizar(){window.atualizarBotaoEnviar&&window.atualizarBotaoEnviar();window.atualizarExpandido&&window.atualizarExpandido()}
+function limpar(){window.anexo=null;chip.className="";chip.innerHTML="";pill.classList.remove("com-anexo");atualizar()}
+function mostrar(a){
+ window.anexo=a;chip.innerHTML=cartao(a);
+ var x=document.createElement("button");x.type="button";x.className="remover";x.setAttribute("aria-label","Remover");x.textContent="\u00d7";x.onclick=limpar;chip.appendChild(x);
+ chip.className="show";pill.classList.add("com-anexo");atualizar();rolarParaFim();
+}
+window.limparAnexo=limpar;
+/* Balao do utilizador: so o quadrado do ficheiro (mais o texto escrito, se houver). */
+window.adicionarMensagemAnexo=function(texto,a){
+ var h=cartao(a)+(texto?'<div class="anexo-texto">'+esc(texto)+'</div>':'');
+ return adicionarMensagem(texto||a.nome,"usuario",false,h);
+};
+/* Miniatura quadrada pequena: e' o que fica guardado no historico (localStorage). */
+function miniatura(url,cb){
+ var im=new Image();
+ im.onload=function(){try{
+  var c=document.createElement("canvas");c.width=c.height=THUMB;
+  var l=Math.min(im.width,im.height);
+  c.getContext("2d").drawImage(im,(im.width-l)/2,(im.height-l)/2,l,l,0,0,THUMB,THUMB);
+  cb(c.toDataURL("image/jpeg",0.78));
+ }catch(e){cb(null)}};
+ im.onerror=function(){cb(null)};
+ im.src=url;
 }
 function escolher(accept,tipo){
  var f=document.createElement("input");f.type="file";f.accept=accept;
@@ -1530,15 +1567,15 @@ function escolher(accept,tipo){
   var a=f.files&&f.files[0];if(!a)return;
   var r=new FileReader();
   if(tipo==="imagem"){
-   r.onload=function(){mostrar({nome:a.name,tipo:"imagem",dados:r.result},r.result)};
+   r.onload=function(){miniatura(r.result,function(t){
+    if(!t){mostrarToast("Não foi possível abrir a imagem");return}
+    mostrar({nome:a.name,tipo:"imagem",dados:r.result,miniatura:t});
+   })};
    r.readAsDataURL(a);
   }else{
    if(a.size>MAX){mostrarToast("Ficheiro demasiado grande (máx. 100 KB)");return}
-   r.onload=function(){
-    mostrar({nome:a.name,tipo:"texto",dados:r.result});
-    var cod="```\n"+r.result.replace(/\s+$/,"")+"\n```";
-    inputEl.value=(inputEl.value?inputEl.value+"\n":"")+cod;ajustarAltura();
-   };
+   /* O texto nao vai para o input: fica em window.anexo e o enviar() junta-o ao pedido do bot. */
+   r.onload=function(){mostrar({nome:a.name,tipo:"texto",dados:r.result})};
    r.readAsText(a);
   }
  };

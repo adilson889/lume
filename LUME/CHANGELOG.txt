@@ -189,3 +189,6 @@ Lume - historico de versoes
 
 0.4.1
 - VISAO.md: nova secao sobre o registo de capacidades e o despachante, com o plano de cinco passos (registo, cadeias, mais capacidades, capacidades ensinadas por pessoas, retirar as regras antigas).
+
+0.4.2
+- mobile.html alinhado com o index.html no anexo do botao +: quadrado com miniatura ou extensao dentro do input (com o x para remover), ficheiro de texto escondido e enviado ao bot, e o mesmo quadrado no balao do utilizador. Mantido o mostrarFalha que so existe no mobile.
