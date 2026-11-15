@@ -1473,6 +1473,29 @@ enviar=function(){
  return Promise.resolve();
 };
 })()</script>
+
+
+
+<script>(function(){
+var N=window.LumeNativo;
+if(!N||!N.scrollEstado)return;
+var ult="";
+function enviar(){
+ var t=chatEl.scrollTop<=1,
+     f=chatEl.scrollHeight-chatEl.scrollTop-chatEl.clientHeight<=2,
+     k=t+","+f;
+ if(k===ult)return;
+ ult=k;
+ try{N.scrollEstado(t,f)}catch(e){}
+}
+chatEl.addEventListener("scroll",enviar,{passive:true});
+chatEl.addEventListener("touchstart",enviar,{passive:true});
+new MutationObserver(enviar).observe(chatEl,{childList:true,subtree:true});
+window.addEventListener("resize",enviar);
+enviar();
+})()</script>
+
+
 <script src="LUME/despachante.js"></script>
 <script src="LUME/editor/lume-editor.js"></script>
 </body>
