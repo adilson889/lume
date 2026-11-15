@@ -48,3 +48,33 @@
 3-{
 <svg viewBox="0 0 100 40" width="200"><rect x="5" y="5" width="40" height="30" fill="#4a6a10"></rect><circle cx="70" cy="20" r="14" fill="#999999"></circle><text x="5" y="38">teste</text></svg>
 }
+
+4-{
+<style>
+.lsite{border:1px solid #c9ceb8;border-radius:14px;overflow:hidden;background:#f6f7ee;color:#1d2410;font-family:Georgia,serif;max-width:560px}
+.lsite-top{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#2f4a0a;color:#f6f7ee}
+.lsite-top b{font-size:17px;letter-spacing:.5px}
+.lsite-top span{font-size:13px;opacity:.85;margin-left:12px}
+.lsite-hero{padding:26px 18px;text-align:center;background:linear-gradient(135deg,#dfe6c6,#f6f7ee)}
+.lsite-hero h2{margin:0 0 8px;font-size:24px;color:#2f4a0a}
+.lsite-hero p{margin:0 auto;max-width:380px;font-size:15px;line-height:1.5}
+.lsite-cards{display:flex;flex-wrap:wrap;gap:10px;padding:16px}
+.lsite-card{flex:1 1 150px;border:1px solid #c9ceb8;border-radius:10px;padding:12px;background:#ffffff}
+.lsite-card h3{margin:0 0 4px;font-size:15px;color:#4a6a10}
+.lsite-card p{margin:0;font-size:13px;line-height:1.45}
+.lsite-foot{padding:10px 16px;font-size:12px;text-align:center;background:#e8ebd9}
+</style>
+<div class="lsite">
+  <div class="lsite-top"><b>Lume</b><span>Ensinado por pessoas</span></div>
+  <div class="lsite-hero">
+    <h2>Um bot que aprende contigo</h2>
+    <p>O Lume responde com o que as pessoas lhe ensinaram. Se ainda não sabe, tu podes ensinar.</p>
+  </div>
+  <div class="lsite-cards">
+    <div class="lsite-card"><h3>Pergunta</h3><p>Escreve uma dúvida de programação e recebe a resposta.</p></div>
+    <div class="lsite-card"><h3>Ensina</h3><p>Responde ao que o Lume não sabe e ajuda outros.</p></div>
+    <div class="lsite-card"><h3>Calcula</h3><p>Pede uma conta e o Lume resolve na própria conversa.</p></div>
+  </div>
+  <div class="lsite-foot">Página de teste renderizada dentro do chat</div>
+</div>
+}

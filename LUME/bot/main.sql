@@ -56,6 +56,11 @@ WHEN CONTAINS "sv" {
     REPLY (rescalculo.txt, 3)
 }
 
+WHEN CONTAINS "pagina teste" {
+ WAITING("A montar a página")
+    REPLY (rescalculo.txt, 4)
+}
+
 
     -- 6. Tudo o resto: se um passo falha, o seguinte atua.
     --    a) base escrita a mao (resposta direta)
