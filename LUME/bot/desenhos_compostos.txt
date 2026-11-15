@@ -65,8 +65,5 @@
     <print>Aqui está a composição com {pos} elementos no mesmo SVG:</print>
     <print><svg viewBox="0 0 300 130" width="100%" height="230" role="img" aria-label="Composição de vários desenhos"><rect x="0" y="0" width="300" height="130" rx="8" fill="#eaf5ff"/><path d="M0 112H300" stroke="#7cb342" stroke-width="3"/><rect x="0" y="115" width="300" height="15" fill="#c5e1a5"/>{elementos}</svg></print>
 </if>
-<else>
-    <print>Para juntar desenhos, indica pelo menos dois elementos, por exemplo: uma casa, uma árvore e um sol.</print>
-</else>
 </program>
 }

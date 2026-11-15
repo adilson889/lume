@@ -2,6 +2,15 @@
 <program>
 <import name="xlang.math"></import>
 <var name="m" value="lower(msg)"></var>
+<var name="ncomp" value="0"></var>
+<if condition="includes(m, 'casa')"><set name="ncomp" value="ncomp + 1"></set></if>
+<if condition="includes(m, 'árvore') || includes(m, 'arvore')"><set name="ncomp" value="ncomp + 1"></set></if>
+<if condition="includes(m, 'sol')"><set name="ncomp" value="ncomp + 1"></set></if>
+<if condition="includes(m, 'nuvem')"><set name="ncomp" value="ncomp + 1"></set></if>
+<if condition="includes(m, 'flor')"><set name="ncomp" value="ncomp + 1"></set></if>
+<if condition="includes(m, 'gato')"><set name="ncomp" value="ncomp + 1"></set></if>
+<if condition="includes(m, 'cão') || includes(m, 'cao')"><set name="ncomp" value="ncomp + 1"></set></if>
+<if condition="includes(m, 'carro')"><set name="ncomp" value="ncomp + 1"></set></if>
 <var name="pts" value="''"></var>
 <var name="d" value="''"></var>
 <var name="a" value="0"></var>
@@ -9,6 +18,7 @@
 <var name="pontas" value="5"></var>
 <var name="x" value="0"></var>
 <var name="y" value="0"></var>
+<if condition="ncomp == 0 || ncomp == 1">
 
 <!-- ESTRELA -->
 <if condition="includes(m, 'estrela')">
@@ -86,5 +96,6 @@
 <else>
     <print>Consigo desenhar: uma <b>estrela</b>, o <b>sol</b>, uma <b>casa</b>, um <b>gato</b>, um <b>cão</b>, um <b>carro</b> ou o <b>gráfico</b> de x² ou do seno.</print>
 </else>
+</if>
 </program>
 }

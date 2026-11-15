@@ -164,3 +164,8 @@ Lume - historico de versoes
 
 0.3.22
 - Novo documento LUME/VISAO.md com a visao do Lume: capacidades em vez de comandos, arquitetura (BotQL, HTMLx-lang, Command Dispatcher, Lume) e a regra de nao inventar capacidades. So documentacao, sem alteracoes de codigo.
+
+0.3.23
+- Pedidos de desenho passam por uma sondagem: "Como queres ver o desenho?" 1 Ficheiro no editor, 2 Colado no chat. Colado no chat mostra o SVG na conversa como ate aqui. Ficheiro no editor embrulha o SVG numa pagina HTML e entrega-o como cartao de ficheiro, que abre no editor de LUME/editor (ver site, ver codigo, copiar, descarregar). O index detecta o pedido pelas palavras de palavras_desenho.txt e pedidos_desenhos_compostos.txt e guarda o pedido ate a escolha, por isso nao ha lista de frases escrita no index.
+- Composicao sem lista de frases: qualquer pedido de desenho com dois ou mais elementos conhecidos (casa, arvore, sol, nuvem, flor, gato, cao, carro) junta-os num so SVG. Com um so elemento ou desconhecido, a regra composta fica calada e responde o desenho individual (desenhos.txt e libdesenho.txt passam a verificar ncomp), por isso deixa de haver respostas duplicadas. A dica "indica pelo menos dois elementos" saiu do desenhos_compostos.txt.
+- pedidos_desenhos_compostos.txt ganhou os verbos de desenho (desenha, desenhar, desenhe, desenho de, faz um desenho). main.sql nao foi alterado.
