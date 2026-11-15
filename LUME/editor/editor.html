@@ -11,7 +11,7 @@
   sem rede.
 -->
 <style>
-:root{--bg:#f6f7ee;--card:#ffffff;--text:#1d2410;--border:#c9ceb8;--muted:#5c6b3a;--r:#4a6a10;--on:#ffffff;--code-bg:#eef0e2;
+:root{--bg2:#f6f6ee;--bg3:#e4e4da;--bg:#f6f7ee;--card:#ffffff;--text:#1d2410;--border:#c9ceb8;--muted:#5c6b3a;--r:#4a6a10;--on:#ffffff;--code-bg:var(--bg3);
  --t-c:#7d8a62;--t-k:#8a3b9e;--t-s:#2f7d32;--t-n:#b5651d;--t-t:#1565a8;--t-a:#a8561b;--t-f:#0b7a75;--t-p:#1565a8;--t-v:#8a3b9e;--t-g:#7d8a62}
 :root[data-escuro]{--t-c:#8b957a;--t-k:#c792ea;--t-s:#a5d6a7;--t-n:#f2a65a;--t-t:#82aaff;--t-a:#ffcb6b;--t-f:#7fdbca;--t-p:#82aaff;--t-v:#c792ea;--t-g:#8b957a}
 *{box-sizing:border-box}
@@ -53,6 +53,7 @@ button{font:inherit}
   <div class="nome" id="nome"><span id="nometxt"></span><i></i></div>
   <button class="b" id="desfazer" aria-label="Desfazer" title="Desfazer" hidden></button>
   <button class="b" id="refazer" aria-label="Refazer" title="Refazer" hidden></button>
+  <button class="b" id="guardar" aria-label="Guardar alterações" title="Guardar" hidden></button>
   <button class="b" id="exec" aria-label="Executar" title="Executar"></button>
   <span class="sep"></span>
   <button class="b" id="bsite" aria-label="Ver o site" title="Site"></button>
@@ -83,13 +84,14 @@ var IC={
  ref:ic('<path d="M15 14l5-5-5-5"/><path d="M20 9H10a6 6 0 0 0 0 12h3"/>'),
  cop:ic('<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/>'),
  baixar:ic('<path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>'),
+ ok:ic('<path d="M5 12.5l4.5 4.5L19 7.5"/>'),
  rec:ic('<path d="M20 12a8 8 0 1 1-2.5-5.8M20 4v5h-5"/>'),
  cur:ic('<path d="M5 4v16M19 4v16M5 12h14"/>',14),
  lin:ic('<path d="M4 6h16M4 12h16M4 18h10"/>',14),
  chr:ic('<path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/>',14)
 };
 var $=function(i){return document.getElementById(i)};
-var h="",orig="",nome="app.html",fr=null,modo="site",aplicado="";
+var h="",orig="",nome="app.html",fr=null,modo="site",aplicado="",lingua="html",temSite=true,guardavel=false;
 function enviar(m){parent.postMessage(m,"*")}
 function comSeguranca(x){return/<head[^>]*>/i.test(x)?x.replace(/<head[^>]*>/i,function(m){return m+CSP}):"<!doctype html><head>"+CSP+"</head>"+x}
 function esc(t){return t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
@@ -184,7 +186,8 @@ function atualizarNums(){
  for(var i=1;i<=n;i++)t+=i+(i<n?"\n":"");
  nums.textContent=t;$("elin").innerHTML=IC.lin+n;$("elng").innerHTML=IC.chr+ta.value.length;
 }
-function pintar(){hl.innerHTML=realcar(ta.value)+"\n";atualizarNums();marcar()}
+function realcarPor(c){return lingua==="html"?realcar(c):lingua==="css"?hlCss(c):lingua==="js"?hlJs(c):esc(c)}
+function pintar(){hl.innerHTML=realcarPor(ta.value)+"\n";atualizarNums();marcar()}
 function sinc(){
  hl.style.transform="translate("+(-ta.scrollLeft)+"px,"+(-ta.scrollTop)+"px)";
  nums.style.transform="translateY("+(-ta.scrollTop)+"px)";
@@ -215,9 +218,11 @@ function iframe(){
  fr=document.createElement("iframe");fr.setAttribute("sandbox","allow-scripts");fr.srcdoc=comSeguranca(h);aplicado=h;$("corpo").insertBefore(fr,$("ed"));
 }
 function mostrar(w){
+ if(w==="site"&&!temSite)w="cod";
  modo=w;
  $("bsite").classList.toggle("on",w==="site");$("bcod").classList.toggle("on",w==="cod");
  $("desfazer").hidden=$("refazer").hidden=(w!=="cod");
+ $("exec").hidden=!temSite;$("bsite").hidden=!temSite;$("guardar").hidden=!guardavel;
  $("estado").style.display=w==="cod"?"flex":"none";
  if(w==="site"){
   h=ta.value;
@@ -234,14 +239,15 @@ function executar(){h=ta.value;iframe();mostrar("site")}
 function fecharMenu(){$("menu").style.display="none";$("fundo").style.display="none"}
 function abrirMenu(){
  var m=$("menu");m.innerHTML="";var cur=ta.value;
- [["Copiar código",IC.cop,function(){enviar({lumeEd:"copiar",texto:cur,msg:"Código copiado"})}],
-  ["Copiar como Markdown",IC.cop,function(){enviar({lumeEd:"copiar",texto:"```html\n"+cur+"\n```",msg:"Markdown copiado"})}],
-  ["Transferir como HTML (.html)",IC.baixar,function(){enviar({lumeEd:"baixar",nome:nome,conteudo:cur,mime:"text/html"})}],
-  ["Transferir como texto (.txt)",IC.baixar,function(){enviar({lumeEd:"baixar",nome:nome.replace(/\.html$/,".txt"),conteudo:cur,mime:"text/plain"})}],
-  ["Formatar código",IC.cod,function(){ta.value=formatar(ta.value);h=ta.value;pintar();posicao();if(modo==="site")executar()}],
-  ["Repor o código original",IC.rec,function(){ta.value=orig;h=orig;pintar();posicao();if(modo==="site")executar()}],
-  ["Recarregar o site",IC.rec,function(){executar()}]
- ].forEach(function(it){
+ var md="```"+(lingua==="js"?"js":lingua==="texto"?"":lingua)+"\n"+cur+"\n```";
+ var itens=[["Copiar código",IC.cop,function(){enviar({lumeEd:"copiar",texto:cur,msg:"Código copiado"})}],
+  ["Copiar como Markdown",IC.cop,function(){enviar({lumeEd:"copiar",texto:md,msg:"Markdown copiado"})}],
+  ["Transferir ("+nome+")",IC.baixar,function(){enviar({lumeEd:"baixar",nome:nome,conteudo:cur,mime:temSite?"text/html":"text/plain"})}],
+  ["Transferir como texto (.txt)",IC.baixar,function(){enviar({lumeEd:"baixar",nome:nome.replace(/\.[^.]+$/,"")+".txt",conteudo:cur,mime:"text/plain"})}]];
+ if(temSite||lingua==="html"||lingua==="css")itens.push(["Formatar código",IC.cod,function(){ta.value=lingua==="css"?formatarCss(ta.value):formatar(ta.value);h=ta.value;pintar();posicao();if(modo==="site")executar()}]);
+ itens.push(["Repor o código original",IC.rec,function(){ta.value=orig;h=orig;pintar();posicao();if(modo==="site")executar()}]);
+ if(temSite)itens.push(["Recarregar o site",IC.rec,function(){executar()}]);
+ itens.forEach(function(it){
   var b=document.createElement("button");b.type="button";b.className="item";b.innerHTML=it[1];
   var s=document.createElement("span");s.textContent=it[0];b.appendChild(s);
   b.addEventListener("click",function(e){e.stopPropagation();fecharMenu();it[2]()});m.appendChild(b);
@@ -266,16 +272,25 @@ $("exec").addEventListener("click",executar);
 $("desfazer").addEventListener("click",function(){ta.focus();document.execCommand("undo");pintar()});
 $("refazer").addEventListener("click",function(){ta.focus();document.execCommand("redo");pintar()});
 $("bmais").addEventListener("click",abrirMenu);
+$("guardar").innerHTML=IC.ok;
+$("guardar").addEventListener("click",function(){enviar({lumeEd:"guardar",texto:ta.value});orig=ta.value;marcar()});
 $("fundo").addEventListener("click",fecharMenu);
+function aplicarTema(t){
+ if(!t||typeof t!=="object")return;
+ Object.keys(t).forEach(function(k){if(/^--[a-z0-9-]+$/.test(k)&&typeof t[k]==="string")document.documentElement.style.setProperty(k,t[k])});
+ if(escuro(t["--bg"]))document.documentElement.setAttribute("data-escuro","");else document.documentElement.removeAttribute("data-escuro");
+}
 window.addEventListener("message",function(e){
- var d=e.data;if(!d||d.lumeAbrir!==true||typeof d.html!=="string"||e.source!==parent)return;
+ var d=e.data;if(!d||e.source!==parent)return;
+ if(d.lumeTema){aplicarTema(d.tema);return}
+ if(d.lumeAbrir!==true||typeof d.html!=="string")return;
  h=orig=d.html;nome=String(d.nome||"app.html");$("nometxt").textContent=nome;
- if(d.tema&&typeof d.tema==="object"){
-  Object.keys(d.tema).forEach(function(k){if(/^--[a-z-]+$/.test(k)&&typeof d.tema[k]==="string")document.documentElement.style.setProperty(k,d.tema[k])});
-  if(escuro(d.tema["--bg"]))document.documentElement.setAttribute("data-escuro","");else document.documentElement.removeAttribute("data-escuro");
- }
+ lingua=/^(html|css|js|texto)$/.test(d.lingua)?d.lingua:"html";
+ temSite=d.site!==false&&lingua==="html";
+ guardavel=d.guardar===true;
+ aplicarTema(d.tema);
  if(/^<!--lume:formatar-->/.test(h)){h=formatar(h);orig=h}
- ta.value=h;mostrar("site");
+ ta.value=h;mostrar(temSite?"site":"cod");
 });
 enviar({lumeEd:"pronto"});
 })();

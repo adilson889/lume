@@ -1531,7 +1531,7 @@ function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {"&":"&amp
 function ext(n){var m=/\.([A-Za-z0-9]{1,5})$/.exec(n||"");return m?m[1].toUpperCase():"TXT"}
 /* O mesmo quadrado aparece no input e no balao do utilizador. */
 function cartao(a){
- var h='<div class="anexo-card">';
+ var h='<div class="anexo-card"'+(a.id?' data-anexo-id="'+esc(a.id)+'"':'')+'>';
  if(a.miniatura)h+='<img src="'+a.miniatura+'">';
  else h+='<span class="ext">'+esc(ext(a.nome))+'</span><span class="nome">'+esc(a.nome)+'</span>';
  return h+'</div>';
@@ -1539,13 +1539,14 @@ function cartao(a){
 function atualizar(){window.atualizarBotaoEnviar&&window.atualizarBotaoEnviar();window.atualizarExpandido&&window.atualizarExpandido()}
 function limpar(){window.anexo=null;chip.className="";chip.innerHTML="";pill.classList.remove("com-anexo");atualizar()}
 function mostrar(a){
- window.anexo=a;chip.innerHTML=cartao(a);
+ a.id=a.id||("ax"+Date.now().toString(36)+Math.floor(Math.random()*1e4).toString(36));window.anexo=a;chip.innerHTML=cartao(a);
  var x=document.createElement("button");x.type="button";x.className="remover";x.setAttribute("aria-label","Remover");x.textContent="\u00d7";x.onclick=limpar;chip.appendChild(x);
  chip.className="show";pill.classList.add("com-anexo");atualizar();rolarParaFim();
 }
 window.limparAnexo=limpar;
 /* Balao do utilizador: so o quadrado do ficheiro (mais o texto escrito, se houver). */
 window.adicionarMensagemAnexo=function(texto,a){
+ window.registarAnexo&&window.registarAnexo(a);
  var h=cartao(a)+(texto?'<div class="anexo-texto">'+esc(texto)+'</div>':'');
  return adicionarMensagem(texto||a.nome,"usuario",false,h);
 };

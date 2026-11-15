@@ -192,3 +192,8 @@ Lume - historico de versoes
 
 0.4.2
 - mobile.html alinhado com o index.html no anexo do botao +: quadrado com miniatura ou extensao dentro do input (com o x para remover), ficheiro de texto escondido e enviado ao bot, e o mesmo quadrado no balao do utilizador. Mantido o mostrarFalha que so existe no mobile.
+
+0.4.3
+- Ficheiro anexado: tocar no quadrado (no input ou na mensagem enviada) abre-o no editor, editavel, com botao Guardar. Ficheiros de texto abrem so em codigo; .html tambem mostram o site; css e js tem o seu realce.
+- Editor ligado ao mesmo tema do index e mobile (incluindo --bg2 e --bg3) e acompanha a troca claro/escuro com o editor aberto.
+- Anexos enviados ficam guardados (ultimos 8) para poderem ser reabertos.
