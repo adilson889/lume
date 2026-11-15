@@ -1,5 +1,5 @@
-1-{xlang}
-
+1-{
+<program>
 <import name="xlang.math"></import>
 <var name="m" value="lower(msg)"></var>
 <var name="pts" value="''"></var>
@@ -58,4 +58,5 @@
 <else>
     <print>Consigo desenhar: uma <b>estrela</b> (ex.: "desenha uma estrela de 7 pontas"), o <b>sol</b>, uma <b>casa</b> ou o <b>gráfico</b> de x² ou do seno.</print>
 </else>
+</program>
 }
