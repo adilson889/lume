@@ -173,3 +173,6 @@ Lume - historico de versoes
 0.3.24
 - Composicao de desenhos orientada por dados: as pecas vivem em LUME/bot/pecas.txt (nome | sinonimos | fragmento SVG 100x100). O chat injeta pecas_nome, pecas_svg, pecas_chaves e pecas_mapa nos blocos XLang que as usam, e desenhos_compostos.txt passa a ter um unico ciclo generico em vez de um bloco por desenho. Para acrescentar um desenho basta uma linha nova em pecas.txt. A largura do SVG ajusta-se ao numero de pecas.
 - Quando o pedido tem menos de duas pecas conhecidas, o Lume diz quantas encontrou e lista as pecas que sabe combinar, em vez de inventar.
+
+0.3.25
+- A composicao so avisa que encontrou poucas pecas quando o pedido tem ligacao entre elementos (" e ", " com " ou virgula). Um desenho simples ("desenha um gato") deixa de receber esse aviso e fica a cargo da regra do desenho individual.

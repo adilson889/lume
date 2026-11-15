@@ -24,11 +24,11 @@
     <print>Aqui está a composição com {pos} elementos no mesmo SVG:</print>
     <print><svg viewBox="0 0 {larg} 130" width="100%" height="230" role="img" aria-label="Composição de vários desenhos"><rect x="0" y="0" width="{larg}" height="130" rx="8" fill="#eaf5ff"/><path d="M0 112H{larg}" stroke="#7cb342" stroke-width="3"/><rect x="0" y="115" width="{larg}" height="15" fill="#c5e1a5"/>{elementos}</svg></print>
 </if>
-<else>
+<elseif condition="includes(m, ' e ') || includes(m, ' com ') || includes(m, ',')">
     <foreach var="nm" in="pecas_nome">
         <set name="lista" value="lista + nm + ', '"></set>
     </foreach>
     <print>Só encontrei {pos} peça que sei juntar. Sei combinar: {lista}e mais as que me ensinares em pecas.txt. Pede, por exemplo, uma casa com árvore e sol.</print>
-</else>
+</elseif>
 </program>
 }
