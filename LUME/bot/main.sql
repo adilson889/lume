@@ -46,14 +46,14 @@ WHEN CONTAINS KEYWORDS (calculo.txt) {
     REPLY (rescalculo.txt, 1)
 }
 
-WHEN CONTAINS "svg" {
- WAITING("Calculando")
-    REPLY (rescalculo.txt, 2)
-}
+--TESTELIBDESENHO
 
-WHEN CONTAINS "sv" {
- WAITING("Calculando")
-    REPLY (rescalculo.txt, 3)
+WHEN CONTAINS "svg" {
+    WAITING("A desenhar...")
+    REPLY (
+        <import name="mainlib"></import>
+        <call name="desenhar_cena" args="message"></call>
+    )
 }
 
 WHEN CONTAINS KEYWORDS(palavras_loja.txt) {
