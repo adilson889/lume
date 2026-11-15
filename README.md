@@ -70,6 +70,7 @@ LUME/
   vendor/nlp.min.js             NLP.js num único ficheiro
   assets/logo.png
   tests/casos_programacao.txt   casos de teste (pergunta | resposta esperada)
+  TEMPLATES.md                  como criar templates (páginas HTML/JS e XLang)
   CHANGELOG.txt
   VERSION
 ```
