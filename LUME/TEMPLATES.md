@@ -159,6 +159,8 @@ As páginas correm numa iframe com `sandbox="allow-scripts"` e sem `allow-same-o
 - não guarda nada entre aberturas (localStorage não existe dentro da iframe);
 - a iframe ajusta a altura ao conteúdo, até 1400 px.
 
+Sobre cada página o chat mostra três ações: **Abrir em página inteira** (a página reinicia, sem o estado do carrinho, por exemplo), **Descarregar .html** (o nome do ficheiro vem do `<title>`) e **Ver código** (mostra o código fonte, com o botão Copiar código).
+
 Por isto, os templates podem vir de qualquer pessoa sem pôr em risco quem os abre. Já o XLang corre no chat, por isso só deve vir de ficheiros mantidos pela equipa (`main.sql` e `rescalculo.txt`).
 
 ## 7. Limites do HTML dentro de respostas normais

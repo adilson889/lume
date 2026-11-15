@@ -1378,15 +1378,47 @@ enviar=function(){
 (function(){
 var CSP='<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; img-src data: https:; style-src \'unsafe-inline\'; script-src \'unsafe-inline\'; font-src data:">';
 var AJUSTE='<script>(function(){function e(){parent.postMessage({lumeAppAltura:document.documentElement.scrollHeight},"*")}new ResizeObserver(e).observe(document.documentElement);addEventListener("load",e)})()<\/script>';
+function tituloDe(h){var m=/<title[^>]*>([\s\S]*?)<\/title>/i.exec(h);var t=m?m[1].trim():"";return t||"app"}
+function nomeFicheiro(h){return tituloDe(h).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40)||"app"}
+function comSeguranca(h){return/<head[^>]*>/i.test(h)?h.replace(/<head[^>]*>/i,function(m){return m+CSP}):"<!doctype html><head>"+CSP+"</head>"+h}
+function criarIframe(h,alt){
+ var f=document.createElement("iframe");
+ f.setAttribute("sandbox","allow-scripts");
+ f.style.cssText="width:100%;height:"+alt+";border:1px solid #c9ceb8;border-radius:12px;background:#fff;display:block";
+ f.srcdoc=comSeguranca(h)+AJUSTE;
+ return f;
+}
+function botao(txt,fn){
+ var b=document.createElement("button");b.type="button";b.textContent=txt;
+ b.style.cssText="background:transparent;border:1px solid var(--borda,#c9ceb8);color:var(--muted,#5c6b3a);border-radius:16px;padding:5px 11px;font:inherit;font-size:12.5px;cursor:pointer";
+ b.addEventListener("click",fn);return b;
+}
+function paginaInteira(h){
+ var o=document.createElement("div");
+ o.style.cssText="position:fixed;inset:0;z-index:9999;background:#fff;display:flex;flex-direction:column";
+ var c=document.createElement("div");
+ c.style.cssText="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#2f4a0a;color:#f6f7ee;font-size:14px";
+ var t=document.createElement("span");t.textContent=tituloDe(h);
+ var x=botao("Fechar",function(){o.remove()});x.style.color="#f6f7ee";x.style.borderColor="#f6f7ee";
+ c.appendChild(t);c.appendChild(x);
+ var f=criarIframe(h,"100%");f.style.flex="1";f.style.border="0";f.style.borderRadius="0";
+ o.appendChild(c);o.appendChild(f);document.body.appendChild(o);
+}
 function montar(el){
  if(el.dataset.pronto)return;el.dataset.pronto="1";
  var h;try{h=decodeURIComponent(el.dataset.lumeApp)}catch(x){return}
- h=/<head[^>]*>/i.test(h)?h.replace(/<head[^>]*>/i,function(m){return m+CSP}):"<!doctype html><head>"+CSP+"</head>"+h;
- var f=document.createElement("iframe");
- f.setAttribute("sandbox","allow-scripts");
- f.style.cssText="width:100%;height:420px;border:1px solid #c9ceb8;border-radius:12px;background:#fff;display:block";
- f.srcdoc=h+AJUSTE;
- el.appendChild(f);
+ var barra=document.createElement("div");
+ barra.style.cssText="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px";
+ var cod=document.createElement("div");cod.style.display="none";
+ var pre=document.createElement("pre");pre.style.cssText="max-height:320px;overflow:auto;margin:8px 0 0;padding:10px;border-radius:10px;background:var(--code-bg,#eef0e2);font-size:12px;line-height:1.45;white-space:pre-wrap;word-break:break-word";
+ var code=document.createElement("code");code.textContent=h;pre.appendChild(code);
+ var cp=botao("Copiar código",function(){if(typeof copiarTexto==="function")copiarTexto(h);if(typeof mostrarToast==="function")mostrarToast("Código copiado")});
+ cp.style.marginTop="8px";cod.appendChild(cp);cod.appendChild(pre);
+ var vc=botao("Ver código",function(){var a=cod.style.display==="none";cod.style.display=a?"block":"none";vc.textContent=a?"Esconder código":"Ver código"});
+ barra.appendChild(botao("Abrir em página inteira",function(){paginaInteira(h)}));
+ barra.appendChild(botao("Descarregar .html",function(){if(typeof window.baixarFicheiro==="function")window.baixarFicheiro(nomeFicheiro(h)+".html",h,"text/html");else if(typeof mostrarToast==="function")mostrarToast("Descarregar indisponível")}));
+ barra.appendChild(vc);
+ el.appendChild(barra);el.appendChild(criarIframe(h,"420px"));el.appendChild(cod);
 }
 function varrer(){document.querySelectorAll("div.lume-app[data-lume-app]").forEach(montar)}
 new MutationObserver(varrer).observe(document.body,{childList:true,subtree:true});

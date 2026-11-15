@@ -139,3 +139,6 @@ Lume - historico de versoes
 - O chat passa a correr paginas HTML com JavaScript. Entradas de ficheiro que comecam por <!doctype html> ou <html> abrem numa iframe isolada (sandbox sem allow-same-origin e CSP sem rede), por isso o JS nao toca no chat, nas cookies nem na API. A altura da iframe ajusta-se sozinha.
 - Interpolacao nos templates: {{nome}} (nome pedido, ex.: "nome do site AX COMERCE") e {{msg}}.
 - Primeiro template: loja e-commerce (templates.txt, entrada 1) com carrinho; disparada por palavras_loja.txt.
+
+0.3.16
+- Cada app HTML/JS criada ganha uma barra com tres acoes: Abrir em pagina inteira, Descarregar .html (nome tirado do <title>) e Ver codigo (bloco com o codigo fonte e botao Copiar codigo).
