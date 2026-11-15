@@ -9,6 +9,8 @@
 <var name="pontas" value="5"></var>
 <var name="x" value="0"></var>
 <var name="y" value="0"></var>
+
+<!-- ESTRELA -->
 <if condition="includes(m, 'estrela')">
     <if condition="n >= 1 && nums[n - 1] >= 3">
         <set name="pontas" value="min(round(nums[n - 1]), 24)"></set>
@@ -21,6 +23,8 @@
     <print>Aqui está a tua estrela de {pontas} pontas:</print>
     <print><svg viewBox="0 0 100 100" width="220" height="220"><polygon points="{pts}" fill="gold" stroke="orange" stroke-width="2" stroke-linejoin="round"></polygon></svg></print>
 </if>
+
+<!-- CASA COM SOL -->
 <elseif condition="includes(m, 'casa')">
     <for var="i" from="0" to="7">
         <set name="a" value="i * 45 * PI() / 180"></set>
@@ -29,6 +33,8 @@
     <print>Uma casa com sol:</print>
     <print><svg viewBox="0 0 100 100" width="240" height="240"><rect x="0" y="0" width="100" height="100" fill="#dff1ff"></rect><circle cx="84" cy="16" r="7" fill="gold"></circle><path d="{d}" stroke="orange" stroke-width="2" stroke-linecap="round" fill="none"></path><rect x="0" y="85" width="100" height="15" fill="#7cb342"></rect><rect x="25" y="50" width="50" height="38" fill="#f4d9a8" stroke="#8d6e3f" stroke-width="2"></rect><polygon points="20,52 50,25 80,52" fill="#c0392b" stroke="#7b241c" stroke-width="2" stroke-linejoin="round"></polygon><rect x="45" y="66" width="12" height="22" fill="#8d6e3f"></rect><rect x="30" y="58" width="10" height="10" fill="#bde3ff" stroke="#8d6e3f"></rect><rect x="62" y="58" width="10" height="10" fill="#bde3ff" stroke="#8d6e3f"></rect></svg></print>
 </elseif>
+
+<!-- SOL -->
 <elseif condition="includes(m, 'sol')">
     <for var="i" from="0" to="11">
         <set name="a" value="i * 30 * PI() / 180"></set>
@@ -37,6 +43,26 @@
     <print>Aqui está o sol:</print>
     <print><svg viewBox="0 0 100 100" width="220" height="220"><circle cx="50" cy="50" r="24" fill="gold"></circle><path d="{d}" stroke="orange" stroke-width="4" stroke-linecap="round" fill="none"></path></svg></print>
 </elseif>
+
+<!-- GATO -->
+<elseif condition="includes(m, 'gato')">
+    <print>Aqui está o teu gato:</print>
+    <print><svg viewBox="0 0 100 100" width="220" height="220"><rect x="0" y="85" width="100" height="15" fill="#7cb342"></rect><ellipse cx="50" cy="80" rx="20" ry="12" fill="#f39c12"></ellipse><circle cx="50" cy="60" r="14" fill="#f39c12"></circle><polygon points="38,52 44,38 50,52" fill="#f39c12"></polygon><polygon points="62,52 56,38 50,52" fill="#f39c12"></polygon><circle cx="45" cy="58" r="2" fill="#333"></circle><circle cx="55" cy="58" r="2" fill="#333"></circle><path d="M45,65 Q50,68 55,65" stroke="#333" stroke-width="1.5" fill="none"></path><path d="M30,80 Q15,70 20,60" stroke="#f39c12" stroke-width="4" stroke-linecap="round" fill="none"></path></svg></print>
+</elseif>
+
+<!-- CÃO -->
+<elseif condition="includes(m, 'cão') || includes(m, 'cao')">
+    <print>Aqui está o teu cão:</print>
+    <print><svg viewBox="0 0 100 100" width="220" height="220"><rect x="0" y="85" width="100" height="15" fill="#7cb342"></rect><rect x="35" y="65" width="30" height="18" rx="5" fill="#8d6e3f"></rect><circle cx="65" cy="68" r="10" fill="#8d6e3f"></circle><polygon points="60,60 66,50 70,60" fill="#5d4037"></polygon><rect x="38" y="83" width="6" height="10" fill="#5d4037"></rect><rect x="56" y="83" width="6" height="10" fill="#5d4037"></rect><circle cx="68" cy="66" r="2" fill="#333"></circle></svg></print>
+</elseif>
+
+<!-- CARRO -->
+<elseif condition="includes(m, 'carro')">
+    <print>Aqui está o teu carro:</print>
+    <print><svg viewBox="0 0 100 100" width="220" height="220"><rect x="0" y="85" width="100" height="15" fill="#7cb342"></rect><rect x="20" y="60" width="60" height="20" rx="5" fill="#e74c3c"></rect><rect x="30" y="45" width="40" height="20" rx="5" fill="#c0392b"></rect><rect x="35" y="48" width="12" height="12" fill="#bde3ff"></rect><rect x="53" y="48" width="12" height="12" fill="#bde3ff"></rect><circle cx="35" cy="80" r="8" fill="#333"></circle><circle cx="65" cy="80" r="8" fill="#333"></circle></svg></print>
+</elseif>
+
+<!-- GRÁFICOS -->
 <elseif condition="includes(m, 'grafico') || includes(m, 'gráfico')">
     <if condition="includes(m, 'seno') || includes(m, 'sin')">
         <for var="i" from="0" to="60">
@@ -55,8 +81,10 @@
         <print><svg viewBox="0 0 200 200" width="260" height="260"><rect x="0" y="0" width="200" height="200" fill="#fbfbf4" stroke="#c9ceb8"></rect><line x1="0" y1="190" x2="200" y2="190" stroke="#999" stroke-width="1"></line><line x1="100" y1="0" x2="100" y2="200" stroke="#999" stroke-width="1"></line><polyline points="{pts}" fill="none" stroke="#2e6bd6" stroke-width="2.5" stroke-linejoin="round"></polyline></svg></print>
     </else>
 </elseif>
+
+<!-- FALLBACK -->
 <else>
-    <print>Consigo desenhar: uma <b>estrela</b> (ex.: "desenha uma estrela de 7 pontas"), o <b>sol</b>, uma <b>casa</b> ou o <b>gráfico</b> de x² ou do seno.</print>
+    <print>Consigo desenhar: uma <b>estrela</b>, o <b>sol</b>, uma <b>casa</b>, um <b>gato</b>, um <b>cão</b>, um <b>carro</b> ou o <b>gráfico</b> de x² ou do seno.</print>
 </else>
 </program>
 }
