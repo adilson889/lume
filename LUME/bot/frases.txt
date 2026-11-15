@@ -12,10 +12,17 @@
 <var name="k" value="0"></var>
 <var name="p" value="0"></var>
 <var name="q" value="0"></var>
-<array name="sujeitos" value="['O Lume', 'Um programador', 'A Maria', 'O gato do vizinho', 'Um robô curioso', 'A estrela da manhã', 'O professor', 'Uma formiga']"></array>
-<array name="verbos" value="['inventa', 'desenha', 'calcula', 'procura', 'descobre', 'esconde', 'sonha com', 'explica']"></array>
-<array name="complementos" value="['um número primo', 'uma estrela dourada', 'um mapa antigo', 'uma conta impossível', 'um poema curto', 'o segredo do universo', 'uma ponte de luz', 'um algoritmo elegante']"></array>
+<array name="sujeitos" value="['O Lume', 'Um programador', 'A Maria', 'O professor', 'Um robô curioso', 'O gato do vizinho', 'Uma formiga', 'A estrela da manhã']"></array>
+<array name="verbos" value="['calcula', 'resolve', 'demonstra', 'explica', 'desenha', 'inventa', 'escreve', 'compõe', 'procura', 'descobre', 'esconde', 'guarda']"></array>
+<array name="complementos" value="['um número primo', 'uma conta impossível', 'um algoritmo elegante', 'a raiz de um número grande', 'uma equação difícil', 'um problema de lógica', 'uma estrela dourada', 'um mapa antigo', 'um poema curto', 'uma ponte de luz', 'um desenho simples', 'uma melodia nova', 'o segredo do universo', 'uma chave de prata', 'um tesouro esquecido', 'um caminho escondido', 'uma carta perdida', 'uma moeda rara']"></array>
 <array name="circunstancias" value="['ao amanhecer', 'sem pressa', 'debaixo da chuva', 'na biblioteca', 'em silêncio', 'com muita calma', 'antes do almoço']"></array>
+<var name="cat" value="0"></var>
+<var name="lim" value="0"></var>
+<var name="ok" value="false"></var>
+<var name="usaV" value="'|'"></var>
+<var name="usaS" value="'|'"></var>
+<var name="usaC" value="'|'"></var>
+<var name="usaD" value="'|'"></var>
 <if condition="includes(m, 'matem') || includes(m, 'numero') || includes(m, 'número') || includes(m, 'conta')">
     <set name="mate" value="true"></set>
 </if>
@@ -27,7 +34,16 @@
 </if>
 <for var="i" from="1" to="qtd">
     <if condition="mate">
-        <set name="v" value="random(0, 4)"></set>
+        <set name="ok" value="false"></set>
+        <for var="t" from="1" to="25">
+            <if condition="!ok">
+                <set name="v" value="random(0, 4)"></set>
+                <if condition="!includes(usaV, '|' + v + '|')">
+                    <set name="ok" value="true"></set>
+                </if>
+            </if>
+        </for>
+        <set name="usaV" value="usaV + v + '|'"></set>
         <if condition="v == 0">
             <set name="k" value="random(2, 50)"></set>
             <if condition="isPrime(k)">
@@ -39,7 +55,7 @@
         </if>
         <elseif condition="v == 1">
             <set name="k" value="random(2, 20)"></set>
-            <print>{k} ao quadrado dá {sqr(k)}.</print>
+            <print>{k} ao quadrado dá {k * k}.</print>
         </elseif>
         <elseif condition="v == 2">
             <set name="k" value="random(3, 8)"></set>
@@ -57,10 +73,45 @@
         </else>
     </if>
     <else>
-        <set name="a" value="random(0, 7)"></set>
-        <set name="b" value="random(0, 7)"></set>
-        <set name="c" value="random(0, 7)"></set>
-        <set name="d" value="random(0, 6)"></set>
+        <!-- 0 = pensar e calcular, 1 = criar, 2 = procurar e guardar -->
+        <set name="cat" value="random(0, 2)"></set>
+        <if condition="cat == 2">
+            <set name="lim" value="7"></set>
+        </if>
+        <else>
+            <set name="lim" value="4"></set>
+        </else>
+        <set name="ok" value="false"></set>
+        <for var="t" from="1" to="25">
+            <if condition="!ok">
+                <set name="a" value="random(0, lim)"></set>
+                <if condition="!includes(usaS, '|' + a + '|')">
+                    <set name="ok" value="true"></set>
+                </if>
+            </if>
+        </for>
+        <set name="usaS" value="usaS + a + '|'"></set>
+        <set name="b" value="cat * 4 + random(0, 3)"></set>
+        <set name="ok" value="false"></set>
+        <for var="t" from="1" to="25">
+            <if condition="!ok">
+                <set name="c" value="cat * 6 + random(0, 5)"></set>
+                <if condition="!includes(usaC, '|' + c + '|')">
+                    <set name="ok" value="true"></set>
+                </if>
+            </if>
+        </for>
+        <set name="usaC" value="usaC + c + '|'"></set>
+        <set name="ok" value="false"></set>
+        <for var="t" from="1" to="25">
+            <if condition="!ok">
+                <set name="d" value="random(0, 6)"></set>
+                <if condition="!includes(usaD, '|' + d + '|')">
+                    <set name="ok" value="true"></set>
+                </if>
+            </if>
+        </for>
+        <set name="usaD" value="usaD + d + '|'"></set>
         <print>{sujeitos[a]} {verbos[b]} {complementos[c]} {circunstancias[d]}.</print>
     </else>
 </for>
