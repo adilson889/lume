@@ -1129,7 +1129,7 @@ function embrulharSvgEmFicheiro(alvo,titulo){
  var sv=Array.prototype.slice.call(alvo.querySelectorAll("svg")).filter(function(x){return !x.closest(".lume-arquivo")});
  if(!sv.length)return false;
  var corpo="";sv.forEach(function(x){corpo+=x.outerHTML});
- var pagina='<!doctype html><html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+escaparHtml(titulo)+'</title><style>html,body{height:100%;margin:0}body{display:flex;align-items:center;justify-content:center;background:#fff}svg{max-width:96vw;max-height:96vh;height:auto}</style></head><body>'+corpo+'</body></html>';
+ var pagina='<!--lume:formatar--><!doctype html><html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+escaparHtml(titulo)+'</title><style>html,body{height:100%;margin:0}body{display:flex;align-items:center;justify-content:center;background:#fff}svg{max-width:96vw;max-height:96vh;height:auto}</style></head><body>'+corpo+'</body></html>';
  var card=document.createElement("div");card.className="lume-app";card.setAttribute("data-lume-app",encodeURIComponent(pagina));
  sv[0].parentNode.insertBefore(card,sv[0]);
  sv.forEach(function(x){x.remove()});

@@ -179,3 +179,6 @@ Lume - historico de versoes
 
 0.3.26
 - Corrigido: a composicao de desenhos mostrava o fundo sem as pecas. O <print> do XLang escapa tudo o que interpola, por isso o SVG montado em variavel aparecia como texto. Agora um elemento com data-raw="{variavel}" recebe esse texto como markup SVG, limpo pelo DOMPurify (perfil SVG). Funciona tambem quando o desenho segue para o editor como ficheiro.
+
+0.3.27
+- O codigo das paginas geradas a partir de SVG deixa de ser uma linha longa: o editor formata (indenta) o HTML, o CSS e o SVG ao abrir esses ficheiros. Novo item "Formatar codigo" no menu de tres pontos para formatar qualquer pagina. O CSS fica uma regra por linha e as tags curtas (title, p, h1...) ficam numa so linha.
