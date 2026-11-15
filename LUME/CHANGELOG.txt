@@ -130,3 +130,7 @@ Lume - historico de versoes
 
 0.3.13
 - Corrigido: ao reabrir uma conversa, as respostas de contas eram recalculadas com a pergunta mais recente e podiam mostrar valores errados. Agora o codigo XLang da resposta e guardado ja com as variaveis da pergunta que a gerou (marcador <!--lume-vars-->, que o XLang ignora como comentario). Respostas guardadas antes desta versao continuam a ser recalculadas como antes.
+
+0.3.14
+- Corrigido: SVG vinha em branco no chat. A lista de HTML permitido (DOMPurify) nao tinha as tags SVG; agora aceita svg, g, rect, circle, ellipse, line, polyline, polygon, path, text, gradientes e os atributos de desenho (viewBox, fill, stroke, x, y, cx, cy, r, d, points, transform...).
+- Respostas de ficheiro (REPLY (ficheiro.txt, N)) que comecem por <program> passam a correr como XLang. Formato da entrada: N-{ <program> ... </program> }, com as chaves a envolver tudo.
