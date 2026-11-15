@@ -122,3 +122,8 @@ Lume - historico de versoes
 0.3.11
 - Contas escritas so com simbolos ("1+7", "5*3", "2 x 3", "10/2", "8-3") passam a ser entendidas: o index transforma a mensagem inteira em "calcule 1 mais 7" antes de a enviar ao bot. Aceita +, - , *, x, ×, / e ÷. Mistura de operadores fica de fora, e "-" e "/" so com dois numeros. Textos como "ES6+" ou "Node 18+" nao disparam.
 - Resultado com frase de acompanhamento no main.sql: "O resultado é" e o numero a negrito.
+
+0.3.12
+- Contas passam a ser uma formula: o index transforma a mensagem numa formula segura (so digitos, espacos e + - * / ( ) . ,) a partir de simbolos ("2+3*4", "(2+3)*4", "2 x 3") ou de palavras ("dois mais tres vezes quatro", "quanto e 7 dividido por 2") e entrega-a ao XLang, que a calcula com a precedencia certa e os parenteses.
+- Resposta com a conta escrita e o resultado a negrito: "O resultado de 2 + 3 × 4 é 14." Decimais com virgula, ruido de ponto flutuante arredondado, divisao por zero com aviso.
+- Fica de fora (continua nas regras antigas): media, e mensagens que nao sejam so uma conta. Datas como "12-05-2026" nao sao tratadas como conta. Substitui o expressaoParaFrase do 0.3.11.

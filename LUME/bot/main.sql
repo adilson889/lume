@@ -46,7 +46,19 @@ WHEN CONTAINS KEYWORDS (calculo.txt) {
  WAITING("Calculando")
     REPLY (
 <import name="xlang.math"></import>
-<if condition="n >= 2">
+<if condition="temconta">
+    <if condition="conta * 0 == 0">
+        <var name="res" value="conta"></var>
+        <if condition="conta != round(conta)">
+            <set name="res" value="round(conta * 1000000) / 1000000"></set>
+        </if>
+        <print>O resultado de {formula} é <b>{replace(res, '.', ',')}</b>.</print>
+    </if>
+    <else>
+        <print>Não dá para dividir por zero.</print>
+    </else>
+</if>
+<elseif condition="n >= 2">
     <if condition="includes(lower(msg), 'dividido')">
         <if condition="n2 == 0">
             <print>Não dá para dividir por zero.</print>
@@ -67,7 +79,7 @@ WHEN CONTAINS KEYWORDS (calculo.txt) {
     <else>
         <print>O resultado é <b>{sum(...nums)}</b>.</print>
     </else>
-</if>
+</elseif>
 <else>
     <print>Diz-me dois ou mais números, por exemplo: quanto é 4 mais 5?</print>
 </else>
