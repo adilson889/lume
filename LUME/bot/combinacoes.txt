@@ -1,0 +1,51 @@
+1-{
+<program>
+<import name="xlang.math"></import>
+<var name="m" value="lower(msg)"></var>
+<var name="res" value="0"></var>
+<var name="operacao" value="soma"></var>
+<var name="pts" value="''"></var>
+<var name="x" value="0"></var>
+<var name="y" value="0"></var>
+
+<!-- PARTE 1: CALCULO -->
+<if condition="n >= 2">
+    <if condition="includes(m, 'dividido') || includes(m, 'dividida') || includes(m, 'dividir')">
+        <if condition="n2 == 0">
+            <print>Não dá para dividir por zero.</print>
+        </if>
+        <else>
+            <set name="res" value="div(n1, n2)"></set>
+            <set name="operacao" value="divisão"></set>
+            <print>O resultado da divisão é <b>{res}</b>.</print>
+        </else>
+    </if>
+    <elseif condition="includes(m, 'vezes') || includes(m, 'multiplic') || includes(m, '*')">
+        <set name="res" value="product(...nums)"></set>
+        <set name="operacao" value="multiplicação"></set>
+        <print>O resultado da multiplicação é <b>{res}</b>.</print>
+    </elseif>
+    <elseif condition="includes(m, 'menos') || includes(m, 'subtr')">
+        <set name="res" value="sub(n1, n2)"></set>
+        <set name="operacao" value="subtração"></set>
+        <print>O resultado da subtração é <b>{res}</b>.</print>
+    </elseif>
+    <else>
+        <set name="res" value="sum(...nums)"></set>
+        <print>O resultado da soma é <b>{res}</b>.</print>
+    </else>
+</if>
+<else>
+    <print>Para calcular, envia pelo menos dois números. Mesmo assim, posso mostrar o gráfico abaixo.</print>
+</else>
+
+<!-- PARTE 2: GRAFICO GERADO COM HTMLx-lang -->
+<for var="i" from="0" to="80">
+    <set name="x" value="-2 * PI() + i * 4 * PI() / 80"></set>
+    <set name="y" value="50 - sin(x) * 35"></set>
+    <set name="pts" value="pts + round((5 + i * 90 / 80) * 100) / 100 + ',' + round(y * 100) / 100 + ' '"></set>
+</for>
+<print>Também desenhei o gráfico da função seno:</print>
+<print><svg viewBox="0 0 100 100" width="100%" height="220" role="img" aria-label="Gráfico da função seno"><line x1="5" y1="50" x2="95" y2="50" stroke="currentColor" stroke-width="0.6" opacity="0.5"></line><line x1="50" y1="8" x2="50" y2="92" stroke="currentColor" stroke-width="0.6" opacity="0.5"></line><polyline points="{pts}" fill="none" stroke="#6b8e23" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></polyline><text x="96" y="47" font-size="4" fill="currentColor">x</text><text x="53" y="9" font-size="4" fill="currentColor">y</text></svg></print>
+</program>
+}
