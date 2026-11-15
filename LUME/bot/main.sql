@@ -41,6 +41,14 @@ ON MESSAGE {
     }
 
 
+
+-- DESPACHANTE DE CAPACIDADES
+-- Primeiro verifica se o pedido combina mais de uma capacidade.
+WHEN CONTAINS KEYWORDS(pedidos_combinados.txt) {
+    WAITING("A combinar as minhas capacidades...", 2)
+    REPLY (combinacoes.txt, 1)
+}
+
 --XLANG CÁLCULOS 
 
 WHEN CONTAINS KEYWORDS (calculo.txt) {
