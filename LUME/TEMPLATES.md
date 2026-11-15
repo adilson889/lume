@@ -157,9 +157,9 @@ As páginas correm numa iframe com `sandbox="allow-scripts"` e sem `allow-same-o
 - não consegue chamar a API do Lume nem outros sites;
 - só pode carregar imagens `https:` e `data:`;
 - não guarda nada entre aberturas (localStorage não existe dentro da iframe);
-- a iframe ajusta a altura ao conteúdo, até 1400 px.
+- a página ocupa toda a área do editor.
 
-Sobre cada página o chat mostra três ações: **Abrir em página inteira** (a página reinicia, sem o estado do carrinho, por exemplo), **Descarregar .html** (o nome do ficheiro vem do `<title>`) e **Ver código** (mostra o código fonte, com o botão Copiar código).
+A resposta aparece como um cartão de ficheiro com o nome tirado do `<title>` (por exemplo `ax-comerce.html`). Ao tocar no cartão abre um editor em ecrã inteiro: os ícones do topo alternam entre **o site** e **o código fonte**, e o menu de três pontos tem Copiar código, Copiar como Markdown, Transferir como HTML (.html), Transferir como texto (.txt) e Recarregar o site.
 
 Por isto, os templates podem vir de qualquer pessoa sem pôr em risco quem os abre. Já o XLang corre no chat, por isso só deve vir de ficheiros mantidos pela equipa (`main.sql` e `rescalculo.txt`).
 

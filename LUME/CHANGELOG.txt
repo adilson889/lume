@@ -142,3 +142,6 @@ Lume - historico de versoes
 
 0.3.16
 - Cada app HTML/JS criada ganha uma barra com tres acoes: Abrir em pagina inteira, Descarregar .html (nome tirado do <title>) e Ver codigo (bloco com o codigo fonte e botao Copiar codigo).
+
+0.3.17
+- As apps HTML/JS deixam de aparecer dentro da conversa: a resposta e um cartao de ficheiro (ex.: ax-comerce.html). Ao tocar, abre um editor em ecra inteiro com icones no topo para ver o site e ver o codigo fonte, e um menu de 3 pontos com Copiar codigo, Copiar como Markdown, Transferir como HTML, Transferir como texto e Recarregar o site.
