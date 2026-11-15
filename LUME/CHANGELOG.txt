@@ -148,3 +148,6 @@ Lume - historico de versoes
 
 0.3.18
 - O editor de apps sai do index.html e passa a ser independente: LUME/editor/editor.html (a interface: topo, ver site, ver codigo, menu de 3 pontos) e LUME/editor/lume-editor.js (ponte no chat: cartoes de ficheiro e pedidos de copiar, descarregar e fechar). O index.html so carrega um script. O editor corre numa iframe isolada e fala com o chat por postMessage.
+
+0.3.19
+- Editor de apps mais profissional: barra so com icones (fechar, desfazer, refazer, executar, site, codigo, mais), realce de sintaxe para HTML, CSS e JavaScript, numeros de linha, edicao do codigo (Tab indenta, Enter mantem a indentacao), barra de estado com linha:coluna, linhas e caracteres, indicador de alteracoes no nome, executar o codigo editado e repor o original. Copiar e transferir usam o codigo editado.

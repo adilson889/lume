@@ -185,4 +185,6 @@ O editor das apps é independente do `index.html`:
 | `LUME/editor/editor.html` | a interface: barra de topo, ver o site, ver o código, menu de três pontos |
 | `LUME/editor/lume-editor.js` | no chat: cria os cartões de ficheiro, abre o editor e atende copiar, descarregar e fechar |
 
+No editor, o ícone `</>` abre o código com realce de sintaxe (HTML, CSS e JavaScript) e números de linha, e o código pode ser editado ali mesmo. O ícone de executar (triângulo) corre o código editado; o ponto junto ao nome indica alterações ainda não repostas, e "Repor o código original" no menu desfaz tudo. Copiar e transferir usam o código editado.
+
 O `index.html` só carrega `lume-editor.js`. O `editor.html` corre numa iframe isolada e conversa com o chat por `postMessage`, com três pedidos: `copiar`, `baixar` e `fechar`. Para acrescentar uma função ao editor (por exemplo guardar a app no Lume), basta tratar a nova mensagem nos dois ficheiros.
