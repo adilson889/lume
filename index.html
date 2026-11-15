@@ -833,11 +833,23 @@ function prepararApp(h){
  h=h.replace(/\{\{\s*nome\s*\}\}/g,escaparHtml(nomeDoPedido(ultimaPergunta))).replace(/\{\{\s*msg\s*\}\}/g,escaparHtml(ultimaPergunta||""));
  return'<div class="lume-app" data-lume-app="'+encodeURIComponent(h)+'"></div>';
 }
+/* O <print> do XLang escapa sempre o que interpola. Para montar SVG a partir de dados, um
+   elemento com data-raw="{variavel}" recebe esse texto como markup (limpo pelo DOMPurify, perfil SVG). */
+function inserirMarcacaoBruta(raiz){
+ raiz.querySelectorAll("[data-raw]").forEach(function(el){
+  var v=el.getAttribute("data-raw")||"";el.removeAttribute("data-raw");
+  try{
+   var limpo=window.DOMPurify?DOMPurify.sanitize("<svg>"+v+"</svg>",{USE_PROFILES:{svg:true}}).replace(/^<svg[^>]*>/i,"").replace(/<\/svg>\s*$/i,""):"";
+   el.innerHTML=limpo;
+  }catch(e){}
+ });
+}
 async function executarXlang(slot,codigo){
  try{
   await carregarXlang();
   slot.textContent="";
   await new window.XLangInterpreter(slot).run(codigo);
+  inserirMarcacaoBruta(slot);
  }catch(e){
   slot.textContent="Erro no HTMLx: "+(e&&e.message?e.message:e);
  }
@@ -1113,6 +1125,7 @@ function perguntarEntregaDesenho(){
  adicionarMensagem("Como queres ver o desenho?","sistema",true,'<div class="ask-intro">Como queres ver o desenho?</div><div class="ask-opcoes"><div class="ask-opcao" role="button" data-botql-ask="Ficheiro no editor">Ficheiro no editor</div><div class="ask-opcao" role="button" data-botql-ask="Colado no chat">Colado no chat</div></div>');
 }
 function embrulharSvgEmFicheiro(alvo,titulo){
+ inserirMarcacaoBruta(alvo);
  var sv=Array.prototype.slice.call(alvo.querySelectorAll("svg")).filter(function(x){return !x.closest(".lume-arquivo")});
  if(!sv.length)return false;
  var corpo="";sv.forEach(function(x){corpo+=x.outerHTML});

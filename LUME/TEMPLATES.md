@@ -198,3 +198,5 @@ nome | sinónimo 1, sinónimo 2 | fragmento SVG desenhado numa caixa de 100x100
 ```
 
 O chat injeta `pecas_nome`, `pecas_svg`, `pecas_chaves`, `pecas_mapa` e `pecas_nchaves` em qualquer bloco XLang que mencione `pecas_`, e `desenhos_compostos.txt` percorre-as com um único ciclo. Para ensinar uma peça nova ao Lume basta acrescentar uma linha a `pecas.txt` (o ficheiro já está em `arquivos.json`). Os sinónimos são comparados com e sem acentos.
+
+Nota técnica: o `<print>` do XLang escapa sempre o que interpola, por isso um SVG guardado numa variável não pode ser impresso diretamente. Para montar SVG a partir de dados, escreva `<g data-raw="{elementos}"></g>` dentro do `<svg>`: o chat insere o conteúdo da variável como markup SVG, depois de o limpar com o DOMPurify.

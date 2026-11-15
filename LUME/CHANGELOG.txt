@@ -176,3 +176,6 @@ Lume - historico de versoes
 
 0.3.25
 - A composicao so avisa que encontrou poucas pecas quando o pedido tem ligacao entre elementos (" e ", " com " ou virgula). Um desenho simples ("desenha um gato") deixa de receber esse aviso e fica a cargo da regra do desenho individual.
+
+0.3.26
+- Corrigido: a composicao de desenhos mostrava o fundo sem as pecas. O <print> do XLang escapa tudo o que interpola, por isso o SVG montado em variavel aparecia como texto. Agora um elemento com data-raw="{variavel}" recebe esse texto como markup SVG, limpo pelo DOMPurify (perfil SVG). Funciona tambem quando o desenho segue para o editor como ficheiro.
