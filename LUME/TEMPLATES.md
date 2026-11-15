@@ -188,3 +188,13 @@ O editor das apps é independente do `index.html`:
 No editor, o ícone `</>` abre o código com realce de sintaxe (HTML, CSS e JavaScript) e números de linha, e o código pode ser editado ali mesmo. O ícone de executar (triângulo) corre o código editado; o ponto junto ao nome indica alterações ainda não repostas, e "Repor o código original" no menu desfaz tudo. Copiar e transferir usam o código editado.
 
 O `index.html` só carrega `lume-editor.js`. O `editor.html` corre numa iframe isolada e conversa com o chat por `postMessage`, com três pedidos: `copiar`, `baixar` e `fechar`. Para acrescentar uma função ao editor (por exemplo guardar a app no Lume), basta tratar a nova mensagem nos dois ficheiros.
+
+## 10. Registo de peças (desenhos combinados)
+
+Os desenhos que o Lume junta num só SVG vêm de `LUME/bot/pecas.txt`, uma peça por linha:
+
+```
+nome | sinónimo 1, sinónimo 2 | fragmento SVG desenhado numa caixa de 100x100
+```
+
+O chat injeta `pecas_nome`, `pecas_svg`, `pecas_chaves`, `pecas_mapa` e `pecas_nchaves` em qualquer bloco XLang que mencione `pecas_`, e `desenhos_compostos.txt` percorre-as com um único ciclo. Para ensinar uma peça nova ao Lume basta acrescentar uma linha a `pecas.txt` (o ficheiro já está em `arquivos.json`). Os sinónimos são comparados com e sem acentos.

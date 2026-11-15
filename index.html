@@ -854,12 +854,28 @@ function numerosDaPergunta(t){
  }
  return l;
 }
+/* Registo de pecas (pecas.txt): nome | sinonimos | fragmento SVG. Injetado como arrays quando o XLang usa "pecas_". */
+function litArray(a){return"["+a.map(function(x){return typeof x==="number"?String(x):"'"+String(x).replace(/\\/g,"\\\\").replace(/'/g,"\\'").replace(/"/g,'\\"').replace(/\s*\n\s*/g," ")+"'"}).join(",")+"]"}
+function variaveisPecas(){
+ var nome=[],svg=[],chaves=[],mapa=[];
+ String((window.arquivosBot||{})["pecas.txt"]||"").split(/\r?\n/).forEach(function(l){
+  if(!l.trim()||l.trim().charAt(0)==="#")return;
+  var p=l.split("|");if(p.length<3)return;
+  var i=nome.length;nome.push(p[0].trim());svg.push(p.slice(2).join("|").trim());
+  var vistos={};
+  (p[0]+","+p[1]).split(",").forEach(function(a){
+   a=a.trim().toLowerCase();if(!a)return;
+   [a,a.normalize("NFD").replace(/[\u0300-\u036f]/g,"")].forEach(function(k){if(!vistos[k]){vistos[k]=1;chaves.push(k);mapa.push(i)}});
+  });
+ });
+ return'<array name="pecas_nome" value="'+litArray(nome)+'"></array><array name="pecas_svg" value="'+litArray(svg)+'"></array><array name="pecas_chaves" value="'+litArray(chaves)+'"></array><array name="pecas_mapa" value="'+litArray(mapa)+'"></array><var name="pecas_nchaves" value="'+chaves.length+'"></var>';
+}
 function injetarVariaveisXlang(codigo){
  if(String(codigo).indexOf("<!--lume-vars-->")>=0)return codigo;
  const q=String(typeof ultimaPergunta==="string"?ultimaPergunta:"");
  const nums=numerosDaPergunta(q);
  const limpo=q.replace(/['"<>&{}\\]/g," ").replace(/\s+/g," ").trim();
- let v='<!--lume-vars--><var name="msg" value="\''+limpo+'\'"></var><var name="n" value="'+nums.length+'"></var>';
+ let v='<!--lume-vars-->'+(String(codigo).indexOf("pecas_")>=0?variaveisPecas():"")+'<var name="msg" value="\''+limpo+'\'"></var><var name="n" value="'+nums.length+'"></var>';
  for(let i=0;i<6;i++)v+='<var name="n'+(i+1)+'" value="'+(i<nums.length?nums[i]:0)+'"></var>';
  v+='<array name="nums" value="['+nums.join(',')+']"></array>';
  if(contaAtual)v+='<var name="temconta" value="true"></var><var name="conta" value="'+contaAtual.f+'"></var><var name="formula" value="\''+contaAtual.m+'\'"></var>';
