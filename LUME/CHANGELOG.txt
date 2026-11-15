@@ -113,3 +113,8 @@ Lume - historico de versoes
 - Mensagem claramente fora de programacao (ex.: "quanto custa um iphone") deixa de mostrar uma sondagem com temas sem relacao: o Lume responde "Ainda nao sei" e oferece "Ensinar ao Lume". A sondagem mantem-se quando alguma opcao vem do que ja foi aprendido (ex.: "o que e amor"). O texto do "nao sei" passa a vir do respostas.txt (linha 7).
 - Sugestoes iniciais novas: "O que e recursao?", "Como funciona um ciclo for?", "O que e o Rust?" (mostra a pesquisa e a sondagem) e, em destaque a verde, "Ensinar o Lume". O texto do inicio passa a "Pergunta-me algo ou ensina-me o que eu ainda nao sei."
 - "Ensinar o Lume": o Lume pede a pergunta, o utilizador escreve-a e abre-se o editor da resposta.
+
+0.3.10
+- Contas: a regra do main.sql passa a usar o modulo xlang.math (import name="xlang.math") em vez de laços: soma sum(...nums), vezes product(...nums), media avg(...nums), menos sub(n1, n2), dividido div(n1, n2) com aviso para divisao por zero. O limite de 6 numeros desaparece.
+- O index injeta a lista nums com todos os numeros da pergunta (alem de n e n1 a n6, que sub e div usam).
+- calculo.txt: acrescentadas "média de" e "media de" para a regra da media disparar.

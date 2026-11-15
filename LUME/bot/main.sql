@@ -45,51 +45,29 @@ ON MESSAGE {
 WHEN CONTAINS KEYWORDS (calculo.txt) {
  WAITING("Calculando")
     REPLY (
-        <if condition="n > 6">
-    <print>Consigo fazer contas com até 6 números de cada vez.</print>
-</if>
-<elseif condition="n >= 2">
-    <array name="nums" value="[n1, n2, n3, n4, n5, n6]"></array>
-    <var name="op" value="'+'"></var>
+<import name="xlang.math"></import>
+<if condition="n >= 2">
     <if condition="includes(lower(msg), 'dividido')">
-        <set name="op" value="'÷'"></set>
+        <if condition="n2 == 0">
+            <print>Não dá para dividir por zero.</print>
+        </if>
+        <else>
+            <print>{div(n1, n2)}</print>
+        </else>
     </if>
     <elseif condition="includes(lower(msg), 'vezes')">
-        <set name="op" value="'×'"></set>
+        <print>{product(...nums)}</print>
     </elseif>
     <elseif condition="includes(lower(msg), 'menos')">
-        <set name="op" value="'−'"></set>
+        <print>{sub(n1, n2)}</print>
     </elseif>
-    <var name="total" value="nums[0]"></var>
-    <var name="expr" value="'' + nums[0]"></var>
-    <var name="erro" value="false"></var>
-    <for var="i" from="1" to="n - 1">
-        <set name="expr" value="expr + ' ' + op + ' ' + nums[i]"></set>
-        <if condition="op == '+'">
-            <set name="total" value="total + nums[i]"></set>
-        </if>
-        <elseif condition="op == '−'">
-            <set name="total" value="total - nums[i]"></set>
-        </elseif>
-        <elseif condition="op == '×'">
-            <set name="total" value="total * nums[i]"></set>
-        </elseif>
-        <else>
-            <if condition="nums[i] == 0">
-                <set name="erro" value="true"></set>
-            </if>
-            <else>
-                <set name="total" value="total / nums[i]"></set>
-            </else>
-        </else>
-    </for>
-    <if condition="erro">
-        <print>Não dá para dividir por zero.</print>
-    </if>
+    <elseif condition="includes(lower(msg), 'média') || includes(lower(msg), 'media')">
+        <print>{avg(...nums)}</print>
+    </elseif>
     <else>
-        <print>{expr} = {total}</print>
+        <print>{sum(...nums)}</print>
     </else>
-</elseif>
+</if>
 <else>
     <print>Diz-me dois ou mais números, por exemplo: quanto é 4 mais 5?</print>
 </else>

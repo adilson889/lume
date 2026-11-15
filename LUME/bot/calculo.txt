@@ -5,3 +5,5 @@ calcule
 calcular
 resolva
 resolve
+média de
+media de
