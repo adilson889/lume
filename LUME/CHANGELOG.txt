@@ -212,3 +212,6 @@ Lume - historico de versoes
 - Corrigido: o codigo gerado (bloco <pre><code> de respostas XLang, como o do gerador) nao tinha realce de sintaxe nem cabecalho com a linguagem e o botao Copiar. Agora o chat aplica o mesmo realce e cabecalho dos blocos de codigo normais a essas respostas (nao toca no cartao de ficheiro).
 - Sondagem de entrega tambem para codigo: antes de gerar codigo o Lume pergunta "Como queres receber o código?" 1 Ficheiro no editor, 2 Colado no chat. Se o pedido ja diz ficheiro, arquivo ou pagina, nao pergunta. Com ficheiro, o pedido segue para o gerador com "em ficheiro" (pagina completa no editor); com colado no chat, segue como estava (bloco de codigo).
 - capacidades.txt ganhou a coluna entrega (sim = perguntar antes), marcada em desenhar e codigo; o despachante.js ganhou pedeEntrega(q). A sondagem dos desenhos individuais continua a usar palavras_desenho.txt.
+
+0.4.7
+- mobile.html (app Android) recebe o mesmo do 0.4.6: realce de sintaxe e cabecalho (linguagem e Copiar) no codigo gerado por respostas XLang, e a sondagem "Como queres receber o codigo?" (1 Ficheiro no editor, 2 Colado no chat) antes de gerar codigo, alem da dos desenhos. Pedidos que ja dizem ficheiro, arquivo ou pagina nao perguntam. O resto do mobile.html (selecao de texto, anexos, modo offline) nao foi tocado.
