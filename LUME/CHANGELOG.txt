@@ -225,3 +225,10 @@ Lume - historico de versoes
 - main.sql: tres WHEN de emprego no topo do ON MESSAGE, antes de ajuda, estado e saudacoes ("preciso de ajuda" e "estou a trabalhar" colidem); a saudacao responde com o formulario.
 - Testado no motor BotQL 1.3.10 (build de browser, com o OTHERWISE simplificado): cada opcao devolve uma so resposta.
 - Conhecido: a palavra "oi" em saudacoes.txt apanha qualquer mensagem que a contenha (ex.: "apoio").
+
+0.5.1
+- Modo emprego em sequencia: cada resposta e um formulario em XLang e cada opcao escolhida leva ao passo seguinte, para a conversa nao se perder. Caminhos: Procuro trabalho (area, experiencia, horario, resumo), Ja tenho trabalho (curriculo, entrevista, outras oportunidades) e Preciso de orientacao (situacao, depois area). "Recomecar do inicio" limpa o perfil.
+- O perfil (area, experiencia, horario) fica guardado com storage-set/storage-get do XLang, por isso o resumo final usa o que a pessoa escolheu. Ainda nao ha vagas publicadas: o Lume diz isso em vez de inventar.
+- main.sql: os tres WHEN de emprego passam a um so (emprego_chaves.txt -> emprego_fluxo.txt). Removidos emprego_procura.txt, emprego_tenho.txt, emprego_apoio.txt e as respostas 8-10 de respostas.txt.
+- Etiquetas especificas (ex.: "Com experiencia na area", "Recomecar do inicio") para nao apanharem perguntas normais de programacao. Mensagens livres como "trabalho em comercio" tambem entram no fluxo.
+- Testado: percurso automatico dos 23 passos sem erros nem becos sem saida (interpretador XLang) e cada etiqueta devolve uma so resposta no motor BotQL 1.3.10.
