@@ -1,248 +1,495 @@
 Variável (variáveis): uma variável é um nome que guarda um valor, como um número ou um texto, para usar e mudar mais tarde. Em JavaScript: let idade = 20; em Python: idade = 20. Cada variável tem nome, tipo e valor. As variáveis servem para guardar os dados do programa.
+
 Constante (const, val): valor fixo que não muda depois de definido. Em JavaScript: const PI = 3.14; em Kotlin: val. Usa constante para valores fixos e, quando o valor tem de mudar, usa uma variável.
+
 Tipos de dados: dizem que espécie de valor se guarda. Os principais: inteiro (int), decimal (float, double), texto (string), verdadeiro ou falso (boolean) e lista (array). Cada tipo aceita operações diferentes, e cada variável tem um tipo.
+
 Condicional (if, else, se, senão): o programa decide por uma condição. Se for verdadeira, corre um bloco; senão, corre outro. Em JavaScript: if (idade >= 18) { ... } else { ... }. Também existe switch (when em Kotlin).
+
 Ciclo for (loop, laço, repetição): repete um bloco um número conhecido de vezes. Em JavaScript: for (let i = 0; i < 5; i++) { ... }. Em Python: for i in range(5). O ciclo for percorre listas.
+
 Ciclo while (loop, laço, repetição): repete enquanto a condição for verdadeira, sem saber quantas vezes. Exemplo: while (tentativas < 3) { ... }. Cuidado com o ciclo infinito: algo dentro do while tem de mudar a condição.
+
 Função (funções, método, procedimento): uma função é um bloco de código com nome que podes chamar quantas vezes quiseres, para não repetir código. Em JavaScript: function somar(a, b) { return a + b; }. Em Python: def somar(a, b). As funções organizam o programa e cada função faz uma tarefa.
+
 Parâmetros e retorno (return): os parâmetros são os valores recebidos, como a e b em somar(a, b); o return é o valor devolvido. Sem return, não há valor devolvido.
+
 Array (lista, vetor): guarda vários valores numa variável, por posição, começando no índice 0. Em JavaScript: let nomes = ['Ana', 'Rui']; nomes[0] dá 'Ana'. Em Python chama-se list. Percorre-se com um ciclo for.
+
 Objeto (dicionário, mapa, dict): guarda dados em pares de chave e valor. Em JavaScript: let pessoa = { nome: 'Ana', idade: 20 }; pessoa.nome dá 'Ana'. Em Python chama-se dicionário; em Kotlin, Map. É a base do JSON.
+
 Recursão (chamada recursiva, auto-chamada): a recursão é a técnica em que o código se chama a si mesmo, dividindo o problema em partes menores. Uma função recursiva precisa de um caso base que pare as chamadas. Exemplo: factorial(n) = n * factorial(n - 1), com factorial(0) = 1.
+
 Classe (POO, programação orientada a objetos): o molde que define atributos e métodos; o objeto é uma instância criada da classe. Exemplo: a classe Carro tem cor e o método acelerar(); cada carro criado é um objeto. Ligados: herança, encapsulamento, polimorfismo.
+
 API (interface de programação): regras que deixam um programa pedir dados ou ações a outro, normalmente por HTTP. Exemplo: uma app de meteorologia pede a uma API a temperatura de uma cidade. A resposta da API costuma vir em JSON.
+
 HTTP e métodos: o método GET pede dados, o método POST envia dados novos, PUT atualiza, DELETE apaga. Códigos de estado: 200 sucesso, 404 não encontrado, 401 sem autorização, 500 erro no servidor.
+
 JSON: formato de texto para trocar dados, feito de objetos e listas. Exemplo: {"nome": "Ana", "idade": 20}. Chaves entre aspas duplas. Em JavaScript: JSON.parse converte texto em objeto e JSON.stringify converte objeto em texto.
+
 Git (controlo de versões, commit, branch): guarda o histórico do código. git add prepara, git commit guarda uma versão, git push envia para o GitHub, git pull traz alterações. Um branch (ramo) isola uma funcionalidade; o merge junta-a depois.
+
 HTML: linguagem da estrutura de uma página web, com etiquetas (tags): h1 títulos, p parágrafos, a ligações, img imagens, div agrupa. Só descreve o conteúdo; o estilo vem do CSS e o comportamento do JavaScript.
+
 CSS: linguagem do aspeto de uma página: cor, tamanho, espaçamento, posição, fonte. Exemplo para mudar a cor de um texto: p { color: red; font-size: 16px; }. Para alinhar elementos usa-se flexbox ou grid.
+
 JavaScript (JS): JavaScript é a linguagem que dá comportamento a páginas web e também corre no servidor com Node.js. O JavaScript reage a cliques, altera a página, valida formulários e fala com APIs.
+
 Python (linguagem Python): Python é uma linguagem simples e legível, muito usada em automação, dados e inteligência artificial. Em Python os blocos de código são marcados pela indentação em vez de chavetas. Exemplo em Python: print('Olá') mostra texto.
+
 SQL (base de dados): SELECT lê dados, INSERT adiciona, UPDATE altera, DELETE apaga. Exemplo: SELECT nome FROM clientes WHERE idade >= 18; WHERE filtra e ORDER BY ordena.
+
 Kotlin e Android: Kotlin é a linguagem moderna oficial para apps Android, e corre na JVM. val para valores fixos, var para valores que mudam: val nome = "Ana". Tipos que aceitam null levam ?, como String?.
+
 Bug e depuração (debug): um bug é um erro que faz o programa comportar-se mal. Para encontrar um bug: lê a mensagem de erro (diz ficheiro e linha), reproduz o bug, isola a parte que falha e imprime valores com print ou console.log.
+
 Erros de sintaxe e erros de lógica: o erro de sintaxe é código que a linguagem não entende, como faltar um parêntese, e o programa nem arranca. O erro de lógica corre mas dá resultado errado e é mais difícil de achar.
+
 Algoritmo: uma sequência de passos claros para resolver um problema, como a receita de um bolo. Um bom algoritmo é correto, termina e gasta poucos recursos. Exemplos: procurar um número numa lista, ordenar nomes.
+
 Compilador e interpretador: o compilador traduz o código todo para linguagem de máquina antes de correr (C, Kotlin, Java); o interpretador executa linha a linha (Python, JavaScript). Compilado costuma ser mais rápido; interpretado é mais fácil de testar.
+
 Programa (software, aplicação): conjunto de instruções escritas para realizar tarefas num computador. Um programa pode receber dados, processá-los e apresentar resultados.
+
 Código-fonte (código): texto escrito numa linguagem de programação que descreve as instruções de um programa. Pode ser lido e alterado por programadores.
+
 Linguagem de programação: sistema de regras e palavras usadas para escrever instruções que um computador pode executar, diretamente ou após tradução.
+
 Operador (operadores): símbolo que realiza uma operação sobre um ou mais valores. Exemplos: + para adição, - para subtração, * para multiplicação e / para divisão.
+
 Operadores aritméticos: realizam cálculos matemáticos, como adição (+), subtração (-), multiplicação (*), divisão (/) e resto da divisão (%).
+
 Operadores de comparação: comparam valores e produzem um resultado verdadeiro ou falso. Exemplos: ==, !=, >, <, >= e <=.
+
 Operadores lógicos (AND, OR, NOT): combinam ou invertem condições. AND exige que as condições sejam verdadeiras; OR aceita pelo menos uma; NOT inverte o resultado.
+
 Expressão: combinação de valores, variáveis, operadores e chamadas que produz um resultado. Exemplo: idade + 1.
+
 Instrução (comando): ordem escrita no código para executar uma ação, como declarar uma variável, chamar uma função ou apresentar um resultado.
+
 Bloco de código: conjunto de instruções tratado como uma unidade. Em muitas linguagens, é delimitado por chavetas; noutras, pela indentação.
+
 Escopo (scope): região do programa onde uma variável ou função pode ser utilizada. Uma variável local existe apenas dentro do seu escopo.
+
 Variável local: variável declarada dentro de uma função ou bloco e normalmente acessível apenas nessa região.
+
 Variável global: variável declarada fora das funções ou num âmbito global, podendo ser acessível em várias partes do programa.
+
 Declaração e atribuição: declarar é criar uma variável; atribuir é colocar um valor nela. Exemplo em JavaScript: let idade; idade = 20.
+
 Inicialização: atribuição do primeiro valor a uma variável no momento da sua criação. Exemplo: let total = 0.
+
 Conversão de tipos (casting): transformação de um valor de um tipo para outro, como converter o texto "25" no número 25.
+
 Coerção de tipos: conversão automática de um tipo para outro realizada pela linguagem durante uma operação. O comportamento depende da linguagem.
+
 Tipo inteiro (int, integer): tipo de dado usado para representar números sem parte decimal, como -3, 0 e 42.
+
 Tipo decimal (float, double): tipo numérico usado para representar valores com parte fracionária, como 3.14. A precisão depende do tipo utilizado.
+
 Tipo texto (string): sequência de caracteres usada para representar palavras, frases e outros conteúdos textuais.
+
 Tipo carácter (char): tipo usado em algumas linguagens para representar um único carácter, como a letra A.
+
 Tipo booleano (boolean, bool): tipo de dado que possui dois valores lógicos: verdadeiro e falso.
+
 Valor nulo (null, nil, None): representa a ausência intencional de um valor. A forma de o representar depende da linguagem.
+
 Constante nomeada: identificador associado a um valor que não deve ser alterado durante a execução, conforme as regras da linguagem.
+
 Enumeração (enum): tipo que define um conjunto limitado de valores identificados por nomes, como os dias da semana ou estados de uma tarefa.
+
 Condição: expressão avaliada como verdadeira ou falsa e utilizada para decidir se uma instrução ou bloco deve ser executado.
+
 Condicional else if (elif): permite testar uma nova condição quando as condições anteriores não foram satisfeitas.
+
 Condicional switch (match): estrutura que escolhe uma ação com base no valor de uma expressão, comparando-o com diferentes casos.
+
 Ciclo do while (do while): executa primeiro o bloco e só depois verifica a condição; por isso, o bloco é executado pelo menos uma vez.
+
 break: instrução que termina imediatamente o ciclo ou estrutura de seleção mais próxima, conforme as regras da linguagem.
+
 continue: instrução que termina a repetição atual de um ciclo e passa para a próxima repetição.
+
 Ciclo infinito: repetição que não termina porque a condição permanece verdadeira ou porque não existe uma instrução de saída adequada.
+
 Iteração: cada execução de uma repetição dentro de um ciclo. Um ciclo pode realizar várias iterações.
+
 Índice (index): posição usada para aceder a um elemento de uma sequência, como uma lista ou um texto. Em muitas linguagens, começa em zero.
+
 Matriz (array multidimensional): estrutura que organiza valores em duas ou mais dimensões, como linhas e colunas.
+
 Lista ligada (linked list): estrutura de dados formada por elementos que guardam um valor e uma referência para o elemento seguinte.
+
 Pilha (stack): estrutura de dados em que o último elemento inserido é o primeiro a ser removido, seguindo o princípio LIFO.
+
 Fila (queue): estrutura de dados em que o primeiro elemento inserido é o primeiro a ser removido, seguindo o princípio FIFO.
+
 Conjunto (set): estrutura que guarda elementos sem repetições. É útil para verificar pertença e eliminar valores duplicados.
+
 Mapa (map, dictionary): estrutura que associa chaves a valores e permite consultar um valor através da sua chave.
+
 Tupla (tuple): sequência ordenada de elementos que, em algumas linguagens, não pode ser alterada depois de criada.
+
 Ordenação (sorting): processo de organizar elementos segundo um critério, como ordem crescente, decrescente ou alfabética.
+
 Pesquisa linear: algoritmo que percorre os elementos um a um até encontrar o valor procurado ou chegar ao fim.
+
 Pesquisa binária: algoritmo que procura um valor numa sequência ordenada, dividindo repetidamente o intervalo de pesquisa ao meio.
+
 Complexidade temporal: medida de como o tempo de execução de um algoritmo cresce à medida que aumenta o tamanho dos dados.
+
 Complexidade espacial: medida da quantidade de memória adicional que um algoritmo utiliza em função do tamanho dos dados.
+
 Notação Big O: forma de descrever o crescimento do custo de um algoritmo, como O(1), O(n) e O(n²), sem indicar um tempo exato.
+
 Depuração passo a passo: técnica de executar um programa instrução por instrução para observar valores e identificar onde ocorre um problema.
+
 Breakpoint (ponto de interrupção): marca colocada numa linha do código para suspender a execução durante a depuração.
+
 Excepção (exception): evento que interrompe o fluxo normal de execução devido a uma condição inesperada ou a um erro tratado pela linguagem.
+
 Tratamento de erros (try, catch): mecanismo para executar código que pode falhar e tratar a excepção sem terminar necessariamente todo o programa.
+
 finally: bloco que é executado depois de try e catch, sendo normalmente utilizado para libertar recursos ou concluir operações.
+
 Validação de dados: verificação de que os dados recebidos cumprem regras esperadas, como formato, intervalo ou tamanho.
+
 Entrada de dados: informação fornecida ao programa por uma pessoa, ficheiro, dispositivo ou outro sistema.
+
 Saída de dados: informação produzida pelo programa e apresentada no ecrã, guardada num ficheiro ou enviada para outro sistema.
+
 Interface de linha de comandos (CLI): forma de utilizar um programa através de comandos escritos num terminal.
+
 Interface gráfica (GUI): forma de interagir com um programa através de elementos visuais, como janelas, botões e menus.
+
 Terminal (consola): aplicação que permite executar comandos e interagir com o sistema operativo através de texto.
+
 Biblioteca (library): conjunto de funções e componentes reutilizáveis que um programa pode utilizar para evitar implementar tudo de raiz.
+
 Framework: estrutura de desenvolvimento que fornece organização e ferramentas para criar aplicações seguindo determinadas convenções.
+
 Dependência: biblioteca, pacote ou componente externo de que um projecto necessita para funcionar.
+
 Gestor de pacotes: ferramenta que instala, actualiza e remove bibliotecas e outras dependências de um projecto.
+
 API REST: estilo de organização de serviços web que utiliza recursos identificados por endereços e, normalmente, métodos HTTP.
+
 Endpoint: endereço específico de uma API onde um cliente pode enviar um pedido para consultar ou executar uma operação.
+
 Pedido HTTP (request): mensagem enviada por um cliente a um servidor para solicitar dados ou uma operação.
+
 Resposta HTTP (response): mensagem devolvida pelo servidor após receber um pedido, contendo um código de estado e, muitas vezes, dados.
+
 URL: endereço que identifica a localização de um recurso na internet ou numa rede, como uma página ou um serviço.
+
 Domínio: nome legível utilizado para identificar um serviço ou site na internet, como exemplo.com.
+
 DNS: sistema que traduz nomes de domínio em endereços IP utilizados para localizar servidores na rede.
+
 Endereço IP: identificador numérico atribuído a uma interface de rede para permitir a comunicação entre dispositivos.
+
 Servidor: computador ou programa que disponibiliza dados ou serviços a outros programas, chamados clientes.
+
 Cliente-servidor: modelo de comunicação em que um cliente solicita serviços e um servidor recebe e responde aos pedidos.
+
 Frontend: parte de uma aplicação com que a pessoa utilizadora interage directamente, como páginas, formulários e botões.
+
 Backend: parte de uma aplicação responsável por regras, processamento, autenticação, acesso a dados e comunicação com outros serviços.
+
 Full stack: expressão usada para descrever o desenvolvimento tanto do frontend como do backend de uma aplicação.
+
 HTML semântico: utilização de elementos HTML de acordo com o significado do conteúdo, como header, nav, main, article e footer.
+
 Elemento HTML: componente definido por uma etiqueta HTML, podendo conter atributos, texto e outros elementos.
+
 Atributo HTML: informação adicional colocada numa etiqueta para configurar ou identificar um elemento, como id, class e href.
+
 DOM: representação em árvore de um documento HTML que permite ao JavaScript consultar e alterar os elementos da página.
+
 Selector CSS: padrão utilizado para escolher os elementos HTML aos quais serão aplicadas regras de estilo.
+
 Box model (modelo de caixa): modelo CSS que descreve o conteúdo, o preenchimento interno, a borda e a margem de um elemento.
+
 Flexbox: sistema de layout CSS utilizado para organizar elementos numa dimensão, em linha ou em coluna.
+
 CSS Grid: sistema de layout CSS que organiza elementos em linhas e colunas, permitindo composições bidimensionais.
+
 Design responsivo: abordagem que adapta a apresentação de uma página a diferentes tamanhos de ecrã e dispositivos.
+
 Media query: regra CSS que aplica estilos quando determinadas condições são satisfeitas, como a largura do ecrã.
+
 Evento JavaScript: ocorrência à qual o programa pode reagir, como um clique, uma tecla pressionada ou o carregamento de uma página.
+
 Event listener: mecanismo que regista uma função para ser executada quando determinado evento acontece.
+
 Callback: função fornecida a outra função para ser chamada posteriormente, por exemplo, quando uma operação termina.
+
 Promise: objecto JavaScript que representa o resultado futuro de uma operação assíncrona, que pode ser concluída ou rejeitada.
+
 async e await: palavras-chave JavaScript que facilitam a escrita de código assíncrono baseado em Promises.
+
 Programação assíncrona: forma de executar operações sem bloquear desnecessariamente o restante fluxo do programa enquanto se aguarda um resultado.
+
 JSON.parse: método JavaScript que converte uma cadeia de texto JSON num valor JavaScript.
+
 JSON.stringify: método JavaScript que converte um valor JavaScript numa cadeia de texto no formato JSON.
+
 Expressão regular (regex): padrão utilizado para procurar, validar ou substituir partes de um texto.
+
 Programação orientada a objectos (POO): paradigma que organiza o código em objectos com dados e comportamentos.
+
 Encapsulamento: princípio da programação orientada a objectos que controla o acesso aos dados e detalhes internos de um objecto.
+
 Herança: mecanismo pelo qual uma classe pode reutilizar ou especializar características de outra classe, quando a linguagem o permite.
+
 Polimorfismo: capacidade de diferentes tipos de objectos responderem à mesma operação de maneiras específicas.
+
 Abstracção: princípio que destaca as características essenciais de algo e esconde detalhes que não são necessários para a sua utilização.
+
 Interface (programação): contrato que define operações que um componente ou tipo deve disponibilizar, conforme a linguagem.
+
 Composição: técnica de construir um componente utilizando outros componentes, em vez de depender apenas de herança.
+
 Programação funcional: paradigma que privilegia funções, composição e transformação de dados, procurando reduzir efeitos secundários.
+
 Função pura: função que, para os mesmos argumentos, devolve sempre o mesmo resultado e não altera estado externo.
+
 Função anónima: função criada sem um nome explícito, frequentemente utilizada como argumento de outra função.
+
 Função de ordem superior: função que recebe outras funções como argumentos ou devolve uma função como resultado.
+
 Imutabilidade: característica de um dado que não pode ser alterado depois de criado; novas versões são produzidas em vez de modificar o original.
+
 Recursão de cauda: forma de recursão em que a chamada recursiva é a última operação da função, podendo ser optimizada por algumas linguagens.
+
 Base de dados: sistema organizado para guardar, consultar, actualizar e remover informações.
+
 SGBD: sistema de gestão de bases de dados, software responsável por administrar bases de dados e permitir operações sobre os dados.
+
 Tabela relacional: estrutura de uma base de dados relacional organizada em linhas e colunas.
+
 Registo (linha): conjunto de valores relacionados que representa uma ocorrência numa tabela de uma base de dados.
+
 Campo (coluna): atributo de uma tabela que define o tipo de informação guardada em cada registo.
+
 Chave primária (primary key): coluna ou conjunto de colunas que identifica de forma única cada registo de uma tabela.
+
 Chave estrangeira (foreign key): coluna ou conjunto de colunas que estabelece uma relação com uma chave de outra tabela.
+
 Relação entre tabelas: ligação lógica entre dados de tabelas diferentes, normalmente estabelecida através de chaves.
+
 SQL JOIN: operação que combina linhas de duas ou mais tabelas com base numa condição relacionada.
+
 SQL WHERE: cláusula que filtra os registos de uma consulta de acordo com uma condição.
+
 SQL GROUP BY: cláusula que agrupa registos com valores iguais em determinadas colunas, normalmente para calcular resultados agregados.
+
 SQL ORDER BY: cláusula que organiza os resultados de uma consulta segundo uma ou mais colunas.
+
 SQL COUNT: função de agregação que conta o número de registos ou valores de um conjunto.
+
 SQL INSERT: comando utilizado para adicionar novos registos a uma tabela.
+
 SQL UPDATE: comando utilizado para alterar valores de registos existentes numa tabela.
+
 SQL DELETE: comando utilizado para remover registos de uma tabela.
+
 Transacção de base de dados: conjunto de operações tratado como uma unidade, que deve ser confirmado ou revertido conforme o resultado.
+
 ACID: conjunto de propriedades de transacções de bases de dados: atomicidade, consistência, isolamento e durabilidade.
+
 Índice de base de dados: estrutura auxiliar que acelera determinadas consultas, embora possa aumentar o custo de escrita e armazenamento.
+
 Normalização de bases de dados: organização das tabelas para reduzir redundância e evitar problemas de consistência nos dados.
+
 SQLite: sistema de base de dados relacional leve que guarda os dados num ficheiro e não exige um servidor separado.
+
 Base de dados NoSQL: categoria de sistemas de armazenamento que não seguem necessariamente o modelo relacional tradicional.
+
 Armazenamento local: forma de guardar dados no próprio dispositivo ou aplicação, sem depender sempre de um servidor remoto.
+
 Ficheiro CSV: formato de texto utilizado para representar dados tabulares, normalmente com valores separados por vírgulas ou outros delimitadores.
+
 Leitura de ficheiros: operação que obtém o conteúdo de um ficheiro para ser processado por um programa.
+
 Escrita de ficheiros: operação que cria ou altera o conteúdo de um ficheiro a partir de dados produzidos pelo programa.
+
 Codificação UTF-8: forma de representar caracteres Unicode em bytes, muito utilizada para guardar e transmitir texto.
+
 Git repository (repositório): pasta ou espaço de projecto acompanhado pelo Git para registar o histórico das alterações.
+
 Commit: registo de um conjunto de alterações no histórico de um repositório Git, acompanhado de uma mensagem descritiva.
+
 Branch (ramo): linha independente de desenvolvimento num repositório Git, utilizada para trabalhar em alterações sem modificar directamente outro ramo.
+
 Merge: operação Git que integra alterações de um ramo noutro ramo.
+
 Pull request: proposta para rever e integrar alterações de um ramo ou repositório noutro, comum em plataformas como GitHub.
+
 Conflito de merge: situação em que o Git não consegue combinar automaticamente alterações incompatíveis e exige resolução manual.
+
 .gitignore: ficheiro que indica ao Git quais ficheiros ou pastas devem ser ignorados e não acompanhados pelo repositório.
+
 Controlo de versões: prática de registar alterações ao longo do tempo para acompanhar, comparar e recuperar versões de um projecto.
+
 Teste unitário: teste que verifica uma unidade pequena de código, como uma função ou método, de forma isolada.
+
 Teste de integração: teste que verifica se diferentes componentes de um sistema funcionam correctamente em conjunto.
+
 Teste de regressão: teste realizado para confirmar que alterações recentes não quebraram funcionalidades que já funcionavam.
+
 Depuração automatizada: utilização de ferramentas para detectar problemas, executar testes e analisar o comportamento do programa.
+
 Refatoração: reorganização do código para melhorar a sua estrutura e legibilidade sem alterar o comportamento esperado.
+
 Legibilidade do código: facilidade com que uma pessoa consegue ler, compreender e acompanhar a intenção de um programa.
+
 Documentação: conjunto de explicações sobre a utilização, funcionamento, instalação ou manutenção de um programa ou biblioteca.
+
 Comentário no código: texto escrito para explicar uma parte do programa e que não é executado como instrução.
+
 Indentação: espaçamento utilizado no início das linhas para representar a estrutura do código ou melhorar a sua leitura.
+
 Convenção de nomes: conjunto de regras para escolher nomes consistentes para variáveis, funções, classes e outros elementos.
+
 Segurança informática: conjunto de práticas destinadas a proteger sistemas, aplicações e dados contra acessos ou alterações não autorizadas.
+
 Autenticação: processo de confirmar a identidade de uma pessoa ou sistema, por exemplo através de uma palavra-passe.
+
 Autorização: processo de determinar quais recursos ou operações uma identidade autenticada pode utilizar.
+
 Hash criptográfico: função que transforma dados de qualquer tamanho num resumo de tamanho definido, sendo difícil recuperar os dados originais a partir do resumo.
+
 Encriptação: transformação de dados para os tornar ilegíveis sem a chave adequada.
+
 HTTPS: versão do HTTP protegida por TLS, que ajuda a garantir confidencialidade e integridade na comunicação entre cliente e servidor.
+
 Variável de ambiente: valor configurado no ambiente de execução e lido por um programa, frequentemente utilizado para definir opções e configurações.
+
 Ficheiro de configuração: ficheiro que guarda opções utilizadas por uma aplicação, como endereços, parâmetros e preferências.
+
 Deploy (publicação): processo de disponibilizar uma aplicação ou nova versão num ambiente onde pode ser utilizada.
+
 Ambiente de desenvolvimento: configuração de ferramentas e serviços utilizada para escrever, executar e testar uma aplicação durante a sua criação.
+
 Ambiente de produção: ambiente onde a aplicação é disponibilizada para utilização real.
+
 CI/CD: práticas de integração e entrega ou publicação contínuas que automatizam etapas como testes, validações e disponibilização de software.
+
 Build: processo de preparar ou gerar os ficheiros necessários para executar ou distribuir uma aplicação.
+
 Compilação: processo de traduzir código-fonte para outra representação, como código de máquina ou código intermédio.
+
 Bytecode: representação intermédia de um programa que pode ser executada por uma máquina virtual.
+
 Máquina virtual: ambiente de software que executa programas numa plataforma virtualizada ou através de uma máquina de execução própria.
+
 Runtime (ambiente de execução): conjunto de componentes e serviços necessários para executar um programa.
+
 Memória RAM: memória temporária utilizada pelo computador para guardar dados e instruções enquanto os programas estão em execução.
+
 Gestão de memória: processo de reservar, utilizar e libertar memória durante a execução de um programa.
+
 Colector de lixo (garbage collector): mecanismo que identifica e recupera automaticamente memória ocupada por objectos que já não podem ser utilizados.
+
 Referência: valor que permite aceder a outro objecto ou localização de dados, conforme o modelo de memória da linguagem.
+
 Apontador (pointer): variável que guarda um endereço de memória, permitindo aceder indirectamente a um valor.
+
 Stack de chamadas: estrutura utilizada durante a execução para acompanhar funções chamadas e os respectivos contextos.
+
 Heap: região de memória utilizada para armazenar dados cuja duração não está limitada à execução de uma única chamada de função.
+
 Concorrência: capacidade de organizar várias tarefas para progredirem durante períodos de tempo sobrepostos.
+
 Paralelismo: execução efectiva de várias tarefas ao mesmo tempo, normalmente utilizando múltiplos núcleos ou unidades de processamento.
+
 Thread (linha de execução): sequência de execução dentro de um processo, que pode partilhar recursos com outras threads.
+
 Processo: instância de um programa em execução, com recursos e espaço de memória próprios.
+
 Sincronização: coordenação entre tarefas concorrentes para evitar conflitos e garantir a ordem necessária das operações.
+
 Deadlock (impasse): situação em que duas ou mais tarefas ficam bloqueadas à espera de recursos que outras tarefas mantêm ocupados.
+
 Protocolo de comunicação: conjunto de regras que define como dispositivos ou programas trocam mensagens e interpretam dados.
+
 WebSocket: tecnologia que permite comunicação bidireccional contínua entre cliente e servidor através de uma ligação persistente.
+
 JSON Web Token (JWT): formato de token utilizado para transportar declarações entre sistemas, frequentemente em processos de autenticação e autorização.
+
 Cache: armazenamento temporário de dados para acelerar acessos futuros e reduzir operações repetidas.
+
 RAG (Retrieval-Augmented Generation): abordagem que procura informação numa base de conhecimento e fornece os resultados como contexto a um sistema que gera respostas.
+
 BM25: método de classificação utilizado na pesquisa de informação para ordenar documentos conforme a relevância dos termos da consulta.
+
 Tokenização: processo de dividir um texto em unidades menores, como palavras, partes de palavras ou símbolos.
+
 Normalização de texto: transformação de texto para reduzir diferenças de escrita, como uniformizar maiúsculas, espaços ou acentos, conforme o objectivo.
+
 Classificação de intenção: processo de identificar o objectivo provável de uma mensagem, como pedir ajuda, agradecer ou fazer uma pergunta.
+
 Similaridade textual: medida que estima o grau de semelhança entre dois textos ou sequências de palavras.
+
 Motor de pesquisa: componente que procura informação numa colecção de documentos e apresenta resultados relevantes para uma consulta.
+
 Base de conhecimento: conjunto organizado de informações que um sistema pode consultar para responder a perguntas ou executar tarefas.
+
 Cache de respostas: armazenamento temporário de respostas anteriores para reutilizar resultados em consultas equivalentes, quando isso é seguro e adequado.
+
 Webhook: mecanismo pelo qual um serviço envia automaticamente uma mensagem HTTP para outro sistema quando ocorre um evento.
+
 Automação: execução de tarefas por um programa com pouca ou nenhuma intervenção manual, seguindo regras definidas.
+
 Bot conversacional: programa que recebe mensagens, identifica pedidos e responde através de regras, conteúdos ou serviços integrados.
+
 Parser (analisador sintáctico): componente que verifica a estrutura de uma sequência de símbolos e constrói uma representação organizada do código.
+
 Tokenizador (lexer): componente que divide o texto de entrada em unidades chamadas tokens, como palavras-chave, identificadores e operadores.
+
 AST (árvore sintáctica abstracta): estrutura em árvore que representa a organização lógica de um programa depois da análise sintáctica.
+
 Interpretador: componente que analisa e executa instruções de uma linguagem sem exigir necessariamente a geração prévia de um executável nativo.
+
 Transpilador: ferramenta que converte código escrito numa linguagem ou sintaxe para código equivalente noutra linguagem.
+
 DSL (linguagem específica de domínio): linguagem concebida para expressar operações de uma área ou tarefa particular, em vez de servir para qualquer tipo de programação.
+
 Expressão regular de validação: padrão que permite verificar se um texto segue determinado formato, como um endereço de correio electrónico.
+
 Serialização: processo de converter dados numa representação que pode ser guardada ou transmitida.
+
 Desserialização: processo de reconstruir dados a partir de uma representação previamente serializada.
+
 Middleware: componente executado entre a recepção de um pedido e a resposta final, podendo validar, transformar ou encaminhar informação.
+
 Rate limiting: técnica que limita a quantidade de pedidos que um utilizador ou sistema pode realizar num intervalo de tempo.
+
 Paginação: divisão de um conjunto grande de resultados em partes menores, apresentadas em páginas ou blocos.
+
 Filtragem de dados: selecção de elementos que satisfazem determinadas condições.
+
 Map e filter: operações comuns em programação que transformam elementos de uma sequência ou seleccionam apenas os que cumprem uma condição.
+
 Redução (reduce): operação que combina os elementos de uma sequência para produzir um único resultado, como uma soma.
+
 Desestruturação: sintaxe disponível em algumas linguagens para extrair valores de listas ou objectos e atribuí-los a variáveis.
+
 Template string: forma de construir texto com valores inseridos no seu interior, disponível em linguagens como JavaScript.
+
 Expressão lambda: função definida de forma concisa, geralmente sem uma declaração tradicional com nome.
+
 Programação declarativa: estilo em que se descreve o resultado pretendido ou as regras, deixando os detalhes de execução para o sistema.
+
 Programação imperativa: estilo em que se descrevem passo a passo as instruções que o programa deve executar.
+
 Paradigma de programação: conjunto de ideias e métodos que orientam a forma de estruturar e resolver problemas através de código.
+
 Princípio DRY: recomendação de evitar duplicação desnecessária de lógica ou informação no código.
+
 Princípio KISS: recomendação de preferir soluções simples e compreensíveis, evitando complexidade sem necessidade.
+
 Princípio SOLID: conjunto de cinco princípios de desenho de software orientado a objectos que ajudam a organizar sistemas e reduzir dependências rígidas.
