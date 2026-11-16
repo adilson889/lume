@@ -218,3 +218,10 @@ Lume - historico de versoes
 
 0.4.8
 - Corrigido no editor: tocar num link da pagina em "Ver site" (ex.: "Saiba mais" com href="#") abria outro editor dentro do editor, vazio. O endereco-base do srcdoc da pre-visualizacao e o do proprio editor, por isso o link navegava para ele. Agora a pagina recebe uma guarda: links "#id" fazem scroll ate ao elemento, os outros links e os formularios nao navegam. Vale para o index.html e o mobile.html, que usam o mesmo LUME/editor/editor.html.
+
+0.5.0
+- Modo emprego (primeira fase): a saudacao mostra um formulario feito em XLang (LUME/bot/emprego_formulario.txt) com a pergunta "ja estas a trabalhar ou estas a procura de uma oportunidade?" e 3 opcoes numeradas (Procuro trabalho, Ja tenho trabalho, Preciso de orientacao). Tem o mesmo aspeto da sondagem, com estilos inline, e nao depende do CSS do index.html nem do mobile.html. O clique usa data-botql-ask, que os dois ja tratam.
+- Novos ficheiros de frases-chave: emprego_procura.txt, emprego_tenho.txt, emprego_apoio.txt; respostas 8, 9 e 10 em respostas.txt; todos listados em arquivos.json.
+- main.sql: tres WHEN de emprego no topo do ON MESSAGE, antes de ajuda, estado e saudacoes ("preciso de ajuda" e "estou a trabalhar" colidem); a saudacao responde com o formulario.
+- Testado no motor BotQL 1.3.10 (build de browser, com o OTHERWISE simplificado): cada opcao devolve uma so resposta.
+- Conhecido: a palavra "oi" em saudacoes.txt apanha qualquer mensagem que a contenha (ex.: "apoio").
