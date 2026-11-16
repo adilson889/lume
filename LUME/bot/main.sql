@@ -10,20 +10,11 @@ CONNECT SEARCH WIKI
 ON MESSAGE {
     INSERT INTO Context()
 
-    -- 0. Emprego (antes de ajuda, estado e saudacoes: "preciso de ajuda" e "estou a trabalhar" colidem)
-    WHEN CONTAINS KEYWORDS(emprego_apoio.txt) {
-        WAITING("A ver como posso ajudar...", 2)
-        REPLY (respostas.txt, 10)
-    }
-
-    WHEN CONTAINS KEYWORDS(emprego_procura.txt) {
-        WAITING("A ver o que posso fazer por ti...", 2)
-        REPLY (respostas.txt, 8)
-    }
-
-    WHEN CONTAINS KEYWORDS(emprego_tenho.txt) {
-        WAITING("A ver como posso ajudar...", 2)
-        REPLY (respostas.txt, 9)
+    -- 0. Emprego: formularios em sequencia (emprego_fluxo.txt decide o passo pela mensagem).
+    --    Fica antes de ajuda, estado e saudacoes: "preciso de ajuda" e "estou a trabalhar" colidem.
+    WHEN CONTAINS KEYWORDS(emprego_chaves.txt) {
+        WAITING("A preparar o próximo passo...", 1)
+        REPLY (emprego_fluxo.txt, 1)
     }
 
     -- 1. Ver o que o bot sabe fazer

@@ -1,0 +1,129 @@
+1-{xlang}
+
+<var name="m" value="lower(msg)"></var>
+
+<fun name="texto" params="t">
+    <print><div style="font-size:15px;line-height:1.5;color:var(--text,#222);margin:2px 0 12px">{t}</div></print>
+</fun>
+<fun name="pergunta" params="t">
+    <print><div style="font-size:17px;font-weight:700;line-height:1.35;color:var(--text,#222);margin:2px 0 14px;padding-left:12px;border-left:4px solid var(--r,#8b0000)">{t}</div></print>
+</fun>
+<fun name="opcao" params="i, t">
+    <print><div role="button" data-botql-ask="{t}" style="display:flex;align-items:center;gap:12px;background:var(--card,#fff);border:1px solid var(--border,#ddd);border-radius:14px;padding:12px 14px;margin-bottom:10px;font-size:15px;line-height:1.45;color:var(--text,#222);cursor:pointer;user-select:none"><span style="flex:none;width:26px;height:26px;border-radius:50%;background:var(--r,#8b0000);color:var(--on,#fff);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center">{i}</span><span>{t}</span></div></print>
+</fun>
+<fun name="fim" params="">
+    <call name="opcao" args="1, 'Ajuda com o currículo'"></call>
+    <call name="opcao" args="2, 'Preparar entrevista'"></call>
+    <call name="opcao" args="3, 'Ver outras oportunidades'"></call>
+    <call name="opcao" args="4, 'Recomeçar do início'"></call>
+</fun>
+<fun name="perguntaArea" params="">
+    <call name="pergunta" args="'Em que área queres trabalhar?'"></call>
+    <call name="opcao" args="1, 'Comércio e vendas'"></call>
+    <call name="opcao" args="2, 'Construção e obras'"></call>
+    <call name="opcao" args="3, 'Restauração e hotelaria'"></call>
+    <call name="opcao" args="4, 'Tecnologia e programação'"></call>
+    <call name="opcao" args="5, 'Saúde e cuidados'"></call>
+    <call name="opcao" args="6, 'Outra área'"></call>
+</fun>
+
+<if condition="includes(m, 'recomeçar') || includes(m, 'recomecar')">
+    <storage-remove key="emp_area"></storage-remove>
+    <storage-remove key="emp_exp"></storage-remove>
+    <storage-remove key="emp_horario"></storage-remove>
+    <call name="pergunta" args="'Vamos recomeçar. Já estás a trabalhar ou estás à procura de uma oportunidade?'"></call>
+    <call name="opcao" args="1, 'Procuro trabalho'"></call>
+    <call name="opcao" args="2, 'Já tenho trabalho'"></call>
+    <call name="opcao" args="3, 'Preciso de orientação'"></call>
+</if>
+<elseif condition="includes(m, 'tempo inteiro') || includes(m, 'meio período') || includes(m, 'meio periodo') || includes(m, 'biscate')">
+    <var name="horario" value="'Tempo inteiro'"></var>
+    <if condition="includes(m, 'meio per')">
+        <set name="horario" value="'Meio período'"></set>
+    </if>
+    <if condition="includes(m, 'biscate')">
+        <set name="horario" value="'Trabalho pontual'"></set>
+    </if>
+    <storage-set key="emp_horario" value="horario"></storage-set>
+    <storage-get key="emp_area" as="area" default="'a tua área'"></storage-get>
+    <storage-get key="emp_exp" as="exp" default="'a tua experiência'"></storage-get>
+    <call name="texto" args="'Obrigado. Então procuras trabalho em ' + area + ' (' + lower(exp) + ', ' + lower(horario) + ').'"></call>
+    <call name="texto" args="'Ainda não tenho vagas publicadas para este perfil, e prefiro dizer-te isso a inventar. Posso ajudar-te a ficares preparado para quando surgirem.'"></call>
+    <call name="pergunta" args="'O que queres fazer agora?'"></call>
+    <call name="fim"></call>
+</elseif>
+<elseif condition="includes(m, 'experiência') || includes(m, 'experiencia')">
+    <var name="exp" value="'Com experiência'"></var>
+    <if condition="includes(m, 'sem experi') || includes(m, 'não tenho experi') || includes(m, 'nao tenho experi')">
+        <set name="exp" value="'Sem experiência'"></set>
+    </if>
+    <if condition="includes(m, 'pouca experi')">
+        <set name="exp" value="'Pouca experiência'"></set>
+    </if>
+    <storage-set key="emp_exp" value="exp"></storage-set>
+    <call name="pergunta" args="'Que tipo de horário procuras?'"></call>
+    <call name="opcao" args="1, 'Tempo inteiro'"></call>
+    <call name="opcao" args="2, 'Meio período'"></call>
+    <call name="opcao" args="3, 'Trabalho pontual (biscates)'"></call>
+</elseif>
+<elseif condition="includes(m, 'currículo') || includes(m, 'curriculo')">
+    <call name="texto" args="'Um bom currículo é simples e fácil de ler. Alguns pontos práticos:'"></call>
+    <print><ul style="margin:0 0 12px;padding-left:20px;font-size:15px;line-height:1.5;color:var(--text,#222)"><li>Uma página, com o nome e o contacto no topo.</li><li>Duas linhas a dizer quem és e o que procuras.</li><li>Experiência do mais recente para o mais antigo, com o que fizeste e conseguiste.</li><li>Sem experiência? Mostra formação, cursos, voluntariado, biscates e o que sabes fazer na prática.</li><li>Relê para apanhar erros e adapta-o a cada vaga.</li></ul></print>
+    <call name="pergunta" args="'Queres continuar?'"></call>
+    <call name="opcao" args="1, 'Preparar entrevista'"></call>
+    <call name="opcao" args="2, 'Ver outras oportunidades'"></call>
+    <call name="opcao" args="3, 'Recomeçar do início'"></call>
+</elseif>
+<elseif condition="includes(m, 'entrevista')">
+    <call name="texto" args="'Algumas ideias para uma entrevista correr melhor:'"></call>
+    <print><ul style="margin:0 0 12px;padding-left:20px;font-size:15px;line-height:1.5;color:var(--text,#222)"><li>Descobre o que a empresa faz e o que a vaga pede.</li><li>Prepara uma resposta de um minuto para &quot;fala-me de ti&quot;.</li><li>Tem à mão dois ou três exemplos reais do que já fizeste.</li><li>Confirma o local e a hora, e chega com antecedência.</li><li>Leva uma pergunta para fazer no fim.</li></ul></print>
+    <call name="pergunta" args="'Queres continuar?'"></call>
+    <call name="opcao" args="1, 'Ajuda com o currículo'"></call>
+    <call name="opcao" args="2, 'Ver outras oportunidades'"></call>
+    <call name="opcao" args="3, 'Recomeçar do início'"></call>
+</elseif>
+<elseif condition="includes(m, 'comércio') || includes(m, 'comercio') || includes(m, 'construção') || includes(m, 'construcao') || includes(m, 'obras') || includes(m, 'restauração') || includes(m, 'restauracao') || includes(m, 'hotelaria') || includes(m, 'tecnologia') || includes(m, 'saúde') || includes(m, 'saude') || includes(m, 'outra área') || includes(m, 'outra area') || includes(m, 'limpeza')">
+    <var name="area" value="'Outra área'"></var>
+    <if condition="includes(m, 'comércio') || includes(m, 'comercio')">
+        <set name="area" value="'Comércio e vendas'"></set>
+    </if>
+    <if condition="includes(m, 'construção') || includes(m, 'construcao') || includes(m, 'obras')">
+        <set name="area" value="'Construção e obras'"></set>
+    </if>
+    <if condition="includes(m, 'restaura') || includes(m, 'hotelaria')">
+        <set name="area" value="'Restauração e hotelaria'"></set>
+    </if>
+    <if condition="includes(m, 'tecnologia')">
+        <set name="area" value="'Tecnologia e programação'"></set>
+    </if>
+    <if condition="includes(m, 'saúde') || includes(m, 'saude')">
+        <set name="area" value="'Saúde e cuidados'"></set>
+    </if>
+    <storage-set key="emp_area" value="area"></storage-set>
+    <call name="pergunta" args="'Já tens experiência nesta área?'"></call>
+    <call name="opcao" args="1, 'Sem experiência na área'"></call>
+    <call name="opcao" args="2, 'Pouca experiência na área'"></call>
+    <call name="opcao" args="3, 'Com experiência na área'"></call>
+</elseif>
+<elseif condition="includes(m, 'orientação') || includes(m, 'orientacao') || includes(m, 'apoio')">
+    <call name="texto" args="'Estou aqui para ajudar, sem pressa. Vamos por partes. Qual destas descreve melhor a tua situação?'"></call>
+    <call name="opcao" args="1, 'Nunca trabalhei'"></call>
+    <call name="opcao" args="2, 'Estou sem renda agora'"></call>
+    <call name="opcao" args="3, 'Não sei por onde começar'"></call>
+</elseif>
+<elseif condition="includes(m, 'nunca trabalhei') || includes(m, 'sem renda') || includes(m, 'por onde começar') || includes(m, 'por onde comecar') || includes(m, 'dificuldades financeiras')">
+    <call name="texto" args="'Obrigado por me contares. Isso pode pesar, e não precisas de resolver tudo hoje. Vamos dar um passo pequeno: perceber que tipo de trabalho te interessa.'"></call>
+    <call name="perguntaArea"></call>
+</elseif>
+<elseif condition="includes(m, 'já tenho') || includes(m, 'ja tenho') || includes(m, 'já estou') || includes(m, 'ja estou') || includes(m, 'mudar de')">
+    <call name="texto" args="'Que bom. Como posso ajudar-te?'"></call>
+    <call name="opcao" args="1, 'Ajuda com o currículo'"></call>
+    <call name="opcao" args="2, 'Preparar entrevista'"></call>
+    <call name="opcao" args="3, 'Ver outras oportunidades'"></call>
+</elseif>
+<else>
+    <call name="texto" args="'Obrigado por me dizeres. Vamos com calma, um passo de cada vez.'"></call>
+    <call name="perguntaArea"></call>
+</else>
+
+}
