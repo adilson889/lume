@@ -23,6 +23,8 @@
 <var name="css" value="''"></var>
 <var name="html" value="''"></var>
 <var name="saida" value="''"></var>
+<var name="estilo" value="''"></var>
+<var name="pagina" value="''"></var>
 <!-- Quebra de linha: um valor com mudanca de linha e lido como texto literal; o split tira a mudanca de linha do meio. -->
 <var name="nlq" value="Q
 Q"></var>
@@ -112,12 +114,20 @@ Q"></var>
     </if>
 </for>
 
-<!-- 5. RESPOSTA -->
+<!-- 5. RESPOSTA: bloco de codigo, ou uma pagina completa (ficheiro que abre no editor) se pedirem ficheiro/pagina -->
 <if condition="achados >= 1">
-    <set name="saida" value="'<style>' + nl + ':root {' + nl + '  --cor: ' + hex + ';' + nl + '  --cor-escuro: color-mix(in srgb, var(--cor) 80%, #000);' + nl + '  --cor-claro: color-mix(in srgb, var(--cor) 16%, #fff);' + nl + '  --sobre: ' + sobre + ';' + nl + '  --raio: ' + raio + ';' + nl + '  --tam: ' + tam + ';' + nl + '}' + nl + css + '</style>' + nl + nl + html"></set>
-    <print>Aqui está o código (HTML + CSS) de: <b>{lista}</b></print>
-    <print><pre><code class="language-html">{saida}</code></pre></print>
-    <print>Podes pedir outra cor (por exemplo vermelho ou #ff6600), tamanho (grande ou pequeno), forma (redondo ou quadrado) e texto (com texto Comprar agora).</print>
+    <set name="estilo" value="':root {' + nl + '  --cor: ' + hex + ';' + nl + '  --cor-escuro: color-mix(in srgb, var(--cor) 80%, #000);' + nl + '  --cor-claro: color-mix(in srgb, var(--cor) 16%, #fff);' + nl + '  --sobre: ' + sobre + ';' + nl + '  --raio: ' + raio + ';' + nl + '  --tam: ' + tam + ';' + nl + '}' + nl + css"></set>
+    <if condition="includes(m, 'ficheiro') || includes(m, 'arquivo') || includes(m, 'pagina') || includes(m, 'página')">
+        <set name="pagina" value="'<!doctype html>' + nl + '<html lang=\"pt\">' + nl + '<head>' + nl + '<meta charset=\"utf-8\">' + nl + '<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">' + nl + '<title>Componentes Lume</title>' + nl + '<style>' + nl + 'body { margin: 0; padding: 2rem; display: grid; gap: 1.5rem; justify-items: start; background: #f9fafb; }' + nl + estilo + '</style>' + nl + '</head>' + nl + '<body>' + nl + html + '</body>' + nl + '</html>'"></set>
+        <print>Criei uma página com: <b>{lista}</b>. Toca no ficheiro para a abrir no editor, ver o resultado e editar.</print>
+        <print><pre data-ficheiro="1"><code>{pagina}</code></pre></print>
+    </if>
+    <else>
+        <set name="saida" value="'<style>' + nl + estilo + '</style>' + nl + nl + html"></set>
+        <print>Aqui está o código (HTML + CSS) de: <b>{lista}</b></print>
+        <print><pre><code class="language-html">{saida}</code></pre></print>
+        <print>Podes pedir outra cor (por exemplo vermelho ou #ff6600), tamanho (grande ou pequeno), forma (redondo ou quadrado) e texto (com texto Comprar agora). Diz "em ficheiro" para receberes uma página completa.</print>
+    </else>
 </if>
 <else>
     <foreach var="nm" in="comp_nome">

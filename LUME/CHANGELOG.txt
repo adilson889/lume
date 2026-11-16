@@ -203,3 +203,7 @@ Lume - historico de versoes
 - O pedido aceita cor (nome ou #rrggbb), tamanho (grande, pequeno), forma (redondo, quadrado), texto (com texto ...) e varios componentes de uma vez.
 - Despachante: decide por verbo e objeto juntos, tem o objeto "componentes", desempata pelas condicoes (requer) e deixa de contar "um" e "uma" como numeros.
 - Removida a regra antiga do main.sql e o palavras_gerador.txt (a capacidade codigo faz esse trabalho). Novo LUME/COMPONENTES.md.
+
+0.4.5
+- Gerador de codigo: com "ficheiro", "arquivo" ou "pagina" no pedido entrega uma pagina HTML completa como cartao que abre no editor (editavel); sem essas palavras continua o bloco de codigo.
+- lume-editor.js converte <pre data-ficheiro> de respostas XLang em cartao de ficheiro.

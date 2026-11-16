@@ -92,7 +92,16 @@ function montar(el){
  c.addEventListener("click",function(){abrir(h)});
  el.appendChild(c);
 }
-function varrer(){document.querySelectorAll("div.lume-app[data-lume-app]").forEach(montar)}
+/* Respostas XLang que trazem uma pagina completa: <pre data-ficheiro><code>...</code></pre> vira o cartao do ficheiro. */
+function converterPaginas(){
+ document.querySelectorAll("pre[data-ficheiro]").forEach(function(pre){
+  var texto=pre.textContent||"";pre.removeAttribute("data-ficheiro");
+  if(!/<html[\s>]/i.test(texto))return;
+  var card=document.createElement("div");card.className="lume-app";card.setAttribute("data-lume-app",encodeURIComponent(texto));
+  pre.parentNode.replaceChild(card,pre);
+ });
+}
+function varrer(){converterPaginas();document.querySelectorAll("div.lume-app[data-lume-app]").forEach(montar)}
 new MutationObserver(varrer).observe(document.body,{childList:true,subtree:true});
 varrer();
 })();

@@ -26,6 +26,8 @@ em `LUME/bot/capacidades.txt`) e correm `gerar_codigo.txt`.
 | Forma | redondo, quadrado |
 | Texto | `com texto Comprar agora`, `escrito ...`, `dizendo ...`, `chamado ...` |
 
+Com "ficheiro", "arquivo" ou "pagina" no pedido, em vez do bloco de codigo o Lume entrega uma pagina HTML completa, como cartao que abre no editor.
+
 Varios componentes no mesmo pedido saem num so bloco de codigo, com a mesma cor, tamanho e texto.
 
 ## Acrescentar um componente
