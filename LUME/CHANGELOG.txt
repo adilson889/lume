@@ -207,3 +207,8 @@ Lume - historico de versoes
 0.4.5
 - Gerador de codigo: com "ficheiro", "arquivo" ou "pagina" no pedido entrega uma pagina HTML completa como cartao que abre no editor (editavel); sem essas palavras continua o bloco de codigo.
 - lume-editor.js converte <pre data-ficheiro> de respostas XLang em cartao de ficheiro.
+
+0.4.6
+- Corrigido: o codigo gerado (bloco <pre><code> de respostas XLang, como o do gerador) nao tinha realce de sintaxe nem cabecalho com a linguagem e o botao Copiar. Agora o chat aplica o mesmo realce e cabecalho dos blocos de codigo normais a essas respostas (nao toca no cartao de ficheiro).
+- Sondagem de entrega tambem para codigo: antes de gerar codigo o Lume pergunta "Como queres receber o código?" 1 Ficheiro no editor, 2 Colado no chat. Se o pedido ja diz ficheiro, arquivo ou pagina, nao pergunta. Com ficheiro, o pedido segue para o gerador com "em ficheiro" (pagina completa no editor); com colado no chat, segue como estava (bloco de codigo).
+- capacidades.txt ganhou a coluna entrega (sim = perguntar antes), marcada em desenhar e codigo; o despachante.js ganhou pedeEntrega(q). A sondagem dos desenhos individuais continua a usar palavras_desenho.txt.

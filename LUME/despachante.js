@@ -15,7 +15,7 @@ function lerCapacidades(){
   if(!x.trim()||x.trim().charAt(0)==="#")return;
   var p=x.split("|").map(function(y){return y.trim()});
   if(p.length<5)return;
-  l.push({nome:p[0],verbos:lista(p[1]),objetos:lista(p[2]),requer:p[3],resposta:p[4],aviso:p[5]||""});
+  l.push({nome:p[0],verbos:lista(p[1]),objetos:lista(p[2]),requer:p[3],resposta:p[4],aviso:p[5]||"",entrega:/^(sim|s|1|true)$/i.test(p[6]||"")});
  });
  return l;
 }
@@ -107,6 +107,14 @@ function entrada(ficheiro,n){
  return dentro;
 }
 
+/* true se a capacidade que vai responder esta marcada com entrega=sim (o chat pergunta antes como receber o resultado) */
+function pedeEntrega(q){
+ var caps=lerCapacidades();if(!caps.length)return false;
+ var t=norm(q),m=medidores(q,t),ativos=caps.filter(function(c){return ativa(c,t,m)});
+ if(ativos.length>1){var cumprem=ativos.filter(function(x){return cumpre(x.requer,m)});if(cumprem.length===1)ativos=cumprem}
+ return ativos.length===1&&!!ativos[0].entrega&&cumpre(ativos[0].requer,m);
+}
+
 /* devolve true se tratou a pergunta (executou ou avisou); false para o bot decidir */
 async function tentar(q){
  var caps=lerCapacidades();if(!caps.length||typeof window.lumeOnReply!=="function")return false;
@@ -131,5 +139,5 @@ async function tentar(q){
  }
  return false;
 }
-window.LumeDespachante={tentar:tentar,ler:lerCapacidades,medidores:function(q){return medidores(q,norm(q))}};
+window.LumeDespachante={tentar:tentar,pedeEntrega:pedeEntrega,ler:lerCapacidades,medidores:function(q){return medidores(q,norm(q))}};
 })();
