@@ -93,7 +93,9 @@ var IC={
 var $=function(i){return document.getElementById(i)};
 var h="",orig="",nome="app.html",fr=null,modo="site",aplicado="",lingua="html",temSite=true,guardavel=false;
 function enviar(m){parent.postMessage(m,"*")}
-function comSeguranca(x){return/<head[^>]*>/i.test(x)?x.replace(/<head[^>]*>/i,function(m){return m+CSP}):"<!doctype html><head>"+CSP+"</head>"+x}
+/* Guarda da pre-visualizacao: sem isto, um link href="#" (ex.: "Saiba mais") navega a iframe para o proprio editor (o endereco-base do srcdoc e o do editor) e aparece um editor dentro do editor. Links "#id" fazem scroll; os outros e os formularios nao navegam. */
+var GUARDA='<script>document.addEventListener("click",function(e){var a=e.target&&e.target.closest?e.target.closest("a"):null;if(!a)return;var h=a.getAttribute("href");if(h===null)return;e.preventDefault();if(h.charAt(0)==="#"&&h.length>1){var t=document.getElementById(h.slice(1))||document.getElementsByName(h.slice(1))[0];if(t&&t.scrollIntoView)t.scrollIntoView({behavior:"smooth"})}},true);document.addEventListener("submit",function(e){e.preventDefault()},true)<\/script>';
+function comSeguranca(x){return/<head[^>]*>/i.test(x)?x.replace(/<head[^>]*>/i,function(m){return m+CSP+GUARDA}):"<!doctype html><head>"+CSP+GUARDA+"</head>"+x}
 function esc(t){return t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
 function sp(c,t){return t?'<span class="'+c+'">'+esc(t)+'</span>':""}
 

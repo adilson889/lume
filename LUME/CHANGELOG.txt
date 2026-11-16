@@ -215,3 +215,6 @@ Lume - historico de versoes
 
 0.4.7
 - mobile.html (app Android) recebe o mesmo do 0.4.6: realce de sintaxe e cabecalho (linguagem e Copiar) no codigo gerado por respostas XLang, e a sondagem "Como queres receber o codigo?" (1 Ficheiro no editor, 2 Colado no chat) antes de gerar codigo, alem da dos desenhos. Pedidos que ja dizem ficheiro, arquivo ou pagina nao perguntam. O resto do mobile.html (selecao de texto, anexos, modo offline) nao foi tocado.
+
+0.4.8
+- Corrigido no editor: tocar num link da pagina em "Ver site" (ex.: "Saiba mais" com href="#") abria outro editor dentro do editor, vazio. O endereco-base do srcdoc da pre-visualizacao e o do proprio editor, por isso o link navegava para ele. Agora a pagina recebe uma guarda: links "#id" fazem scroll ate ao elemento, os outros links e os formularios nao navegam. Vale para o index.html e o mobile.html, que usam o mesmo LUME/editor/editor.html.
