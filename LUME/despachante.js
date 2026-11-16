@@ -73,10 +73,10 @@ function entrada(ficheiro,n){
 async function tentar(q){
  var caps=lerCapacidades();if(!caps.length||typeof window.lumeOnReply!=="function")return false;
  var t=norm(q),m=medidores(q,t);
- var porVerbo=caps.filter(function(c){return c.verbos.some(function(v){return tem(t,v)})});
- if(porVerbo.length!==1)return false;
- var c=porVerbo[0];
- if(!ativa(c,t,m))return false;
+ /* decide pelo verbo e pelo objeto juntos: "gera" serve a varias capacidades, "gera um botao" so a uma */
+ var ativos=caps.filter(function(c){return ativa(c,t,m)});
+ if(ativos.length!==1)return false;
+ var c=ativos[0];
  if(cumpre(c.requer,m)){
   var partes=c.resposta.split(","),txt=entrada(partes[0].trim(),parseInt(partes[1],10)||1);
   if(!txt)return false;

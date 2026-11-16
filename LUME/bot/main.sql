@@ -90,11 +90,6 @@ WHEN CONTAINS KEYWORDS(palavras_frases.txt) {
     REPLY (frases.txt, 1)
 }
 
--- GERADOR DE CÓDIGO
-WHEN CONTAINS KEYWORDS(palavras_gerador.txt) {
-    WAITING("A gerar o código...", 2)
-    REPLY (gerar_codigo.txt, 1)
-}
 
     -- 6. Tudo o resto: se um passo falha, o seguinte atua.
     --    a) base escrita a mao (resposta direta)
