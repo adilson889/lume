@@ -1,6 +1,6 @@
 1-{xlang}
 
-<array name="opcoes" value="['Procuro trabalho', 'Já tenho trabalho', 'Preciso de apoio']"></array>
+<array name="opcoes" value="['Procuro trabalho', 'Já tenho trabalho', 'Preciso de orientação']"></array>
 <var name="n" value="0"></var>
 <print><div style="font-size:17px;font-weight:700;line-height:1.35;color:var(--text,#222);margin:2px 0 14px;padding-left:12px;border-left:4px solid var(--r,#8b0000)">Olá. Eu sou o Lume. Antes de começarmos, diz-me: já estás a trabalhar ou estás à procura de uma oportunidade?</div></print>
 <foreach var="op" in="opcoes">
