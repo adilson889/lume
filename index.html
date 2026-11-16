@@ -896,7 +896,7 @@ function injetarVariaveisXlang(codigo){
  const q=String(typeof ultimaPergunta==="string"?ultimaPergunta:"");
  const nums=numerosDaPergunta(q);
  const limpo=q.replace(/['"<>&{}\\]/g," ").replace(/\s+/g," ").trim();
- let v='<!--lume-vars-->'+(String(codigo).indexOf("pecas_")>=0?variaveisPecas():"")+'<var name="msg" value="\''+limpo+'\'"></var><var name="n" value="'+nums.length+'"></var>';
+ let v='<!--lume-vars-->'+(String(codigo).indexOf("pecas_")>=0?variaveisPecas():"")+(window.variaveisGerador?window.variaveisGerador(codigo):"")+'<var name="msg" value="\''+limpo+'\'"></var><var name="n" value="'+nums.length+'"></var>';
  for(let i=0;i<6;i++)v+='<var name="n'+(i+1)+'" value="'+(i<nums.length?nums[i]:0)+'"></var>';
  v+='<array name="nums" value="['+nums.join(',')+']"></array>';
  if(contaAtual)v+='<var name="temconta" value="true"></var><var name="conta" value="'+contaAtual.f+'"></var><var name="formula" value="\''+contaAtual.m+'\'"></var>';

@@ -1,0 +1,15 @@
+# Registo de cores que o gerador de codigo entende.
+# Formato: nome | hex | cor do texto sobre ela | sinonimos (separados por virgula)
+# Para acrescentar uma cor basta uma linha nova; nao e preciso tocar na logica.
+vermelho | #e74c3c | #ffffff | vermelha, encarnado
+azul | #2f80ed | #ffffff | azul
+verde | #27ae60 | #ffffff | verde
+amarelo | #f1c40f | #1f2933 | amarela
+roxo | #8e44ad | #ffffff | roxa, violeta
+laranja | #e67e22 | #ffffff | laranja
+preto | #1f2933 | #ffffff | preta, escuro, escura
+branco | #ffffff | #1f2933 | branca
+cinza | #6b7280 | #ffffff | cinzento, cinzenta
+rosa | #e84393 | #ffffff | rosa
+castanho | #8d6e63 | #ffffff | castanha, marrom
+turquesa | #14b8a6 | #ffffff | ciano

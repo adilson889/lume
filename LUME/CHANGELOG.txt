@@ -197,3 +197,9 @@ Lume - historico de versoes
 - Ficheiro anexado: tocar no quadrado (no input ou na mensagem enviada) abre-o no editor, editavel, com botao Guardar. Ficheiros de texto abrem so em codigo; .html tambem mostram o site; css e js tem o seu realce.
 - Editor ligado ao mesmo tema do index e mobile (incluindo --bg2 e --bg3) e acompanha a troca claro/escuro com o editor aberto.
 - Anexos enviados ficam guardados (ultimos 8) para poderem ser reabertos.
+
+0.4.4
+- Gerador de codigo orientado a dados: componentes.txt (botao, titulo, cartao, campo, login, alerta, etiqueta, navegacao, rodape) e cores.txt, com um unico programa generico em gerar_codigo.txt. A resposta traz <style> com variaveis CSS (--cor, --raio, --tam...) e o HTML, num bloco de codigo.
+- O pedido aceita cor (nome ou #rrggbb), tamanho (grande, pequeno), forma (redondo, quadrado), texto (com texto ...) e varios componentes de uma vez.
+- Despachante: decide por verbo e objeto juntos, tem o objeto "componentes", desempata pelas condicoes (requer) e deixa de contar "um" e "uma" como numeros.
+- Removida a regra antiga do main.sql e o palavras_gerador.txt (a capacidade codigo faz esse trabalho). Novo LUME/COMPONENTES.md.

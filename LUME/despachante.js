@@ -35,9 +35,47 @@ function pecasDaPergunta(t){
 function todasAsPecas(){
  var n=[];arq("pecas.txt").split(/\r?\n/).forEach(function(l){if(!l.trim()||l.trim().charAt(0)==="#")return;var p=l.split("|");if(p.length>=3)n.push(p[0].trim())});return n;
 }
+/* registos: "nome | sinonimos | ..." uma linha por entrada; chaves = nome + sinonimos, com e sem acentos */
+function lerRegisto(ficheiro,minimo){
+ var r=[];
+ arq(ficheiro).split(/\r?\n/).forEach(function(l){
+  if(!l.trim()||l.trim().charAt(0)==="#")return;
+  var p=l.split("|").map(function(x){return x.trim()});
+  if(p.length>=minimo)r.push(p);
+ });
+ return r;
+}
+function chavesDe(p,colunaSinonimos){
+ var vistos={},ch=[];
+ (p[0]+","+p[colunaSinonimos]).split(",").forEach(function(a){
+  a=a.trim().toLowerCase();if(!a)return;
+  [a,a.normalize("NFD").replace(/[\u0300-\u036f]/g,"")].forEach(function(k){if(!vistos[k]){vistos[k]=1;ch.push(k)}});
+ });
+ return ch;
+}
+function componentesDaPergunta(t){
+ return lerRegisto("componentes.txt",5).filter(function(p){return chavesDe(p,1).some(function(k){return tem(t,norm(k))})}).length;
+}
+function lit(a){return"["+a.map(function(x){return typeof x==="number"?String(x):"'"+String(x).replace(/\\/g,"\\\\").replace(/'/g,"\\'").replace(/"/g,'\\"')+"'"}).join(",")+"]"}
+/* variaveis XLang injetadas quando o programa usa comp_ ou cores_ */
+window.variaveisGerador=function(codigo){
+ var c=String(codigo),v="";
+ if(c.indexOf("comp_")>=0){
+  var L=lerRegisto("componentes.txt",5),nome=[],padrao=[],html=[],css=[],ch=[],mp=[];
+  L.forEach(function(p,i){nome.push(p[0]);padrao.push(p[2]);html.push(p[3]);css.push(p.slice(4).join("|"));chavesDe(p,1).forEach(function(k){ch.push(k);mp.push(i)})});
+  v+='<array name="comp_nome" value="'+lit(nome)+'"></array><array name="comp_padrao" value="'+lit(padrao)+'"></array><array name="comp_html" value="'+lit(html)+'"></array><array name="comp_css" value="'+lit(css)+'"></array><array name="comp_chaves" value="'+lit(ch)+'"></array><array name="comp_mapa" value="'+lit(mp)+'"></array><var name="comp_nchaves" value="'+ch.length+'"></var>';
+ }
+ if(c.indexOf("cores_")>=0){
+  var C=lerRegisto("cores.txt",4),cn=[],hx=[],so=[],cc=[],cm=[];
+  C.forEach(function(p,i){cn.push(p[0]);hx.push(p[1]);so.push(p[2]);chavesDe(p,3).forEach(function(k){cc.push(k);cm.push(i)})});
+  v+='<array name="cores_nome" value="'+lit(cn)+'"></array><array name="cores_hex" value="'+lit(hx)+'"></array><array name="cores_sobre" value="'+lit(so)+'"></array><array name="cores_chaves" value="'+lit(cc)+'"></array><array name="cores_mapa" value="'+lit(cm)+'"></array><var name="cores_nchaves" value="'+cc.length+'"></var>';
+ }
+ return v;
+};
 function medidores(q,t){
- var nums=typeof numerosDaPergunta==="function"?numerosDaPergunta(q):(String(q).match(/-?\d+(?:[.,]\d+)?/g)||[]);
- return{numeros:nums.length,pecas:pecasDaPergunta(t).length};
+ /* "um" e "uma" sao quase sempre artigos ("cria um botao"), por isso nao contam como numeros aqui */
+ var nums=(String(q).match(/-?\d+(?:[.,]\d+)?|\b(?:zero|dois|duas|tr[eê]s|quatro|cinco|seis|sete|oito|nove|dez)\b/gi)||[]);
+ return{numeros:nums.length,pecas:pecasDaPergunta(t).length,componentes:componentesDaPergunta(t)};
 }
 function cumpre(requer,m){
  if(!requer||requer==="-")return true;
@@ -50,7 +88,7 @@ function cumpre(requer,m){
 function ativa(c,t,m){
  if(!c.verbos.some(function(v){return tem(t,v)}))return false;
  if(!c.objetos.length)return true;
- return c.objetos.some(function(o){return o==="numeros"?m.numeros>=1:o==="pecas"?m.pecas>=1:tem(t,o)});
+ return c.objetos.some(function(o){return o==="numeros"?m.numeros>=1:o==="pecas"?m.pecas>=1:o==="componentes"?m.componentes>=1:tem(t,o)});
 }
 
 /* entrada N de um ficheiro no formato N-{ ... } (chavetas equilibradas) */
@@ -75,6 +113,8 @@ async function tentar(q){
  var t=norm(q),m=medidores(q,t);
  /* decide pelo verbo e pelo objeto juntos: "gera" serve a varias capacidades, "gera um botao" so a uma */
  var ativos=caps.filter(function(c){return ativa(c,t,m)});
+ /* em caso de empate, ganha a unica capacidade cujas condicoes (requer) se cumprem */
+ if(ativos.length>1){var cumprem=ativos.filter(function(x){return cumpre(x.requer,m)});if(cumprem.length===1)ativos=cumprem}
  if(ativos.length!==1)return false;
  var c=ativos[0];
  if(cumpre(c.requer,m)){

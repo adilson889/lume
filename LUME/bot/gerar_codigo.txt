@@ -1,62 +1,130 @@
 1-{
 <program>
-<import name="xlang.math"></import>
-
+<!-- Gerador de HTML + CSS.
+     Os componentes vem de componentes.txt e as cores de cores.txt: o chat injeta
+     comp_nome, comp_padrao, comp_html, comp_css, comp_chaves, comp_mapa, comp_nchaves
+     e cores_nome, cores_hex, cores_sobre, cores_chaves, cores_mapa, cores_nchaves.
+     Para saber fazer mais coisas basta acrescentar linhas a esses ficheiros.
+     Notas do XLang: nao ha metodos de texto (.slice, .join...), so as funcoes nativas (split, trim, includes...);
+     ".length" so funciona em variaveis (guarda o split numa variavel antes); expressoes invalidas falham em silencio. -->
 <var name="m" value="lower(msg)"></var>
-<var name="cor_hex" value="'#333333'"></var>
-<var name="nome_cor" value="'cinza'"></var>
+<var name="hex" value="'#2f80ed'"></var>
+<var name="sobre" value="'#ffffff'"></var>
+<var name="nome_cor" value="''"></var>
+<var name="raio" value="'8px'"></var>
+<var name="tam" value="'16px'"></var>
+<var name="texto" value="''"></var>
+<var name="resto" value="''"></var>
+<var name="p" value="0"></var>
+<var name="achados" value="0"></var>
+<var name="usados" value="'|'"></var>
+<var name="lista" value="''"></var>
+<var name="sep" value="''"></var>
+<var name="css" value="''"></var>
+<var name="html" value="''"></var>
+<var name="saida" value="''"></var>
+<!-- Quebra de linha: um valor com mudanca de linha e lido como texto literal; o split tira a mudanca de linha do meio. -->
+<var name="nlq" value="Q
+Q"></var>
+<var name="nl" value="split(nlq, 'Q')[1]"></var>
+<var name="letras" value="''"></var>
+<var name="ini" value="0"></var>
+<var name="antes" value="''"></var>
+<var name="marca" value="''"></var>
+<var name="partes" value="''"></var>
+<var name="regras" value="''"></var>
+<var name="bloco" value="''"></var>
 
-<!-- 1. O MAPA DE CORES (Array de objetos) -->
-<array name="mapa_cores" value="[
-    { nome: 'vermelho', hex: '#e74c3c' },
-    { nome: 'azul', hex: '#3498db' },
-    { nome: 'verde', hex: '#2ecc71' },
-    { nome: 'amarelo', hex: '#f1c40f' },
-    { nome: 'roxo', hex: '#9b59b6' },
-    { nome: 'laranja', hex: '#e67e22' },
-    { nome: 'preto', hex: '#2c3e50' },
-    { nome: 'branco', hex: '#ecf0f1' },
-    { nome: 'rosa', hex: '#e84393' }
-]"></array>
+<!-- 1. COR: um nome conhecido (cores.txt) ou um valor #rrggbb escrito na mensagem -->
+<for var="i" from="0" to="cores_nchaves - 1">
+    <if condition="includes(m, cores_chaves[i])">
+        <set name="p" value="cores_mapa[i]"></set>
+        <set name="hex" value="cores_hex[p]"></set>
+        <set name="sobre" value="cores_sobre[p]"></set>
+        <set name="nome_cor" value="cores_nome[p]"></set>
+    </if>
+</for>
+<if condition="includes(m, '#')">
+    <set name="letras" value="split(split(m, '#')[1], '')"></set>
+    <if condition="letras.length >= 6 && includes('0123456789abcdef', letras[0]) && includes('0123456789abcdef', letras[1]) && includes('0123456789abcdef', letras[2]) && includes('0123456789abcdef', letras[3]) && includes('0123456789abcdef', letras[4]) && includes('0123456789abcdef', letras[5])">
+        <set name="hex" value="'#' + letras[0] + letras[1] + letras[2] + letras[3] + letras[4] + letras[5]"></set>
+        <set name="nome_cor" value="hex"></set>
+    </if>
+</if>
 
-<!-- 2. ENCONTRAR A COR NA MENSAGEM -->
-<for var="i" from="0" to="mapa_cores.length - 1">
-    <if condition="includes(m, mapa_cores[i].nome)">
-        <set name="cor_hex" value="mapa_cores[i].hex"></set>
-        <set name="nome_cor" value="mapa_cores[i].nome"></set>
+<!-- 2. TAMANHO E FORMA -->
+<if condition="includes(m, 'grande') || includes(m, 'enorme')">
+    <set name="tam" value="'20px'"></set>
+</if>
+<if condition="includes(m, 'pequen') || includes(m, 'mini')">
+    <set name="tam" value="'13px'"></set>
+</if>
+<if condition="includes(m, 'redond') || includes(m, 'pilula') || includes(m, 'pílula')">
+    <set name="raio" value="'999px'"></set>
+</if>
+<if condition="includes(m, 'quadrad') || includes(m, 'reto') || includes(m, 'reta')">
+    <set name="raio" value="'0'"></set>
+</if>
+
+<!-- 3. TEXTO: o que vem depois de "com texto", "escrito", "dizendo"... (com as maiusculas da pessoa)
+     ate ao fim do pedido ou da primeira ligacao -->
+<array name="marcas" value="['com o texto ', 'com texto ', 'com o nome ', 'com nome ', 'escrito ', 'dizendo ', 'que diz ', 'chamado ', 'chamada ', 'a dizer ']"></array>
+<array name="cortes" value="[' e um ', ' e uma ', ' e o ', ' e a ', ' e com ', ' de cor ', ' na cor ', ' cor ', ',', ' grande', ' pequen', ' redond', ' quadrad']"></array>
+<var name="letrasMsg" value="split(msg, '')"></var>
+<foreach var="mc" in="marcas">
+    <if condition="texto == '' && includes(m, mc)">
+        <set name="antes" value="split(split(m, mc)[0], '')"></set>
+        <set name="marca" value="split(mc, '')"></set>
+        <set name="ini" value="antes.length + marca.length"></set>
+        <set name="resto" value="''"></set>
+        <for var="k" from="ini" to="letrasMsg.length - 1">
+            <set name="resto" value="resto + letrasMsg[k]"></set>
+        </for>
+        <foreach var="ct" in="cortes">
+            <set name="resto" value="split(resto, ct)[0]"></set>
+        </foreach>
+        <set name="texto" value="trim(resto)"></set>
+    </if>
+</foreach>
+
+<!-- 4. COMPONENTES PEDIDOS (cada um uma vez), pela ordem do registo -->
+<for var="i" from="0" to="comp_nchaves - 1">
+    <set name="p" value="comp_mapa[i]"></set>
+    <if condition="includes(m, comp_chaves[i]) && !includes(usados, '|' + p + '|')">
+        <set name="usados" value="usados + p + '|'"></set>
+        <set name="achados" value="achados + 1"></set>
+        <set name="resto" value="texto"></set>
+        <if condition="resto == ''">
+            <set name="resto" value="comp_padrao[p]"></set>
+        </if>
+        <set name="regras" value="split(comp_css[p], '¶')"></set>
+        <for var="r" from="0" to="regras.length - 1">
+            <set name="css" value="css + regras[r] + nl"></set>
+        </for>
+        <set name="partes" value="split(comp_html[p], '@texto@')"></set>
+        <set name="bloco" value="partes[0]"></set>
+        <for var="k" from="1" to="partes.length - 1">
+            <set name="bloco" value="bloco + resto + partes[k]"></set>
+        </for>
+        <set name="html" value="html + bloco + nl"></set>
+        <set name="lista" value="lista + sep + comp_nome[p]"></set>
+        <set name="sep" value="', '"></set>
     </if>
 </for>
 
-<!-- 3. O GERADOR DE BOTÃO -->
-<if condition="includes(m, 'botao') || includes(m, 'botão') || includes(m, 'button')">
-    
-    <var name="codigo" value="'<button style=\"background-color: ' + cor_hex + '; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer;\">Clique Aqui</button>'"></var>
-    
-    <print>Criei um botão <b>{nome_cor}</b> para ti:</print>
-    <print><pre><code class="language-html">{codigo}</code></pre></print>
+<!-- 5. RESPOSTA -->
+<if condition="achados >= 1">
+    <set name="saida" value="'<style>' + nl + ':root {' + nl + '  --cor: ' + hex + ';' + nl + '  --cor-escuro: color-mix(in srgb, var(--cor) 80%, #000);' + nl + '  --cor-claro: color-mix(in srgb, var(--cor) 16%, #fff);' + nl + '  --sobre: ' + sobre + ';' + nl + '  --raio: ' + raio + ';' + nl + '  --tam: ' + tam + ';' + nl + '}' + nl + css + '</style>' + nl + nl + html"></set>
+    <print>Aqui está o código (HTML + CSS) de: <b>{lista}</b></print>
+    <print><pre><code class="language-html">{saida}</code></pre></print>
+    <print>Podes pedir outra cor (por exemplo vermelho ou #ff6600), tamanho (grande ou pequeno), forma (redondo ou quadrado) e texto (com texto Comprar agora).</print>
 </if>
-
-<!-- 4. O GERADOR DE TÍTULO -->
-<elseif condition="includes(m, 'titulo') || includes(m, 'título') || includes(m, 'h1')">
-    
-    <var name="codigo" value="'<h1 style=\"color: ' + cor_hex + ';\">Meu Título</h1>'"></var>
-    
-    <print>Criei um título <b>{nome_cor}</b> para ti:</print>
-    <print><pre><code class="language-html">{codigo}</code></pre></print>
-</elseif>
-
-<!-- 5. O GERADOR DE CARTÃO (CARD) -->
-<elseif condition="includes(m, 'cartao') || includes(m, 'cartão') || includes(m, 'card')">
-    
-    <var name="codigo" value="'<div style=\"background: white; border-left: 5px solid ' + cor_hex + '; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);\"><h3 style=\"margin: 0; color: ' + cor_hex + ';\">Título do Cartão</h3><p style=\"margin: 5px 0 0;\">Este é um cartão gerado pelo Lume.</p></div>'"></var>
-    
-    <print>Criei um cartão com detalhe <b>{nome_cor}</b> para ti:</print>
-    <print><pre><code class="language-html">{codigo}</code></pre></print>
-</elseif>
-
 <else>
-    <print>Ainda não sei gerar isso. Tenta pedir: <b>botão</b>, <b>título</b> ou <b>cartão</b>.</print>
-    <print>Podes também escolher uma cor: vermelho, azul, verde, amarelo, roxo, laranja, preto, branco ou rosa.</print>
+    <foreach var="nm" in="comp_nome">
+        <set name="lista" value="lista + sep + nm"></set>
+        <set name="sep" value="', '"></set>
+    </foreach>
+    <print>Ainda não sei gerar isso. Sei gerar: <b>{lista}</b>. Para eu aprender mais, acrescenta uma linha a componentes.txt.</print>
 </else>
 </program>
 }

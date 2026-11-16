@@ -73,6 +73,7 @@ LUME/
   editor/editor.html            mini editor/navegador das apps HTML (interface)
   editor/lume-editor.js         ponte do editor no chat (cartões de ficheiro)
   TEMPLATES.md                  como criar templates (páginas HTML/JS e XLang)
+  COMPONENTES.md                gerador de código HTML + CSS (componentes.txt e cores.txt)
   CHANGELOG.txt
   VERSION
 ```

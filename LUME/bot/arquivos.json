@@ -12,7 +12,7 @@
   "aprendido.txt",
   "calculo.txt",
   "saudacoes.txt",
-"gerar_codigo.txt",
+  "gerar_codigo.txt",
   "rescalculo.txt",
   "templates.txt",
   "palavras_loja.txt",
@@ -26,5 +26,7 @@
   "pecas.txt",
   "capacidades.txt",
   "frases.txt",
-  "palavras_frases.txt"
+  "palavras_frases.txt",
+  "componentes.txt",
+  "cores.txt"
 ]
