@@ -1,0 +1,11 @@
+1-{xlang}
+
+<array name="opcoes" value="['Procuro trabalho', 'Já tenho trabalho', 'Preciso de apoio']"></array>
+<var name="n" value="0"></var>
+<print><div style="font-size:17px;font-weight:700;line-height:1.35;color:var(--text,#222);margin:2px 0 14px;padding-left:12px;border-left:4px solid var(--r,#8b0000)">Olá. Eu sou o Lume. Antes de começarmos, diz-me: já estás a trabalhar ou estás à procura de uma oportunidade?</div></print>
+<foreach var="op" in="opcoes">
+    <set name="n" value="n + 1"></set>
+    <print><div role="button" data-botql-ask="{op}" style="display:flex;align-items:center;gap:12px;background:var(--card,#fff);border:1px solid var(--border,#ddd);border-radius:14px;padding:12px 14px;margin-bottom:10px;font-size:15px;line-height:1.45;color:var(--text,#222);cursor:pointer;user-select:none"><span style="flex:none;width:26px;height:26px;border-radius:50%;background:var(--r,#8b0000);color:var(--on,#fff);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center">{n}</span><span>{op}</span></div></print>
+</foreach>
+
+}

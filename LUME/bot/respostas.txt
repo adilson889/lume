@@ -5,3 +5,6 @@
 5- De nada! Estou aqui sempre que precisares.
 6- Estou bem, obrigado por perguntares. Em que posso ajudar com programação?
 7- Ainda não sei responder a isso. Tenta perguntar de outra forma, ou escreve: o que sabes fazer.
+8- Obrigado por me dizeres. Vamos com calma. Que tipo de trabalho procuras, ou o que sabes fazer? Podes dizer, por exemplo: trabalho em comércio, ou sei programar.
+9- Que bom. Queres melhorar o teu currículo, preparar-te para uma entrevista ou ver outras oportunidades?
+10- Estou aqui para ajudar, sem pressa. Vamos dar um passo pequeno: diz-me o que já sabes fazer, mesmo coisas simples, e a partir daí vemos o que é possível.
