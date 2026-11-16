@@ -121,6 +121,13 @@
     <call name="opcao" args="2, 'Preparar entrevista'"></call>
     <call name="opcao" args="3, 'Ver outras oportunidades'"></call>
 </elseif>
+
+<elseif condition="includes(m, 'oportunidades')">
+    <call name="texto" args="'Ainda não tenho vagas publicadas, e prefiro dizer-te isso a inventar. Posso ajudar-te a ficares preparado para quando surgirem.'"></call>
+    <call name="pergunta" args="'O que queres fazer agora?'"></call>
+    <call name="fim"></call>
+</elseif>
+
 <else>
     <call name="texto" args="'Obrigado por me dizeres. Vamos com calma, um passo de cada vez.'"></call>
     <call name="perguntaArea"></call>
