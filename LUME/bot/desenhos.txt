@@ -112,14 +112,27 @@
 
 <!-- GRÁFICOS -->
 <elseif condition="includes(m, 'grafico') || includes(m, 'gráfico')">
-    <if condition="includes(m, 'seno') || includes(m, 'sin')">
+    <if condition="temgrafico">
+        <if condition="grafico_erro.length > 0">
+            <print>{grafico_erro}</print>
+        </if>
+        <else>
+            <var name="gsvg" value="grafico_svg[0]"></var>
+            <print>Gráfico de <b>{grafico_titulo}</b>:</print>
+            <print><svg viewBox="0 0 300 260" width="100%" height="auto" role="img" aria-label="Gráfico da função">{gsvg}</svg></print>
+            <foreach var="gi" in="grafico_info">
+                <print><div style="margin:2px 0 2px 4px">{gi}</div></print>
+            </foreach>
+        </else>
+    </if>
+    <elseif condition="includes(m, 'seno') || includes(m, 'sin')">
         <for var="i" from="0" to="60">
             <set name="x" value="-2 * PI() + i * 4 * PI() / 60"></set>
             <set name="pts" value="pts + round((100 + x * 14.3) * 100) / 100 + ',' + round((100 - sin(x) * 70) * 100) / 100 + ' '"></set>
         </for>
         <print>Gráfico de y = sen(x):</print>
         <print><svg viewBox="0 0 200 200" width="260" height="260"><rect x="0" y="0" width="200" height="200" fill="#fbfbf4" stroke="#c9ceb8"></rect><line x1="0" y1="100" x2="200" y2="100" stroke="#999" stroke-width="1"></line><line x1="100" y1="0" x2="100" y2="200" stroke="#999" stroke-width="1"></line><polyline points="{pts}" fill="none" stroke="#c0392b" stroke-width="2.5" stroke-linejoin="round"></polyline></svg></print>
-    </if>
+    </elseif>
     <else>
         <for var="i" from="0" to="40">
             <set name="x" value="-5 + i * 0.25"></set>

@@ -261,3 +261,9 @@ Lume - historico de versoes
 - Expoentes em qualquer notacao: x^2, x², x**2, e superscritos ⁴ ⁵ ⁻² (ex.: (4³)⁴, [(3³)³]²). Raiz com indice: ³√27, ⁴√16 (indice par de negativo da erro explicado).
 - A resposta de equacao mostra "Resultado: x = ..." (ou x₁ e x₂): index.html e mobile.html passam a variavel textores e o rescalculo.txt usa-a.
 - Nao testado no chat real.
+
+0.5.6
+- Graficos de funcoes do 1.o e 2.o grau a partir do pedido: "grafico de y = 2x+1", "desenha y = x²-4x+3", "f(x) = -x²+4", "grafico de x²". Desenha eixos com grelha e escala automatica, a curva, e marca com as coordenadas escritas o vertice, as raizes e o corte com o eixo y. Por baixo da imagem lista concavidade/declive, vertice, raizes e corte em y.
+- Funcoes de grau superior a 2 respondem com aviso. Seno continua no desenho fixo.
+- O leitor de polinomios passou a ser partilhado entre equacao() e graficoFuncao() (LP em despachante.js). desenhos.txt usa as variaveis temgrafico, grafico_svg, grafico_info injetadas por variaveisGerador.
+- Nao testado no chat real.

@@ -70,6 +70,12 @@ window.variaveisGerador=function(codigo){
   C.forEach(function(p,i){cn.push(p[0]);hx.push(p[1]);so.push(p[2]);chavesDe(p,3).forEach(function(k){cc.push(k);cm.push(i)})});
   v+='<array name="cores_nome" value="'+lit(cn)+'"></array><array name="cores_hex" value="'+lit(hx)+'"></array><array name="cores_sobre" value="'+lit(so)+'"></array><array name="cores_chaves" value="'+lit(cc)+'"></array><array name="cores_mapa" value="'+lit(cm)+'"></array><var name="cores_nchaves" value="'+cc.length+'"></var>';
  }
+ if(c.indexOf("grafico_")>=0){
+  var gq=String(typeof ultimaPergunta==="string"?ultimaPergunta:""),gr=graficoFuncao(gq);
+  if(gr&&!gr.e)v+='<var name="temgrafico" value="true"></var><var name="grafico_erro" value="\'\'"></var><var name="grafico_titulo" value="\''+gr.titulo+'\'"></var><array name="grafico_svg" value="'+lit([gr.svg])+'"></array><array name="grafico_info" value="'+lit(gr.info)+'"></array>';
+  else if(gr)v+='<var name="temgrafico" value="true"></var><var name="grafico_erro" value="\''+gr.e+'\'"></var><var name="grafico_titulo" value="\'\'"></var><array name="grafico_svg" value="[]"></array><array name="grafico_info" value="[]"></array>';
+  else v+='<var name="temgrafico" value="false"></var>';
+ }
  return v;
 };
 function medidores(q,t){
@@ -493,21 +499,13 @@ function calculadora(q){
  P=P.map(function(t,k){return t==="..."?t:(k===0?"Primeiro: ":k===n-1?"Por fim: ":"Depois: ")+t});
  return {f:res.f,m:m0,p:P.concat(notas),e:""};
 }
-/* Equacoes do 1.o e 2.o grau com uma incognita: 2x+3=11, x²-5x+6=0, x^2=9, (x+1)^2=4, 3(x-1)=x+5 */
-function equacao(q){
- try{
- var s=String(q||"").toLowerCase().trim();
- if(!s||s.length>100)return null;
- s=s.replace(/^(?:por favor[, ]*)?(?:calcule|calcula|resolva|resolve|resolver|qual\s+(?:[eé]\s+)?o\s+valor\s+de)\s*/,"").replace(/[?!.\s]+$/,"");
- var lados=s.split("=");
- if(lados.length!==2||!lados[0].trim()||!lados[1].trim())return null;
- if(/\d\s+x\s+\d/.test(s))return null;
- var vars={},SUPD="⁰¹²³⁴⁵⁶⁷⁸⁹";
+var LP=(function(){
+ var SUPD="⁰¹²³⁴⁵⁶⁷⁸⁹";
  function add(a,b,sg){var r=[],n=Math.max(a.length,b.length);for(var k=0;k<n;k++)r.push((a[k]||0)+sg*(b[k]||0));return r}
  function mulp(a,b){var r=[];for(var i=0;i<a.length;i++)for(var j=0;j<b.length;j++)r[i+j]=(r[i+j]||0)+a[i]*b[j];if(r.length>9)throw "nl";return r}
  function grau(a){for(var k=a.length-1;k>0;k--)if(Math.abs(a[k])>1e-12)return k;return 0}
  function cte(a){return grau(a)===0}
- function poly(t){
+ function poly(t,vars){
   t=t.replace(/[−–]/g,"-").replace(/×/g,"*").replace(/[÷:]/g,"/").replace(/,/g,".").replace(/[\[{]/g,"(").replace(/[\]}]/g,")");
   var tk=[],i=0,m,c;
   while(i<t.length){
@@ -576,6 +574,115 @@ function equacao(q){
   }
   var res=soma();if(p<tt.length)throw 0;return res;
  }
+ return {poly:poly,add:add,grau:grau,cte:cte};
+})();
+/* Grafico de funcoes do 1.o e 2.o grau: y = 2x+1, f(x) = x²-4x+3, "grafico de x²". Devolve {svg,titulo,info,e} ou null. */
+function graficoFuncao(q){
+ try{
+ var t=String(q||"").toLowerCase().trim();
+ if(!t||t.length>140)return null;
+ if(/\b(seno|cosseno|tangente|sin|cos|tan|log|ln)\b/.test(t))return null;
+ var rhs,i=t.indexOf("=");
+ if(i>=0){
+  if(!/(?:\by|\b[fg]\s*\(\s*x\s*\))\s*$/.test(t.slice(0,i).trim()))return null;
+  if(!/gr[aá]fico|plot|fun[cç][aã]o|desenh|tra[cç]a/.test(t))return null;
+  rhs=t.slice(i+1);
+ }else{
+  if(!/gr[aá]fico|plot|fun[cç][aã]o/.test(t))return null;
+  rhs=t;
+  var pal=/^(?:por favor|pode|podes|desenha\w*|desenhe|faz|fa[cç]a|fazer|tra[cç]a\w*|mostra\w*|plot\w*|gr[aá]fico|fun[cç][aã]o|o|a|um|uma|de|da|do|me|para|com)\b[\s,]*/;
+  while(pal.test(rhs))rhs=rhs.replace(pal,"");
+ }
+ rhs=rhs.replace(/[?!.\s]+$/,"").trim();
+ if(!rhs||rhs.length>60)return null;
+ var vars={},P;
+ try{P=LP.poly(rhs,vars)}catch(e){return e==="nl"?{e:"Só desenho gráficos de funções do 1.º e 2.º grau."}:null}
+ var ks=Object.keys(vars);
+ if(ks.length>1||(ks.length===1&&ks[0]!=="x"))return null;
+ if(LP.grau(P)>2)return {e:"Só desenho gráficos de funções do 1.º e 2.º grau."};
+ function Z(v){return Math.abs(v)<1e-12?0:v}
+ var c0=Z(P[0]||0),c1=Z(P[1]||0),c2=Z(P[2]||0),quad=c2!==0;
+ function F(n){n=Math.round(n*1e4)/1e4;if(n===0)n=0;return String(n).replace(".",",").replace("-","−")}
+ function ev(x){return (c2*x+c1)*x+c0}
+ var roots=[],vx=0,vy=0,D=0;
+ if(quad){
+  D=c1*c1-4*c2*c0;if(Math.abs(D)<1e-9)D=0;
+  vx=-c1/(2*c2);vy=ev(vx);
+  if(D===0)roots=[vx];
+  else if(D>0){var sq=Math.sqrt(D);roots=[(-c1-sq)/(2*c2),(-c1+sq)/(2*c2)].sort(function(a,b){return a-b})}
+ }else if(c1!==0)roots=[-c0/c1];
+ var marks=[],seen={};
+ function marca(x,y,k){var key=Math.round(x*1e6)+","+Math.round(y*1e6);if(seen[key])return;seen[key]=1;marks.push({x:x,y:y,k:k})}
+ if(quad)marca(vx,vy,"v");
+ roots.forEach(function(r){marca(r,0,"r")});
+ marca(0,c0,"i");
+ var kx=[0].concat(roots);if(quad)kx.push(vx);
+ var kmin=Math.min.apply(null,kx),kmax=Math.max.apply(null,kx);
+ var half=Math.max((kmax-kmin)/2*1.5,3),mid=(kmin+kmax)/2,xmin=mid-half,xmax=mid+half;
+ var N=80,k,ys=[0];
+ for(k=0;k<=N;k++)ys.push(ev(xmin+(xmax-xmin)*k/N));
+ marks.forEach(function(m){ys.push(m.y)});
+ var ymin=Math.min.apply(null,ys),ymax=Math.max.apply(null,ys);
+ if(ymax-ymin<1e-9)ymax=ymin+1;
+ var pd=(ymax-ymin)*0.1;ymin-=pd;ymax+=pd;
+ function passo(r){var b=r/5,e=Math.pow(10,Math.floor(Math.log10(b))),f=b/e;return (f<1.5?1:f<3.5?2:f<7.5?5:10)*e}
+ function eixo(a,b){var s=passo(b-a),r=[],n=Math.ceil(a/s-1e-9);for(;n*s<=b+1e-9;n++)r.push(Math.round(n*s*1e9)/1e9);return r}
+ var W=300,H=260,ml=38,mr=14,mt=16,mb=28,pw=W-ml-mr,ph=H-mt-mb;
+ function px(x){return Math.round((ml+(x-xmin)/(xmax-xmin)*pw)*100)/100}
+ function py(y){return Math.round((H-mb-(y-ymin)/(ymax-ymin)*ph)*100)/100}
+ function cl(v,a,b){return Math.max(a,Math.min(b,v))}
+ var o='<rect x="0" y="0" width="300" height="260" fill="#fbfbf4" stroke="#c9ceb8"></rect>',tx=eixo(xmin,xmax),ty=eixo(ymin,ymax);
+ tx.forEach(function(v){o+='<line x1="'+px(v)+'" y1="'+mt+'" x2="'+px(v)+'" y2="'+(H-mb)+'" stroke="#e3e6d3" stroke-width="1"></line>'});
+ ty.forEach(function(v){o+='<line x1="'+ml+'" y1="'+py(v)+'" x2="'+(W-mr)+'" y2="'+py(v)+'" stroke="#e3e6d3" stroke-width="1"></line>'});
+ o+='<line x1="'+ml+'" y1="'+py(0)+'" x2="'+(W-mr)+'" y2="'+py(0)+'" stroke="#666" stroke-width="1.5"></line><line x1="'+px(0)+'" y1="'+mt+'" x2="'+px(0)+'" y2="'+(H-mb)+'" stroke="#666" stroke-width="1.5"></line>';
+ tx.forEach(function(v){if(v!==0)o+='<text x="'+px(v)+'" y="'+(py(0)+11)+'" font-size="8" fill="#555" text-anchor="middle">'+F(v)+'</text>'});
+ ty.forEach(function(v){if(v!==0)o+='<text x="'+(px(0)-4)+'" y="'+(py(v)+3)+'" font-size="8" fill="#555" text-anchor="end">'+F(v)+'</text>'});
+ o+='<text x="'+(W-mr)+'" y="'+(py(0)-4)+'" font-size="9" fill="#666" text-anchor="end">x</text><text x="'+(px(0)+5)+'" y="'+(mt+8)+'" font-size="9" fill="#666">y</text>';
+ var pts=[];
+ for(k=0;k<=N;k++){var xx=xmin+(xmax-xmin)*k/N;pts.push(px(xx)+","+py(ev(xx)))}
+ o+='<polyline points="'+pts.join(" ")+'" fill="none" stroke="#2e6bd6" stroke-width="2.5" stroke-linejoin="round"></polyline>';
+ marks.forEach(function(m){
+  var mx=px(m.x),my=py(m.y),lx,ly,an,rot="("+F(m.x)+"; "+F(m.y)+")";
+  if(m.k==="v"){lx=mx;ly=my+(c2>0?15:-8);an="middle"}
+  else if(m.k==="r"){lx=mx;ly=my-7;an="middle"}
+  else{lx=mx+6;ly=my+(m.y>=0?-6:12);an="start"}
+  if(an==="start"&&lx>W-mr-52){lx=mx-6;an="end"}
+  if(an==="middle")lx=cl(lx,ml+26,W-mr-26);
+  ly=cl(ly,mt+9,H-4);
+  o+='<circle cx="'+mx+'" cy="'+my+'" r="3.5" fill="#c0392b"></circle><text x="'+lx+'" y="'+ly+'" font-size="9" fill="#1d2410" text-anchor="'+an+'" stroke="#fbfbf4" stroke-width="3" paint-order="stroke">'+rot+'</text>';
+ });
+ var tit="";
+ [[c2,"x²"],[c1,"x"],[c0,""]].forEach(function(p){
+  var kk=p[0];if(kk===0)return;
+  var mg=Math.abs(kk),b=p[1]===""?F(mg):(mg===1?"":F(mg))+p[1];
+  tit+=tit===""?(kk<0?"−":"")+b:" "+(kk<0?"−":"+")+" "+b;
+ });
+ if(!tit)tit="0";
+ var info=[];
+ if(quad){
+  info.push("Parábola com a concavidade voltada para "+(c2>0?"cima":"baixo")+" (a = "+F(c2)+")");
+  info.push("Vértice: ("+F(vx)+"; "+F(vy)+")");
+  info.push(D>0?"Raízes: x₁ = "+F(roots[0])+" e x₂ = "+F(roots[1]):D===0?"Raiz dupla: x = "+F(roots[0]):"Não corta o eixo x (Δ = "+F(D)+", negativo)");
+ }else if(c1!==0){
+  info.push("Reta "+(c1>0?"crescente":"decrescente")+" (declive m = "+F(c1)+")");
+  info.push("Raiz: x = "+F(roots[0]));
+ }else info.push("Função constante: y = "+F(c0));
+ info.push("Corta o eixo y em (0; "+F(c0)+")");
+ return {svg:o,titulo:"y = "+tit,info:info,e:""};
+ }catch(err){return null}
+}
+/* Equacoes do 1.o e 2.o grau com uma incognita: 2x+3=11, x²-5x+6=0, x^2=9, (x+1)^2=4, 3(x-1)=x+5 */
+function equacao(q){
+ try{
+ var s=String(q||"").toLowerCase().trim();
+ if(!s||s.length>100)return null;
+ s=s.replace(/^(?:por favor[, ]*)?(?:calcule|calcula|resolva|resolve|resolver|qual\s+(?:[eé]\s+)?o\s+valor\s+de)\s*/,"").replace(/[?!.\s]+$/,"");
+ var lados=s.split("=");
+ if(lados.length!==2||!lados[0].trim()||!lados[1].trim())return null;
+ if(/\d\s+x\s+\d/.test(s))return null;
+ var vars={};
+ var add=LP.add,grau=LP.grau;
+ function poly(t){return LP.poly(t,vars)}
  var m0=(lados[0].trim()+" = "+lados[1].trim()).replace(/[\[{]/g,"(").replace(/[\]}]/g,")");
  function ER(t){return {f:"0",m:m0,p:[],e:t}}
  var l,r;
