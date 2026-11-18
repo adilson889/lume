@@ -247,3 +247,11 @@ Lume - historico de versoes
 - Matematica em linguagem natural com a xlang-math: raiz quadrada/cubica, fatorial, mmc, mdc, potencias ("2 elevado a 10", "5 ao quadrado"), percentagens, descontos e aumentos, seno/cosseno/tangente (graus ou radianos), logaritmos (base 10, 2 e natural), hipotenusa, arredondar (com casas), mediana, moda, maior, menor, amplitude, desvio padrao e variancia (populacional ou amostral), valor de pi.
 - Implementado em despachante.js (lumeFuncaoMatematica) e ligado a formulaDaMensagem no index.html e mobile.html. A expressao segue o caminho que ja existia (rescalculo.txt), por isso o resultado aparece igual ao das contas simples.
 - Pedidos com frase, desenho, codigo, loja, "cria" ou "gera" nao entram na matematica.
+
+0.5.4
+- Calculadora de expressoes: le as contas como as pessoas escrevem. Parenteses, colchetes e chavetas ((), [], {}), multiplicacao implicita (2(2+3), (1+2)(3+4), 2π), potencias (5², 5^2, 5**2, "5 ao quadrado", "2 elevado a 10"), raizes (√16, "raiz de 16"), fatorial (3!), percentagem (50%), :, x e × como vezes, numeros por extenso, e funcoes sen/cos/tan, asin/acos/atan, ln, log, log2, exp, abs, floor, ceil, round, min, max. Respeita a precedencia (parenteses, potencia, vezes e divisao, soma e subtracao).
+- A resposta mostra como a conta foi feita: "Li a conta como ...", cada passo pela ordem real ("Primeiro: 7 + 5 = 12", "Depois: ...", "Por fim: ...") e o resultado. Contas de uma so operacao respondem numa linha. O valor final continua a ser calculado pela xlang-math.
+- Trigonometria em graus por omissao, com aviso; π ou rad usam radianos; arcos devolvem graus.
+- Erros explicados em vez de resposta fixa: divisao por zero, raiz de negativo, logaritmo de nao positivo, tangente de 90 graus, fatorial fora de 0-20, resultado demasiado grande.
+- rescalculo.txt ganhou o ramo de passos/erros; index.html e mobile.html passam as variaveis passos, temerro e erroconta ao XLang.
+- Testado com o interpretador XLang real e a xlang-math (jsdom).

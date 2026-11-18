@@ -2,13 +2,25 @@
 
 <import name="xlang.math"></import>
 <if condition="temconta">
-    <if condition="conta * 0 == 0">
+    <if condition="temerro">
+        <print>{erroconta}</print>
+    </if>
+    <elseif condition="conta * 0 == 0">
         <var name="res" value="conta"></var>
         <if condition="conta != round(conta)">
             <set name="res" value="round(conta * 1000000) / 1000000"></set>
         </if>
-        <print>O resultado de {formula} é <b>{replace(res, '.', ',')}</b>.</print>
-    </if>
+        <if condition="passos.length > 0">
+            <print>Li a conta como <b>{formula}</b>.</print>
+            <foreach var="p" in="passos">
+                <print><div style="margin:2px 0 2px 4px">{p}</div></print>
+            </foreach>
+            <print>Resultado: <b>{replace(res, '.', ',')}</b></print>
+        </if>
+        <else>
+            <print>O resultado de {formula} é <b>{replace(res, '.', ',')}</b>.</print>
+        </else>
+    </elseif>
     <else>
         <print>Não dá para dividir por zero.</print>
     </else>

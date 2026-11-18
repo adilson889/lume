@@ -275,7 +275,209 @@ async function tentar(q){
    (sqr, cbr, pow, factorial, gcd, lcm, median, mode, max, min, range, std, variance, sin, cos, tan,
    radians, log, log10, log2, round, hypot, PI). Devolve {f: expressao, m: texto} ou null.
    O chat avalia f no XLang (rescalculo.txt) e mostra "O resultado de m e ...". */
+/* ===== Calculadora de expressoes =====
+   Le contas como as pessoas escrevem: 2(2+3), [5-(7+5)-6], cos(30), 5^2, 5², x², √16, 2π, 3!, 6:2, "dois mais tres".
+   Faz o parse com precedencia (parenteses, potencia, x e /, + e -), multiplicacao implicita, e devolve
+   {f: expressao para a xlang-math, m: conta lida, p: passos, e: erro}. Trigonometria: graus por omissao. */
+function calculadora(q){
+ var s=String(q||"").toLowerCase().trim();
+ if(!s||s.length>140)return null;
+ s=s.replace(/^(?:por favor[, ]*)?(?:calcule|calcula|calcular|resolva|resolve|resolver|efetue|efectue|quanto\s+(?:[eé]|d[aá])|qual\s+(?:[eé]\s+)?o\s+resultado\s+d[eao]|qual\s+o\s+valor\s+d[eao]|valor\s+d[eao])\s*/,"");
+ s=s.replace(/[?!=.\s]+$/,"").trim();
+ if(!s||/^\d{1,4}[-\/.]\d{1,2}[-\/.]\d{1,4}$/.test(s))return null;
+ s=s.replace(/raiz\s+c[uú]bica\s+(?:de\s+)?/g,"∛").replace(/raiz\s+quadrada\s+(?:de\s+)?/g,"√").replace(/\braiz\s+(?:de\s+)?/g,"√")
+  .replace(/\b(seno|sen|cosseno|tangente)\s+(?:de\s+)?/g,function(a,w){return({seno:"sin ",sen:"sin ",cosseno:"cos ",tangente:"tan "})[w]})
+  .replace(/\bao\s+quadrado\b/g,"²").replace(/\bao\s+cubo\b/g,"³").replace(/\belevado\s+(?:a|ao)\b/g,"^")
+  .replace(/\bmultiplicad[oa]\s+por\b|\bvezes\b/g,"*").replace(/\bdividid[oa]\s+por\b|\bdividid[oa]\b/g,"/")
+  .replace(/\bmais\b/g,"+").replace(/\bmenos\b/g,"-").replace(/\bpor\s+cento\b/g,"%");
+ var NUM={zero:0,um:1,uma:1,dois:2,duas:2,tres:3,quatro:4,cinco:5,seis:6,sete:7,oito:8,nove:9,dez:10};
+ arq("numeros.txt").split(/\r?\n/).forEach(function(l){if(!l.trim()||l.trim().charAt(0)==="#")return;var p=l.split("|");if(p.length<2)return;var n=parseInt(p[0],10);if(!isFinite(n))return;p[1].split(",").forEach(function(w){w=norm(w);if(w)NUM[w]=n})});
+ var FN={sin:"sin",sen:"sin",cos:"cos",tan:"tan",tg:"tan",asin:"asin",arcsin:"asin",acos:"acos",arccos:"acos",atan:"atan",arctan:"atan",sqrt:"sqrt",cbrt:"cbrt",ln:"ln",log:"log",log10:"log",log2:"log2",exp:"exp",abs:"abs",floor:"floor",ceil:"ceil",round:"round",min:"min",max:"max"};
+ /* tokens */
+ var tk=[],i=0,m;
+ while(i<s.length){
+  var c=s.charAt(i);
+  if(/\s/.test(c)){i++;continue}
+  if((m=/^\d+(?:[.,]\d+)?/.exec(s.slice(i)))){tk.push({k:"n",v:parseFloat(m[0].replace(",","."))});i+=m[0].length;continue}
+  if((m=/^[a-zà-ú]+/.exec(s.slice(i)))){
+   var w=m[0],nw=norm(w);i+=w.length;
+   if(w==="log"&&(m=/^(?:10|2)(?!\d)/.exec(s.slice(i)))){w+=m[0];i+=m[0].length}
+   if(w==="pi")tk.push({k:"c"});
+   else if(FN[w])tk.push({k:"f",v:FN[w]});
+   else if(NUM.hasOwnProperty(nw))tk.push({k:"n",v:NUM[nw]});
+   else if(w==="x")tk.push({k:"o",v:"*"});
+   else if(w==="graus"||w==="grau")tk.push({k:"u",v:"deg"});
+   else if(w==="rad"||w==="radianos"||w==="radiano")tk.push({k:"u",v:"rad"});
+   else return null;
+   continue;
+  }
+  if(c==="*"&&s.charAt(i+1)==="*"){tk.push({k:"o",v:"^"});i+=2;continue}
+  var map={"×":"*","÷":"/",":":"/","−":"-","–":"-","[":"(","{":"(","]":")","}":")"};
+  var o=map[c]||c;
+  if(o==="π"){tk.push({k:"c"})}
+  else if(o==="√"){tk.push({k:"f",v:"sqrt"})}
+  else if(o==="∛"){tk.push({k:"f",v:"cbrt"})}
+  else if(o==="°"){tk.push({k:"u",v:"deg"})}
+  else if("+-*/^()!%²³;,".indexOf(o)>=0)tk.push({k:"o",v:o});
+  else return null;
+  i++;
+ }
+ /* multiplicacao implicita: 2(3+4), (1+2)(3+4), 2π, 3cos(30) */
+ var tt=[];
+ tk.forEach(function(b,j){
+  var a=tt[tt.length-1];
+  if(a){
+   var fim=a.k==="n"||a.k==="c"||a.k==="u"||(a.k==="o"&&(a.v===")"||a.v==="!"||a.v==="%"||a.v==="²"||a.v==="³"));
+   var ini=b.k==="c"||b.k==="f"||(b.k==="o"&&b.v==="(")||(b.k==="n"&&a.k==="o"&&a.v===")");
+   if(fim&&ini)tt.push({k:"o",v:"*"});
+  }
+  tt.push(b);
+ });
+ tk=tt;
+ if(!tk.length)return null;
+ var pos=0;
+ function peek(v){var t=tk[pos];return t&&t.k==="o"&&t.v===v}
+ function bad(){throw {parse:1}}
+ function pExpr(){var l=pTerm();while(peek("+")||peek("-")){var op=tk[pos++].v;l={t:"b",op:op,l:l,r:pTerm()}}return l}
+ function pTerm(){var l=pUnary();while(peek("*")||peek("/")){var op=tk[pos++].v;l={t:"b",op:op,l:l,r:pUnary()}}return l}
+ function pUnary(){if(peek("-")){pos++;return {t:"neg",x:pUnary()}}if(peek("+")){pos++;return pUnary()}return pPow()}
+ function pPow(){var b=pPost();if(peek("^")){pos++;return {t:"b",op:"^",l:b,r:pUnary()}}return b}
+ function pPost(){
+  var x=pPrim();
+  for(;;){
+   var t=tk[pos];if(!t)break;
+   if(t.k==="o"&&(t.v==="!"||t.v==="%"||t.v==="²"||t.v==="³")){pos++;x={t:"p",op:t.v,x:x}}
+   else if(t.k==="u"){pos++;x={t:"u",u:t.v,x:x}}
+   else break;
+  }
+  return x;
+ }
+ function pPrim(){
+  var t=tk[pos++];if(!t)bad();
+  if(t.k==="n")return {t:"n",v:t.v};
+  if(t.k==="c")return {t:"c"};
+  if(t.k==="o"&&t.v==="("){var e=pExpr();if(!peek(")"))bad();pos++;return {t:"g",x:e}}
+  if(t.k==="f"){
+   if(peek("(")){
+    pos++;var args=[pExpr()];
+    while(peek(";")||peek(",")){pos++;args.push(pExpr())}
+    if(!peek(")"))bad();pos++;
+    return {t:"fn",n:t.v,a:args};
+   }
+   if(peek("-")){pos++;return {t:"fn",n:t.v,a:[{t:"neg",x:pPost()}],sp:1}}
+   return {t:"fn",n:t.v,a:[pPost()],sp:1};
+  }
+  bad();
+ }
+ var arv;
+ try{arv=pExpr();if(pos!==tk.length)bad()}catch(e){if(e&&e.parse)return null;throw e}
+ /* so conta como matematica se tiver pelo menos uma operacao */
+ var ops=0;
+ (function cont(n){if(!n)return;if(n.t==="b"||n.t==="fn"||(n.t==="p"&&n.op!=="%"))ops++;if(n.x)cont(n.x);if(n.l)cont(n.l);if(n.r)cont(n.r);if(n.a)n.a.forEach(cont)})(arv);
+ if(!ops)return null;
+ /* avaliacao com passos */
+ function F(x){var r=Number(x.toFixed(6));if(r===0)r=0;return String(r).replace(".",",").replace("-","\u2212")}
+ function S(n,v){return n.t==="c"?"π":F(v)}
+ function SW(n,v){return n.t==="c"?"π":W(v)}
+ function W(x){return x<0?"("+F(x)+")":F(x)}
+ var SIM={"+":"+","-":"−","*":"×","/":"÷","^":"^"};
+ var passos=[],notas=[];
+ function Erro(t){this.msg=t}
+ function lit(v){var t=String(v);return /e/i.test(t)?v.toFixed(12):t}
+ function temPi(n){if(!n)return false;if(n.t==="c")return true;return temPi(n.x)||temPi(n.l)||temPi(n.r)||(n.a||[]).some(temPi)}
+ function unid(n){return n&&n.t==="u"?n.u:null}
+ function D(n){
+  switch(n.t){
+   case "n":return F(n.v);
+   case "c":return "π";
+   case "g":return "("+D(n.x)+")";
+   case "neg":return "−"+D(n.x);
+   case "u":return D(n.x)+(n.u==="deg"?"°":" rad");
+   case "p":return D(n.x)+n.op;
+   case "b":if(n.op==="^"&&n.r.t==="n"&&(n.r.v===2||n.r.v===3))return D(n.l)+(n.r.v===2?"²":"³");return D(n.l)+" "+SIM[n.op]+" "+D(n.r);
+   case "fn":{var nm=({sqrt:"√",cbrt:"∛",sin:"sen",ln:"ln",log2:"log₂",log:"log"})[n.n]||n.n;var ar=n.a.map(D).join("; ");return (n.n==="sqrt"||n.n==="cbrt")?(n.a[0].t==="n"||n.a[0].t==="c"?nm+ar:nm+"("+ar+")"):nm+"("+ar+")"}
+  }
+ }
+ function E(n){
+  /* devolve {v, f} */
+  switch(n.t){
+   case "n":return {v:n.v,f:lit(n.v)};
+   case "c":return {v:Math.PI,f:"PI()"};
+   case "g":return E(n.x);
+   case "u":return E(n.x);
+   case "neg":{var a=E(n.x);return {v:-a.v,f:"(0-"+a.f+")"}}
+   case "p":{
+    var a=E(n.x),v,f;
+    if(n.op==="!"){if(!(Number.isInteger(a.v)&&a.v>=0&&a.v<=20))throw new Erro("O fatorial só existe para inteiros de 0 a 20 (para valores maiores o resultado é demasiado grande).");v=1;for(var k=2;k<=a.v;k++)v*=k;f="factorial("+a.f+")"}
+    else if(n.op==="%"){v=a.v/100;f="("+a.f+"/100)"}
+    else{var e=n.op==="²"?2:3;v=Math.pow(a.v,e);f="pow("+a.f+","+e+")"}
+    passos.push(F(a.v)+n.op+" = "+F(v));
+    return {v:v,f:f};
+   }
+   case "b":{
+    var l=E(n.l),r=E(n.r),v,f;
+    if(n.op==="+"){v=l.v+r.v;f="("+l.f+"+"+r.f+")"}
+    else if(n.op==="-"){v=l.v-r.v;f="("+l.f+"-"+r.f+")"}
+    else if(n.op==="*"){v=l.v*r.v;f="("+l.f+"*"+r.f+")"}
+    else if(n.op==="/"){if(r.v===0)throw new Erro("Não dá para dividir por zero.");v=l.v/r.v;f="("+l.f+"/"+r.f+")"}
+    else{
+     if(l.v===0&&r.v<0)throw new Erro("Não dá para dividir por zero.");
+     v=Math.pow(l.v,r.v);
+     if(!isFinite(v))throw new Erro("Não é possível calcular esta potência com números reais.");
+     f="pow("+l.f+","+r.f+")";
+    }
+    if(!isFinite(v)||Math.abs(v)>=1e15)throw new Erro("O resultado é demasiado grande para mostrar.");
+    passos.push(S(n.l,l.v)+" "+SIM[n.op]+" "+SW(n.r,r.v)+" = "+F(v));
+    return {v:v,f:f};
+   }
+   case "fn":{
+    var A=n.a.map(E),x=A[0].v,fx=A[0].f,nm=n.n,v,f,sh;
+    var ang=nm==="sin"||nm==="cos"||nm==="tan";
+    if(ang){
+     var u=unid(n.a[0]),rad=u==="rad"||temPi(n.a[0]);
+     if(!u&&!temPi(n.a[0])&&notas.indexOf("Assumi que os ângulos estão em graus. Para radianos escreve rad ou usa π.")<0)notas.push("Assumi que os ângulos estão em graus. Para radianos escreve rad ou usa π.");
+     var xr=rad?x:x*Math.PI/180;
+     if(nm==="tan"&&Math.abs(Math.cos(xr))<1e-12)throw new Erro("A tangente não existe para este ângulo.");
+     v=Math[nm](xr);f=nm+"("+(rad?fx:"radians("+fx+")")+")";
+     sh=({sin:"sen",cos:"cos",tan:"tan"})[nm]+"("+F(x)+(rad?" rad":"°")+")";
+    }else if(nm==="asin"||nm==="acos"||nm==="atan"){
+     if(nm!=="atan"&&Math.abs(x)>1)throw new Erro("O arco-"+(nm==="asin"?"seno":"cosseno")+" só existe para valores entre −1 e 1.");
+     v=Math[nm](x)*180/Math.PI;f="degrees("+nm+"("+fx+"))";if(notas.indexOf("O resultado dos arcos (asin, acos, atan) está em graus.")<0)notas.push("O resultado dos arcos (asin, acos, atan) está em graus.");sh=nm+"("+F(x)+")";
+    }else if(nm==="sqrt"){
+     if(x<0)throw new Erro("Não existe raiz quadrada real de um número negativo.");
+     v=Math.sqrt(x);f="sqr("+fx+")";sh="√"+W(x);
+    }else if(nm==="cbrt"){v=Math.cbrt(x);f="cbr("+fx+")";sh="∛"+W(x)}
+    else if(nm==="ln"||nm==="log"||nm==="log2"){
+     if(x<=0)throw new Erro("O logaritmo só existe para números positivos.");
+     v=nm==="ln"?Math.log(x):nm==="log"?Math.log10(x):Math.log2(x);
+     f=({ln:"log",log:"log10",log2:"log2"})[nm]+"("+fx+")";sh=({ln:"ln",log:"log",log2:"log₂"})[nm]+"("+F(x)+")";
+    }else if(nm==="exp"){v=Math.exp(x);f="exp("+fx+")";sh="exp("+F(x)+")"}
+    else if(nm==="abs"){v=Math.abs(x);f="max("+fx+",(0-"+fx+"))";sh="|"+F(x)+"|"}
+    else if(nm==="floor"||nm==="ceil"){v=Math[nm](x);f=nm+"("+fx+")";sh=nm+"("+F(x)+")"}
+    else if(nm==="round"){
+     var d=A.length>1?A[1].v:0;if(!(Number.isInteger(d)&&d>=0&&d<=10))throw new Erro("Para arredondar, o número de casas deve ser um inteiro entre 0 e 10.");
+     v=Math.round(x*Math.pow(10,d))/Math.pow(10,d);f=A.length>1?"round("+fx+","+A[1].f+")":"round("+fx+")";sh="arredondar("+F(x)+(A.length>1?"; "+d:"")+")";
+    }else{
+     var vs=A.map(function(y){return y.v});v=Math[nm].apply(null,vs);f=nm+"("+A.map(function(y){return y.f}).join(",")+")";sh=nm+"("+vs.map(F).join("; ")+")";
+    }
+    if(!isFinite(v)||Math.abs(v)>=1e15)throw new Erro("O resultado é demasiado grande para mostrar.");
+    passos.push(sh+" = "+F(v)+((nm==="asin"||nm==="acos"||nm==="atan")?"°":""));
+    return {v:v,f:f};
+   }
+  }
+ }
+ var m0=D(arv),res;
+ try{res=E(arv)}catch(e){if(e instanceof Erro)return {f:"0",m:m0,p:[],e:e.msg};throw e}
+ if(!isFinite(res.v))return {f:"0",m:m0,p:[],e:"Não consegui calcular esta conta."};
+ var P=passos;
+ if(P.length<2&&!notas.length)return {f:res.f,m:m0,p:[],e:""};
+ if(P.length>12)P=P.slice(0,6).concat(["..."],P.slice(-5));
+ var n=P.length;
+ P=P.map(function(t,k){return t==="..."?t:(k===0?"Primeiro: ":k===n-1?"Por fim: ":"Depois: ")+t});
+ return {f:res.f,m:m0,p:P.concat(notas),e:""};
+}
 function funcaoMatematica(q){
+  var _c=calculadora(q);if(_c)return _c;
  var t=norm(q).replace(/[?!.]+$/,"");
  if(/\b(frase|frases|desenh\w*|cri\w+|ger\w+|site|loja|codigo)\b/.test(t))return null;
  var N="(\\d+(?:[.,]\\d+)?)";
