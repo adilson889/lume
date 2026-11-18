@@ -60,7 +60,23 @@
                     <else><if condition="totalcentro <= 4"><set name="escala" value="0.62"></set></if><else><if condition="totalcentro <= 6"><set name="escala" value="0.48"></set></if><else><set name="escala" value="0.36"></set></else></else></else>
                     <if condition="totalcentro == 1"><set name="x" value="112.5"></set></if>
                     <else><set name="x" value="8 + poscentro * (325 - 100 * escala - 16) / (totalcentro - 1)"></set></else>
-                    <set name="y" value="82 + (poscentro % 2) * 8"></set>
+                    <!-- Montanhas ficam no horizonte; casas e edifícios descem para o plano habitado. -->
+                    <if condition="nome == 'montanha'">
+                        <set name="y" value="82 + (poscentro % 2) * 3"></set>
+                    </if>
+                    <else>
+                        <if condition="nome == 'casa'">
+                            <set name="y" value="112 + (poscentro % 2) * 4"></set>
+                        </if>
+                        <else>
+                            <if condition="nome == 'edifício'">
+                                <set name="y" value="100 + (poscentro % 2) * 4"></set>
+                            </if>
+                            <else>
+                                <set name="y" value="130 + (poscentro % 2) * 3"></set>
+                            </else>
+                        </else>
+                    </else>
                     <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' ' + y + ') scale(' + escala + ')\">' + pecas_svg[p] + '</g>'"></set>
                     <set name="poscentro" value="poscentro + 1"></set>
                 </if>
