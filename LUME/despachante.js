@@ -115,6 +115,33 @@ function pedeEntrega(q){
  return ativos.length===1&&!!ativos[0].entrega&&cumpre(ativos[0].requer,m);
 }
 
+/* Motor inicial de frases: combina léxico separado de acordo com o número do sujeito. */
+function linhas(f){
+ return arq(f).split(/\r?\n/).map(function(x){return x.trim()}).filter(function(x){return x&&!/^#/.test(x)});
+}
+function escolher(a){return a.length?a[Math.floor(Math.random()*a.length)]:"";}
+function gerarFrases(q){
+ var sujeitos=linhas("frases_sujeitos.txt"),verbos=linhas("frases_verbos.txt"),
+     complementos=linhas("frases_complementos.txt"),circ=linhas("frases_circunstancias.txt"),
+     estruturas=linhas("estruturas_frases.txt");
+ if(!sujeitos.length||!verbos.length||!complementos.length||!estruturas.length)return "Ainda estou a organizar as minhas frases.";
+ var n=1,match=norm(q).match(/\b([1-5])\b/);if(match)n=Number(match[1]);
+ if(/\b(duas|dois)\b/.test(norm(q)))n=2;
+ if(/\b(tres|três)\b/.test(norm(q)))n=3;
+ if(/\b(quatro)\b/.test(norm(q)))n=4;
+ if(/\b(cinco)\b/.test(norm(q)))n=5;
+ var saidas=[],usadas={};
+ for(var i=0;i<n;i++){
+  var s=escolher(sujeitos).split("|"),v=escolher(verbos).split("|");
+  var plural=Math.random()<0.35, sujeito=(plural?s[1]:s[0])||s[0],verbo=(plural?v[1]:v[0])||v[0];
+  var modelo=escolher(estruturas),comp=escolher(complementos),circunstancia=escolher(circ);
+  var frase=modelo.replace(/\{sujeito\}/g,sujeito).replace(/\{verbo\}/g,verbo)
+    .replace(/\{complemento\}/g,comp).replace(/\{circunstancia\}/g,circunstancia)
+    .replace(/\s+/g," ").replace(/\s+([,.;:!?])/g,"$1").trim();
+  if(usadas[frase]){i--;continue;}usadas[frase]=true;saidas.push(frase);
+ }
+ return saidas.join("\n");
+}
 /* devolve true se tratou a pergunta (executou ou avisou); false para o bot decidir */
 async function tentar(q){
  var caps=lerCapacidades();if(!caps.length||typeof window.lumeOnReply!=="function")return false;
@@ -126,6 +153,7 @@ async function tentar(q){
  if(ativos.length!==1)return false;
  var c=ativos[0];
  if(cumpre(c.requer,m)){
+  if(c.nome==="frases"){window.lumeOnReply({text:gerarFrases(q)});return true;}
   var partes=c.resposta.split(","),txt=entrada(partes[0].trim(),parseInt(partes[1],10)||1);
   if(!txt)return false;
   window.lumeOnReply({text:txt});
