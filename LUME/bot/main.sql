@@ -29,7 +29,7 @@ WHEN CONTAINS KEYWORDS(pedidos_combinados.txt) {
 --XLANG CÁLCULOS 
 
 WHEN CONTAINS KEYWORDS (calculo.txt) {
- WAITING("Calculando")
+ WAITING("A executar o cálculo...")
     REPLY (rescalculo.txt, 1)
 }
 
