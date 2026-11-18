@@ -16,32 +16,28 @@
     <set name="nome" value="pecas_nome[p]"></set>
     <if condition="includes(m, pecas_chaves[i]) && !includes(usados, '|' + p + '|')">
         <set name="usados" value="usados + p + '|'"></set>
-        <if condition="nome == 'sol' || nome == 'lua' || nome == 'nuvem' || nome == 'estrela' || nome == 'pássaro'">
-            <set name="x" value="15 + (posceu % 4) * 78"></set>
-            <set name="y" value="8 + (posceu / 4) * 52"></set>
-            <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' ' + y + ') scale(0.65)\">' + pecas_svg[p] + '</g>'"></set>
-            <set name="posceu" value="posceu + 1"></set>
-        </if>
-        <else>
-            <if condition="nome == 'casa' || nome == 'edifício' || nome == 'montanha' || nome == 'barco'">
-                <set name="x" value="18 + (poscentro % 3) * 105"></set>
-                <set name="y" value="92 + (poscentro / 3) * 28"></set>
-                <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' ' + y + ') scale(0.82)\">' + pecas_svg[p] + '</g>'"></set>
-                <set name="poscentro" value="poscentro + 1"></set>
+        <for var="j" from="0" to="pecas_quantidade[p] - 1">
+            <if condition="nome == 'sol' || nome == 'lua' || nome == 'nuvem' || nome == 'estrela' || nome == 'pássaro'">
+                <set name="x" value="15 + (posceu % 4) * 78"></set>
+                <set name="y" value="8 + (posceu / 4) * 52"></set>
+                <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' ' + y + ') scale(0.65)\">' + pecas_svg[p] + '</g>'"></set>
+                <set name="posceu" value="posceu + 1"></set>
             </if>
             <else>
-                <set name="x" value="12 + (posterra % 5) * 62"></set>
-                <set name="y" value="160 + (posterra / 5) * 48"></set>
-                <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' ' + y + ') scale(0.58)\">' + pecas_svg[p] + '</g>'"></set>
-                <set name="posterra" value="posterra + 1"></set>
+                <if condition="nome == 'casa' || nome == 'edifício' || nome == 'montanha' || nome == 'barco'">
+                    <set name="x" value="18 + (poscentro % 3) * 105"></set>
+                    <set name="y" value="92 + (poscentro / 3) * 28"></set>
+                    <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' ' + y + ') scale(0.82)\">' + pecas_svg[p] + '</g>'"></set>
+                    <set name="poscentro" value="poscentro + 1"></set>
+                </if>
+                <else>
+                    <set name="x" value="12 + (posterra % 5) * 62"></set>
+                    <set name="y" value="160 + (posterra / 5) * 48"></set>
+                    <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' ' + y + ') scale(0.58)\">' + pecas_svg[p] + '</g>'"></set>
+                    <set name="posterra" value="posterra + 1"></set>
+                </else>
             </else>
-        </else>
-        <!-- Quantidade explícita: duas árvores ou 2 árvores cria duas instâncias. -->
-        <if condition="nome == 'árvore' && (includes(m, 'duas árvores') || includes(m, 'duas arvores') || includes(m, '2 árvores') || includes(m, '2 arvores'))">
-            <set name="x" value="12 + (posterra % 5) * 62"></set>
-            <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' 160) scale(0.58)\">' + pecas_svg[p] + '</g>'"></set>
-            <set name="posterra" value="posterra + 1"></set>
-        </if>
+        </for>
     </if>
 </for>
 <var name="total" value="posceu + poscentro + posterra"></var>
