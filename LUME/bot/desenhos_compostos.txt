@@ -62,7 +62,8 @@
                     <else><set name="x" value="8 + poscentro * (325 - 100 * escala - 16) / (totalcentro - 1)"></set></else>
                     <!-- Montanhas ficam no horizonte; casas e edifícios descem para o plano habitado. -->
                     <if condition="nome == 'montanha'">
-                        <set name="y" value="82 + (poscentro % 2) * 3"></set>
+                        <!-- Alinha a base da montanha exactamente com a linha do horizonte (y=165), independentemente da escala. -->
+                        <set name="y" value="165 - 88 * escala"></set>
                     </if>
                     <else>
                         <if condition="nome == 'casa'">
