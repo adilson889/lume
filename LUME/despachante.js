@@ -115,11 +115,6 @@ function pedeEntrega(q){
  return ativos.length===1&&!!ativos[0].entrega&&cumpre(ativos[0].requer,m);
 }
 
-/* Motor inicial de frases: combina léxico separado de acordo com o número do sujeito. */
-function linhas(f){
- return arq(f).split(/\r?\n/).map(function(x){return x.trim()}).filter(function(x){return x&&!/^#/.test(x)});
-}
-function escolher(a){return a.length?a[Math.floor(Math.random()*a.length)]:"";}
 /* Conversa: identifica intenções combinadas e constrói uma resposta única.
    Os ficheiros de respostas completas deixam de controlar saudações e conversa básica. */
 function detectarConversa(q){
@@ -154,7 +149,7 @@ function gerarConversa(q){
  }
  if(c.agradecimento&&!c.saudacao&&!c.estado)return escolher(agradece)+". Se precisares de mais alguma coisa, é só dizer.";
  var partes=[];
- if(c.saudacao)partes.push(escolher(aberturas));
+ if(c.saudacao)partes.push(escolher(aberturas)+"!");
  if(c.estado){
   partes.push(escolher(estados));
   partes.push(escolher(agradecimentos)+".");
