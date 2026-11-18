@@ -271,5 +271,70 @@ async function tentar(q){
  }
  return false;
 }
+/* Matematica em linguagem natural: converte o pedido numa expressao com funcoes da xlang-math
+   (sqr, cbr, pow, factorial, gcd, lcm, median, mode, max, min, range, std, variance, sin, cos, tan,
+   radians, log, log10, log2, round, hypot, PI). Devolve {f: expressao, m: texto} ou null.
+   O chat avalia f no XLang (rescalculo.txt) e mostra "O resultado de m e ...". */
+function funcaoMatematica(q){
+ var t=norm(q).replace(/[?!.]+$/,"");
+ if(/\b(frase|frases|desenh\w*|cri\w+|ger\w+|site|loja|codigo)\b/.test(t))return null;
+ var N="(\\d+(?:[.,]\\d+)?)";
+ function v(x){return parseFloat(String(x).replace(",","."))}
+ function fmt(x){return String(x).replace(".",",")}
+ function juntar(a){return a.length>1?a.slice(0,-1).map(fmt).join(", ")+" e "+fmt(a[a.length-1]):fmt(a[0])}
+ function R(f,m){return {f:f,m:m}}
+ var m;
+ /* percentagens */
+ if((m=new RegExp("desconto de "+N+"\\s*(?:%|por cento)\\s*(?:em|sobre|de|num|no|na)\\s*"+N).exec(t)))return R(fmt(v(m[2])).replace(",",".")+"*(100-"+v(m[1])+")/100","desconto de "+fmt(v(m[1]))+"% em "+fmt(v(m[2])));
+ if((m=new RegExp("aumento de "+N+"\\s*(?:%|por cento)\\s*(?:em|sobre|de|num|no|na)\\s*"+N).exec(t)))return R(v(m[2])+"*(100+"+v(m[1])+")/100","aumento de "+fmt(v(m[1]))+"% em "+fmt(v(m[2])));
+ if((m=new RegExp(N+"\\s*(?:%|por cento)\\s*de\\s*"+N).exec(t)))return R(v(m[1])+"*"+v(m[2])+"/100",fmt(v(m[1]))+"% de "+fmt(v(m[2])));
+ var nums=(typeof window.numerosDaPergunta==="function"?window.numerosDaPergunta(q):(t.match(/-?\d+(?:[.,]\d+)?/g)||[]).map(v)).filter(function(x){return isFinite(x)&&Math.abs(x)<=1e12});
+ if(/\b(valor de pi|quanto vale pi|numero pi)\b/.test(t))return R("PI()","pi");
+ if(!nums.length)return null;
+ var x=nums[0];
+ /* raizes */
+ if(/raiz cubica/.test(t))return R("cbr("+x+")","raiz cúbica de "+fmt(x));
+ if(/\braiz\b/.test(t)&&x>=0)return R("sqr("+x+")","raiz quadrada de "+fmt(x));
+ /* teoria dos numeros */
+ if(/fatorial/.test(t)&&Number.isInteger(x)&&x>=0&&x<=20)return R("factorial("+x+")","fatorial de "+fmt(x));
+ var ints=nums.every(function(y){return Number.isInteger(y)&&y>0});
+ if(/\b(mmc|minimo multiplo comum)\b/.test(t)&&nums.length>=2&&ints)return R(nums.slice(1).reduce(function(a,b){return "lcm("+a+","+b+")"},String(nums[0])),"mmc de "+juntar(nums));
+ if(/\b(mdc|maximo divisor comum)\b/.test(t)&&nums.length>=2&&ints)return R(nums.slice(1).reduce(function(a,b){return "gcd("+a+","+b+")"},String(nums[0])),"mdc de "+juntar(nums));
+ /* potencias */
+ if((m=new RegExp(N+"\\s*ao\\s*(quadrado|cubo)").exec(t))){var b0=v(m[1]),e0=m[2]==="cubo"?3:2;if(isFinite(Math.pow(b0,e0)))return R("pow("+b0+","+e0+")",fmt(b0)+" ao "+m[2])}
+ if((m=new RegExp(N+"\\s*(?:elevado\\s+(?:a|ao)|\\^)\\s*"+N).exec(t))){var b1=v(m[1]),e1=v(m[2]);if(Math.abs(Math.pow(b1,e1))<1e15)return R("pow("+b1+","+e1+")",fmt(b1)+" elevado a "+fmt(e1))}
+ /* trigonometria */
+ if((m=/\b(seno|sen|cosseno|cos|tangente|tan)\b/.exec(t))){
+  var fn=/^s/.test(m[1])?"sin":/^c/.test(m[1])?"cos":"tan",graus=/graus|°/.test(t)||/°/.test(q);
+  if(fn==="tan"&&graus&&x%180===90)return null;
+  return R(fn+"("+(graus?"radians("+x+")":x)+")",({sin:"seno",cos:"cosseno",tan:"tangente"})[fn]+" de "+fmt(x)+(graus?" graus":""));
+ }
+ /* logaritmos */
+ if(/\b(logaritmo|log|ln)\b/.test(t)&&x>0){
+  if(/natural|\bln\b/.test(t))return R("log("+x+")","logaritmo natural de "+fmt(x));
+  var base=/base\s*2\b/.test(t)?2:10,xb=nums[0];
+  if(/base/.test(t)&&nums.length>=2){base=nums[nums.length-1];xb=nums[0];if(base!==2&&base!==10)return null}
+  if(xb>0)return R((base===2?"log2(":"log10(")+xb+")","logaritmo de "+fmt(xb)+" na base "+base);
+ }
+ if(/hipotenusa|pitagoras/.test(t)&&nums.length>=2)return R("hypot("+nums[0]+","+nums[1]+")","hipotenusa de catetos "+juntar(nums.slice(0,2)));
+ /* arredondamento */
+ if(/arredond/.test(t)){
+  var c=nums.length>1&&/casa/.test(t)&&Number.isInteger(nums[1])&&nums[1]>=0&&nums[1]<=10?nums[1]:null;
+  return R(c===null?"round("+x+")":"round("+x+","+c+")","arredondar "+fmt(x)+(c===null?"":" a "+c+" casas"));
+ }
+ /* estatistica (precisa de 2 ou mais numeros) */
+ if(nums.length>=2){
+  var am=/amostral/.test(t),lst=nums.join(","),rot=juntar(nums);
+  if(/\bmediana\b/.test(t))return R("median("+lst+")","mediana de "+rot);
+  if(/\bmoda de\b/.test(t))return R("mode("+lst+")","moda de "+rot);
+  if(/\b(maior|maximo)\b/.test(t))return R("max("+lst+")","maior de "+rot);
+  if(/\b(menor|minimo)\b/.test(t))return R("min("+lst+")","menor de "+rot);
+  if(/amplitude/.test(t))return R("range("+lst+")","amplitude de "+rot);
+  if(/desvio padrao/.test(t))return R((am?"sampleStd(":"std(")+lst+")","desvio padrão"+(am?" amostral":"")+" de "+rot);
+  if(/variancia/.test(t))return R((am?"sampleVariance(":"variance(")+lst+")","variância"+(am?" amostral":"")+" de "+rot);
+ }
+ return null;
+}
+window.lumeFuncaoMatematica=funcaoMatematica;
 window.LumeDespachante={tentar:tentar,pedeEntrega:pedeEntrega,ler:lerCapacidades,medidores:function(q){return medidores(q,norm(q))}};
 })();

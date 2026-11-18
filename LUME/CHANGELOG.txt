@@ -242,3 +242,8 @@ Lume - historico de versoes
 - Sabe a hora e a data do dispositivo: "que horas sao", "que dia e hoje".
 - Lista de ajuda com "e" antes do ultimo item; maiusculas corrigidas nas respostas compostas.
 - Gerador de frases: limite de tentativas (evita ciclo infinito) e minuscula depois da virgula.
+
+0.5.3
+- Matematica em linguagem natural com a xlang-math: raiz quadrada/cubica, fatorial, mmc, mdc, potencias ("2 elevado a 10", "5 ao quadrado"), percentagens, descontos e aumentos, seno/cosseno/tangente (graus ou radianos), logaritmos (base 10, 2 e natural), hipotenusa, arredondar (com casas), mediana, moda, maior, menor, amplitude, desvio padrao e variancia (populacional ou amostral), valor de pi.
+- Implementado em despachante.js (lumeFuncaoMatematica) e ligado a formulaDaMensagem no index.html e mobile.html. A expressao segue o caminho que ja existia (rescalculo.txt), por isso o resultado aparece igual ao das contas simples.
+- Pedidos com frase, desenho, codigo, loja, "cria" ou "gera" nao entram na matematica.

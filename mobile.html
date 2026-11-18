@@ -1157,7 +1157,7 @@ function formulaDaMensagem(t){
  var s=String(t||"").toLowerCase().trim();
  var pareceConta=(/[0-9]/.test(s)&&(/[+*\/×÷-]/.test(s)||/\b(mais|menos|vezes|dividid[oa]|multiplicad[oa])\b/.test(s)))||(/\b(zero|um|uma|dois|duas|tr[eê]s|quatro|cinco|seis|sete|oito|nove|dez)\b/.test(s)&&/\b(mais|menos|vezes|dividid[oa]|multiplicad[oa])\b/.test(s));
  if(pareceConta&&window.lumeAtualizarEtapa)window.lumeAtualizarEtapa("A interpretar a expressão matemática...");
- if(!s||/m[eé]dia/.test(s))return null;
+ {var fm=window.lumeFuncaoMatematica&&window.lumeFuncaoMatematica(t);if(fm)return fm}if(!s||/m[eé]dia/.test(s))return null;
  s=s.replace(/[?!=.\s]+$/,"").replace(/^(?:por favor,?\s*)?(?:calcule|calcular|resolva|resolve|quanto\s+[eé]|qual\s+o\s+resultado(?:\s+de)?)\s+/,"").trim();
  if(/^\d+(?:-\d+){2,}$/.test(s))return null;
  var num={zero:0,um:1,uma:1,dois:2,duas:2,"tres":3,"três":3,quatro:4,cinco:5,seis:6,sete:7,oito:8,nove:9,dez:10};
