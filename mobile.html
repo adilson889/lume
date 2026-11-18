@@ -898,32 +898,45 @@ async function executarXlang(slot,codigo){
  }
  rolarParaFim();
 }
-var NUMEROS_EXTENSO={zero:0,um:1,uma:1,dois:2,duas:2,tres:3,"três":3,quatro:4,cinco:5,seis:6,sete:7,oito:8,nove:9,dez:10};
+/* Números partilhados pelos motores: numeros.txt usa "valor | variantes". */
+function lerNumeros(){
+ var mapa={},linhas=String((window.arquivosBot||{})["numeros.txt"]||"").split(/\r?\n/);
+ linhas.forEach(function(l){if(!l.trim()||l.trim().charAt(0)==="#")return;var p=l.split("|");if(p.length<2)return;var valor=parseInt(p[0].trim(),10);if(!Number.isFinite(valor))return;p[1].split(",").forEach(function(k){k=k.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");if(k)mapa[k]=valor});});
+ return mapa;
+}
+var NUMEROS_EXTENSO=lerNumeros();
+function normalizarTexto(t){return String(t||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");}
+function escaparRegex(s){return s.replace(/[.*+?^|()[\]{}$\\]/g,"\\$&")}
 function numerosDaPergunta(t){
- const r=/-?\d+(?:[.,]\d+)?|\b(?:zero|uma?|dois|duas|tr[eê]s|quatro|cinco|seis|sete|oito|nove|dez)\b/gi;
- const l=[];let m;
- while((m=r.exec(t||""))!==null){
-  const x=m[0].toLowerCase();
-  const v=/^-?\d/.test(x)?parseFloat(x.replace(",",".")):NUMEROS_EXTENSO[x];
-  if(typeof v==="number"&&!isNaN(v))l.push(v);
- }
+ var mapa=lerNumeros(),palavras=Object.keys(mapa).sort(function(a,b){return b.length-a.length});
+ var padrao=palavras.map(escaparRegex).join("|"),r=new RegExp("-?\\d+(?:[.,]\\d+)?"+(padrao?"|\\b(?:"+padrao+")\\b":""),"gi");
+ var l=[],m,txt=normalizarTexto(t);
+ while((m=r.exec(txt))!==null){var x=m[0].toLowerCase(),v=/^-?\\d/.test(x)?parseFloat(x.replace(",",".")):mapa[x];if(typeof v==="number"&&!isNaN(v))l.push(v)}
  return l;
+}
+function quantidadeDaPeca(pergunta,chaves){
+ var mapa=lerNumeros(),palavras=Object.keys(mapa).sort(function(a,b){return b.length-a.length}),texto=normalizarTexto(pergunta),melhor=1;
+ chaves.forEach(function(chave){
+  chave=normalizarTexto(chave);if(!chave)return;
+  var re=new RegExp("\\b"+escaparRegex(chave)+"\\b","g"),m;
+  while((m=re.exec(texto))!==null){
+   var antes=texto.slice(Math.max(0,m.index-30),m.index),padrao=palavras.map(escaparRegex).join("|"),r=new RegExp("(?:^|\\b)(\\d+|"+padrao+")(?:\\s+)$","i"),n=r.exec(antes);
+   if(n){var valor=/^\\d+$/.test(n[1])?parseInt(n[1],10):mapa[n[1]];if(valor>melhor)melhor=valor;}
+  }
+ });
+ return Math.max(1,Math.min(melhor,12));
 }
 /* Registo de pecas (pecas.txt): nome | sinonimos | fragmento SVG. Injetado como arrays quando o XLang usa "pecas_". */
 function litArray(a){return"["+a.map(function(x){return typeof x==="number"?String(x):"'"+String(x).replace(/\\/g,"\\\\").replace(/'/g,"\\'").replace(/"/g,'\\"').replace(/\s*\n\s*/g," ")+"'"}).join(",")+"]"}
 function variaveisPecas(){
- var nome=[],svg=[],chaves=[],mapa=[];
+ var nome=[],svg=[],chaves=[],mapa=[],quantidade=[],pergunta=String(typeof ultimaPergunta==="string"?ultimaPergunta:"");
  String((window.arquivosBot||{})["pecas.txt"]||"").split(/\r?\n/).forEach(function(l){
-  if(!l.trim()||l.trim().charAt(0)==="#")return;
-  var p=l.split("|");if(p.length<3)return;
-  var i=nome.length;nome.push(p[0].trim());svg.push(p.slice(2).join("|").trim());
-  var vistos={};
-  (p[0]+","+p[1]).split(",").forEach(function(a){
-   a=a.trim().toLowerCase();if(!a)return;
-   [a,a.normalize("NFD").replace(/[\u0300-\u036f]/g,"")].forEach(function(k){if(!vistos[k]){vistos[k]=1;chaves.push(k);mapa.push(i)}});
-  });
+  if(!l.trim()||l.trim().charAt(0)==="#")return;var p=l.split("|");if(p.length<3)return;
+  var i=nome.length,aliases=(p[0]+","+p[1]).split(",").map(function(x){return x.trim()}).filter(Boolean);
+  nome.push(p[0].trim());svg.push(p.slice(2).join("|").trim());quantidade.push(quantidadeDaPeca(pergunta,aliases));
+  var vistos={};aliases.forEach(function(a){a=a.toLowerCase();[a,a.normalize("NFD").replace(/[\u0300-\u036f]/g,"")].forEach(function(k){if(!vistos[k]){vistos[k]=1;chaves.push(k);mapa.push(i)}})});
  });
- return'<array name="pecas_nome" value="'+litArray(nome)+'"></array><array name="pecas_svg" value="'+litArray(svg)+'"></array><array name="pecas_chaves" value="'+litArray(chaves)+'"></array><array name="pecas_mapa" value="'+litArray(mapa)+'"></array><var name="pecas_nchaves" value="'+chaves.length+'"></var>';
+ return'<array name="pecas_nome" value="'+litArray(nome)+'"></array><array name="pecas_svg" value="'+litArray(svg)+'"></array><array name="pecas_quantidade" value="'+litArray(quantidade)+'"></array><array name="pecas_chaves" value="'+litArray(chaves)+'"></array><array name="pecas_mapa" value="'+litArray(mapa)+'"></array><var name="pecas_nchaves" value="'+chaves.length+'"></var>';
 }
 function injetarVariaveisXlang(codigo){
  if(String(codigo).indexOf("<!--lume-vars-->")>=0)return codigo;
