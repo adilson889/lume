@@ -579,7 +579,8 @@ var LP=(function(){
 /* Grafico de funcoes do 1.o e 2.o grau: y = 2x+1, f(x) = x²-4x+3, "grafico de x²". Devolve {svg,titulo,info,e} ou null. */
 function graficoFuncao(q){
  try{
- var t=String(q||"").toLowerCase().trim();
+ // var t=String(q||"").toLowerCase().trim();
+ var t=String(q||"").toLowerCase().trim().replace(/\s+(?:em|num|no)\s+(?:ficheiro|arquivo|p[aá]gina)\s*$/,"");
  if(!t||t.length>140)return null;
  if(/\b(seno|cosseno|tangente|sin|cos|tan|log|ln)\b/.test(t))return null;
  var pal=/^(?:por favor|pode|podes|desenha\w*|desenhe|faz|fa[cç]a|fazer|tra[cç]a\w*|mostra\w*|plot\w*|gr[aá]fico|fun[cç][aã]o|o|a|um|uma|de|da|do|me|para|com)\b[\s,]*/;
