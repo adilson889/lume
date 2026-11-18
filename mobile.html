@@ -1155,6 +1155,8 @@ function formulaValida(f){
 }
 function formulaDaMensagem(t){
  var s=String(t||"").toLowerCase().trim();
+ var pareceConta=(/[0-9]/.test(s)&&(/[+*\\/×÷-]/.test(s)||/\\b(mais|menos|vezes|dividid[oa]|multiplicad[oa])\\b/.test(s)))||(/\\b(zero|um|uma|dois|duas|tr[eê]s|quatro|cinco|seis|sete|oito|nove|dez)\\b/.test(s)&&/\\b(mais|menos|vezes|dividid[oa]|multiplicad[oa])\\b/.test(s));
+ if(pareceConta&&window.lumeAtualizarEtapa)window.lumeAtualizarEtapa("A interpretar a expressão matemática...");
  if(!s||/m[eé]dia/.test(s))return null;
  s=s.replace(/[?!=.\s]+$/,"").replace(/^(?:por favor,?\s*)?(?:calcule|calcular|resolva|resolve|quanto\s+[eé]|qual\s+o\s+resultado(?:\s+de)?)\s+/,"").trim();
  if(/^\d+(?:-\d+){2,}$/.test(s))return null;
@@ -1163,7 +1165,9 @@ function formulaDaMensagem(t){
   .replace(/\b(zero|uma?|dois|duas|tr[eê]s|quatro|cinco|seis|sete|oito|nove|dez)\b/g,function(w){return num[w]})
   .replace(/(\d)\s*x\s*(?=[\d(])/g,"$1*")
   .replace(/(\d),(\d)/g,"$1.$2").replace(/\s+/g,"");
- if(f.length>80||!/^[\d+\-*\/().]+$/.test(f)||!/[+\-*\/]/.test(f)||!formulaValida(f))return null;
+ if(f.length>80||!/^[\\d+\\-*\\/().]+$/.test(f)||!/[+\\-*\\/]/.test(f))return null;
+ if(window.lumeAtualizarEtapa)window.lumeAtualizarEtapa("A verificar os números e operadores...");
+ if(!formulaValida(f))return null;
  var mostra="";
  (f.match(/\d+(?:\.\d+)?|[+\-*\/()]/g)||[]).forEach(function(k){
   if("+-*/".indexOf(k)>=0)mostra+=" "+({"+":"+","-":"\u2212","*":"\u00d7","/":"\u00f7"})[k]+" ";
