@@ -119,7 +119,7 @@
         <else>
             <var name="gsvg" value="grafico_svg[0]"></var>
             <print>Gráfico de <b>{grafico_titulo}</b>:</print>
-            <print><svg viewBox="0 0 300 260" width="100%" height="auto" role="img" aria-label="Gráfico da função">{gsvg}</svg></print>
+            <print><svg viewBox="0 0 300 260" width="100%" height="auto" role="img" aria-label="Gráfico da função"><g data-raw="{gsvg}"></g></svg></print>
             <foreach var="gi" in="grafico_info">
                 <print><div style="margin:2px 0 2px 4px">{gi}</div></print>
             </foreach>

@@ -101,7 +101,9 @@
     <print><svg viewBox="0 0 325 260" width="100%" height="auto" role="img" aria-label="Cena ilustrada composta pelo Lume"><defs><linearGradient id="ceuLume" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9e3ff"/><stop offset="1" stop-color="#eef8ff"/></linearGradient></defs><rect width="325" height="260" rx="12" fill="url(#ceuLume)"/><path d="M0 165 Q70 145 135 165 T260 160 T325 165 V260 H0Z" fill="#9ccc65"/><path d="M0 195 Q80 178 155 196 T325 190 V260 H0Z" fill="#7cb342"/><path d="M0 165H325" stroke="#689f38" stroke-width="2"/><g data-raw="{elementos}"></g></svg></print>
 </if>
 <else>
-    <print>Consigo combinar vários componentes numa cena. Experimenta pedir uma casa com duas árvores, sol, nuvens e flores.</print>
+    <if condition="total == 0 && !includes(m, 'gráfico') && !includes(m, 'grafico')">
+        <print>Consigo combinar vários componentes numa cena. Experimenta pedir uma casa com duas árvores, sol, nuvens e flores.</print>
+    </if>
 </else>
 </program>
 }

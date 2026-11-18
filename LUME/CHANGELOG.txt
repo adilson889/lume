@@ -267,3 +267,9 @@ Lume - historico de versoes
 - Funcoes de grau superior a 2 respondem com aviso. Seno continua no desenho fixo.
 - O leitor de polinomios passou a ser partilhado entre equacao() e graficoFuncao() (LP em despachante.js). desenhos.txt usa as variaveis temgrafico, grafico_svg, grafico_info injetadas por variaveisGerador.
 - Nao testado no chat real.
+
+0.5.7
+- Corrigido: o grafico de funcoes aparecia em branco, porque o <print> do XLang escapa o SVG interpolado; passou a usar <g data-raw="{gsvg}"> como os desenhos compostos.
+- Corrigido: "Consigo combinar varios componentes numa cena" aparecia antes de qualquer pedido com "desenha"; so aparece agora quando nao ha pecas e o pedido nao e um grafico.
+- Graficos de equacoes em x e y: "x+y=3", "2y=4x-6", "y-x=1" sao resolvidas para y e desenhadas. f(x) = ... tambem. Equacoes nao lineares em y dao aviso.
+- Nao testado no chat real.

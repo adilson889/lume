@@ -582,24 +582,30 @@ function graficoFuncao(q){
  var t=String(q||"").toLowerCase().trim();
  if(!t||t.length>140)return null;
  if(/\b(seno|cosseno|tangente|sin|cos|tan|log|ln)\b/.test(t))return null;
- var rhs,i=t.indexOf("=");
- if(i>=0){
-  if(!/(?:\by|\b[fg]\s*\(\s*x\s*\))\s*$/.test(t.slice(0,i).trim()))return null;
-  if(!/gr[aá]fico|plot|fun[cç][aã]o|desenh|tra[cç]a/.test(t))return null;
-  rhs=t.slice(i+1);
- }else{
-  if(!/gr[aá]fico|plot|fun[cç][aã]o/.test(t))return null;
-  rhs=t;
-  var pal=/^(?:por favor|pode|podes|desenha\w*|desenhe|faz|fa[cç]a|fazer|tra[cç]a\w*|mostra\w*|plot\w*|gr[aá]fico|fun[cç][aã]o|o|a|um|uma|de|da|do|me|para|com)\b[\s,]*/;
-  while(pal.test(rhs))rhs=rhs.replace(pal,"");
- }
- rhs=rhs.replace(/[?!.\s]+$/,"").trim();
- if(!rhs||rhs.length>60)return null;
- var vars={},P;
- try{P=LP.poly(rhs,vars)}catch(e){return e==="nl"?{e:"Só desenho gráficos de funções do 1.º e 2.º grau."}:null}
- var ks=Object.keys(vars);
+ var pal=/^(?:por favor|pode|podes|desenha\w*|desenhe|faz|fa[cç]a|fazer|tra[cç]a\w*|mostra\w*|plot\w*|gr[aá]fico|fun[cç][aã]o|o|a|um|uma|de|da|do|me|para|com)\b[\s,]*/;
+ var eq=t;
+ while(pal.test(eq))eq=eq.replace(pal,"");
+ eq=eq.replace(/[?!.\s]+$/,"").trim();
+ if(!eq||eq.length>60)return null;
+ var ERRO={e:"Só desenho gráficos de funções do 1.º e 2.º grau, como y = 2x+1 ou y = x²-4x+3."},P,vv={},ei=eq.indexOf("=");
+ try{
+  if(ei>=0){
+   if(!/gr[aá]fico|plot|fun[cç][aã]o|desenh|tra[cç]a/.test(t))return null;
+   var le=eq.slice(0,ei).trim().replace(/^[fg]\s*\(\s*x\s*\)$/,"y"),ri=eq.slice(ei+1).trim();
+   if(!le||!ri||ri.indexOf("=")>=0||!/\by\b/.test(le+" "+ri))return null;
+   var lado=function(yv){var yy="("+yv+")";return LP.add(LP.poly(le.replace(/\by\b/g,yy),vv),LP.poly(ri.replace(/\by\b/g,yy),vv),-1)};
+   var A0=lado(0),A1=lado(1),A2=lado(2),B=LP.add(A1,A0,-1),B0=B[0]||0;
+   var dif=LP.add(A2,LP.add(A0,B,2),-1);
+   if(LP.grau(B)>0||Math.abs(B0)<1e-12||dif.some(function(z){return Math.abs(z)>1e-9}))return ERRO;
+   P=A0.map(function(z){return -z/B0+0});
+  }else{
+   if(!/gr[aá]fico|plot|fun[cç][aã]o/.test(t))return null;
+   P=LP.poly(eq,vv);
+  }
+ }catch(e){return e==="nl"?ERRO:null}
+ var ks=Object.keys(vv);
  if(ks.length>1||(ks.length===1&&ks[0]!=="x"))return null;
- if(LP.grau(P)>2)return {e:"Só desenho gráficos de funções do 1.º e 2.º grau."};
+ if(LP.grau(P)>2)return ERRO;
  function Z(v){return Math.abs(v)<1e-12?0:v}
  var c0=Z(P[0]||0),c1=Z(P[1]||0),c2=Z(P[2]||0),quad=c2!==0;
  function F(n){n=Math.round(n*1e4)/1e4;if(n===0)n=0;return String(n).replace(".",",").replace("-","−")}
