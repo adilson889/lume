@@ -124,11 +124,11 @@ function escolher(a){return a.length?a[Math.floor(Math.random()*a.length)]:"";}
    Os ficheiros de respostas completas deixam de controlar saudações e conversa básica. */
 function detectarConversa(q){
  var t=norm(q);
- var saudacao=/\\b(oi|ola|bom dia|boa tarde|boa noite|e ai|ei|hey|hello|wey|boas|opa|eia)\\b/.test(t);
- var perguntaEstado=/\\b(como estas|como vai|como vais|tudo bem|tudo bom|tudo tranquilo|esta tudo bem)\\b/.test(t) && (/[?]/.test(q)||/\\b(como estas|como vai|como vais)\\b/.test(t)||/\\b(ola|oi|bom dia|boa tarde|boa noite|hey|hello)\\b/.test(t));
- var agradecimento=/\\b(obrigado|obrigada|agradecido|agradecida|agradeco|valeu|thanks)\\b/.test(t);
- var despedida=/\\b(adeus|ate logo|ate ja|ate amanha|xau|tchau|falou|vou embora)\\b/.test(t);
- var ajuda=/\\b(ajuda|ajudar|o que sabes fazer|que sabes fazer|tu fazes o que|suas capacidades|teus recursos)\\b/.test(t);
+ var saudacao=/\b(oi|ola|bom dia|boa tarde|boa noite|e ai|ei|hey|hello|wey|boas|opa|eia)\b/.test(t);
+ var perguntaEstado=/\b(como estas|como vai|como vais|tudo bem|tudo bom|tudo tranquilo|esta tudo bem)\b/.test(t) && (/[?]/.test(q)||/\b(como estas|como vai|como vais)\b/.test(t)||/\b(ola|oi|bom dia|boa tarde|boa noite|hey|hello)\b/.test(t));
+ var agradecimento=/\b(obrigado|obrigada|agradecido|agradecida|agradeco|valeu|thanks)\b/.test(t);
+ var despedida=/\b(adeus|ate logo|ate ja|ate amanha|xau|tchau|falou|vou embora)\b/.test(t);
+ var ajuda=/\b(ajuda|ajudar|o que sabes fazer|que sabes fazer|tu fazes o que|suas capacidades|teus recursos)\b/.test(t);
  if(saudacao||perguntaEstado||agradecimento||despedida||ajuda)
   return {saudacao:saudacao,estado:perguntaEstado,agradecimento:agradecimento,despedida:despedida,ajuda:ajuda};
  return null;
@@ -164,11 +164,11 @@ function gerarConversa(q){
  }else if(c.agradecimento){
   partes.push(escolher(agradece)+".");
  }
- return partes.join(" ").replace(/\\s+/g," ").trim();
+ return partes.join(" ").replace(/\s+/g," ").trim();
 }
 /* Motor de frases: combina o léxico de frases livres sem depender de respostas completas. */
 function linhas(f){
- return arq(f).split(/\\r?\\n/).map(function(x){return x.trim()}).filter(function(x){return x&&!/^#/.test(x)});
+ return arq(f).split(/\r?\n/).map(function(x){return x.trim()}).filter(function(x){return x&&!/^#/.test(x)});
 }
 function escolher(a){return a.length?a[Math.floor(Math.random()*a.length)]: "";}
 function gerarFrases(q){
@@ -177,25 +177,26 @@ function gerarFrases(q){
      complementos=linhas("frases_complementos.txt"),circ=linhas("frases_circunstancias.txt"),
      estruturas=linhas("estruturas_frases.txt");
  if(!sujeitos.length||!verbos.length||!complementos.length||!estruturas.length)return "Ainda estou a organizar as minhas frases.";
- var n=1,match=norm(q).match(/\\b([1-5])\\b/);if(match)n=Number(match[1]);
- if(/\\b(duas|dois)\\b/.test(norm(q)))n=2;
- if(/\\b(tres|três)\\b/.test(norm(q)))n=3;
- if(/\\b(quatro)\\b/.test(norm(q)))n=4;
- if(/\\b(cinco)\\b/.test(norm(q)))n=5;
+ var n=1,match=norm(q).match(/\b([1-5])\b/);if(match)n=Number(match[1]);
+ if(/\b(duas|dois)\b/.test(norm(q)))n=2;
+ if(/\b(tres|três)\b/.test(norm(q)))n=3;
+ if(/\b(quatro)\b/.test(norm(q)))n=4;
+ if(/\b(cinco)\b/.test(norm(q)))n=5;
  var saidas=[],usadas={};
  for(var i=0;i<n;i++){
   var s=escolher(sujeitos).split("|"),v=escolher(verbos).split("|");
   var plural=Math.random()<0.35, sujeito=(plural?s[1]:s[0])||s[0],verbo=(plural?v[1]:v[0])||v[0];
   var modelo=escolher(estruturas),comp=escolher(complementos),circunstancia=escolher(circ);
-  var frase=modelo.replace(/\\{sujeito\\}/g,sujeito).replace(/\\{verbo\\}/g,verbo)
-    .replace(/\\{complemento\\}/g,comp).replace(/\\{circunstancia\\}/g,circunstancia)
-    .replace(/\\s+/g," ").replace(/\\s+([,.;:!?])/g,"$1").trim();
+  var frase=modelo.replace(/\{sujeito\}/g,sujeito).replace(/\{verbo\}/g,verbo)
+    .replace(/\{complemento\}/g,comp).replace(/\{circunstancia\}/g,circunstancia)
+    .replace(/\s+/g," ").replace(/\s+([,.;:!?])/g,"$1").trim();
   if(usadas[frase]){i--;continue;}usadas[frase]=true;saidas.push(frase);
  }
- return saidas.join("\\n");
+ return saidas.join("\n");
 }
 /* devolve true se tratou a pergunta (executou ou avisou); false para o bot decidir */
 async function tentar(q){
+ if(typeof window.lumeOnReply==="function"){var conversa=gerarConversa(q);if(conversa){window.lumeOnReply({text:conversa});return true;}}
  var caps=lerCapacidades();if(!caps.length||typeof window.lumeOnReply!=="function")return false;
  var t=norm(q),m=medidores(q,t);
  /* decide pelo verbo e pelo objeto juntos: "gera" serve a varias capacidades, "gera um botao" so a uma */
