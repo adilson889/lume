@@ -1,34 +1,36 @@
 1-{
 <program>
-<!-- As pecas vem de pecas.txt (o chat injeta pecas_nome, pecas_svg, pecas_chaves e pecas_mapa). -->
+<!-- O Lume monta uma cena com peças reutilizáveis da biblioteca pecas.txt. -->
 <var name="m" value="lower(msg)"></var>
 <var name="elementos" value="''"></var>
 <var name="usados" value="'|'"></var>
 <var name="pos" value="0"></var>
-<var name="x" value="20"></var>
+<var name="x" value="0"></var>
+<var name="y" value="0"></var>
+<var name="col" value="0"></var>
+<var name="linha" value="0"></var>
 <var name="p" value="0"></var>
-<var name="lista" value="''"></var>
-
+<var name="nome" value="''"></var>
 <for var="i" from="0" to="pecas_nchaves - 1">
     <set name="p" value="pecas_mapa[i]"></set>
     <if condition="includes(m, pecas_chaves[i]) && !includes(usados, '|' + p + '|')">
         <set name="usados" value="usados + p + '|'"></set>
-        <set name="x" value="20 + pos * 90"></set>
-        <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' 15) scale(0.8)\">' + pecas_svg[p] + '</g>'"></set>
+        <set name="col" value="pos % 3"></set>
+        <set name="linha" value="(pos - col) / 3"></set>
+        <set name="x" value="10 + col * 105"></set>
+        <set name="y" value="10 + linha * 100"></set>
+        <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' ' + y + ') scale(0.82)\">' + pecas_svg[p] + '</g>'"></set>
         <set name="pos" value="pos + 1"></set>
     </if>
 </for>
-
 <if condition="pos >= 2">
-    <var name="larg" value="pos * 90 + 30"></var>
-    <print>Aqui está a composição com {pos} elementos no mesmo SVG:</print>
-    <print><svg viewBox="0 0 {larg} 130" width="100%" height="230" role="img" aria-label="Composição de vários desenhos"><rect x="0" y="0" width="{larg}" height="130" rx="8" fill="#eaf5ff"/><path d="M0 112H{larg}" stroke="#7cb342" stroke-width="3"/><rect x="0" y="115" width="{larg}" height="15" fill="#c5e1a5"/><g data-raw="{elementos}"></g></svg></print>
+    <var name="linhas" value="(pos + 2) / 3"></var>
+    <var name="altura" value="linhas * 100 + 20"></var>
+    <print>Preparei uma composição com {pos} componentes:</print>
+    <print><svg viewBox="0 0 325 {altura}" width="100%" height="auto" role="img" aria-label="Desenho composto por vários componentes"><rect x="0" y="0" width="325" height="{altura}" rx="12" fill="#eaf5ff"/><path d="M0 {altura - 24}H325" stroke="#7cb342" stroke-width="3"/><rect x="0" y="{altura - 21}" width="325" height="21" fill="#c5e1a5"/><g data-raw="{elementos}"></g></svg></print>
 </if>
-<elseif condition="includes(m, ' e ') || includes(m, ' com ') || includes(m, ',')">
-    <foreach var="nm" in="pecas_nome">
-        <set name="lista" value="lista + nm + ', '"></set>
-    </foreach>
-    <print>Só encontrei {pos} peça que sei juntar. Sei combinar: {lista}e mais as que me ensinares em pecas.txt. Pede, por exemplo, uma casa com árvore e sol.</print>
-</elseif>
+<else>
+    <print>Consigo combinar vários componentes num só desenho. Experimenta pedir uma casa com árvore, sol e nuvens, ou combina animais, veículos e elementos da natureza.</print>
+</else>
 </program>
 }
