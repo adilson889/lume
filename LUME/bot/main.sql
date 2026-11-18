@@ -100,8 +100,8 @@ WHEN CONTAINS KEYWORDS(palavras_frases.txt) {
     --    e) duvida na base: mostra opcoes para escolher
     --    f) nada encontrado: resposta de reserva
     OTHERWISE {
-        THINK(conhecimento_programacao.txt) WAITING("Pensando..", 3) OR
-        THINK(aprendido.txt) OR
+        THINK(aprendido.txt) WAITING("A pensar...", 3) OR
+        THINK(conhecimento_programacao.txt) OR
         ASK(aprendido.txt) AND REPLY "Escolha a possível resposta:" OR
         SEARCH message INTO aprendido.txt OR
         ASK(conhecimento_programacao.txt) AND REPLY "Escolha a possível resposta:" OR
