@@ -582,8 +582,8 @@ function tituloRelevante(e,t){if(!t.length)return!0;const a=semAcentos(e).replac
 function pareceProblemaDeCodigo(e){return/(erro|error|exception|falha|bug|problema|nao funciona|nao compila|crash|como (fazer|faco|se faz|resolver|corrigir)|porque|por que|why|how)/.test(semAcentos(e))}
 let intencaoPronta=null;
 let foraDoTemaAtual=false;
-let TEXTO_NAO_SEI="Ainda não sei responder a isso. Tenta perguntar de outra forma, ou escreve: o que sabes fazer.";
-/* Mensagem claramente fora de programacao (so quando o classificador tem muita certeza). */
+let TEXTO_NAO_SEI="Ainda não consegui encontrar uma resposta para isso. Tenta explicar de outra forma ou diz-me exactamente o que pretendes."
+/* Identifica pedidos fora dos exemplos conhecidos, sem limitar o Lume à programação. */
 async function mensagemForaDoTema(q){
  try{const c=intencaoPronta?await intencaoPronta:null;if(!c)return false;const r=await c.classificar(q);return r.intencao==="fora_do_tema"&&r.confianca>=.85}catch(x){return false}
 }
@@ -621,8 +621,8 @@ function prepararIntencao(arq){
   }catch(e){console.warn("Intencao indisponivel:",e);return null}
  })();
 }
-const INTENCOES_SEM_WEB=["fora_do_tema","conversa"];
-/* So vale a pena ir a web quando a mensagem parece ser de programacao. */
+const INTENCOES_SEM_WEB=["conversa"];
+/* A pesquisa pode ajudar em assuntos variados; evita apenas pesquisas para conversa casual. */
 async function permitirPesquisa(q){
  try{
   const c=intencaoPronta?await intencaoPronta:null;
