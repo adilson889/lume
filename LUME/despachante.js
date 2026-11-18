@@ -237,7 +237,7 @@ function gerarFrases(q){
   var modelo=escolher(estruturas),comp=escolher(complementos),circunstancia=escolher(circ);
   var frase=modelo.replace(/\{sujeito\}/g,sujeito).replace(/\{verbo\}/g,verbo)
     .replace(/\{complemento\}/g,comp).replace(/\{circunstancia\}/g,circunstancia)
-    .replace(/\s+/g," ").replace(/\s+([,.;:!?])/g,"$1").replace(/, ([A-ZÀ-Ú])(?=[a-zà-ú])/g,function(m,a){return", "+a.toLowerCase()}).trim();
+    .replace(/\s+/g," ").replace(/\s+([,.;:!?])/g,"$1").replace(/, ([A-ZÀ-Ú])(?=[a-zà-ú]|\s)/g,function(m,a){return", "+a.toLowerCase()}).trim();
   frase=frase.charAt(0).toUpperCase()+frase.slice(1);
   if(usadas[frase]){if(tent++<30)i--;continue;}usadas[frase]=true;saidas.push(frase);
  }
