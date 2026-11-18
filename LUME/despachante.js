@@ -120,30 +120,59 @@ function linhas(f){
  return arq(f).split(/\r?\n/).map(function(x){return x.trim()}).filter(function(x){return x&&!/^#/.test(x)});
 }
 function escolher(a){return a.length?a[Math.floor(Math.random()*a.length)]:"";}
-/* Critérios de comunicação: a resposta é construída por intenção, tom e objetivo.
-   Guardamos componentes curtos, não respostas completas. */
-function identificarCriterio(q){
+/* Conversa: identifica intenções combinadas e constrói uma resposta única.
+   Os ficheiros de respostas completas deixam de controlar saudações e conversa básica. */
+function detectarConversa(q){
  var t=norm(q);
- if(/\\b(oi|ola|olá|bom dia|boa tarde|boa noite|e ai|ei)\\b/.test(t))
-  return {intencao:"saudacao",tom:"amigavel",objetivo:"abrir_conversa"};
- return {intencao:"frase_livre",tom:"neutro",objetivo:"expressar_ideia"};
+ var saudacao=/\\b(oi|ola|bom dia|boa tarde|boa noite|e ai|ei|hey|hello|wey|boas|opa|eia)\\b/.test(t);
+ var perguntaEstado=/\\b(como estas|como vai|como vais|tudo bem|tudo bom|tudo tranquilo|esta tudo bem)\\b/.test(t) && (/[?]/.test(q)||/\\b(como estas|como vai|como vais)\\b/.test(t)||/\\b(ola|oi|bom dia|boa tarde|boa noite|hey|hello)\\b/.test(t));
+ var agradecimento=/\\b(obrigado|obrigada|agradecido|agradecida|agradeco|valeu|thanks)\\b/.test(t);
+ var despedida=/\\b(adeus|ate logo|ate ja|ate amanha|xau|tchau|falou|vou embora)\\b/.test(t);
+ var ajuda=/\\b(ajuda|ajudar|o que sabes fazer|que sabes fazer|tu fazes o que|suas capacidades|teus recursos)\\b/.test(t);
+ if(saudacao||perguntaEstado||agradecimento||despedida||ajuda)
+  return {saudacao:saudacao,estado:perguntaEstado,agradecimento:agradecimento,despedida:despedida,ajuda:ajuda};
+ return null;
 }
-function gerarPorCriterio(c){
- if(c.intencao==="saudacao"){
-  var aberturas=["Olá","Oi","Bom dia","Boa tarde","Boa noite"];
-  var continuacoes=["Como estás?","Tudo bem contigo?","Como vai isso?","Que bom ter-te por aqui."];
-  var disponibilidades=["Estou aqui para conversar.","Em que posso ajudar?","Diz-me, o que se passa?","Vamos conversar."];
-  var usarDisponibilidade=Math.random()<0.55;
-  var partes=[escolher(aberturas),escolher(continuacoes)];
-  if(usarDisponibilidade)partes.push(escolher(disponibilidades));
-  return partes.join(" ");
+function gerarConversa(q){
+ var c=detectarConversa(q);if(!c)return "";
+ var aberturas=["Olá","Oi","Bom dia","Boa tarde","Boa noite","Eia","Boas"];
+ var estados=["Estou bem","Por aqui está tudo tranquilo","Está tudo em ordem deste lado","Estou por aqui, pronto para conversar"];
+ var agradecimentos=["obrigado por perguntares","agradeço por perguntares","obrigado pelo cuidado"];
+ var devolucoes=["E tu, como estás?","E desse lado, tudo bem?","Como está a correr o teu dia?"];
+ var despedidas=["Até logo","Até à próxima","Fica bem","Foi bom falar contigo"];
+ var agradece=["Ainda bem que pude ajudar","Fico contente por ter ajudado","Não tens de quê"];
+ var aberturasAjuda=["Posso ajudar-te com","Consigo trabalhar com","Entre outras coisas, posso tratar de"];
+ var capacidades=[];
+ lerCapacidades().forEach(function(x){capacidades.push(x.nome)});
+ if(c.despedida){
+  var fim=escolher(despedidas);
+  return c.agradecimento?escolher(agradece)+". "+fim+".":fim+". Quando quiseres, continuamos.";
  }
- return "";
+ if(c.ajuda){
+  var nomes=capacidades.map(function(x){return x==="codigo"?"código":x==="frases"?"frases":x==="desenhar"?"desenhos":x==="calcular"?"cálculos":x==="loja"?"lojas e páginas":x}).filter(Boolean);
+  return escolher(aberturasAjuda)+" "+nomes.join(", ")+". Podes escrever o que precisas com naturalidade.";
+ }
+ if(c.agradecimento&&!c.saudacao&&!c.estado)return escolher(agradece)+". Se precisares de mais alguma coisa, é só dizer.";
+ var partes=[];
+ if(c.saudacao)partes.push(escolher(aberturas));
+ if(c.estado){
+  partes.push(escolher(estados));
+  partes.push(escolher(agradecimentos)+".");
+  partes.push(escolher(devolucoes));
+ }else if(c.saudacao){
+  partes.push(escolher(["Como estás?","Tudo bem contigo?","Em que posso ajudar?","O que te traz por aqui?"]));
+ }else if(c.agradecimento){
+  partes.push(escolher(agradece)+".");
+ }
+ return partes.join(" ").replace(/\\s+/g," ").trim();
 }
-/* Motor de frases: primeiro escolhe o critério comunicativo; depois combina componentes. */
+/* Motor de frases: combina o léxico de frases livres sem depender de respostas completas. */
+function linhas(f){
+ return arq(f).split(/\\r?\\n/).map(function(x){return x.trim()}).filter(function(x){return x&&!/^#/.test(x)});
+}
+function escolher(a){return a.length?a[Math.floor(Math.random()*a.length)]: "";}
 function gerarFrases(q){
- var criterio=identificarCriterio(q),construida=gerarPorCriterio(criterio);
- if(construida)return construida;
+ var conversa=gerarConversa(q);if(conversa)return conversa;
  var sujeitos=linhas("frases_sujeitos.txt"),verbos=linhas("frases_verbos.txt"),
      complementos=linhas("frases_complementos.txt"),circ=linhas("frases_circunstancias.txt"),
      estruturas=linhas("estruturas_frases.txt");
@@ -176,7 +205,7 @@ async function tentar(q){
  if(ativos.length!==1)return false;
  var c=ativos[0];
  if(cumpre(c.requer,m)){
-  if(c.nome==="frases"){window.lumeOnReply({text:gerarFrases(q)});return true;}
+  var conversa=gerarConversa(q);if(conversa){window.lumeOnReply({text:conversa});return true;}\n  if(c.nome==="frases"){window.lumeOnReply({text:gerarFrases(q)});return true;}
   var partes=c.resposta.split(","),txt=entrada(partes[0].trim(),parseInt(partes[1],10)||1);
   if(!txt)return false;
   window.lumeOnReply({text:txt});
