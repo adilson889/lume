@@ -312,6 +312,14 @@ function calculadora(q){
    continue;
   }
   if(c==="*"&&s.charAt(i+1)==="*"){tk.push({k:"o",v:"^"});i+=2;continue}
+  if((m=/^[⁰¹²³⁴⁵⁶⁷⁸⁹⁻]+/.exec(s.slice(i)))){
+   var sp=m[0],ng=sp.charAt(0)==="⁻",dg=(ng?sp.slice(1):sp).split("").map(function(h){return "⁰¹²³⁴⁵⁶⁷⁸⁹".indexOf(h)}).join("");
+   if(!dg||dg.indexOf("-")>=0)return null;
+   i+=sp.length;
+   if(!ng&&/^[√∛]/.test(s.slice(i))){tk.push({k:"f",v:"nroot",idx:parseInt(dg,10)});i++;continue}
+   if(!ng&&(dg==="2"||dg==="3")){tk.push({k:"o",v:dg==="2"?"²":"³"});continue}
+   tk.push({k:"o",v:"^"});if(ng)tk.push({k:"o",v:"-"});tk.push({k:"n",v:parseInt(dg,10)});continue;
+  }
   var map={"×":"*","÷":"/",":":"/","−":"-","–":"-","[":"(","{":"(","]":")","}":")"};
   var o=map[c]||c;
   if(o==="π"){tk.push({k:"c"})}
@@ -362,10 +370,10 @@ function calculadora(q){
     pos++;var args=[pExpr()];
     while(peek(";")||peek(",")){pos++;args.push(pExpr())}
     if(!peek(")"))bad();pos++;
-    return {t:"fn",n:t.v,a:args};
+    return {t:"fn",n:t.v,a:args,idx:t.idx};
    }
-   if(peek("-")){pos++;return {t:"fn",n:t.v,a:[{t:"neg",x:pPost()}],sp:1}}
-   return {t:"fn",n:t.v,a:[pPost()],sp:1};
+   if(peek("-")){pos++;return {t:"fn",n:t.v,a:[{t:"neg",x:pPost()}],sp:1,idx:t.idx}}
+   return {t:"fn",n:t.v,a:[pPost()],sp:1,idx:t.idx};
   }
   bad();
  }
@@ -380,6 +388,7 @@ function calculadora(q){
  function S(n,v){return n.t==="c"?"π":F(v)}
  function SW(n,v){return n.t==="c"?"π":W(v)}
  function W(x){return x<0?"("+F(x)+")":F(x)}
+ function SUP(k){return String(k).split("").map(function(d){return "⁰¹²³⁴⁵⁶⁷⁸⁹".charAt(+d)}).join("")}
  var SIM={"+":"+","-":"−","*":"×","/":"÷","^":"^"};
  var passos=[],notas=[];
  function Erro(t){this.msg=t}
@@ -394,8 +403,8 @@ function calculadora(q){
    case "neg":return "−"+D(n.x);
    case "u":return D(n.x)+(n.u==="deg"?"°":" rad");
    case "p":return D(n.x)+n.op;
-   case "b":if(n.op==="^"&&n.r.t==="n"&&(n.r.v===2||n.r.v===3))return D(n.l)+(n.r.v===2?"²":"³");return D(n.l)+" "+SIM[n.op]+" "+D(n.r);
-   case "fn":{var nm=({sqrt:"√",cbrt:"∛",sin:"sen",ln:"ln",log2:"log₂",log:"log"})[n.n]||n.n;var ar=n.a.map(D).join("; ");return (n.n==="sqrt"||n.n==="cbrt")?(n.a[0].t==="n"||n.a[0].t==="c"?nm+ar:nm+"("+ar+")"):nm+"("+ar+")"}
+   case "b":if(n.op==="^"&&n.r.t==="n"&&Number.isInteger(n.r.v)&&n.r.v>=0&&n.r.v<=99)return D(n.l)+SUP(n.r.v);return D(n.l)+" "+SIM[n.op]+" "+D(n.r);
+   case "fn":{if(n.n==="nroot"){var a0=D(n.a[0]);return SUP(n.idx)+"√"+((n.a[0].t==="n"||n.a[0].t==="c"||n.a[0].t==="g")?a0:"("+a0+")")}var nm=({sqrt:"√",cbrt:"∛",sin:"sen",ln:"ln",log2:"log₂",log:"log"})[n.n]||n.n;var ar=n.a.map(D).join("; ");return (n.n==="sqrt"||n.n==="cbrt")?(n.a[0].t==="n"||n.a[0].t==="c"?nm+ar:nm+"("+ar+")"):nm+"("+ar+")"}
   }
  }
  function E(n){
@@ -427,7 +436,7 @@ function calculadora(q){
      f="pow("+l.f+","+r.f+")";
     }
     if(!isFinite(v)||Math.abs(v)>=1e15)throw new Erro("O resultado é demasiado grande para mostrar.");
-    passos.push(S(n.l,l.v)+" "+SIM[n.op]+" "+SW(n.r,r.v)+" = "+F(v));
+    if(n.op==="^"&&n.r.t==="n"&&Number.isInteger(r.v)&&r.v>=0&&r.v<=99)passos.push(SW(n.l,l.v)+SUP(r.v)+" = "+F(v));else passos.push(S(n.l,l.v)+" "+SIM[n.op]+" "+SW(n.r,r.v)+" = "+F(v));
     return {v:v,f:f};
    }
    case "fn":{
@@ -443,6 +452,14 @@ function calculadora(q){
     }else if(nm==="asin"||nm==="acos"||nm==="atan"){
      if(nm!=="atan"&&Math.abs(x)>1)throw new Erro("O arco-"+(nm==="asin"?"seno":"cosseno")+" só existe para valores entre −1 e 1.");
      v=Math[nm](x)*180/Math.PI;f="degrees("+nm+"("+fx+"))";if(notas.indexOf("O resultado dos arcos (asin, acos, atan) está em graus.")<0)notas.push("O resultado dos arcos (asin, acos, atan) está em graus.");sh=nm+"("+F(x)+")";
+    }else if(nm==="nroot"){
+     var ix=n.idx;
+     if(!(ix>=1))throw new Erro("O índice da raiz tem de ser um inteiro positivo.");
+     if(ix%2===0&&x<0)throw new Erro("Não existe raiz de índice par de um número negativo.");
+     v=ix===1?x:ix===3?Math.cbrt(x):(x<0?-Math.pow(-x,1/ix):Math.pow(x,1/ix));
+     var rv=Math.round(v);if(Math.abs(v-rv)<1e-9&&Math.pow(rv,ix)===x)v=rv;
+     f=ix===1?fx:ix===2?"sqr("+fx+")":ix===3?"cbr("+fx+")":(x<0?"(0-pow((0-"+fx+"),1/"+ix+"))":"pow("+fx+",1/"+ix+")");
+     sh=SUP(ix)+"√"+W(x);
     }else if(nm==="sqrt"){
      if(x<0)throw new Erro("Não existe raiz quadrada real de um número negativo.");
      v=Math.sqrt(x);f="sqr("+fx+")";sh="√"+W(x);
@@ -476,7 +493,141 @@ function calculadora(q){
  P=P.map(function(t,k){return t==="..."?t:(k===0?"Primeiro: ":k===n-1?"Por fim: ":"Depois: ")+t});
  return {f:res.f,m:m0,p:P.concat(notas),e:""};
 }
+/* Equacoes do 1.o e 2.o grau com uma incognita: 2x+3=11, x²-5x+6=0, x^2=9, (x+1)^2=4, 3(x-1)=x+5 */
+function equacao(q){
+ try{
+ var s=String(q||"").toLowerCase().trim();
+ if(!s||s.length>100)return null;
+ s=s.replace(/^(?:por favor[, ]*)?(?:calcule|calcula|resolva|resolve|resolver|qual\s+(?:[eé]\s+)?o\s+valor\s+de)\s*/,"").replace(/[?!.\s]+$/,"");
+ var lados=s.split("=");
+ if(lados.length!==2||!lados[0].trim()||!lados[1].trim())return null;
+ if(/\d\s+x\s+\d/.test(s))return null;
+ var vars={},SUPD="⁰¹²³⁴⁵⁶⁷⁸⁹";
+ function add(a,b,sg){var r=[],n=Math.max(a.length,b.length);for(var k=0;k<n;k++)r.push((a[k]||0)+sg*(b[k]||0));return r}
+ function mulp(a,b){var r=[];for(var i=0;i<a.length;i++)for(var j=0;j<b.length;j++)r[i+j]=(r[i+j]||0)+a[i]*b[j];if(r.length>9)throw "nl";return r}
+ function grau(a){for(var k=a.length-1;k>0;k--)if(Math.abs(a[k])>1e-12)return k;return 0}
+ function cte(a){return grau(a)===0}
+ function poly(t){
+  t=t.replace(/[−–]/g,"-").replace(/×/g,"*").replace(/[÷:]/g,"/").replace(/,/g,".").replace(/[\[{]/g,"(").replace(/[\]}]/g,")");
+  var tk=[],i=0,m,c;
+  while(i<t.length){
+   c=t.charAt(i);
+   if(/\s/.test(c)){i++;continue}
+   if((m=/^\d+(?:\.\d+)?/.exec(t.slice(i)))){tk.push({n:parseFloat(m[0])});i+=m[0].length;continue}
+   if(/[a-z]/.test(c)){
+    if(/[a-z]/.test(t.charAt(i+1))||(i>0&&/[a-z]/.test(t.charAt(i-1))))throw 0;
+    vars[c]=1;tk.push({v:c});i++;continue}
+   if((m=/^[⁰¹²³⁴⁵⁶⁷⁸⁹⁻]+/.exec(t.slice(i)))){
+    var sp=m[0],ng=sp.charAt(0)==="⁻",dg=(ng?sp.slice(1):sp).split("").map(function(h){return SUPD.indexOf(h)}).join("");
+    if(!dg||dg.indexOf("-")>=0)throw 0;
+    tk.push({o:"^"});if(ng)tk.push({o:"-"});tk.push({n:parseInt(dg,10)});i+=sp.length;continue}
+   if("+-*/^()".indexOf(c)<0)throw 0;
+   tk.push({o:c});i++;
+  }
+  var tt=[];
+  tk.forEach(function(b){
+   var a=tt[tt.length-1];
+   if(a&&(a.n!==undefined||a.v||a.o===")")&&(b.n!==undefined||b.v||b.o==="("))tt.push({o:"*"});
+   tt.push(b);
+  });
+  var p=0;
+  function ok(o){return tt[p]&&tt[p].o===o}
+  function atom(){
+   var k=tt[p++];if(!k)throw 0;
+   if(k.n!==undefined)return [k.n];
+   if(k.v)return [0,1];
+   if(k.o==="("){var r=soma();if(!ok(")"))throw 0;p++;return r}
+   throw 0;
+  }
+  function pot(){
+   var b=atom();
+   if(ok("^")){
+    p++;var e=unario();
+    if(!cte(e))throw "nl";
+    var n=e[0];
+    if(cte(b)){var pv=Math.pow(b[0],n);if(!isFinite(pv))throw 0;return [pv]}
+    if(!(Number.isInteger(n)&&n>=0&&n<=8))throw "nl";
+    var r=[1];for(var k=0;k<n;k++)r=mulp(r,b);
+    return r;
+   }
+   return b;
+  }
+  function unario(){
+   if(ok("-")){p++;return unario().map(function(z){return -z})}
+   if(ok("+")){p++;return unario()}
+   return pot();
+  }
+  function termo(){
+   var r=unario();
+   while(ok("*")||ok("/")){
+    var o=tt[p++].o,d=unario();
+    if(o==="*")r=mulp(r,d);
+    else{if(!cte(d))throw "nl";if(d[0]===0)throw "z";r=r.map(function(z){return z/d[0]})}
+   }
+   return r;
+  }
+  function soma(){
+   var r=termo();
+   while(ok("+")||ok("-")){
+    var o=tt[p++].o,d=termo();
+    r=add(r,d,o==="+"?1:-1);
+   }
+   return r;
+  }
+  var res=soma();if(p<tt.length)throw 0;return res;
+ }
+ var m0=(lados[0].trim()+" = "+lados[1].trim()).replace(/[\[{]/g,"(").replace(/[\]}]/g,")");
+ function ER(t){return {f:"0",m:m0,p:[],e:t}}
+ var l,r;
+ try{l=poly(lados[0]);r=poly(lados[1])}
+ catch(e){
+  if(e==="nl")return ER("Só resolvo equações do 1.º e 2.º grau com uma incógnita.");
+  if(e==="z")return ER("Não dá para dividir por zero.");
+  return null;
+ }
+ var nv=Object.keys(vars);
+ if(!nv.length)return null;
+ if(nv.length>1)return ER("Só resolvo equações com uma incógnita.");
+ var X=nv[0],P=add(l,r,-1),g=grau(P);
+ function Z(v){return Math.abs(v)<1e-12?0:v}
+ var c0=Z(P[0]||0),c1=Z(P[1]||0),c2=Z(P[2]||0);
+ if(grau(P)>2)return ER("Só resolvo equações do 1.º e 2.º grau com uma incógnita.");
+ function F(n){n=Math.round(n*1e6)/1e6;if(n===0)n=0;return String(n).replace(".",",").replace("-","−")}
+ function W(n){return n<0?"("+F(n)+")":F(n)}
+ function termos(a,b,c){
+  var out="";
+  [[a,X+"²"],[b,X],[c,""]].forEach(function(t){
+   var k=t[0];if(k===0)return;
+   var mag=Math.abs(k),body=t[1]===""?F(mag):(mag===1?"":F(mag))+t[1];
+   out+=out===""?(k<0?"−":"")+body:" "+(k<0?"−":"+")+" "+body;
+  });
+  return out||"0";
+ }
+ function passos(L){var n=L.length;return L.map(function(t,k){return (k===0?"Primeiro: ":k===n-1?"Por fim: ":"Depois: ")+t})}
+ function arred(v){return String(Math.round(v*1e9)/1e9)}
+ if(c2!==0){
+  var a=c2,b=c1,c=c0,D=b*b-4*a*c;if(Math.abs(D)<1e-9)D=0;
+  var dTxt="Δ = b² − 4·a·c = "+W(b)+"² − 4 × "+W(a)+" × "+W(c)+" = "+F(D);
+  if(D<0)return ER("Passando tudo para um lado: "+termos(a,b,c)+" = 0. "+dTxt+", que é negativo: a equação não tem solução real.");
+  var L=["Passar tudo para o mesmo lado: "+termos(a,b,c)+" = 0","Coeficientes: a = "+F(a)+", b = "+F(b)+", c = "+F(c),dTxt],x1,res;
+  if(D===0){
+   x1=-b/(2*a);L.push(X+" = −b ÷ 2a = "+F(x1));res=X+" = "+F(x1)+" (raiz dupla)";
+  }else{
+   var sq=Math.sqrt(D);x1=(-b+sq)/(2*a);var x2=(-b-sq)/(2*a);
+   L.push("√Δ = "+F(sq));L.push(X+"₁ = (−b + √Δ) ÷ 2a = "+F(x1));L.push(X+"₂ = (−b − √Δ) ÷ 2a = "+F(x2));
+   res=X+"₁ = "+F(x1)+" e "+X+"₂ = "+F(x2);
+  }
+  return {f:arred(x1),m:m0,p:passos(L),e:"",r:res};
+ }
+ if(c1===0)return ER(c0===0?"Esta equação é verdadeira para qualquer valor de "+X+" (infinitas soluções).":"Esta equação não tem solução.");
+ var A=c1,B=-c0,x=B/A,coef=(A===1?"":A===-1?"−":F(A))+X,L2=["Juntar os termos: "+coef+" = "+F(B)];
+ if(A!==1)L2.push("Dividir os dois lados por "+F(A)+": "+X+" = "+F(B)+" ÷ "+F(A));
+ L2.push(X+" = "+F(x));
+ return {f:arred(x),m:m0,p:passos(L2),e:"",r:X+" = "+F(x)};
+ }catch(err){return null}
+}
 function funcaoMatematica(q){
+  var _q=equacao(q);if(_q)return _q;
   var _c=calculadora(q);if(_c)return _c;
  var t=norm(q).replace(/[?!.]+$/,"");
  if(/\b(frase|frases|desenh\w*|cri\w+|ger\w+|site|loja|codigo)\b/.test(t))return null;

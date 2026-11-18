@@ -15,7 +15,12 @@
             <foreach var="p" in="passos">
                 <print><div style="margin:2px 0 2px 4px">{p}</div></print>
             </foreach>
-            <print>Resultado: <b>{replace(res, '.', ',')}</b></print>
+            <if condition="textores.length > 0">
+                <print>Resultado: <b>{textores}</b></print>
+            </if>
+            <else>
+                <print>Resultado: <b>{replace(res, '.', ',')}</b></print>
+            </else>
         </if>
         <else>
             <print>O resultado de {formula} é <b>{replace(res, '.', ',')}</b>.</print>

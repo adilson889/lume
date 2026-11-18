@@ -255,3 +255,9 @@ Lume - historico de versoes
 - Erros explicados em vez de resposta fixa: divisao por zero, raiz de negativo, logaritmo de nao positivo, tangente de 90 graus, fatorial fora de 0-20, resultado demasiado grande.
 - rescalculo.txt ganhou o ramo de passos/erros; index.html e mobile.html passam as variaveis passos, temerro e erroconta ao XLang.
 - Testado com o interpretador XLang real e a xlang-math (jsdom).
+
+0.5.5
+- Equacoes do 1.o grau (2x+3=11, 3(x-1)=x+5, x/2=4) e do 2.o grau (x²-5x+6=0, x^2=9, (x+1)^2=4) com uma incognita, por Bhaskara com os passos (coeficientes, delta, raizes). Casos sem solucao, com infinitas solucoes e delta negativo explicados.
+- Expoentes em qualquer notacao: x^2, x², x**2, e superscritos ⁴ ⁵ ⁻² (ex.: (4³)⁴, [(3³)³]²). Raiz com indice: ³√27, ⁴√16 (indice par de negativo da erro explicado).
+- A resposta de equacao mostra "Resultado: x = ..." (ou x₁ e x₂): index.html e mobile.html passam a variavel textores e o rescalculo.txt usa-a.
+- Nao testado no chat real.

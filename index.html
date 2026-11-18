@@ -919,7 +919,7 @@ function injetarVariaveisXlang(codigo){
  let v='<!--lume-vars-->'+(String(codigo).indexOf("pecas_")>=0?variaveisPecas():"")+(window.variaveisGerador?window.variaveisGerador(codigo):"")+'<var name="msg" value="\''+limpo+'\'"></var><var name="n" value="'+nums.length+'"></var>';
  for(let i=0;i<6;i++)v+='<var name="n'+(i+1)+'" value="'+(i<nums.length?nums[i]:0)+'"></var>';
  v+='<array name="nums" value="['+nums.join(',')+']"></array>';
- if(contaAtual)v+='<var name="temconta" value="true"></var><var name="conta" value="'+contaAtual.f+'"></var><var name="formula" value="\''+contaAtual.m+'\'"></var><var name="temerro" value="'+(contaAtual.e?"true":"false")+'"></var><var name="erroconta" value="\''+String(contaAtual.e||"").replace(/['"<>&{}\\]/g," ")+'\'"></var><array name="passos" value="'+litArray(contaAtual.p||[])+'"></array>';
+ if(contaAtual)v+='<var name="temconta" value="true"></var><var name="conta" value="'+contaAtual.f+'"></var><var name="formula" value="\''+contaAtual.m+'\'"></var><var name="temerro" value="'+(contaAtual.e?"true":"false")+'"></var><var name="erroconta" value="\''+String(contaAtual.e||"").replace(/['"<>&{}\\]/g," ")+'\'"></var><var name="textores" value="\''+String(contaAtual.r||"").replace(/['"<>&{}\\]/g," ")+'\'"></var><array name="passos" value="'+litArray(contaAtual.p||[])+'"></array>';
  else v+='<var name="temconta" value="false"></var>';
  return /<program>/i.test(codigo)?codigo.replace(/<program>/i,function(){return"<program>"+v}):v+codigo;
 }
