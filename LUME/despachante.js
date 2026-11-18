@@ -206,7 +206,8 @@ async function tentar(q){
  if(ativos.length!==1)return false;
  var c=ativos[0];
  if(cumpre(c.requer,m)){
-  var conversa=gerarConversa(q);if(conversa){window.lumeOnReply({text:conversa});return true;}\n  if(c.nome==="frases"){window.lumeOnReply({text:gerarFrases(q)});return true;}
+  var conversa=gerarConversa(q);if(conversa){window.lumeOnReply({text:conversa});return true;}
+  if(c.nome==="frases"){window.lumeOnReply({text:gerarFrases(q)});return true;}
   var partes=c.resposta.split(","),txt=entrada(partes[0].trim(),parseInt(partes[1],10)||1);
   if(!txt)return false;
   window.lumeOnReply({text:txt});
