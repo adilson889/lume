@@ -232,3 +232,13 @@ Lume - historico de versoes
 - main.sql: os tres WHEN de emprego passam a um so (emprego_chaves.txt -> emprego_fluxo.txt). Removidos emprego_procura.txt, emprego_tenho.txt, emprego_apoio.txt e as respostas 8-10 de respostas.txt.
 - Etiquetas especificas (ex.: "Com experiencia na area", "Recomecar do inicio") para nao apanharem perguntas normais de programacao. Mensagens livres como "trabalho em comercio" tambem entram no fluxo.
 - Testado: percurso automatico dos 23 passos sem erros nem becos sem saida (interpretador XLang) e cada etiqueta devolve uma so resposta no motor BotQL 1.3.10.
+
+0.5.2
+- Conversa mais esperta: so responde como conversa a mensagens curtas (ate 10 palavras) que nao pedem nenhuma capacidade. "ajuda-me a criar um botao" ou "esta tudo bem com este codigo?" voltam a ir para o gerador/bot.
+- Frases da conversa passam para LUME/bot/conversa.txt (tipo | texto), acrescentar variantes nao exige mexer no codigo. Se o ficheiro faltar, usa as frases padrao.
+- Nao repete a mesma frase duas vezes seguidas (por tipo).
+- Tolera um erro de escrita em obrigado/adeus/tchau (ex.: "obrigdo").
+- Memoria do nome: "o meu nome e Ana" guarda o nome neste dispositivo (localStorage) e passa a ser usado nos cumprimentos; "qual e o meu nome" responde.
+- Sabe a hora e a data do dispositivo: "que horas sao", "que dia e hoje".
+- Lista de ajuda com "e" antes do ultimo item; maiusculas corrigidas nas respostas compostas.
+- Gerador de frases: limite de tentativas (evita ciclo infinito) e minuscula depois da virgula.

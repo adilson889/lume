@@ -1,0 +1,36 @@
+# Frases da conversa do Lume. Formato: tipo | texto
+# O despachante.js escolhe uma por tipo (sem repetir a anterior). Acrescenta linhas a vontade.
+estado | Estou bem
+estado | Por aqui está tudo tranquilo
+estado | Está tudo em ordem deste lado
+estado | Estou por aqui, pronto para conversar
+estado | Estou ótimo, com vontade de trabalhar
+obrigado_pergunta | obrigado por perguntares
+obrigado_pergunta | agradeço por perguntares
+obrigado_pergunta | obrigado pelo cuidado
+obrigado_pergunta | é simpático da tua parte perguntar
+devolucao | E tu, como estás?
+devolucao | E desse lado, tudo bem?
+devolucao | Como está a correr o teu dia?
+devolucao | E contigo, está tudo bem?
+pergunta_aberta | Como estás?
+pergunta_aberta | Tudo bem contigo?
+pergunta_aberta | Em que posso ajudar?
+pergunta_aberta | O que te traz por aqui?
+pergunta_aberta | Em que estás a trabalhar hoje?
+despedida | Até logo
+despedida | Até à próxima
+despedida | Fica bem
+despedida | Foi bom falar contigo
+despedida | Até breve
+agradece | Ainda bem que pude ajudar
+agradece | Fico contente por ter ajudado
+agradece | Não tens de quê
+agradece | Foi um prazer
+abertura_ajuda | Posso ajudar-te com
+abertura_ajuda | Consigo trabalhar com
+abertura_ajuda | Entre outras coisas, posso tratar de
+abertura_ajuda | Sei fazer
+fecho_ajuda | Podes escrever o que precisas com naturalidade.
+fecho_ajuda | Diz-me o que precisas, pelas tuas palavras.
+fecho_ajuda | Escreve o pedido normalmente, eu percebo.
