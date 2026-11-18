@@ -130,7 +130,12 @@ function detectarConversa(q){
 }
 function gerarConversa(q){
  var c=detectarConversa(q);if(!c)return "";
- var aberturas=["Olá","Oi","Bom dia","Boa tarde","Boa noite","Eia","Boas"];
+ function cumprimentoHorario(){
+  var hora=new Date().getHours();
+  if(hora>=5&&hora<12)return "Bom dia";
+  if(hora>=12&&hora<18)return "Boa tarde";
+  return "Boa noite";
+ }
  var estados=["Estou bem","Por aqui está tudo tranquilo","Está tudo em ordem deste lado","Estou por aqui, pronto para conversar"];
  var agradecimentos=["obrigado por perguntares","agradeço por perguntares","obrigado pelo cuidado"];
  var devolucoes=["E tu, como estás?","E desse lado, tudo bem?","Como está a correr o teu dia?"];
@@ -149,7 +154,7 @@ function gerarConversa(q){
  }
  if(c.agradecimento&&!c.saudacao&&!c.estado)return escolher(agradece)+". Se precisares de mais alguma coisa, é só dizer.";
  var partes=[];
- if(c.saudacao)partes.push(escolher(aberturas)+"!");
+ if(c.saudacao)partes.push(cumprimentoHorario()+"!");
  if(c.estado){
   partes.push(escolher(estados).replace(/[.!?]?$/, "."));
   partes.push(escolher(agradecimentos)+".");
