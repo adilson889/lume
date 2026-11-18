@@ -120,27 +120,50 @@ function linhas(f){
  return arq(f).split(/\r?\n/).map(function(x){return x.trim()}).filter(function(x){return x&&!/^#/.test(x)});
 }
 function escolher(a){return a.length?a[Math.floor(Math.random()*a.length)]:"";}
+/* Critérios de comunicação: a resposta é construída por intenção, tom e objetivo.
+   Guardamos componentes curtos, não respostas completas. */
+function identificarCriterio(q){
+ var t=norm(q);
+ if(/\\b(oi|ola|olá|bom dia|boa tarde|boa noite|e ai|ei)\\b/.test(t))
+  return {intencao:"saudacao",tom:"amigavel",objetivo:"abrir_conversa"};
+ return {intencao:"frase_livre",tom:"neutro",objetivo:"expressar_ideia"};
+}
+function gerarPorCriterio(c){
+ if(c.intencao==="saudacao"){
+  var aberturas=["Olá","Oi","Bom dia","Boa tarde","Boa noite"];
+  var continuacoes=["Como estás?","Tudo bem contigo?","Como vai isso?","Que bom ter-te por aqui."];
+  var disponibilidades=["Estou aqui para conversar.","Em que posso ajudar?","Diz-me, o que se passa?","Vamos conversar."];
+  var usarDisponibilidade=Math.random()<0.55;
+  var partes=[escolher(aberturas),escolher(continuacoes)];
+  if(usarDisponibilidade)partes.push(escolher(disponibilidades));
+  return partes.join(" ");
+ }
+ return "";
+}
+/* Motor de frases: primeiro escolhe o critério comunicativo; depois combina componentes. */
 function gerarFrases(q){
+ var criterio=identificarCriterio(q),construida=gerarPorCriterio(criterio);
+ if(construida)return construida;
  var sujeitos=linhas("frases_sujeitos.txt"),verbos=linhas("frases_verbos.txt"),
      complementos=linhas("frases_complementos.txt"),circ=linhas("frases_circunstancias.txt"),
      estruturas=linhas("estruturas_frases.txt");
  if(!sujeitos.length||!verbos.length||!complementos.length||!estruturas.length)return "Ainda estou a organizar as minhas frases.";
- var n=1,match=norm(q).match(/\b([1-5])\b/);if(match)n=Number(match[1]);
- if(/\b(duas|dois)\b/.test(norm(q)))n=2;
- if(/\b(tres|três)\b/.test(norm(q)))n=3;
- if(/\b(quatro)\b/.test(norm(q)))n=4;
- if(/\b(cinco)\b/.test(norm(q)))n=5;
+ var n=1,match=norm(q).match(/\\b([1-5])\\b/);if(match)n=Number(match[1]);
+ if(/\\b(duas|dois)\\b/.test(norm(q)))n=2;
+ if(/\\b(tres|três)\\b/.test(norm(q)))n=3;
+ if(/\\b(quatro)\\b/.test(norm(q)))n=4;
+ if(/\\b(cinco)\\b/.test(norm(q)))n=5;
  var saidas=[],usadas={};
  for(var i=0;i<n;i++){
   var s=escolher(sujeitos).split("|"),v=escolher(verbos).split("|");
   var plural=Math.random()<0.35, sujeito=(plural?s[1]:s[0])||s[0],verbo=(plural?v[1]:v[0])||v[0];
   var modelo=escolher(estruturas),comp=escolher(complementos),circunstancia=escolher(circ);
-  var frase=modelo.replace(/\{sujeito\}/g,sujeito).replace(/\{verbo\}/g,verbo)
-    .replace(/\{complemento\}/g,comp).replace(/\{circunstancia\}/g,circunstancia)
-    .replace(/\s+/g," ").replace(/\s+([,.;:!?])/g,"$1").trim();
+  var frase=modelo.replace(/\\{sujeito\\}/g,sujeito).replace(/\\{verbo\\}/g,verbo)
+    .replace(/\\{complemento\\}/g,comp).replace(/\\{circunstancia\\}/g,circunstancia)
+    .replace(/\\s+/g," ").replace(/\\s+([,.;:!?])/g,"$1").trim();
   if(usadas[frase]){i--;continue;}usadas[frase]=true;saidas.push(frase);
  }
- return saidas.join("\n");
+ return saidas.join("\\n");
 }
 /* devolve true se tratou a pergunta (executou ou avisou); false para o bot decidir */
 async function tentar(q){
