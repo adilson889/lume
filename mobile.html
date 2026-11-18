@@ -911,7 +911,7 @@ function numerosDaPergunta(t){
  var mapa=lerNumeros(),palavras=Object.keys(mapa).sort(function(a,b){return b.length-a.length});
  var padrao=palavras.map(escaparRegex).join("|"),r=new RegExp("-?\\d+(?:[.,]\\d+)?"+(padrao?"|\\b(?:"+padrao+")\\b":""),"gi");
  var l=[],m,txt=normalizarTexto(t);
- while((m=r.exec(txt))!==null){var x=m[0].toLowerCase(),v=/^-?\\d/.test(x)?parseFloat(x.replace(",",".")):mapa[x];if(typeof v==="number"&&!isNaN(v))l.push(v)}
+ while((m=r.exec(txt))!==null){var x=m[0].toLowerCase(),v=(x.charAt(0)==="-"||(x.charAt(0)>="0"&&x.charAt(0)<="9"))?parseFloat(x.replace(",",".")):mapa[x];if(typeof v==="number"&&!isNaN(v))l.push(v)}
  return l;
 }
 function quantidadeDaPeca(pergunta,chaves){
@@ -921,7 +921,7 @@ function quantidadeDaPeca(pergunta,chaves){
   var re=new RegExp("\\b"+escaparRegex(chave)+"\\b","g"),m;
   while((m=re.exec(texto))!==null){
    var antes=texto.slice(Math.max(0,m.index-30),m.index),padrao=palavras.map(escaparRegex).join("|"),r=new RegExp("(?:^|\\b)(\\d+|"+padrao+")(?:\\s+)$","i"),n=r.exec(antes);
-   if(n){var valor=/^\\d+$/.test(n[1])?parseInt(n[1],10):mapa[n[1]];if(valor>melhor)melhor=valor;}
+   if(n){var valor=!isNaN(Number(n[1]))?parseInt(n[1],10):mapa[n[1]];if(valor>melhor)melhor=valor;}
   }
  });
  return Math.max(1,Math.min(melhor,12));
