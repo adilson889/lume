@@ -1,0 +1,11 @@
+# Forma: sujeito singular | sujeito plural | género
+O Lume|Os Lumes|masculino
+Um programador|Programadores|masculino
+A professora|As professoras|feminino
+A criança curiosa|As crianças curiosas|feminino
+O cientista|Os cientistas|masculino
+Uma estrela|Estrelas|feminino
+O robô curioso|Os robôs curiosos|masculino
+A equipa|As equipas|feminino
+Um estudante atento|Estudantes atentos|masculino
+A formiga trabalhadora|As formigas trabalhadoras|feminino
