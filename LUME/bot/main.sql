@@ -10,37 +10,8 @@ CONNECT SEARCH WIKI
 ON MESSAGE {
     INSERT INTO Context()
 
-    -- 1. Ver o que o bot sabe fazer
-    WHEN CONTAINS KEYWORDS(ajuda.txt) {
-        WAITING("A ver o que sei fazer...", 2)
-        REPLY (respostas.txt, 2)
-    }
-
-    -- 2. Despedidas
-    WHEN CONTAINS KEYWORDS(despedidas.txt) {
-        WAITING("A despedir-me...", 2)
-        REPLY (respostas.txt, 4)
-    }
-
-    -- 3. Agradecimentos
-    WHEN CONTAINS KEYWORDS(agradecimentos.txt) {
-        WAITING("A responder...", 2)
-        REPLY (respostas.txt, 5)
-    }
-
-    -- 4. Saudacoes
-    WHEN CONTAINS KEYWORDS(saudacoes.txt) {
-        WAITING("A cumprimentar...", 2)
-        REPLY (respostas.txt, 1)
-    }
-
-    -- 5. Como estas
-    WHEN CONTAINS KEYWORDS(estado.txt) {
-        WAITING("A ver como estou...", 2)
-        REPLY (respostas.txt, 6)
-    }
-
-
+    -- Conversa natural tratada pelo gerador de intenções do despachante.js.
+    -- Saudações, estado, agradecimentos, despedidas e ajuda são compostos dinamicamente.
 
 -- COMPOSIÇÃO DE VÁRIOS DESENHOS NUM ÚNICO SVG
 WHEN CONTAINS KEYWORDS(pedidos_desenhos_compostos.txt) {
