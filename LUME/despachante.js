@@ -196,7 +196,7 @@ function gerarFrases(q){
 }
 /* devolve true se tratou a pergunta (executou ou avisou); false para o bot decidir */
 async function tentar(q){
- if(typeof window.lumeOnReply==="function"){var conversa=gerarConversa(q);if(conversa){window.lumeOnReply({text:conversa});return true;}}
+ if(typeof window.lumeOnReply==="function"){var conversa=gerarConversa(q);if(conversa){window.lumeAtualizarEtapa&&window.lumeAtualizarEtapa("A compor uma resposta para ti...");window.lumeOnReply({text:conversa});return true;}}
  var caps=lerCapacidades();if(!caps.length||typeof window.lumeOnReply!=="function")return false;
  var t=norm(q),m=medidores(q,t);
  /* decide pelo verbo e pelo objeto juntos: "gera" serve a varias capacidades, "gera um botao" so a uma */
@@ -205,6 +205,7 @@ async function tentar(q){
  if(ativos.length>1){var cumprem=ativos.filter(function(x){return cumpre(x.requer,m)});if(cumprem.length===1)ativos=cumprem}
  if(ativos.length!==1)return false;
  var c=ativos[0];
+ if(window.lumeAtualizarEtapa){var etapas={calcular:"A resolver o cálculo...",desenhar:"A preparar o desenho...",frases:"A construir frases...",codigo:"A preparar o código...",loja:"A estruturar a página..."};window.lumeAtualizarEtapa(etapas[c.nome]||("A preparar "+c.nome+"..."));}
  if(cumpre(c.requer,m)){
   var conversa=gerarConversa(q);if(conversa){window.lumeOnReply({text:conversa});return true;}
   if(c.nome==="frases"){window.lumeOnReply({text:gerarFrases(q)});return true;}
