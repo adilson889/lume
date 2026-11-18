@@ -1,9 +1,13 @@
 1-{
 <program>
-<!-- Composicao por camadas: ceu, construcoes e jardim/solo. -->
+<!-- Motor de composição: primeiro mede a cena, depois distribui as peças. -->
 <var name="m" value="lower(msg)"></var>
 <var name="elementos" value="''"></var>
+<var name="vistos" value="'|'"></var>
 <var name="usados" value="'|'"></var>
+<var name="totalceu" value="0"></var>
+<var name="totalcentro" value="0"></var>
+<var name="totalterra" value="0"></var>
 <var name="posceu" value="0"></var>
 <var name="poscentro" value="0"></var>
 <var name="posterra" value="0"></var>
@@ -11,6 +15,30 @@
 <var name="y" value="0"></var>
 <var name="p" value="0"></var>
 <var name="nome" value="''"></var>
+<var name="escala" value="0.6"></var>
+
+<!-- 1. Contar quantas instâncias pertencem a cada zona. -->
+<for var="i" from="0" to="pecas_nchaves - 1">
+    <set name="p" value="pecas_mapa[i]"></set>
+    <set name="nome" value="pecas_nome[p]"></set>
+    <if condition="includes(m, pecas_chaves[i]) && !includes(vistos, '|' + p + '|')">
+        <set name="vistos" value="vistos + p + '|'"></set>
+        <if condition="nome == 'sol' || nome == 'lua' || nome == 'nuvem' || nome == 'estrela' || nome == 'pássaro'">
+            <set name="totalceu" value="totalceu + pecas_quantidade[p]"></set>
+        </if>
+        <else>
+            <if condition="nome == 'casa' || nome == 'edifício' || nome == 'montanha' || nome == 'barco'">
+                <set name="totalcentro" value="totalcentro + pecas_quantidade[p]"></set>
+            </if>
+            <else>
+                <set name="totalterra" value="totalterra + pecas_quantidade[p]"></set>
+            </else>
+        </else>
+    </if>
+</for>
+
+<!-- 2. Distribuir cada zona pela largura disponível, reduzindo a escala quando há mais peças. -->
+<set name="vistos" value="'|'"></set>
 <for var="i" from="0" to="pecas_nchaves - 1">
     <set name="p" value="pecas_mapa[i]"></set>
     <set name="nome" value="pecas_nome[p]"></set>
@@ -18,32 +46,42 @@
         <set name="usados" value="usados + p + '|'"></set>
         <for var="j" from="0" to="pecas_quantidade[p] - 1">
             <if condition="nome == 'sol' || nome == 'lua' || nome == 'nuvem' || nome == 'estrela' || nome == 'pássaro'">
-                <set name="x" value="15 + (posceu % 4) * 78"></set>
-                <set name="y" value="8 + (posceu / 4) * 52"></set>
-                <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' ' + y + ') scale(0.65)\">' + pecas_svg[p] + '</g>'"></set>
+                <if condition="totalceu <= 2"><set name="escala" value="0.78"></set></if>
+                <else><if condition="totalceu <= 4"><set name="escala" value="0.62"></set></if><else><if condition="totalceu <= 6"><set name="escala" value="0.48"></set></if><else><set name="escala" value="0.36"></set></else></else></else>
+                <if condition="totalceu == 1"><set name="x" value="112.5"></set></if>
+                <else><set name="x" value="8 + posceu * (325 - 100 * escala - 16) / (totalceu - 1)"></set></else>
+                <set name="y" value="4 + (posceu % 2) * 12"></set>
+                <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' ' + y + ') scale(' + escala + ')\">' + pecas_svg[p] + '</g>'"></set>
                 <set name="posceu" value="posceu + 1"></set>
             </if>
             <else>
                 <if condition="nome == 'casa' || nome == 'edifício' || nome == 'montanha' || nome == 'barco'">
-                    <set name="x" value="18 + (poscentro % 3) * 105"></set>
-                    <set name="y" value="92 + (poscentro / 3) * 28"></set>
-                    <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' ' + y + ') scale(0.82)\">' + pecas_svg[p] + '</g>'"></set>
+                    <if condition="totalcentro <= 2"><set name="escala" value="0.78"></set></if>
+                    <else><if condition="totalcentro <= 4"><set name="escala" value="0.62"></set></if><else><if condition="totalcentro <= 6"><set name="escala" value="0.48"></set></if><else><set name="escala" value="0.36"></set></else></else></else>
+                    <if condition="totalcentro == 1"><set name="x" value="112.5"></set></if>
+                    <else><set name="x" value="8 + poscentro * (325 - 100 * escala - 16) / (totalcentro - 1)"></set></else>
+                    <set name="y" value="82 + (poscentro % 2) * 8"></set>
+                    <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' ' + y + ') scale(' + escala + ')\">' + pecas_svg[p] + '</g>'"></set>
                     <set name="poscentro" value="poscentro + 1"></set>
                 </if>
                 <else>
-                    <set name="x" value="12 + (posterra % 5) * 62"></set>
-                    <set name="y" value="160 + (posterra / 5) * 48"></set>
-                    <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' ' + y + ') scale(0.58)\">' + pecas_svg[p] + '</g>'"></set>
+                    <if condition="totalterra <= 2"><set name="escala" value="0.78"></set></if>
+                    <else><if condition="totalterra <= 4"><set name="escala" value="0.62"></set></if><else><if condition="totalterra <= 6"><set name="escala" value="0.48"></set></if><else><set name="escala" value="0.36"></set></else></else></else>
+                    <if condition="totalterra == 1"><set name="x" value="112.5"></set></if>
+                    <else><set name="x" value="8 + posterra * (325 - 100 * escala - 16) / (totalterra - 1)"></set></else>
+                    <set name="y" value="160 + (posterra % 2) * 4"></set>
+                    <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' ' + y + ') scale(' + escala + ')\">' + pecas_svg[p] + '</g>'"></set>
                     <set name="posterra" value="posterra + 1"></set>
                 </else>
             </else>
         </for>
     </if>
 </for>
+
 <var name="total" value="posceu + poscentro + posterra"></var>
 <if condition="total >= 2">
-    <print>Preparei uma cena com {total} elementos, organizados no céu, no terreno e no jardim:</print>
-    <print><svg viewBox="0 0 325 260" width="100%" height="auto" role="img" aria-label="Cena ilustrada com céu e jardim"><defs><linearGradient id="ceuLume" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9e3ff"/><stop offset="1" stop-color="#eef8ff"/></linearGradient></defs><rect width="325" height="260" rx="12" fill="url(#ceuLume)"/><path d="M0 165 Q70 145 135 165 T260 160 T325 165 V260 H0Z" fill="#9ccc65"/><path d="M0 195 Q80 178 155 196 T325 190 V260 H0Z" fill="#7cb342"/><path d="M0 165H325" stroke="#689f38" stroke-width="2"/><g data-raw="{elementos}"></g></svg></print>
+    <print>Preparei uma cena com {total} elementos, distribuídos pelo céu, plano central e terreno:</print>
+    <print><svg viewBox="0 0 325 260" width="100%" height="auto" role="img" aria-label="Cena ilustrada composta pelo Lume"><defs><linearGradient id="ceuLume" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9e3ff"/><stop offset="1" stop-color="#eef8ff"/></linearGradient></defs><rect width="325" height="260" rx="12" fill="url(#ceuLume)"/><path d="M0 165 Q70 145 135 165 T260 160 T325 165 V260 H0Z" fill="#9ccc65"/><path d="M0 195 Q80 178 155 196 T325 190 V260 H0Z" fill="#7cb342"/><path d="M0 165H325" stroke="#689f38" stroke-width="2"/><g data-raw="{elementos}"></g></svg></print>
 </if>
 <else>
     <print>Consigo combinar vários componentes numa cena. Experimenta pedir uma casa com duas árvores, sol, nuvens e flores.</print>
