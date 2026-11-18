@@ -151,7 +151,7 @@ function gerarConversa(q){
  var partes=[];
  if(c.saudacao)partes.push(escolher(aberturas)+"!");
  if(c.estado){
-  partes.push(escolher(estados));
+  partes.push(escolher(estados).replace(/[.!?]?$/, "."));
   partes.push(escolher(agradecimentos)+".");
   partes.push(escolher(devolucoes));
  }else if(c.saudacao){
