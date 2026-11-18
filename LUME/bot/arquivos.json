@@ -31,5 +31,10 @@
   "cores.txt",
   "emprego_formulario.txt",
   "emprego_chaves.txt",
-  "emprego_fluxo.txt"
+  "emprego_fluxo.txt",
+  "frases_sujeitos.txt",
+  "frases_verbos.txt",
+  "frases_complementos.txt",
+  "frases_circunstancias.txt",
+  "estruturas_frases.txt"
 ]
