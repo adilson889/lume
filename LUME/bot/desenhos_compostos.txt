@@ -1,36 +1,56 @@
 1-{
 <program>
-<!-- O Lume monta uma cena com peças reutilizáveis da biblioteca pecas.txt. -->
+<!-- Composicao por camadas: ceu, construcoes e jardim/solo. -->
 <var name="m" value="lower(msg)"></var>
 <var name="elementos" value="''"></var>
 <var name="usados" value="'|'"></var>
-<var name="pos" value="0"></var>
+<var name="posceu" value="0"></var>
+<var name="poscentro" value="0"></var>
+<var name="posterra" value="0"></var>
 <var name="x" value="0"></var>
 <var name="y" value="0"></var>
-<var name="col" value="0"></var>
-<var name="linha" value="0"></var>
 <var name="p" value="0"></var>
 <var name="nome" value="''"></var>
 <for var="i" from="0" to="pecas_nchaves - 1">
     <set name="p" value="pecas_mapa[i]"></set>
+    <set name="nome" value="pecas_nome[p]"></set>
     <if condition="includes(m, pecas_chaves[i]) && !includes(usados, '|' + p + '|')">
         <set name="usados" value="usados + p + '|'"></set>
-        <set name="col" value="pos % 3"></set>
-        <set name="linha" value="(pos - col) / 3"></set>
-        <set name="x" value="10 + col * 105"></set>
-        <set name="y" value="10 + linha * 100"></set>
-        <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' ' + y + ') scale(0.82)\">' + pecas_svg[p] + '</g>'"></set>
-        <set name="pos" value="pos + 1"></set>
+        <if condition="nome == 'sol' || nome == 'lua' || nome == 'nuvem' || nome == 'estrela' || nome == 'pássaro'">
+            <set name="x" value="15 + (posceu % 4) * 78"></set>
+            <set name="y" value="8 + (posceu / 4) * 52"></set>
+            <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' ' + y + ') scale(0.65)\">' + pecas_svg[p] + '</g>'"></set>
+            <set name="posceu" value="posceu + 1"></set>
+        </if>
+        <else>
+            <if condition="nome == 'casa' || nome == 'edifício' || nome == 'montanha' || nome == 'barco'">
+                <set name="x" value="18 + (poscentro % 3) * 105"></set>
+                <set name="y" value="92 + (poscentro / 3) * 28"></set>
+                <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' ' + y + ') scale(0.82)\">' + pecas_svg[p] + '</g>'"></set>
+                <set name="poscentro" value="poscentro + 1"></set>
+            </if>
+            <else>
+                <set name="x" value="12 + (posterra % 5) * 62"></set>
+                <set name="y" value="160 + (posterra / 5) * 48"></set>
+                <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' ' + y + ') scale(0.58)\">' + pecas_svg[p] + '</g>'"></set>
+                <set name="posterra" value="posterra + 1"></set>
+            </else>
+        </else>
+        <!-- Quantidade explícita: duas árvores ou 2 árvores cria duas instâncias. -->
+        <if condition="nome == 'árvore' && (includes(m, 'duas árvores') || includes(m, 'duas arvores') || includes(m, '2 árvores') || includes(m, '2 arvores'))">
+            <set name="x" value="12 + (posterra % 5) * 62"></set>
+            <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' 160) scale(0.58)\">' + pecas_svg[p] + '</g>'"></set>
+            <set name="posterra" value="posterra + 1"></set>
+        </if>
     </if>
 </for>
-<if condition="pos >= 2">
-    <var name="linhas" value="(pos + 2) / 3"></var>
-    <var name="altura" value="linhas * 100 + 20"></var>
-    <print>Preparei uma composição com {pos} componentes:</print>
-    <print><svg viewBox="0 0 325 {altura}" width="100%" height="auto" role="img" aria-label="Desenho composto por vários componentes"><rect x="0" y="0" width="325" height="{altura}" rx="12" fill="#eaf5ff"/><path d="M0 {altura - 24}H325" stroke="#7cb342" stroke-width="3"/><rect x="0" y="{altura - 21}" width="325" height="21" fill="#c5e1a5"/><g data-raw="{elementos}"></g></svg></print>
+<var name="total" value="posceu + poscentro + posterra"></var>
+<if condition="total >= 2">
+    <print>Preparei uma cena com {total} elementos, organizados no céu, no terreno e no jardim:</print>
+    <print><svg viewBox="0 0 325 260" width="100%" height="auto" role="img" aria-label="Cena ilustrada com céu e jardim"><defs><linearGradient id="ceuLume" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9e3ff"/><stop offset="1" stop-color="#eef8ff"/></linearGradient></defs><rect width="325" height="260" rx="12" fill="url(#ceuLume)"/><path d="M0 165 Q70 145 135 165 T260 160 T325 165 V260 H0Z" fill="#9ccc65"/><path d="M0 195 Q80 178 155 196 T325 190 V260 H0Z" fill="#7cb342"/><path d="M0 165H325" stroke="#689f38" stroke-width="2"/><g data-raw="{elementos}"></g></svg></print>
 </if>
 <else>
-    <print>Consigo combinar vários componentes num só desenho. Experimenta pedir uma casa com árvore, sol e nuvens, ou combina animais, veículos e elementos da natureza.</print>
+    <print>Consigo combinar vários componentes numa cena. Experimenta pedir uma casa com duas árvores, sol, nuvens e flores.</print>
 </else>
 </program>
 }
