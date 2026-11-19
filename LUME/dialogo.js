@@ -73,7 +73,7 @@ function analisar(q){
  f.nao=/^(nao|nao obrigado|nao obrigada|agora nao|nao quero|nao preciso|deixa|esquece|nada|nunca|nao por agora|por agora nao)$/.test(c);
  f.devolve=/\be (tu|voce|vc|contigo|consigo|por ai|desse lado)\b/.test(c);
  f.identidade=/\b(quem es tu|quem es|o que es|que es tu|como te chamas|qual e o teu nome)\b/.test(c);
- f.elogio=/\b(es|estas|foste|ficou)\s+(muito |mesmo |bastante )?(bom|boa|inteligente|esperto|fixe|incrivel|otimo|genial|perfeito|util)\b/.test(c)||/\b(bom trabalho|parabens|gostei|adorei|muito bem|excelente)\b/.test(c);
+ f.elogio=/\b(es|estas|foste|ficou|voce e|voce esta|tu es)\s+(muito |mesmo |bastante )?(bom|boa|inteligente|esperto|fixe|incrivel|otimo|genial|perfeito|util)\b/.test(c)||/\b(bom trabalho|parabens|gostei|adorei|muito bem|excelente)\b/.test(c);
  f.critica=/\b(nao (percebeste|entendeste|sabes|funciona|serve|presta)|esta errado|errado|es (burro|estupido|inutil)|nao era isso)\b/.test(c);
  f.riso=/^(k{2,}|(ha){2,}h?|(he){2,}h?|rs+|lol|ahah+|haha+)( .*)?$/.test(c);
  f.risco=/\b(me matar|suicid\w*|quero morrer|nao quero (mais )?viver|acabar com (tudo|a minha vida)|me magoar|fazer mal a mim)\b/.test(c);

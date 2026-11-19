@@ -285,3 +285,10 @@ Lume - historico de versoes
 - Novos ficheiros de dados: lexico.txt; tipos novos em conversa.txt (eco_modelo, segue_neg/pos/neutro, sim_ouvir, sim_ajuda, nao_geral, sim_solto, nao_solto, elogio_resp, critica_resp, riso_resp, identidade, risco).
 - Ligacoes: despachante.js (tentar chama ver/resolver/conversar), index.html e mobile.html (reescrever o pedido, registar cada resposta, carregar dialogo.js).
 - Testado em Node com conversas simuladas. Nao testado no chat real.
+
+0.5.9
+- Treino do Lume: LUME/treino/casos.txt (97 casos: conversa, estado, sim/nao com contexto, primeira pessoa, fala corrente, pedidos que nao devem ser roubados, matematica) e LUME/treino/treinar.js. Corre com "node LUME/treino/treinar.js" (-v mostra tudo) e lista o que falhou. Cada erro encontrado vira um caso novo.
+- Corrigido: "hoje foi um bom dia" era tratado como cumprimento; a saudacao so conta no inicio da mensagem.
+- Corrigido: "preciso de 2 ou 3 frases mais curtas" era tratado como conta por causa de "mais"; contas com 2 ou mais palavras estranhas ja nao ativam o calculo.
+- Fala corrente: "to/tô/tou cansado", "tá", "pra", "vc", "tbm", "obg", "pq", e alongamentos ("oii", "bom diaa", "boa noitee") passam para a forma padrao antes de tudo.
+- "voce e inteligente" conta como elogio.

@@ -1,0 +1,115 @@
+# Casos de treino do Lume. Formato: mensagens separadas por " >> " | esperado
+# esperado: BOT = o despachante nao responde (passa ao bot) ; MATH+ / MATH- = a matematica reconhece / nao reconhece ; senao, regex (sem acentos, minusculas) sobre a ultima resposta
+# --- saudacoes e estado ---
+oi | ^(bom dia|boa tarde|boa noite)
+boa noite | (bom dia|boa tarde|boa noite)
+oi, como estas? | (e tu|e contigo|e desse lado|como estas|tudo bem)
+oi, como estas? >> bem | (que bom|ainda bem|contente|feliz)
+oi, como estas? >> bem e tu? | (tambem|por aqui).*(bem)
+oi, como estas? >> cansado | (pena|lamento|sinto muito)
+oi, como estas? >> mais ou menos | (percebo|entendo|ha dias)
+oi, como estas? >> nao estou muito bem | (lamento|sinto muito|pena)
+oi, como estas? >> estou triste | (lamento|sinto muito|pena)
+como estas? >> estou otimo | (que bom|ainda bem|contente|feliz)
+# --- sim / nao com contexto ---
+oi, como estas? >> cansado >> sim | (ouvir|contar|diz.me o que|precisas|queres fazer)
+oi, como estas? >> cansado >> nao | (tudo bem|sem problema)
+sim | (sim a que|a que pergunta|que precisas)
+nao | (tudo bem|sem problema)
+# --- respostas curtas completadas pela pergunta pendente ---
+oi >> uma casa com arvore e sol | pecas_svg
+boa noite >> uma loja de roupa | {{nome}}
+# --- identidade, elogio, critica, riso ---
+quem es tu | sou o lume
+como te chamas | sou o lume
+es muito inteligente | (obrigado|bom ouvir|contente)
+bom trabalho | (obrigado|bom ouvir|contente)
+nao percebeste nada | (desculpa|tens razao)
+kkkk | (ris|bem.disposto)
+haha | (ris|bem.disposto)
+# --- primeira pessoa ---
+estou a fazer um site | estas a fazer um site
+perdi o telemovel | perdeste o telemovel
+gosto de musica | gostas de musica
+tenho fome | tens fome
+passei no exame | passaste no exame
+chumbei a matematica | chumbaste
+estou muito feliz | (feliz|bem|contente|bom)
+# --- nome, hora, data ---
+o meu nome e Ana | prazer, ana
+o meu nome e Ana >> qual e o meu nome | chamas.te ana
+que horas sao | ^sao \d
+que dia e hoje | hoje e
+# --- despedida e agradecimento ---
+obrigado | (nao tens de que|prazer|ainda bem|contente|fico)
+obrigdo | (nao tens de que|prazer|ainda bem|contente|fico)
+tchau | (ate|fica bem|foi bom)
+# --- risco ---
+estou a pensar em me matar | (nao estas sozinho|alguem de confianca|emergencia)
+# --- NAO deve roubar pedidos reais (passam ao bot ou a capacidade) ---
+ajuda-me a criar um botao | <program
+preciso de ajuda com css | BOT
+o que e css | BOT
+qual a capital de angola | BOT
+gera 3 frases | (.)
+estou com um erro no codigo | (lamento|pena|sinto)
+quero uma loja online | BOT
+preciso de 2 ou 3 frases mais curtas | BOT
+cria um site de loja | {{nome}}
+quanto e 2 mais 3 | <program
+# --- ajuda ---
+ajuda | (cal|posso|sei|consigo)
+o que sabes fazer | (cal|posso|sei|consigo)
+# --- matematica ---
+2(2+3) | MATH+
+[5-(7+5)-6] | MATH+
+cos(30) | MATH+
+5^2 | MATH+
+raiz de 16 | MATH+
+3! + 2 | MATH+
+x²-5x+6=0 | MATH+
+2x+3=11 | MATH+
+fatorial de 5 | MATH+
+mmc de 12 e 18 | MATH+
+20% de 150 | MATH+
+qual a capital de angola | MATH-
+oi como estas | MATH-
+preciso de 2 ou 3 frases | MATH-
+10-12-2026 | MATH-
+2026 | MATH-
+# --- mais casos: social e primeira pessoa ---
+bom dia, tudo bem? | (bom dia|boa tarde|boa noite)
+boa tarde meu chefe | (bom dia|boa tarde|boa noite)
+hello | (bom dia|boa tarde|boa noite)
+obrigada pela ajuda | (nao tens de que|prazer|ainda bem|contente|fico)
+ate amanha | (ate|fica bem|foi bom)
+estou cansado | (lamento|pena|sinto)
+estou com dor de cabeca | (lamento|pena|sinto)
+ganhei o jogo | ganhaste o jogo
+odeio segunda-feira | odeias segunda
+adoro programar | adoras programar
+hoje foi um bom dia | BOT
+# --- "mais" e "menos" na fala normal nao sao contas ---
+quero mais tempo para estudar | BOT
+tenho 2 gatos e 3 caes, mais um peixe | tens 2 gatos
+preciso de mais 2 horas e 3 dias | BOT
+quanto e dois mais dois | <program
+quanto e 7 menos 3 | <program
+calcula 15 vezes 4 | <program
+# --- fala corrente (Angola/Brasil/chat) ---
+to cansado | (lamento|pena|sinto)
+tô bem | (bem|contente|feliz|bom)
+tou muito feliz | (feliz|bem|contente|bom)
+oi mano | (bom dia|boa tarde|boa noite)
+e ai mano, tudo fixe? | (bom dia|boa tarde|boa noite|tudo|bem)
+obg | (nao tens de que|prazer|ainda bem|contente|fico)
+valeu mano | (nao tens de que|prazer|ainda bem|contente|fico)
+vc e inteligente | (obrigado|bom ouvir|contente)
+tbm quero uma loja | BOT
+# --- erros de escrita ---
+oii como estas | (e tu|e contigo|e desse lado|como estas|tudo bem)
+bom diaa | (bom dia|boa tarde|boa noite)
+obrigadoo | (nao tens de que|prazer|ainda bem|contente|fico)
+# --- recusas e hesitacoes ---
+talvez | BOT
+nao sei | BOT

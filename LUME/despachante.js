@@ -91,8 +91,15 @@ function cumpre(requer,m){
   return x[2]===">="?v>=n:x[2]==="<="?v<=n:x[2]==="=="?v===n:x[2]===">"?v>n:v<n;
  });
 }
+/* palavras que nao sao de contas: "preciso de 2 ou 3 frases mais curtas" nao e uma soma */
+var _palavrasConta={calcula:1,calcule:1,calcular:1,quanto:1,e:1,a:1,o:1,de:1,da:1,do:1,por:1,com:1,mais:1,menos:1,vezes:1,dividido:1,dividir:1,divide:1,soma:1,somar:1,multiplica:1,multiplicar:1,subtrai:1,subtrair:1,resultado:1,qual:1,que:1,da_:1,favor:1,x:1,ao:1,quadrado:1,cubo:1,elevado:1,raiz:1,numeros:1,numero:1,total:1,valor:1,entre:1,e_:1};
+function estranhasNaConta(t){
+ var nomes={};arq("numeros.txt").split(/\r?\n/).forEach(function(l){if(!l.trim()||l.trim().charAt(0)==="#")return;var p=l.split("|");if(p.length>1)p[1].split(",").forEach(function(w){nomes[norm(w)]=1})});
+ return t.split(/[^a-z0-9]+/).filter(function(w){return w&&!/^\d/.test(w)&&!_palavrasConta[w]&&!nomes[w]}).length;
+}
 function ativa(c,t,m){
  if(!c.verbos.some(function(v){return tem(t,v)}))return false;
+ if(c.nome==="calcular"&&estranhasNaConta(t)>=2)return false;
  if(!c.objetos.length)return true;
  return c.objetos.some(function(o){return o==="numeros"?m.numeros>=1:o==="pecas"?m.pecas>=1:o==="componentes"?m.componentes>=1:tem(t,o)});
 }
@@ -150,7 +157,8 @@ function detectarConversa(q){
  var med=medidores(q,t);
  if(lerCapacidades().some(function(c){return ativa(c,t,med)}))return null;
  var curta=t.replace(/[?!.,;:]+/g," ").replace(/\s+/g," ").trim();
- var saudacao=/\b(oi|ola|bom dia|boa tarde|boa noite|e ai|ei|hey|hello|wey|boas|opa|eia)\b/.test(t);
+ /* a saudacao esta no inicio da mensagem: "hoje foi um bom dia" nao e um cumprimento */
+ var saudacao=/\b(oi|ola|bom dia|boa tarde|boa noite|e ai|ei|hey|hello|wey|boas|opa|eia)\b/.test(curta.split(" ").slice(0,3).join(" "));
  var perguntaEstado=/\b(como estas|como vai|como vais|tudo bem|tudo bom|tudo tranquilo|esta tudo bem)\b/.test(t)&&!/\btudo bem com /.test(t)&&(/[?]/.test(q)||/\b(como estas|como vai|como vais)\b/.test(t)||/\b(ola|oi|bom dia|boa tarde|boa noite|hey|hello)\b/.test(t));
  /* resposta a "como estas?": a pessoa diz como esta (e pode devolver a pergunta). Nao se volta a perguntar. */
  var pedeEstado=/\b(como estas|como vai|como vais)\b/.test(t);
@@ -281,7 +289,20 @@ function gerarFrases(q){
  return saidas.join("\n");
 }
 /* devolve true se tratou a pergunta (executou ou avisou); false para o bot decidir */
+/* fala corrente: "tô cansado", "tá bom", "vc", "tbm", "obg" -> forma padrao, para o resto do Lume perceber */
+function coloquial(q){
+ var B="(?<![\\p{L}\\d])",E="(?![\\p{L}\\d])";
+ function R(p,r,f){return function(x){return x.replace(new RegExp(p,f||"giu"),r)}}
+ var passos=[
+  R(B+"(tô|tou|to)"+E+"(?=\\s+(bem|mal|cansad|com|a\\s|muito|feliz|triste|otim|ok|fixe|doente|aqui|de\\s))","estou"),
+  R(B+"tá"+E,"está"),R(B+"pra"+E,"para"),R(B+"vc"+E,"você"),R(B+"(tbm|tb)"+E,"também"),
+  R(B+"(obg|obgd|brigado|brigada)"+E,"obrigado"),R(B+"pq"+E,"porque"),
+  R(B+"o+i+"+E,"oi"),R(B+"bom\\s+dia+"+E,"bom dia"),R(B+"boa\\s+tarde+"+E,"boa tarde"),R(B+"boa\\s+noite+"+E,"boa noite")
+ ];
+ return passos.reduce(function(x,f){return f(x)},String(q));
+}
 async function tentar(q){
+ q=coloquial(q);
  var DL=window.LumeDialogo;
  if(DL&&typeof window.lumeOnReply==="function"){DL.ver(q);var rd=DL.resolver(q);if(rd&&rd.resposta){window.lumeOnReply({text:rd.resposta});return true}}
  if(typeof window.lumeOnReply==="function"){var conversa=gerarConversa(q);if(conversa){window.lumeAtualizarEtapa&&window.lumeAtualizarEtapa("A compor uma resposta para ti...");window.lumeOnReply({text:conversa});return true;}}
