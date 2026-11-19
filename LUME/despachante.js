@@ -134,6 +134,15 @@ function aproximada(t,palavras){
 }
 function nomeGuardado(){try{return localStorage.getItem("lume_nome")||""}catch(e){return""}}
 function guardarNome(n){try{localStorage.setItem("lume_nome",n)}catch(e){}}
+var _aguardaEstado=0;
+/* O que a pessoa diz sobre si: "bem", "mal", "neutro" ou "" (t ja normalizado). */
+function estadoDito(t){
+ if(/\b(nao estou (muito |tao )?bem|nao me sinto bem|estou (um pouco |muito |bastante )?(mal|triste|cansado|cansada|doente|ansioso|ansiosa|nervoso|nervosa|preocupado|preocupada|desanimado|desanimada|aborrecido|aborrecida|stressado|stressada)|estou com (sono|dor|febre)|correr mal)\b/.test(t))return "mal";
+ if(/\b(estou|ando|vou|fico|me sinto|sinto me)\s+((muito|tao|bastante|mesmo|tambem|la)\s+)*(bem|otimo|otima|excelente|feliz|contente|tranquilo|tranquila|fixe|bom|boa|satisfeito|satisfeita|animado|animada)\b/.test(t))return "bem";
+ if(/\b(eu )?tambem\b.*\b(bem|otimo|otima|fixe)\b/.test(t)||/\bcorrer (muito )?bem\b/.test(t)||/\btudo (bem|bom|tranquilo|certo|otimo|normal) comigo\b/.test(t))return "bem";
+ if(/\b(mais ou menos|assim assim|estou ocupado|estou ocupada)\b/.test(t))return "neutro";
+ return "";
+}
 function detectarConversa(q){
  var t=norm(q);
  /* conversa so em mensagens curtas e que nao pedem nenhuma capacidade (cria, calcula, desenha...) */
@@ -143,6 +152,15 @@ function detectarConversa(q){
  var curta=t.replace(/[?!.,;:]+/g," ").replace(/\s+/g," ").trim();
  var saudacao=/\b(oi|ola|bom dia|boa tarde|boa noite|e ai|ei|hey|hello|wey|boas|opa|eia)\b/.test(t);
  var perguntaEstado=/\b(como estas|como vai|como vais|tudo bem|tudo bom|tudo tranquilo|esta tudo bem)\b/.test(t)&&!/\btudo bem com /.test(t)&&(/[?]/.test(q)||/\b(como estas|como vai|como vais)\b/.test(t)||/\b(ola|oi|bom dia|boa tarde|boa noite|hey|hello)\b/.test(t));
+ /* resposta a "como estas?": a pessoa diz como esta (e pode devolver a pergunta). Nao se volta a perguntar. */
+ var pedeEstado=/\b(como estas|como vai|como vais)\b/.test(t);
+ var devolve=/\b(e tu|e voce|e vc|e contigo|e consigo|e por ai|e desse lado|e do teu lado)\b/.test(t);
+ var respEstado=estadoDito(t);
+ if(!respEstado&&Date.now()-_aguardaEstado<120000){
+  var bare=/^(eu )?(tambem|bem|muito bem|otimo|otima|fixe|tudo bem|tudo bom|tudo tranquilo|tudo certo|tudo|de boa|na paz|normal|mais ou menos|assim assim)( obrigad[oa])?( e tu| e voce)?$/.exec(curta);
+  if(bare)respEstado=/normal|mais ou menos|assim assim/.test(bare[2])?"neutro":"bem";
+ }
+ if(respEstado&&!pedeEstado)perguntaEstado=false;else respEstado="";
  var agradecimento=/\b(obrigado|obrigada|agradecido|agradecida|agradeco|valeu|thanks)\b/.test(t)||aproximada(t,["obrigado","obrigada","agradeco"]);
  var despedida=/\b(adeus|ate logo|ate ja|ate amanha|xau|tchau|falou|vou embora)\b/.test(t)||aproximada(t,["adeus","tchau"]);
  var ajuda=/\b(o que sabes fazer|que sabes fazer|tu fazes o que|suas capacidades|teus recursos)\b/.test(t)||/^(ajuda|ajudas|preciso de ajuda|podes ajudar|podes ajudar me|podes me ajudar)$/.test(curta.replace(/-/g," "));
@@ -152,8 +170,8 @@ function detectarConversa(q){
  var nome=mn?(mn[1]||mn[2]||mn[3]):"";
  if(nome)nome=nome.charAt(0).toUpperCase()+nome.slice(1);
  var perguntaNome=/\b(qual e o meu nome|como me chamo|sabes o meu nome|sabes quem eu sou)\b/.test(t);
- if(saudacao||perguntaEstado||agradecimento||despedida||ajuda||hora||data||nome||perguntaNome)
-  return {saudacao:saudacao,estado:perguntaEstado,agradecimento:agradecimento,despedida:despedida,ajuda:ajuda,hora:hora,data:data,nome:nome,perguntaNome:perguntaNome};
+ if(saudacao||perguntaEstado||respEstado||agradecimento||despedida||ajuda||hora||data||nome||perguntaNome)
+  return {saudacao:saudacao,estado:perguntaEstado,respEstado:respEstado,devolve:devolve,agradecimento:agradecimento,despedida:despedida,ajuda:ajuda,hora:hora,data:data,nome:nome,perguntaNome:perguntaNome};
  return null;
 }
 /* frases por tipo em conversa.txt (formato: tipo | texto); se o ficheiro faltar usa o padrao */
@@ -182,6 +200,16 @@ function gerarConversa(q){
   return "Prazer, "+c.nome+". Vou lembrar-me do teu nome neste dispositivo.";
  }
  if(c.perguntaNome)return nomeSalvo?"Chamas-te "+nomeSalvo+".":"Ainda não me disseste o teu nome. Escreve, por exemplo: o meu nome é Ana.";
+ /* a pessoa respondeu a "como estas?": reage e segue em frente, sem voltar a perguntar */
+ if(c.respEstado&&!c.despedida&&!c.ajuda&&!c.hora&&!c.data){
+  _aguardaEstado=0;
+  var rx=c.respEstado==="mal"?escolher(L("reage_mal",["Lamento ouvir isso"]),"rmal"):c.respEstado==="neutro"?escolher(L("reage_neutro",["Percebo"]),"rneu"):escolher(L("reage_bem",["Ainda bem","Que bom saber","Fico contente por saber"]),"rbem");
+  var ini=c.saudacao?cumprimentoHorario()+(nomeSalvo?", "+nomeSalvo:"")+"! ":"";
+  var dv=c.devolve?escolher(L("devolucao_resposta",["Eu também estou bem, obrigado"]),"drsp"):"";
+  var segue=escolher(L("segue",["Em que posso ajudar?"]),"segue");
+  var frase=[rx,dv].filter(Boolean).map(function(x){return x.replace(/[.!?]*$/,".")}).join(" ");
+  return (ini+frase+" "+segue).replace(/\s+/g," ").trim();
+ }
  if(c.hora||c.data){
   var agora=new Date();
   if(c.hora)partes.push("São "+agora.toLocaleTimeString("pt-PT",{hour:"2-digit",minute:"2-digit"})+".");
@@ -205,8 +233,11 @@ function gerarConversa(q){
   partes.push(escolher(L("estado",["Estou bem"]),"estado").replace(/[.!?]?$/, "."));
   partes.push(maiuscula(escolher(L("obrigado_pergunta",["obrigado por perguntares"]),"obrig"))+".");
   partes.push(escolher(L("devolucao",["E tu, como estás?"]),"devol"));
+  _aguardaEstado=Date.now();
  }else if(c.saudacao){
-  partes.push(escolher(L("pergunta_aberta",["Em que posso ajudar?"]),"aberta"));
+  var pa=escolher(L("pergunta_aberta",["Em que posso ajudar?"]),"aberta");
+  partes.push(pa);
+  if(/est[aá]s|tudo bem|contigo/i.test(pa))_aguardaEstado=Date.now();
  }else if(c.agradecimento){
   partes.push(escolher(L("agradece",["Ainda bem que pude ajudar"]),"agradece")+".");
  }
