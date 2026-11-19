@@ -84,3 +84,6 @@ riso_resp | Fico contente por te ver bem-disposto.
 identidade | Sou o Lume.
 identidade | Sou o Lume, um assistente que conversa e cria.
 risco | Lamento muito que estejas a passar por isso. Não estás sozinho. Fala agora com alguém de confiança ou com um serviço de emergência da tua zona.
+pedido_vago | Claro. O que queres criar? Sei trabalhar com {lista}.
+pedido_vago | Posso ajudar. Que tipo de projeto tens em mente? Sei trabalhar com {lista}.
+pedido_vago | Vamos a isso. O que queres criar primeiro? Tenho {lista}.

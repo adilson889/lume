@@ -107,9 +107,14 @@ valeu mano | (nao tens de que|prazer|ainda bem|contente|fico)
 vc e inteligente | (obrigado|bom ouvir|contente)
 tbm quero uma loja | BOT
 # --- erros de escrita ---
-oii como estas | (e tu|e contigo|e desse lado|como estas|tudo bem)
+oii como estas | (e tu|e contigo|e desse lado|como estas|tudo bem|o teu dia)
 bom diaa | (bom dia|boa tarde|boa noite)
 obrigadoo | (nao tens de que|prazer|ainda bem|contente|fico)
 # --- recusas e hesitacoes ---
 talvez | BOT
 nao sei | BOT
+# --- pedido sem assunto: pergunta o que criar e completa a resposta ---
+podes criar um projeto? | (o que queres|que tipo)
+podes criar um projeto? >> uma loja de roupa | {{nome}}
+quero fazer um app | (o que queres|que tipo)
+calcular | BOT

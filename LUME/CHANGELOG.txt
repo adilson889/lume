@@ -292,3 +292,7 @@ Lume - historico de versoes
 - Corrigido: "preciso de 2 ou 3 frases mais curtas" era tratado como conta por causa de "mais"; contas com 2 ou mais palavras estranhas ja nao ativam o calculo.
 - Fala corrente: "to/tô/tou cansado", "tá", "pra", "vc", "tbm", "obg", "pq", e alongamentos ("oii", "bom diaa", "boa noitee") passam para a forma padrao antes de tudo.
 - "voce e inteligente" conta como elogio.
+
+0.5.10
+- Corrigido (ecra do chat): "Podes criar um projeto?" caia no bot e respondia a definicao de "projeto open source". Pedidos de criar/fazer/gerar sem assunto (projeto, app, programa, sistema...) passam a perguntar "O que queres criar?" com a lista de capacidades, e a resposta seguinte ("uma loja de roupa") e completada para "cria uma loja de roupa".
+- Treino: 101 casos.

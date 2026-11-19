@@ -167,6 +167,14 @@ function conversar(q){
  try{
   var f=analisar(q);if(!f.n||f.n>14)return "";
   if(f.risco)return dizer("risco",["Lamento muito que estejas a passar por isso. Não estás sozinho. Fala agora com alguém de confiança ou com um serviço de emergência da tua zona."]);
+  /* "podes criar um projeto?": pedido sem assunto -> pergunta o que criar (a resposta e completada por reescrever) */
+  if(/^(?:(?:podes|consegues|sabes|poderias|queres|quero|vamos)\s+)?(?:me\s+)?(criar|fazer|gerar|montar|construir|desenvolver|programar)\s+(?:um|uma|o|a)?\s*(projeto|projecto|app|aplicativo|aplicacao|programa|sistema|trabalho|algo|coisa|negocio)(?:\s+(?:para mim|novo|nova))?$/.test(f.c)){
+   var cp=window.LumeDespachante&&window.LumeDespachante.ler?window.LumeDespachante.ler():[],np=[];
+   var nmp={codigo:"código",desenhar:"desenhos",calcular:"cálculos",loja:"lojas e páginas",frases:"frases"};
+   cp.forEach(function(c){np.push(nmp[c.nome]||c.nome)});
+   var up=np.pop();
+   return dizer("pedido_vago",["Claro. O que queres criar? Sei trabalhar com {lista}."],{lista:(np.length?np.join(", ")+" e ":"")+up});
+  }
   if(f.identidade){
    var caps=window.LumeDespachante&&window.LumeDespachante.ler?window.LumeDespachante.ler():[],nm=[];
    var nomes={codigo:"código",desenhar:"desenhos",calcular:"cálculos",loja:"lojas e páginas",frases:"frases"};
