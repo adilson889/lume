@@ -273,3 +273,15 @@ Lume - historico de versoes
 - Corrigido: "Consigo combinar varios componentes numa cena" aparecia antes de qualquer pedido com "desenha"; so aparece agora quando nao ha pecas e o pedido nao e um grafico.
 - Graficos de equacoes em x e y: "x+y=3", "2y=4x-6", "y-x=1" sao resolvidas para y e desenhadas. f(x) = ... tambem. Equacoes nao lineares em y dao aviso.
 - Nao testado no chat real.
+
+0.5.8
+- Novo LUME/dialogo.js: memoria de conversa e resposta composta. O Lume passa a saber a que pergunta a pessoa esta a responder.
+  - Regista a pergunta que ele proprio fez (estado, "em que posso ajudar", nome, confirmar, numeros) em sessionStorage, valida 3 mensagens.
+  - Completa respostas curtas: depois de "Em que posso ajudar?", "uma casa com arvore e sol" vira "desenha uma casa com arvore e sol"; "uma loja de roupa" vira "cria uma loja de roupa"; depois de "diz-me dois ou mais numeros", "3 e 5" vira "calcula 3 e 5".
+  - "sim"/"nao" respondem a pergunta pendente (ouvir, ajudar); soltos, admitem que perderam o fio.
+  - Analise por particulas: sentimento por lexico.txt (negacao e intensidade: "nao estou muito bem"), sim/nao, pergunta, identidade, elogio, critica, riso, risco.
+  - Eco de 1.a pessoa para 2.a: "perdi o telemovel" -> "Percebi que perdeste o telemovel. Sinto muito por isso. Queres falar sobre isso?" (eco + reacao + seguimento, tudo escolhido por tipo em conversa.txt).
+  - Mensagens com sinais de risco para a propria pessoa recebem resposta de apoio e nunca o eco.
+- Novos ficheiros de dados: lexico.txt; tipos novos em conversa.txt (eco_modelo, segue_neg/pos/neutro, sim_ouvir, sim_ajuda, nao_geral, sim_solto, nao_solto, elogio_resp, critica_resp, riso_resp, identidade, risco).
+- Ligacoes: despachante.js (tentar chama ver/resolver/conversar), index.html e mobile.html (reescrever o pedido, registar cada resposta, carregar dialogo.js).
+- Testado em Node com conversas simuladas. Nao testado no chat real.

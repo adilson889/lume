@@ -282,6 +282,8 @@ function gerarFrases(q){
 }
 /* devolve true se tratou a pergunta (executou ou avisou); false para o bot decidir */
 async function tentar(q){
+ var DL=window.LumeDialogo;
+ if(DL&&typeof window.lumeOnReply==="function"){DL.ver(q);var rd=DL.resolver(q);if(rd&&rd.resposta){window.lumeOnReply({text:rd.resposta});return true}}
  if(typeof window.lumeOnReply==="function"){var conversa=gerarConversa(q);if(conversa){window.lumeAtualizarEtapa&&window.lumeAtualizarEtapa("A compor uma resposta para ti...");window.lumeOnReply({text:conversa});return true;}}
  var caps=lerCapacidades();if(!caps.length||typeof window.lumeOnReply!=="function")return false;
  var t=norm(q),m=medidores(q,t);
@@ -289,6 +291,7 @@ async function tentar(q){
  var ativos=caps.filter(function(c){return ativa(c,t,m)});
  /* em caso de empate, ganha a unica capacidade cujas condicoes (requer) se cumprem */
  if(ativos.length>1){var cumprem=ativos.filter(function(x){return cumpre(x.requer,m)});if(cumprem.length===1)ativos=cumprem}
+ if(!ativos.length&&DL){var cv=DL.conversar(q);if(cv){window.lumeOnReply({text:cv});return true}}
  if(ativos.length!==1)return false;
  var c=ativos[0];
  if(window.lumeAtualizarEtapa){var etapas={calcular:"A executar o cálculo...",desenhar:"A preparar o desenho...",frases:"A construir frases...",codigo:"A preparar o código...",loja:"A estruturar a página..."};window.lumeAtualizarEtapa(etapas[c.nome]||("A preparar "+c.nome+"..."));}

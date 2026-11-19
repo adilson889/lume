@@ -50,3 +50,37 @@ devolucao_resposta | Também estou bem
 segue | Em que posso ajudar?
 segue | O que queres fazer hoje?
 segue | Diz-me o que precisas
+# --- dialogo.js: eco, reacao e seguimento. {eco} = o que a pessoa disse, na 2.a pessoa ---
+eco_modelo | {eco}
+eco_modelo | Então {eco}
+eco_modelo | Ora, {eco}
+eco_modelo | Percebi que {eco}
+segue_neg | Queres falar sobre isso?
+segue_neg | Posso fazer alguma coisa por ti?
+segue_neg | Queres desabafar um pouco?
+segue_pos | O que queres fazer agora?
+segue_pos | Queres aproveitar para criar alguma coisa?
+segue_pos | Em que posso ajudar-te hoje?
+segue_neutro | Queres que te ajude com isso?
+segue_neutro | Posso ajudar-te com alguma coisa?
+segue_neutro | Diz-me mais, estou a ouvir.
+sim_ouvir | Estou a ouvir.
+sim_ouvir | Podes contar, sem pressa.
+sim_ajuda | Diz-me o que precisas.
+sim_ajuda | Então diz-me o que queres fazer.
+nao_geral | Tudo bem. Estou por aqui se precisares.
+nao_geral | Sem problema. Quando quiseres, é só dizer.
+sim_solto | Sim a quê? Diz-me o que precisas e eu faço.
+sim_solto | Estou contigo, mas já não sei a que pergunta respondes. Podes repetir o pedido?
+nao_solto | Tudo bem. Se precisares de alguma coisa, diz.
+nao_solto | Está bem, sem problema.
+elogio_resp | Obrigado, fico contente
+elogio_resp | Obrigado, isso dá-me ânimo
+elogio_resp | Que bom ouvir isso
+critica_resp | Desculpa, ainda estou a aprender. Diz-me com mais detalhe o que esperavas e eu tento outra vez.
+critica_resp | Tens razão em avisar. Explica-me melhor o que querias e eu corrijo.
+riso_resp | Ainda bem que te ris. O que queres fazer a seguir?
+riso_resp | Fico contente por te ver bem-disposto.
+identidade | Sou o Lume.
+identidade | Sou o Lume, um assistente que conversa e cria.
+risco | Lamento muito que estejas a passar por isso. Não estás sozinho. Fala agora com alguém de confiança ou com um serviço de emergência da tua zona.
