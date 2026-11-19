@@ -34,3 +34,19 @@ abertura_ajuda | Sei fazer
 fecho_ajuda | Podes escrever o que precisas com naturalidade.
 fecho_ajuda | Diz-me o que precisas, pelas tuas palavras.
 fecho_ajuda | Escreve o pedido normalmente, eu percebo.
+reage_bem | Ainda bem
+reage_bem | Que bom saber
+reage_bem | Fico contente por saber
+reage_bem | Fico feliz por isso
+reage_mal | Lamento ouvir isso
+reage_mal | Que pena, espero que melhore
+reage_mal | Sinto muito por isso
+reage_neutro | Percebo
+reage_neutro | Entendo
+reage_neutro | Há dias assim
+devolucao_resposta | Eu também estou bem, obrigado
+devolucao_resposta | Por aqui está tudo bem, obrigado
+devolucao_resposta | Também estou bem
+segue | Em que posso ajudar?
+segue | O que queres fazer hoje?
+segue | Diz-me o que precisas
