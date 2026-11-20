@@ -1663,193 +1663,29 @@ window.anexarFicheiro=function(){
 <script src="LUME/dialogo.js"></script>
 <script src="LUME/despachante.js"></script>
 <script src="LUME/editor/lume-editor.js"></script>
-<style id=lume-defs-css>
-html.letra-normal .msg.sistema,html.letra-normal .msg-pedido{font-family:-apple-system,'Inter',Roboto,'Segoe UI',Helvetica,Arial,sans-serif!important}
-html.lume-tam .msg.usuario{font-size:var(--bot-tamanho)}
-html.fundo-liso #chat{background-image:none!important}
-html.sem-acoes .msg-acoes{display:none!important}
-html.sem-convite .msg-convite,html.sem-convite .sug-ensinar{display:none!important}
-html.sem-anim *,html.sem-anim *::before,html.sem-anim *::after{animation:none!important;transition:none!important}
-.lume-sw{width:36px;height:36px;border-radius:50%;border:2px solid transparent;padding:0;cursor:pointer;box-shadow:inset 0 0 0 3px var(--bg)}
-.lume-sw.ativo{border-color:var(--text)}
-.lume-inp,.lume-sel{width:100%;font:inherit;font-size:15px;color:var(--text);background:transparent;border:1px solid var(--border);border-radius:14px;padding:10px 14px;outline:0}
-.lume-inp:focus,.lume-sel:focus{border-color:var(--r)}
-.lume-sel option{color:#1A1B13}
-.lume-nota{font-size:13px;color:var(--muted);padding:0 6px 8px;line-height:1.4}
-.lume-linha{display:flex;gap:8px;align-items:center;padding:0 0 10px}
-.lume-perigo{border-color:#C0392B;color:#C0392B}
-a.chip{text-decoration:none;display:inline-block}
-#lume-painel{position:fixed;inset:0;z-index:940;background:var(--bg);display:none;flex-direction:column}
-#lume-painel.show{display:flex}
-.lp-topo{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--border)}
-.lp-voltar{background:transparent;border:none;width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--r);padding:0}
-.lp-voltar svg{width:24px;height:24px}
-.lp-titulo{font-weight:600;font-size:17px;color:var(--text)}
-.lp-corpo{flex:1;overflow-y:auto;padding:14px 16px 28px;display:flex;flex-direction:column;gap:10px}
-.lp-item{border:1px solid var(--border);border-radius:14px;padding:12px 14px;background:var(--card);display:flex;gap:10px;align-items:flex-start}
-.lp-item span{flex:1;font-size:14px;line-height:1.45;color:var(--text);white-space:pre-wrap;word-break:break-word}
-.lp-item button{background:transparent;border:none;width:32px;height:32px;border-radius:10px;cursor:pointer;color:var(--muted);flex-shrink:0;padding:0;display:flex;align-items:center;justify-content:center}
-.lp-item button svg{width:18px;height:18px}
-.lp-ta{width:100%;min-height:150px;font:inherit;font-size:14px;color:var(--text);background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 14px;outline:0;resize:vertical}
-</style>
-<script id=lume-defs-js>
-(function(){try{
-var K='lume_defs',R=document.documentElement;
-var D={acento:'verde',tam:16,letra:'serif',fundo:'rabiscos',acoes:true,convite:true,anim:true,auto:false,taxa:1,voz:'',enter:false,nome:''};
-try{var sv=JSON.parse(localStorage.getItem(K)||'{}');if(sv&&typeof sv==='object')Object.keys(D).forEach(function(k){if(k in sv)D[k]=sv[k]})}catch(e){}
-function salvar(){try{localStorage.setItem(K,JSON.stringify(D))}catch(e){}}
-function $(i){return document.getElementById(i)}
-function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
-function toast(m){if(typeof mostrarToast==='function')mostrarToast(m)}
-var ORIG={cab:$('sidebar-cabecalho')?$('sidebar-cabecalho').textContent:'',tit:$('titulo')?$('titulo').textContent:'',pag:document.title,av:$('avatar')?$('avatar').textContent:'L'};
-var AC={
-verde:{n:'Verde',s:'#455A0B'},
-azul:{n:'Azul',s:'#1F4E8C',on:'#FFFFFF',b:'#D6E4F5',dc:'#8DB8F0',don:'#0B2442',db:'#1D2E45'},
-roxo:{n:'Roxo',s:'#5B3A8C',on:'#FFFFFF',b:'#E3DAF2',dc:'#C3A8F0',don:'#2A1550',db:'#33264A'},
-ambar:{n:'Âmbar',s:'#9A4A0A',on:'#FFFFFF',b:'#F5DFC8',dc:'#F0B27A',don:'#3D1C00',db:'#47301A'},
-rosa:{n:'Rosa',s:'#A12D5F',on:'#FFFFFF',b:'#F5D6E3',dc:'#F0A0C0',don:'#4A0F28',db:'#4A2535'}};
-function aplicarNome(){var n=String(D.nome||'').trim(),a=$('sidebar-cabecalho'),t=$('titulo');
-if(n){if(a)a.textContent=n;if(t)t.textContent=n;document.title=n;['avatar','sug-avatar'].forEach(function(i){var e=$(i);if(e)e.textContent=n.charAt(0).toUpperCase()})}
-else{if(a&&ORIG.cab)a.textContent=ORIG.cab;if(t&&ORIG.tit)t.textContent=ORIG.tit;if(ORIG.pag)document.title=ORIG.pag;['avatar','sug-avatar'].forEach(function(i){var e=$(i);if(e)e.textContent=ORIG.av||'L'})}}
-function aplicarAcento(){var s=$('lume-acento');if(!s){s=document.createElement('style');s.id='lume-acento';document.body.appendChild(s)}
-var a=AC[D.acento];s.textContent=(a&&a.on)?':root{--r:'+a.s+';--on:'+a.on+';--bolha:'+a.b+'}:root.tema-escuro{--r:'+a.dc+';--on:'+a.don+';--bolha:'+a.db+'}':''}
-function aplicar(){aplicarAcento();
-if(D.tam!==16)R.style.setProperty('--bot-tamanho',D.tam+'px');else R.style.removeProperty('--bot-tamanho');
-R.classList.toggle('lume-tam',D.tam!==16);
-R.classList.toggle('letra-normal',D.letra==='normal');
-R.classList.toggle('fundo-liso',D.fundo==='liso');
-R.classList.toggle('sem-acoes',!D.acoes);
-R.classList.toggle('sem-convite',!D.convite);
-R.classList.toggle('sem-anim',!D.anim);
-var i=$('chat-input');if(i)i.setAttribute('enterkeyhint',D.enter?'send':'enter');
-aplicarNome()}
-var marc=[];function marcarTudo(){marc.forEach(function(f){f()})}
-function mudar(k,v){D[k]=v;salvar();aplicar();marcarTudo()}
-function grupo(tit){var g=el('div','defs-grupo');g.appendChild(el('div','defs-rotulo',tit));return g}
-function rotulo(g,t){g.appendChild(el('div','lume-nota',t))}
-function chips(g){var c=el('div','chips');c.style.marginBottom='12px';g.appendChild(c);return c}
-function escolha(c,k,ops){var bs=ops.map(function(o){var b=el('button','chip',o[1]);b.type='button';b.onclick=function(){mudar(k,o[0])};c.appendChild(b);return[b,o[0]]});
-function m(){bs.forEach(function(p){p[0].classList.toggle('ativo',D[k]===p[1])})}m();marc.push(m)}
-function ref(r,n){r.parentNode.insertBefore(n,r.nextSibling);return n}
-var painel=el('div');painel.id='lume-painel';
-painel.innerHTML='<div class=lp-topo><button class=lp-voltar aria-label=Voltar type=button><svg viewBox="0 0 24 24" fill=none><path d="M15 5l-7 7 7 7" stroke=currentColor stroke-width=2 stroke-linecap=round stroke-linejoin=round /></svg></button><div class=lp-titulo></div></div><div class=lp-corpo></div>';
-document.body.appendChild(painel);
-var pTit=painel.querySelector('.lp-titulo'),pCorpo=painel.querySelector('.lp-corpo');
-function fecharPainel(){painel.classList.remove('show')}
-painel.querySelector('.lp-voltar').onclick=fecharPainel;
-function abrirPainel(t,fn){pTit.textContent=t;pCorpo.innerHTML='';fn(pCorpo);painel.classList.add('show')}
-function copiar(t){if(typeof copiarTexto==='function')copiarTexto(t);else if(navigator.clipboard)navigator.clipboard.writeText(t)}
-function confirmar(tit,txt,rot,fnGlobal){if(typeof abrirModal!=='function')return;
-abrirModal(tit,txt,'<button class="destrutivo" onclick="'+fnGlobal+'()">'+(typeof SVG_LIXEIRA!=='undefined'?'<span class="modal-icone">'+SVG_LIXEIRA+'</span>':'')+rot+'</button><button onclick="fecharModal()">'+(typeof SVG_X!=='undefined'?'<span class="modal-icone">'+SVG_X+'</span>':'')+'Cancelar</button>')}
-
-/* ---- o que o Lume aprendeu ---- */
-function lerAprend(){var r=[];try{Object.keys(localStorage).forEach(function(k){if(k.indexOf('botql_aprendido_')!==0)return;var o={};try{o=JSON.parse(localStorage.getItem(k))||{}}catch(e){}
-Object.keys(o).forEach(function(f){String(o[f]||'').split(/\n\s*\n/).forEach(function(b){if(b.trim())r.push({k:k,f:f,t:b.trim()})})})})}catch(e){}return r}
-function removerAprend(it){try{var o=JSON.parse(localStorage.getItem(it.k))||{},bl=String(o[it.f]||'').split(/\n\s*\n/),i=-1;
-for(var j=0;j<bl.length;j++){if(bl[j].trim()===it.t){i=j;break}}
-if(i>=0)bl.splice(i,1);var n=bl.filter(function(x){return x.trim()}).join('\n\n');
-if(n)o[it.f]=n;else delete o[it.f];
-if(Object.keys(o).length)localStorage.setItem(it.k,JSON.stringify(o));else localStorage.removeItem(it.k)}catch(e){}}
-window.lumeApagarAprendido=function(){try{Object.keys(localStorage).forEach(function(k){if(k.indexOf('botql_aprendido_')===0)localStorage.removeItem(k)})}catch(e){}
-if(typeof fecharModal==='function')fecharModal();abrirAprendido()};
-function abrirAprendido(){abrirPainel('O que o Lume aprendeu',function(c){
-var l=lerAprend();
-c.appendChild(el('div','lume-nota',l.length?l.length+(l.length===1?' coisa aprendida':' coisas aprendidas')+' neste aparelho. As mudanças valem depois de reiniciar o app.':'O Lume ainda não aprendeu nada neste aparelho.'));
-if(l.length){var t=el('div','chips');t.style.marginBottom='4px';
-var b1=el('button','chip','Copiar tudo');b1.type='button';b1.onclick=function(){copiar(l.map(function(x){return x.t}).join('\n\n'));toast('Copiado')};
-var b2=el('button','chip lume-perigo','Apagar tudo');b2.type='button';b2.onclick=function(){confirmar('Apagar o que aprendeu','O Lume esquece tudo o que lhe ensinaste neste aparelho.','Apagar','lumeApagarAprendido')};
-var b3=el('button','chip','Reiniciar agora');b3.type='button';b3.onclick=function(){location.reload()};
-t.appendChild(b1);t.appendChild(b2);t.appendChild(b3);c.appendChild(t)}
-l.forEach(function(it){var d=el('div','lp-item');d.appendChild(el('span','',it.t.length>400?it.t.slice(0,400)+'…':it.t));
-var x=el('button');x.type='button';x.setAttribute('aria-label','Remover');x.innerHTML='<svg viewBox="0 0 24 24" fill=none><path d="M18 6L6 18M6 6l12 12" stroke=currentColor stroke-width=2 stroke-linecap=round /></svg>';
-x.onclick=function(){removerAprend(it);d.remove();toast('Removido')};d.appendChild(x);c.appendChild(d)})})}
-
-/* ---- conversas: exportar e importar ---- */
-function chaveConv(){try{return typeof CHAVE_CONVERSAS!=='undefined'?CHAVE_CONVERSAS:null}catch(e){return null}}
-function exportarConversas(){var k=chaveConv(),lista=[];try{lista=JSON.parse(localStorage.getItem(k)||'[]')}catch(e){}
-if(!k||!lista.length){toast('Não há conversas para exportar');return}
-var txt=JSON.stringify({lume:'conversas',v:1,dados:lista});
-if(typeof partilhar==='function')partilhar(txt);else{copiar(txt);toast('Copiado')}}
-function abrirImportar(){abrirPainel('Importar conversas',function(c){
-c.appendChild(el('div','lume-nota','Cola aqui o texto exportado, ou escolhe o ficheiro. As conversas que já existem não são repetidas.'));
-var ta=el('textarea','lp-ta');ta.placeholder='{"lume":"conversas",…}';c.appendChild(ta);
-var err=el('div','lume-nota');err.style.color='#C0392B';err.style.display='none';c.appendChild(err);
-var f=el('input');f.type='file';f.accept='.json,.txt,application/json,text/plain';f.style.display='none';
-f.onchange=function(){var fl=f.files&&f.files[0];if(!fl)return;var r=new FileReader();r.onload=function(){ta.value=String(r.result||'')};r.readAsText(fl)};c.appendChild(f);
-var t=el('div','chips');
-var bf=el('button','chip','Escolher ficheiro');bf.type='button';bf.onclick=function(){f.click()};
-var bi=el('button','chip ativo','Importar');bi.type='button';
-bi.onclick=function(){err.style.display='none';try{var j=JSON.parse(ta.value),arr=Array.isArray(j)?j:(j&&j.dados);if(!Array.isArray(arr))throw 0;
-var k=chaveConv();if(!k)throw 0;var at=[];try{at=JSON.parse(localStorage.getItem(k)||'[]')}catch(e){}
-var ids={};at.forEach(function(x){ids[x.id]=1});var n=0;
-arr.forEach(function(x){if(x&&x.id&&Array.isArray(x.mensagens)&&!ids[x.id]){at.push(x);ids[x.id]=1;n++}});
-localStorage.setItem(k,JSON.stringify(at));if(typeof renderizarListaConversas==='function')renderizarListaConversas();
-toast(n+(n===1?' conversa importada':' conversas importadas'));fecharPainel()}catch(e){err.textContent='Esse texto não parece uma exportação do Lume.';err.style.display='block'}};
-t.appendChild(bf);t.appendChild(bi);c.appendChild(t)})}
-window.lumeApagarTudo=function(){try{Object.keys(localStorage).forEach(function(k){if(/^(botql_|lume_)/.test(k))localStorage.removeItem(k)})}catch(e){}location.reload()};
-
-/* ---- construir os grupos nas Definições ---- */
-var gTema=$('chip-claro')&&$('chip-claro').closest('.defs-grupo'),defs=$('sidebar-defs');
-if(gTema&&defs){var r=gTema,g,c;
-g=grupo('Aparência');rotulo(g,'Cor de destaque');c=el('div','chips');c.style.marginBottom='12px';
-Object.keys(AC).forEach(function(k){var b=el('button','lume-sw');b.type='button';b.style.background=AC[k].s;b.setAttribute('aria-label',AC[k].n);b.onclick=function(){mudar('acento',k)};c.appendChild(b);
-marc.push(function(){b.classList.toggle('ativo',D.acento===k)})});g.appendChild(c);
-rotulo(g,'Tamanho do texto');escolha(chips(g),'tam',[[14,'Pequeno'],[16,'Médio'],[18,'Grande'],[20,'Enorme']]);
-rotulo(g,'Letra das respostas');escolha(chips(g),'letra',[['serif','Com serifa'],['normal','Normal']]);
-rotulo(g,'Fundo do chat');escolha(chips(g),'fundo',[['rabiscos','Com rabiscos'],['liso','Liso']]);
-r=ref(r,g);
-g=grupo('Respostas');rotulo(g,'Ícones debaixo de cada resposta');escolha(chips(g),'acoes',[[true,'Mostrar'],[false,'Esconder']]);
-rotulo(g,'Convite para ensinar o Lume');escolha(chips(g),'convite',[[true,'Mostrar'],[false,'Esconder']]);
-rotulo(g,'Animações');escolha(chips(g),'anim',[[true,'Ligadas'],[false,'Desligadas']]);
-r=ref(r,g);
-g=grupo('Voz');rotulo(g,'Ler as respostas em voz alta');escolha(chips(g),'auto',[[true,'Ligado'],[false,'Desligado']]);
-var ex=el('div');ex.id='lume-voz-extra';ex.style.display='none';
-ex.appendChild(el('div','lume-nota','Velocidade'));var cv=el('div','chips');cv.style.marginBottom='12px';ex.appendChild(cv);escolha(cv,'taxa',[[0.8,'Lenta'],[1,'Normal'],[1.25,'Rápida']]);
-ex.appendChild(el('div','lume-nota','Voz'));var sel=el('select','lume-sel');sel.id='lume-voz-sel';sel.onchange=function(){mudar('voz',sel.value)};var ls=el('div','lume-linha');ls.appendChild(sel);ex.appendChild(ls);
-g.appendChild(ex);var nv=el('div','lume-nota','Neste aparelho a voz e a velocidade são as do sistema.');nv.id='lume-voz-nota';g.appendChild(nv);
-r=ref(r,g);
-g=grupo('Teclado');rotulo(g,'Tecla Enter');escolha(chips(g),'enter',[[true,'Envia a mensagem'],[false,'Muda de linha']]);
-r=ref(r,g);
-var gConv=defs.querySelector('button[onclick*="pedirLimparConversa"]');gConv=gConv&&gConv.closest('.defs-grupo');
-if(gConv){r=gConv;
-g=grupo('Dados');c=el('div','chips');
-[['Ver o que aprendeu',abrirAprendido],['Exportar conversas',exportarConversas],['Importar conversas',abrirImportar]].forEach(function(p){var b=el('button','chip',p[0]);b.type='button';b.onclick=p[1];c.appendChild(b)});
-var bt=el('button','chip lume-perigo','Apagar tudo');bt.type='button';bt.onclick=function(){confirmar('Apagar tudo','Isto apaga as conversas, o que o Lume aprendeu e as definições deste aparelho.','Apagar','lumeApagarTudo')};c.appendChild(bt);
-g.appendChild(c);r=ref(r,g);
-g=grupo('Geral');rotulo(g,'Nome do assistente');var ln=el('div','lume-linha');var inp=el('input','lume-inp');inp.type='text';inp.maxLength=30;inp.placeholder=ORIG.cab||'Lume';inp.value=D.nome||'';
-inp.onchange=function(){D.nome=inp.value.replace(/\s+/g,' ').trim().slice(0,30);inp.value=D.nome;salvar();aplicarNome()};ln.appendChild(inp);
-var br=el('button','chip','Repor');br.type='button';br.onclick=function(){D.nome='';inp.value='';salvar();aplicarNome()};ln.appendChild(br);g.appendChild(ln);r=ref(r,g)}
-var gs=$('defs-sobre')||r;g=grupo('Versão');c=el('div','chips');var cvv=el('span','chip');cvv.style.display='none';c.appendChild(cvv);
-var a=el('a','chip','Código no GitHub');a.href='https://github.com/adilson889/lume';a.target='_blank';a.rel='noopener';c.appendChild(a);g.appendChild(c);ref(gs,g);
-try{fetch('LUME/VERSION',{cache:'no-store'}).then(function(x){return x.ok?x.text():''}).then(function(t){t=String(t||'').trim();if(t&&t.length<20){cvv.textContent='Versão '+t;cvv.style.display=''}}).catch(function(){})}catch(e){}
-}
-
-/* ---- voz: velocidade, voz escolhida e leitura automática ---- */
-function vozes(){try{return(speechSynthesis.getVoices()||[]).filter(function(v){return/^pt/i.test(v.lang)})}catch(e){return[]}}
-function atualizarVoz(){var vs=vozes(),ex=$('lume-voz-extra'),sel=$('lume-voz-sel'),nv=$('lume-voz-nota');if(!ex)return;
-ex.style.display=vs.length?'block':'none';if(nv)nv.style.display=vs.length?'none':'block';
-if(sel&&vs.length){sel.innerHTML='';var o=el('option','','Automática');o.value='';sel.appendChild(o);vs.forEach(function(v){var p=el('option','',v.name+' ('+v.lang+')');p.value=v.name;sel.appendChild(p)});sel.value=D.voz}}
-function envolverVoz(){var S=window.speechSynthesis;if(!S||S._lumeW)return;var o=S.speak;
-try{S.speak=function(u){try{if(u&&!window.N){u.rate=D.taxa||1}if(u&&D.voz&&S.getVoices){var v=S.getVoices().filter(function(x){return x.name===D.voz})[0];if(v)u.voice=v}}catch(e){}return o.apply(S,arguments)};S._lumeW=1}catch(e){}}
-document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('.msg-acao[data-acao="voz"]'))envolverVoz()},true);
-try{if(window.speechSynthesis)speechSynthesis.onvoiceschanged=atualizarVoz}catch(e){}
-var ad=window.abrirDefinicoes;if(typeof ad==='function')window.abrirDefinicoes=function(){var x=ad.apply(this,arguments);atualizarVoz();marcarTudo();return x};
-var espera=0,env=window.enviar;
-if(typeof env==='function')window.enviar=function(){espera=Date.now();return env.apply(this,arguments)};
-var chat=$('chat');
-if(chat&&window.MutationObserver)new MutationObserver(function(ms){if(!D.auto||!espera)return;
-for(var i=0;i<ms.length;i++){var ns=ms[i].addedNodes;for(var j=0;j<ns.length;j++){var n=ns[j];
-if(n.nodeType!==1)continue;var b=n.classList&&n.classList.contains('msg-acoes')?n.querySelector('[data-acao="voz"]'):null;
-if(b&&Date.now()-espera<120000){espera=0;envolverVoz();b.click();return}}}}).observe(chat,{childList:true,subtree:true});
-
-/* ---- Enter envia ---- */
-var inp=$('chat-input');
-if(inp)inp.addEventListener('keydown',function(e){if(!D.enter||e.key!=='Enter'||e.shiftKey||e.isComposing)return;
-e.preventDefault();if(inp.value.trim()&&typeof window.enviar==='function')window.enviar()});
-
-aplicar();marcarTudo();
-window.addEventListener('load',aplicarNome);setTimeout(aplicarNome,2500);
-}catch(err){try{console.error('lume-defs',err)}catch(e){}}})();
+<!-- Definições carregadas de LUME/definicoes.html -->
+<script id="lume-defs-loader">
+(function(){
+var alvo=document.getElementById('sidebar-defs');
+if(!alvo)return;
+fetch('LUME/definicoes.html',{cache:'no-store'})
+.then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.text()})
+.then(function(html){
+var doc=new DOMParser().parseFromString(html,'text/html');
+var css=doc.getElementById('lume-defs-css');
+var raiz=doc.getElementById('defs-raiz');
+var js=doc.getElementById('lume-defs-js');
+if(!css||!raiz||!js)throw new Error('fragmento incompleto');
+alvo.innerHTML='';
+document.head.appendChild(css.cloneNode(true));
+alvo.appendChild(raiz.cloneNode(true));
+var script=document.createElement('script');
+script.id='lume-defs-js';
+script.textContent=js.textContent;
+document.body.appendChild(script);
+})
+.catch(function(e){console.error('Não foi possível carregar as definições do Lume:',e)});
+})();
 </script>
 </body>
 </html>
