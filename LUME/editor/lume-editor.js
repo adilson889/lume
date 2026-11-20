@@ -9,17 +9,24 @@
 var VARS=["--bg","--bg2","--bg3","--card","--text","--border","--muted","--r","--on"];
 var IC='<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M10 13l-2 2 2 2M14 13l2 2-2 2"/></svg>';
 var IL='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>';
+var ICC='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+var ICD='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>';
 var css=document.createElement("style");
-css.textContent=".lume-arquivo{display:flex;align-items:center;gap:10px;width:100%;max-width:340px;box-sizing:border-box;padding:8px 8px 8px 10px;border:1px solid var(--border,#c9ceb8);border-radius:14px;background:var(--card,#fff);color:var(--text,#1d2410);cursor:pointer;-webkit-tap-highlight-color:transparent}"
+css.textContent=".lume-arquivo{display:flex;align-items:center;gap:8px;width:100%;max-width:360px;box-sizing:border-box;padding:10px 10px 10px 8px;border:1px solid var(--border,#c9ceb8);border-radius:14px;background:var(--card,#fff);color:var(--text,#1d2410);cursor:pointer;-webkit-tap-highlight-color:transparent}"
 +".lume-arquivo:active{transform:scale(.98)}"
-+".lume-arquivo .la-ic{flex:none;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:var(--r,#4a6a10);color:var(--on,#fff)}"
-+".lume-arquivo .la-ic svg{width:20px;height:20px}"
-+".lume-arquivo .la-t{flex:1;min-width:0}"
++".lume-arquivo .la-ic{flex:none;position:relative;width:46px;height:50px}"
++".lume-arquivo .la-ic i{position:absolute;box-sizing:border-box;width:34px;height:44px;border:1px solid var(--r,#4a6a10);border-radius:4px;font-style:normal}"
++".lume-arquivo .la-ic .b{left:9px;top:0;background:var(--bg2,#e3ecc9)}"
++".lume-arquivo .la-ic .f{left:1px;top:6px;background:var(--bg,#fff)}"
++".lume-arquivo .la-ic .f::before{content:'';position:absolute;top:-1px;right:-1px;width:12px;height:12px;background:linear-gradient(225deg,var(--card,#fff) 50%,var(--bg3,#d5e2b0) 50%);border-bottom-left-radius:4px}"
++".lume-arquivo .la-ic .f b{position:absolute;left:0;right:0;bottom:4px;text-align:center;font:600 9px/1 sans-serif;letter-spacing:.04em;color:var(--r,#4a6a10)}"
++".lume-arquivo .la-t{flex:1;min-width:0;margin-left:4px}"
 +".lume-arquivo .la-n{display:block;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}"
-+".lume-arquivo .la-s{display:block;font-size:12px;color:var(--muted,#5c6b3a);margin-top:1px}"
++".lume-arquivo .la-s{display:block;font-size:12px;color:var(--muted,#5c6b3a);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}"
 +".lume-arquivo .la-in{display:block;width:100%;box-sizing:border-box;font:inherit;font-size:14px;font-weight:600;padding:2px 6px;border:1px solid var(--r,#4a6a10);border-radius:8px;background:var(--bg,#fff);color:var(--text,#1d2410);outline:none}"
-+".lume-arquivo .la-ed{flex:none;width:34px;height:34px;padding:0;border:0;border-radius:10px;background:transparent;color:var(--muted,#5c6b3a);display:flex;align-items:center;justify-content:center;cursor:pointer}"
-+".lume-arquivo .la-ed:active{background:var(--bg2,#eef0e2)}"
++".lume-arquivo .la-b{flex:none;width:32px;height:32px;padding:0;border:0;border-radius:50%;background:var(--bg2,#eef0e2);color:var(--r,#4a6a10);display:flex;align-items:center;justify-content:center;cursor:pointer}"
++".lume-arquivo .la-b:active{background:var(--bg3,#dfe6c8)}"
++".lume-arquivo .la-b svg{width:17px;height:17px}"
 +"#lume-ed-frame{position:fixed;inset:0;z-index:9990;width:100%;height:100%;border:0;background:var(--bg,#f6f7ee)}";
 document.head.appendChild(css);
 function toast(t){if(typeof mostrarToast==="function")mostrarToast(t)}
@@ -130,15 +137,24 @@ function montar(el){
  var nome=limparNome(el.dataset.nome||window.lumeNomeFicheiro||"")||nomeFicheiro(h);
  window.lumeNomeFicheiro="";
  var c=document.createElement("div");c.className="lume-arquivo";c.setAttribute("role","button");c.tabIndex=0;
- c.innerHTML='<span class="la-ic">'+IC+'</span><span class="la-t"><span class="la-n"></span><span class="la-s">Página HTML - toca para abrir</span></span><button type="button" class="la-ed" aria-label="Mudar nome">'+IL+'</button>';
+ c.innerHTML='<span class="la-ic"><i class="b"></i><i class="f"><b>HTML</b></i></span><span class="la-t"><span class="la-n"></span><span class="la-s">Toca para abrir</span></span><button type="button" class="la-b la-cp" aria-label="Copiar código">'+ICC+'</button><button type="button" class="la-b la-dl" aria-label="Descarregar">'+ICD+'</button><button type="button" class="la-b la-ed" aria-label="Mudar nome">'+IL+'</button>';
  var n=c.querySelector(".la-n");n.textContent=nome;
  c.addEventListener("click",function(e){
-  if(e.target.closest(".la-ed,.la-in"))return;
+  if(e.target.closest(".la-b,.la-in"))return;
   abrir(h,{nome:nome});
  });
  c.addEventListener("keydown",function(e){
   if(e.target!==c)return;
   if(e.key==="Enter"||e.key===" "){e.preventDefault();abrir(h,{nome:nome})}
+ });
+ c.querySelector(".la-cp").addEventListener("click",function(e){
+  e.stopPropagation();
+  if(typeof copiarTexto==="function")copiarTexto(h);
+  toast("Copiado");
+ });
+ c.querySelector(".la-dl").addEventListener("click",function(e){
+  e.stopPropagation();
+  if(typeof window.baixarFicheiro==="function")window.baixarFicheiro(nome,h,"text/html");else toast("Descarregar indisponível");
  });
  c.querySelector(".la-ed").addEventListener("click",function(e){
   e.stopPropagation();
