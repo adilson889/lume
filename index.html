@@ -1388,13 +1388,7 @@ var ITENS=[
  ["Partilhar",SVG_PARTILHAR,function(){partilhar(T)}],
  ["Traduzir",SVG_TRADUZIR,function(){seletorIdioma("Traduzir para","Escolhe o idioma.","",function(l){traduzirPara(l)},["pt","Português","Original"])}],
  ["Informações",SVG_INFO,infoMsg],
- ["Denunciar",SVG_BANDEIRA,function(){abrirModal("Denunciar resposta","Marcar esta resposta como errada ou imprópria?",'<button class="destrutivo" onclick="confirmarDenuncia()"><span class="modal-icone">'+SVG_BANDEIRA+'</span>Denunciar</button><button onclick="fecharModal()"><span class="modal-icone">'+SVG_X+'</span>Cancelar</button>')}],
-  ["Transferir como texto (.txt)",SVG_PARTILHAR,function(){dl("resposta.txt",T,"text/plain")}],
- ["Transferir como Markdown (.md)",SVG_PARTILHAR,function(){dl("resposta.md",paraMd(),"text/markdown")}],
- ["Transferir como HTML (.html)",SVG_PARTILHAR,function(){dl("resposta.html",paraHtml(),"text/html")}],
- ["Transferir como SVG (.svg)",SVG_PARTILHAR,function(){dl("resposta.svg",paraSvg(),"image/svg+xml")}],
- ["Copiar como Markdown",SVG_COPIAR,function(){copiarTexto(paraMd());mostrarToast("Markdown copiado")}],
- ["Copiar como HTML",SVG_COPIAR,function(){copiarTexto(limpo().innerHTML);mostrarToast("HTML copiado")}]];
+ ["Denunciar",SVG_BANDEIRA,function(){abrirModal("Denunciar resposta","Marcar esta resposta como errada ou imprópria?",'<button class="destrutivo" onclick="confirmarDenuncia()"><span class="modal-icone">'+SVG_BANDEIRA+'</span>Denunciar</button><button onclick="fecharModal()"><span class="modal-icone">'+SVG_X+'</span>Cancelar</button>')}]];
 
 function menuMais(btn){
  fecharMenuConversa();
