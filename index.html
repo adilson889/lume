@@ -423,7 +423,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:64px;backgrou
 </div>
 <div id=statusbar>
 <button id=btn-menu onclick=abrirSidebar() aria-label=Menu>
-<svg viewBox="0 0 24 24" fill=none><path d="M4 9h16M4 15h10" stroke=#fff stroke-width=2 stroke-linecap=round /></svg>
+<svg viewBox="0 0 24 24" fill=none><path d="M4 7h16M4 12h16M4 17h16" stroke=#fff stroke-width=2 stroke-linecap=round /></svg>
 </button>
 <button id=btn-nova onclick=novaConversa() aria-label="Nova conversa">
 <svg viewBox="0 0 24 24" fill=none><path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.5L3 20.5l1.5-5.2A8.5 8.5 0 1 1 21 11.5zM12 8.5v6M9 11.5h6" stroke=currentColor stroke-width=2 stroke-linecap=round stroke-linejoin=round /></svg>
@@ -1501,9 +1501,21 @@ enviar=function(){
 #input-area .pv-linha-botoes>button{border-radius:12px}
 #input-area .pv-linha-botoes>button:first-child,#input-area .pv-linha-botoes>button[aria-label="Mensagem de voz"]:not(.gravando){background:transparent}
 #input-area .pv-linha-botoes>button:first-child:active,#input-area .pv-linha-botoes>button[aria-label="Mensagem de voz"]:not(.gravando):active,#btn-voz-modo:active{background:rgba(69,90,11,.14);background:color-mix(in srgb,var(--r) 14%,transparent)}
-#input-area .pv-linha-botoes>button:first-child svg path,#input-area .pv-linha-botoes>button[aria-label="Mensagem de voz"] svg path{stroke:var(--muted)}
+#input-area .pv-linha-botoes>button:first-child svg path,#input-area .pv-linha-botoes>button[aria-label="Mensagem de voz"] svg path{stroke:var(--r)}
 #btn-voz-modo{background:transparent}
 #btn-voz-modo svg path{stroke:var(--r)}
+/* ícones em duas cores: traço verde do tema + preenchimento claro das bolhas */
+#btn-menu svg path,#btn-nova svg path,#btn-fundo svg path{stroke:var(--r)}
+#btn-nova svg path{fill:var(--bolha)}
+#btn-topo svg circle{fill:var(--r)}
+#sidebar svg [stroke="#8A8A8A"],#sidebar-defs svg [stroke="#8A8A8A"]{stroke:var(--r)}
+.sidebar-icone{color:var(--r)}
+#input-area svg path[d^="M12 3a3 3 0 0 1 3 3v5"]{fill:var(--bolha)}
+.msg-acao,.msg-acao.ativo,.msg-acao.falando{color:var(--r)}
+.msg-acao svg rect[x="9"],.msg-acao svg circle[r="9"],.msg-acao svg path[d^="M7 10v11H4"],.msg-acao svg path[d^="M17 14V3h3"],.msg-acao svg path[d^="M5 21V4M5 4h11"],.msg-acao svg path[d^="M4 9v6h4l5 4V5"]{fill:var(--bolha)}
+.msg-acao.ativo svg path[d]{fill:var(--r)}
+.vb-peq{color:var(--r)}
+.vb-peq svg path[d^="M21 11.5"]{fill:var(--bolha)}
 </style>
 <script>(function(){
 var IC_IMG=_ic('<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="1.5"/><path d="M21 15l-5-5L5 21"/>');
