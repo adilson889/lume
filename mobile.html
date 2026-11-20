@@ -105,7 +105,7 @@ html,body{position:fixed;top:0;left:0;width:100%}
 .msg.usuario{box-shadow:0 2px 8px rgba(20,24,10,.045);border:1px solid transparent;transition:transform .18s,background .2s}
 .msg.sistema{transform-origin:left center}
 @keyframes mensagemEntrar{from{opacity:0;transform:translateY(7px) scale(.992)}to{opacity:1;transform:translateY(0) scale(1)}}
-.atividade-msg{align-self:flex-start;display:block;width:fit-content;max-width:94%;margin:5px 0 10px;padding:0;background:transparent;border:0;border-radius:0;color:var(--muted);box-shadow:none;animation:indicadorEntrar .35s cubic-bezier(.2,.8,.2,1) both}
+.atividade-msg{align-self:stretch;display:block;width:100%;max-width:100%;box-sizing:border-box;margin:5px 0 12px;padding:0 2px;background:transparent;border:0;border-radius:0;color:var(--muted);box-shadow:none;animation:indicadorEntrar .35s cubic-bezier(.2,.8,.2,1) both}
 .atividade-resumo{display:flex;align-items:center;gap:9px;min-height:27px;cursor:pointer;list-style:none;outline:none}
 .atividade-resumo::-webkit-details-marker{display:none}
 .atividade-icone{width:20px;height:20px;display:flex;align-items:center;justify-content:center;flex:none;color:var(--r)}
@@ -1158,7 +1158,9 @@ function adicionarDigitando(){
  e.dataset.etapaAtual="";
  e.innerHTML='<summary class="atividade-resumo"><span class="atividade-icone">'+iconeEtapaEspera("pensar")+'</span><span class="atividade-titulo">A iniciar</span><span class="atividade-pontos"><i></i><i></i><i></i></span><span class="atividade-seta" aria-hidden="true"></span></summary><ol class="atividade-etapas"></ol>';
  e.open=true;
- chatEl.appendChild(e);
+ const ultimaMensagem=chatEl.querySelector(".msg.usuario:last-of-type");
+ if(ultimaMensagem)chatEl.insertBefore(e,ultimaMensagem);
+ else chatEl.appendChild(e);
  rolarParaFim()
 }
 function esconderDigitando(){
@@ -1195,7 +1197,7 @@ function atualizarEtapaEspera(texto){
  box.classList.add("mudou");
  rolarParaFim()
 }
-window.lumeAtualizarEtapa=atualizarEtapaEspera;function esconderDigitando(){const e=document.getElementById("digitando");e&&e.remove()}function ajustarAltura(){window.atualizarBotaoEnviar&&atualizarBotaoEnviar(),window.atualizarExpandido&&atualizarExpandido(),inputEl.style.height="auto",inputEl.style.height=Math.min(inputEl.scrollHeight,132)+"px",rolarParaFim()}/* Mensagens noutro idioma: o utilizador ve o que escreveu, o bot recebe em portugues. */
+window.lumeAtualizarEtapa=atualizarEtapaEspera;function ajustarAltura(){window.atualizarBotaoEnviar&&atualizarBotaoEnviar(),window.atualizarExpandido&&atualizarExpandido(),inputEl.style.height="auto",inputEl.style.height=Math.min(inputEl.scrollHeight,132)+"px",rolarParaFim()}/* Mensagens noutro idioma: o utilizador ve o que escreveu, o bot recebe em portugues. */
 async function paraPortugues(t){
  var x=String(t||"");
  if(x.length<3||x.length>1500||/```/.test(x)||/^[\d\s\p{P}\p{S}]+$/u.test(x))return x;
