@@ -8,7 +8,7 @@
 (function(){
 "use strict";
 var CH="lume_dialogo_v1";
-var S={n:0,pend:null,humor:0,ultimoPedido:"",ultimaPergunta:"",ultimoEstado:null};
+var S={n:0,pend:null,humor:0,ultimoPedido:"",ultimaPergunta:"",ultimaResposta:"",ultimoEstado:null};
 try{var j0=sessionStorage.getItem(CH);if(j0)S=Object.assign(S,JSON.parse(j0))}catch(e){}
 function gravar(){try{sessionStorage.setItem(CH,JSON.stringify(S))}catch(e){}}
 function nz(t){return String(t||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"")}
@@ -90,6 +90,7 @@ function eco(raw){
 /* ---------- registar o que o Lume perguntou ---------- */
 function registar(texto){
  try{
+  var r0=String(texto||"").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();if(r0)S.ultimaResposta=r0.slice(0,1500);
   var s=String(texto||"");
   if(/^\s*(<program|<!doctype|<html)/i.test(s)||s.length>700){S.pend=null;S.ultimaPergunta="";gravar();return}
   s=s.replace(/<[^>]*>/g," ").replace(/&nbsp;/g," ").replace(/\s+/g," ").trim();
@@ -129,6 +130,11 @@ function completar(q){
 }
 function reescrever(q){
  try{
+  var cc=nz(q).replace(/[^a-z0-9 ]+/g," ").trim();
+  if(S.ultimoPedido&&cc.split(" ").length<=4){
+   if(/^(de novo|outra vez|repete)$/.test(cc))return S.ultimoPedido;
+   if(/^(mais (curto|simples|longo|detalhado)|faz mais (curto|simples))$/.test(cc))return S.ultimoPedido+" "+q;
+  }
   var p=S.pend;if(!p||S.n+1-p.n>3)return q;
   var f=analisar(q);if(f.pergunta||f.n>12||f.sim||f.nao)return q;
   var novo=null;
@@ -196,5 +202,48 @@ function conversar(q){
  }catch(err){}
  return "";
 }
-window.LumeDialogo={ver:ver,registar:registar,reescrever:reescrever,resolver:resolver,conversar:conversar,analisar:analisar,estado:function(){return S}};
+/* ---------- memoria persistente: factos ditos pelo utilizador (regras em memoria.txt) ---------- */
+var MK="lume_memoria_v1";
+function mler(){try{return JSON.parse(localStorage.getItem(MK)||"{}")}catch(e){return {}}}
+function mgravar(m){try{localStorage.setItem(MK,JSON.stringify(m))}catch(e){}}
+function regrasMemoria(){
+ var r=[];
+ arq("memoria.txt").split(/\r?\n/).forEach(function(l){
+  l=l.trim();if(!l||l.charAt(0)==="#")return;
+  var p=l.split("|");if(p.length<3)return;
+  try{r.push({k:p[0].trim(),rot:p[1].trim(),re:new RegExp(p.slice(2).join("|").trim(),"i")})}catch(e){}
+ });
+ return r;
+}
+function memorizar(q){
+ try{
+  var raw=String(q||"").trim();if(!raw||raw.length>200||/\?\s*$/.test(raw))return null;
+  var rg=regrasMemoria(),m=mler();
+  for(var i=0;i<rg.length;i++){
+   var x=raw.match(rg[i].re);if(!x||!x[1])continue;
+   var v=x[1].trim().replace(/[.!,;]+$/,"");if(!v)continue;
+   if(rg[i].k==="nome")v=v.charAt(0).toUpperCase()+v.slice(1);
+   var antes=m[rg[i].k]&&m[rg[i].k].val;
+   if(antes===v)return {novo:false,k:rg[i].k};
+   m[rg[i].k]={rot:rg[i].rot,val:v,t:Date.now()};mgravar(m);
+   if(rg[i].k==="nome"){try{localStorage.setItem("lume_nome",v)}catch(e){}}
+   return {novo:true,k:rg[i].k,rot:rg[i].rot,val:v};
+  }
+ }catch(e){}
+ return null;
+}
+function recuperar(q){
+ var c=nz(q).replace(/[^a-z0-9 ]+/g," ").replace(/\s+/g," ").trim();
+ if(!/(o que sabes (de|sobre) mim|lembras te de mim|o que tens guardado|o que guardaste|a tua memoria|minha memoria)/.test(c))return null;
+ var m=mler(),ks=Object.keys(m);
+ if(!ks.length)return {achou:false,resposta:"Ainda não tenho nada guardado sobre ti. Diz-me, por exemplo, como te chamas."};
+ return {achou:true,resposta:"Sei isto sobre ti: "+ks.map(function(k){return m[k].rot.toLowerCase()+": "+m[k].val}).join("; ")+"."};
+}
+function memoriaTexto(){
+ var m=mler(),l=Object.keys(m).map(function(k){return "• "+m[k].rot+": "+m[k].val});
+ if(S.ultimoPedido)l.push("• Último pedido: "+S.ultimoPedido);
+ return l.length?l.join("\n"):"Ainda não há nada guardado.";
+}
+function limpar(){try{localStorage.removeItem(MK);localStorage.removeItem("lume_nome");S.ultimoPedido="";S.ultimaResposta="";gravar()}catch(e){}}
+window.LumeDialogo={memorizar:memorizar,recuperar:recuperar,memoriaTexto:memoriaTexto,limpar:limpar,ver:ver,registar:registar,reescrever:reescrever,resolver:resolver,conversar:conversar,analisar:analisar,estado:function(){return S}};
 })();

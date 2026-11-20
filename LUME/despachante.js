@@ -304,7 +304,13 @@ function coloquial(q){
 async function tentar(q){
  q=coloquial(q);
  var DL=window.LumeDialogo;
- if(DL&&typeof window.lumeOnReply==="function"){DL.ver(q);var rd=DL.resolver(q);if(rd&&rd.resposta){window.lumeOnReply({text:rd.resposta});return true}}
+ if(DL&&typeof window.lumeOnReply==="function"){
+  var etp=window.lumeAtualizarEtapa,esp=function(t,ms){etp&&etp(t);return new Promise(function(r){setTimeout(r,ms||500)})};
+  var rc=DL.recuperar&&DL.recuperar(q);
+  if(rc){await esp("A procurar na memória...");await esp(rc.achou?"Memória recuperada":"Nada guardado ainda",400);window.lumeOnReply({text:rc.resposta});return true}
+  var mm=DL.memorizar&&DL.memorizar(q);
+  if(mm){await esp("A atualizar a memória...");await esp(mm.novo?"Memória atualizada":"Memória confirmada",400)}
+  DL.ver(q);var rd=DL.resolver(q);if(rd&&rd.resposta){window.lumeOnReply({text:rd.resposta});return true}}
  if(typeof window.lumeOnReply==="function"){var conversa=gerarConversa(q);if(conversa){window.lumeAtualizarEtapa&&window.lumeAtualizarEtapa("A compor uma resposta para ti...");window.lumeOnReply({text:conversa});return true;}}
  var caps=lerCapacidades();if(!caps.length||typeof window.lumeOnReply!=="function")return false;
  var t=norm(q),m=medidores(q,t);

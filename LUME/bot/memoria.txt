@@ -1,0 +1,6 @@
+# Regras da memória do Lume: chave | rótulo | padrão (regex, sem distinguir maiúsculas; o grupo 1 é o valor guardado)
+# Só guarda o que o utilizador diz. A mesma chave substitui o valor antigo.
+nome | O teu nome | ^(?:eu )?(?:chamo-me|chamo me|o meu nome é|meu nome é) ([a-zà-ÿ]{2,20})$
+local | Onde moras | ^(?:eu )?(?:moro em|vivo em|sou de) ([a-zà-ÿ ]{2,30})$
+gosto | Do que gostas | ^(?:eu )?(?:gosto de|adoro) ([a-zà-ÿ0-9 ]{2,40})$
+nota | Nota | ^(?:lembra-te|lembra te|guarda) que (.{2,120})$
