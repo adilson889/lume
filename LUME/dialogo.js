@@ -244,6 +244,8 @@ function memoriaTexto(){
  if(S.ultimoPedido)l.push("• Último pedido: "+S.ultimoPedido);
  return l.length?l.join("\n"):"Ainda não há nada guardado.";
 }
+function lista(){var m=mler();return Object.keys(m).map(function(k){return {k:k,rot:m[k].rot,val:m[k].val}})}
+function esquecer(k){var m=mler();delete m[k];mgravar(m);if(k==="nome"){try{localStorage.removeItem("lume_nome")}catch(e){}}}
 function limpar(){try{localStorage.removeItem(MK);localStorage.removeItem("lume_nome");S.ultimoPedido="";S.ultimaResposta="";gravar()}catch(e){}}
-window.LumeDialogo={memorizar:memorizar,recuperar:recuperar,memoriaTexto:memoriaTexto,limpar:limpar,ver:ver,registar:registar,reescrever:reescrever,resolver:resolver,conversar:conversar,analisar:analisar,estado:function(){return S}};
+window.LumeDialogo={memorizar:memorizar,recuperar:recuperar,memoriaTexto:memoriaTexto,lista:lista,esquecer:esquecer,limpar:limpar,ver:ver,registar:registar,reescrever:reescrever,resolver:resolver,conversar:conversar,analisar:analisar,estado:function(){return S}};
 })();

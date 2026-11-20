@@ -77,6 +77,7 @@ ambar:{n:'Âmbar',s:'#9A4A0A',on:'#FFFFFF',b:'#F5DFC8',dc:'#F0B27A',don:'#3D1C00
 rosa:{n:'Rosa',s:'#A12D5F',on:'#FFFFFF',b:'#F5D6E3',dc:'#F0A0C0',don:'#4A0F28',db:'#4A2535'}};
 var TAM=[[14,'Pequeno'],[16,'Médio'],[18,'Grande'],[20,'Enorme']];
 var IC={
+memoria:'<svg viewBox="0 0 24 24" fill=none stroke=currentColor stroke-width=1.8 stroke-linecap=round stroke-linejoin=round><path d="M12 3a9 9 0 1 0 9 9M12 7v5l3 2" /></svg>',
 seta:'<svg viewBox="0 0 24 24" fill=none><path d="M15 5l-7 7 7 7" stroke=currentColor stroke-width=2 stroke-linecap=round stroke-linejoin=round /></svg>',
 chev:'<svg viewBox="0 0 24 24" fill=none><path d="M9 5l7 7-7 7" stroke=currentColor stroke-width=2 stroke-linecap=round stroke-linejoin=round /></svg>',
 check:'<svg viewBox="0 0 24 24" fill=none><path d="M5 12.5l4.5 4.5L19 7" stroke=currentColor stroke-width=2.2 stroke-linecap=round stroke-linejoin=round /></svg>',
@@ -161,6 +162,17 @@ l.forEach(function(it){var d=el('div','dp-item');d.appendChild(el('span','',it.t
 var x=el('button');x.type='button';x.setAttribute('aria-label','Remover');x.innerHTML=IC.x;
 x.onclick=function(){removerAprend(it);d.remove();arredondar();toast('Removido')};d.appendChild(x);lista.appendChild(d)})})}
 
+/* ---- memoria: o que o Lume guardou sobre o utilizador ---- */
+window.lumeApagarMemoria=function(){if(window.LumeDialogo)LumeDialogo.limpar();if(typeof fecharModal==='function')fecharModal();subMemoria()};
+function subMemoria(){abrirSub('Memória',function(c){
+var DL2=window.LumeDialogo,l=DL2&&DL2.lista?DL2.lista():[];
+c.appendChild(el('div','dp-nota',l.length?'O que o Lume guardou sobre ti neste aparelho.':'O Lume ainda não guardou nada sobre ti neste aparelho.'));
+if(l.length){var t=el('div','dp-botoes'),b=el('button','dp-btn dp-perigo','Apagar tudo');b.type='button';b.onclick=function(){confirmar('Apagar a memória','O Lume esquece o que guardou sobre ti.','Apagar','lumeApagarMemoria')};t.appendChild(b);c.appendChild(t)}
+var lista=el('div','dp-lista');lista.style.marginTop='8px';c.appendChild(lista);
+l.forEach(function(it){var d=el('div','dp-item');d.appendChild(el('span','',it.rot+': '+it.val));
+var x=el('button');x.type='button';x.setAttribute('aria-label','Esquecer');x.innerHTML=IC.x;
+x.onclick=function(){DL2.esquecer(it.k);d.remove();arredondar();toast('Esquecido')};d.appendChild(x);lista.appendChild(d)})})}
+
 /* ---- conversas: exportar e importar ---- */
 function chaveConv(){try{return typeof CHAVE_CONVERSAS!=='undefined'?CHAVE_CONVERSAS:null}catch(e){return null}}
 function exportarConversas(){var k=chaveConv(),lista=[];try{lista=JSON.parse(localStorage.getItem(k)||'[]')}catch(e){}
@@ -223,6 +235,7 @@ c=secao('Teclado');
 valor(c,'Tecla Enter',function(){return D.enter?'Envia a mensagem':'Muda de linha'},escD('enter','Tecla Enter',[[true,'Envia a mensagem'],[false,'Muda de linha']]));
 c=secao('Dados');
 icone(c,'ideia','O que o Lume aprendeu',subAprendido);
+icone(c,'memoria','Memória',subMemoria);
 icone(c,'sobe','Exportar conversas',exportarConversas);
 icone(c,'desce','Importar conversas',subImportar);
 icone(c,'lixo','Limpar conversa',function(){if(typeof fecharSidebar==='function')fecharSidebar();if(typeof pedirLimparConversa==='function')pedirLimparConversa()});
