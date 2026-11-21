@@ -324,3 +324,6 @@ Lume - historico de versoes
 0.5.18
 - Base de programacao desligada: conhecimento_programacao.txt sai de arquivos.json e do OTHERWISE do main.sql; a pesquisa na Wikipedia (SEARCH) tambem. Ficheiro mantido no repo para ligar mais tarde. O bot so usa o aprendido (Ensinar) e a resposta de reserva.
 - Respostas do Lume sobre si deixam de falar da base e da Wikipedia.
+
+0.5.19
+- READMEs (pt, en, zh) atualizados: a cadeia de consulta passa a ser aprendido -> sondagem -> resposta de reserva; base de programacao e Wikipedia indicadas como desligadas.

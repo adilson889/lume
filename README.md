@@ -33,19 +33,19 @@ Quando não encontra uma resposta adequada, o Lume pode reconhecer essa limitaç
 
 Cada mensagem passa primeiro pelas regras de conversa (ajuda, saudações, despedidas, agradecimentos e estado). As restantes seguem uma cadeia de consulta:
 
-1. **Base de conhecimento** (`conhecimento_programacao.txt`): procura uma resposta nos conteúdos preparados.
-2. **Conhecimento aprendido** (`aprendido.txt`): consulta conteúdos que o Lume já aprendeu e que estão disponíveis para utilização.
-3. **Pesquisa na web** (Wikipédia): é acionada quando a mensagem é identificada como uma questão de programação que a base ainda não cobre. O resultado pode ser guardado para utilização posterior.
-4. **Sondagem**: quando existem várias respostas possíveis, o Lume pode apresentá-las para o utilizador escolher.
-5. **Pedido de ajuda ou resposta de reserva**: quando não encontra informação suficiente, pode solicitar ajuda ou apresentar uma resposta de reserva.
+1. **Conhecimento aprendido** (`aprendido.txt`): consulta conteúdos que o Lume já aprendeu com as pessoas e que estão disponíveis para utilização.
+2. **Sondagem**: quando existem várias respostas possíveis, o Lume pode apresentá-las para o utilizador escolher.
+3. **Pedido de ajuda ou resposta de reserva**: quando não encontra informação suficiente, pode solicitar ajuda ou apresentar uma resposta de reserva.
 
 A sondagem apresenta as opções numeradas e termina assim que o utilizador escolhe uma.
 
+> Desligado por agora: a base de programação (`conhecimento_programacao.txt`) e a pesquisa na Wikipédia. O ficheiro continua no repositório e pode ser ligado de novo acrescentando-o a `arquivos.json` e às linhas `THINK`/`ASK`/`SEARCH` de `main.sql`.
+
 ## Identificação da intenção
 
-O chat utiliza <a href="https://github.com/axa-group/nlp.js">NLP.js</a>, incluído num único ficheiro (`LUME/vendor/nlp.min.js`, 127 KB), para classificar as mensagens. Entre as categorias estão temas conhecidos, conversa informal, mensagens fora do domínio e questões de programação ainda não cobertas pela base.
+O chat utiliza <a href="https://github.com/axa-group/nlp.js">NLP.js</a>, incluído num único ficheiro (`LUME/vendor/nlp.min.js`, 127 KB), para classificar as mensagens. Entre as categorias estão conversa informal e mensagens fora do domínio.
 
-O classificador é treinado quando a página abre, utilizando os temas da base e os exemplos de `LUME/bot/intencoes.txt`. Isto ajuda, por exemplo, a evitar que uma pergunta fora do domínio de programação provoque uma pesquisa desnecessária.
+O classificador é treinado quando a página abre, utilizando os exemplos de `LUME/bot/intencoes.txt`.
 
 Para ensinar uma intenção, acrescenta linhas no formato `intencao | frase de exemplo` ao ficheiro `intencoes.txt`.
 
@@ -64,7 +64,7 @@ index.html                      chat (página estática, sem compilação)
 LUME/
   bot/                          main.sql e os ficheiros de texto utilizados
     arquivos.json               lista dos ficheiros carregados pelo chat
-    conhecimento_programacao.txt
+    conhecimento_programacao.txt  (desligado por agora)
     intencoes.txt
     aprendido.txt
   vendor/nlp.min.js             NLP.js num único ficheiro

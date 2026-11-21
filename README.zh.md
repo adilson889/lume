@@ -33,19 +33,19 @@ Lume 是一个**对话机器人（BOT）**，完全使用 <a href="https://githu
 
 每条消息首先经过对话规则处理（帮助、问候、告别、感谢和状态）。其余消息按照以下顺序查找：
 
-1. **知识库**（`conhecimento_programacao.txt`）：在已有内容中寻找答案。
-2. **已学习的知识**（`aprendido.txt`）：查找 Lume 已经学到并可供使用的内容。
-3. **网络搜索**（维基百科）：当消息被识别为知识库尚未涵盖的编程问题时触发。搜索结果可以保存，以便以后使用。
-4. **选项投票**：如果存在多个可能答案，Lume 可以展示这些答案并让用户选择。
-5. **请求帮助或备用回答**：如果找不到足够的信息，Lume 可以向人类寻求帮助，或者给出备用回答。
+1. **已学习的知识**（`aprendido.txt`）：查找 Lume 已经从人们那里学到并可供使用的内容。
+2. **选项投票**：如果存在多个可能答案，Lume 可以展示这些答案并让用户选择。
+3. **请求帮助或备用回答**：如果找不到足够的信息，Lume 可以向人类寻求帮助，或者给出备用回答。
 
 投票会显示带编号的选项，用户作出选择后投票即结束。
 
+> 暂时关闭：编程知识库（`conhecimento_programacao.txt`）和维基百科搜索。该文件仍保留在仓库中，把它重新加入 `arquivos.json` 以及 `main.sql` 中的 `THINK`/`ASK`/`SEARCH` 行即可重新启用。
+
 ## 消息意图识别
 
-聊天页面使用 <a href="https://github.com/axa-group/nlp.js">NLP.js</a>，并将其打包在单个文件中（`LUME/vendor/nlp.min.js`，127 KB），用于对消息进行分类。类别包括已知主题、日常闲聊、无关内容，以及知识库尚未覆盖的编程问题。
+聊天页面使用 <a href="https://github.com/axa-group/nlp.js">NLP.js</a>，并将其打包在单个文件中（`LUME/vendor/nlp.min.js`，127 KB），用于对消息进行分类。类别包括日常闲聊和无关内容。
 
-页面打开时，分类器会使用知识库主题和 `LUME/bot/intencoes.txt` 中的示例进行训练。例如，这有助于避免无关问题触发不必要的网络搜索。
+页面打开时，分类器会使用 `LUME/bot/intencoes.txt` 中的示例进行训练。
 
 要教授新的意图，只需在 `intencoes.txt` 中添加格式为 `意图 | 示例句子` 的行。
 
@@ -64,7 +64,7 @@ index.html                      聊天页面（静态页面，无需构建）
 LUME/
   bot/                          main.sql 及其使用的文本文件
     arquivos.json               聊天页面加载的文件列表
-    conhecimento_programacao.txt
+    conhecimento_programacao.txt  （暂时关闭）
     intencoes.txt
     aprendido.txt
   vendor/nlp.min.js             单文件版 NLP.js

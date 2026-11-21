@@ -33,19 +33,19 @@ When it cannot find a suitable answer, Lume can acknowledge that limitation and 
 
 Every message first goes through conversation rules (help, greetings, farewells, thanks, and status). The remaining messages follow a lookup sequence:
 
-1. **Knowledge base** (`conhecimento_programacao.txt`): looks for an answer in the prepared content.
-2. **Learned knowledge** (`aprendido.txt`): checks content Lume has already learned and that is available for use.
-3. **Web search** (Wikipedia): triggered when a message is identified as a programming question not yet covered by the knowledge base. The result can be saved for later use.
-4. **Poll**: when several answers are possible, Lume can show them and let the user choose.
-5. **Request for help or fallback reply**: when it cannot find enough information, it can ask for help or provide a fallback response.
+1. **Learned knowledge** (`aprendido.txt`): checks content Lume has already learned from people and that is available for use.
+2. **Poll**: when several answers are possible, Lume can show them and let the user choose.
+3. **Request for help or fallback reply**: when it cannot find enough information, it can ask for help or provide a fallback response.
 
 The poll displays numbered options and ends as soon as the user makes a choice.
 
+> Switched off for now: the programming knowledge base (`conhecimento_programacao.txt`) and the Wikipedia search. The file stays in the repository and can be switched on again by adding it to `arquivos.json` and to the `THINK`/`ASK`/`SEARCH` lines in `main.sql`.
+
 ## Message intent
 
-The chat uses <a href="https://github.com/axa-group/nlp.js">NLP.js</a>, bundled into a single file (`LUME/vendor/nlp.min.js`, 127 KB), to classify messages. Categories include known topics, small talk, out-of-domain messages, and programming questions not yet covered by the knowledge base.
+The chat uses <a href="https://github.com/axa-group/nlp.js">NLP.js</a>, bundled into a single file (`LUME/vendor/nlp.min.js`, 127 KB), to classify messages. Categories include small talk and out-of-domain messages.
 
-The classifier is trained when the page opens, using the knowledge-base topics and examples from `LUME/bot/intencoes.txt`. This helps, for example, prevent an unrelated question from triggering an unnecessary web search.
+The classifier is trained when the page opens, using the examples in `LUME/bot/intencoes.txt`.
 
 To teach an intent, add lines in the format `intent | example phrase` to `intencoes.txt`.
 
@@ -64,7 +64,7 @@ index.html                      chat (static page, no build step)
 LUME/
   bot/                          main.sql and the text files it uses
     arquivos.json               list of files loaded by the chat
-    conhecimento_programacao.txt
+    conhecimento_programacao.txt  (switched off for now)
     intencoes.txt
     aprendido.txt
   vendor/nlp.min.js             NLP.js bundled as a single file
