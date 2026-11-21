@@ -306,3 +306,6 @@ Lume - historico de versoes
 
 0.5.13
 - Corrigido: "dois bolos" desenhava só um. O bolo passa a ser peça em pecas.txt, por isso o despachante conta as repetições e junta todos na mesma cena.
+
+0.5.14
+- Os desenhos soltos de desenhos.txt (53 objetos: animais, comida, objetos, veiculos...) passam a ser pecas em pecas.txt, sem fundo nem chao. Agora todos se combinam e contam como a casa ("dois bolos", "um leao e um elefante", "duas macas e um bolo").

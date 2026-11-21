@@ -144,3 +144,6 @@ usas internet? | wikipedia
 o que nao sabes fazer? | nao invento
 es open source? | (github|apache)
 desenha dois bolos | (svg|<svg|desenho|juntar)
+desenha um leao e um elefante | (svg|<svg|juntar)
+desenha duas macas e um bolo | (svg|<svg|juntar)
+desenha uma maca | BOT
