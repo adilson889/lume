@@ -300,3 +300,6 @@ Lume - historico de versoes
 0.5.11
 - O Lume sabe falar de si: quem es, como foste criada, quem te desenvolveu, como funcionas, como aprendes, es uma IA, que tecnologias usas, guardas as minhas conversas, usas internet, o que nao sabes fazer, es open source. Respostas em bot/sobre.txt (id :: regex :: resposta).
 - Treino: 125 casos, 100%.
+
+0.5.12
+- Corrigido: "Ficheiro no editor" ao pedir um desenho voltava a mostrar o SVG no chat. A resposta passou a ser colocada depois das etapas de atividade, e o embrulho em ficheiro corria antes dela existir; agora espera por ela.
