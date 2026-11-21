@@ -839,8 +839,8 @@ function equacao(q){
  if(c2!==0){
   var a=c2,b=c1,c=c0,D=b*b-4*a*c;if(Math.abs(D)<1e-9)D=0;
   var dTxt="Δ = b² − 4·a·c = "+W(b)+"² − 4 × "+W(a)+" × "+W(c)+" = "+F(D);
-  if(D<0)return ER("Passando tudo para um lado: "+termos(a,b,c)+" = 0. "+dTxt+", que é negativo: a equação não tem solução real.");
   var L=["Passar tudo para o mesmo lado: "+termos(a,b,c)+" = 0","Coeficientes: a = "+F(a)+", b = "+F(b)+", c = "+F(c),dTxt],x1,res;
+  if(D<0){L.push("Como Δ é negativo, não existe raiz quadrada real de Δ: a equação não tem solução real");return {f:"0",m:m0,p:passos(L),e:"",r:"sem solução real"}}
   if(D===0){
    x1=-b/(2*a);L.push(X+" = −b ÷ 2a = "+F(x1));res=X+" = "+F(x1)+" (raiz dupla)";
   }else{
@@ -896,21 +896,23 @@ function expressaoAlgebrica(q){
  if(g===0&&val===null)return null;
  function igual(a,b){return a.replace(/[\s×]/g,"")===b.replace(/[\s×]/g,"")}
  if(val===null){
-  L.push("Isto é uma expressão com a letra "+X+", por isso não tem um único valor.");
-  if(!igual(orig,simp))L.push("Forma simplificada: "+simp);
-  if(g===2){
-   var a=Z(P[2]||0),b=Z(P[1]||0),c=Z(P[0]||0),D=b*b-4*a*c;if(Math.abs(D)<1e-9)D=0;
-   L.push("Polinómio do 2.º grau, com a = "+F(a)+", b = "+F(b)+" e c = "+F(c));
-   L.push("Δ = b² − 4·a·c = "+W(b)+"² − 4 × "+W(a)+" × "+W(c)+" = "+F(D));
-   if(D<0)L.push("Como Δ é negativo, a expressão nunca vale 0 para valores reais de "+X);
-   else if(D===0)L.push("A expressão vale 0 quando "+X+" = "+F(-b/(2*a)));
-   else L.push("A expressão vale 0 quando "+X+" = "+F((-b+Math.sqrt(D))/(2*a))+" ou "+X+" = "+F((-b-Math.sqrt(D))/(2*a)));
-  }else if(g===1){
-   L.push("Polinómio do 1.º grau; vale 0 quando "+X+" = "+F(-(P[0]||0)/P[1]));
-  }else if(g>2){L.push("Polinómio do "+g+".º grau.")}
+  if(g>2){
+   L.push("Isto é uma expressão com a letra "+X+", por isso não tem um único valor.");
+   if(!igual(orig,simp))L.push("Forma simplificada: "+simp);
+   L.push("Polinómio do "+g+".º grau: só resolvo raízes do 1.º e 2.º grau.");
+   _algUltima={s:s,t:Date.now()};
+   return {f:"0",m:orig,p:passos(L),e:"",r:simp};
+  }
+  /* sem "=": a pessoa quer as raizes, por isso resolve-se "expressao = 0" */
+  var eq=equacao(s+" = 0");
   _algUltima={s:s,t:Date.now()};
-  L.push("Diz-me o valor de "+X+" (por exemplo, "+X+" = 3) e eu calculo.");
-  return {f:"0",m:orig,p:passos(L),e:"",r:simp};
+  if(!eq||eq.e)return eq;
+  var pre="Não há \"=\" nem valor para "+X+": assumi que queres as raízes, ou seja, "+simp+" = 0";
+  if(!igual(orig,simp))pre="Simplificar: "+simp+". "+pre;
+  eq.p=eq.p.map(function(x){return x.replace(/^(Primeiro|Depois|Por fim): /,"")});
+  eq.p=eq.p.filter(function(x){return !/^Passar tudo para o mesmo lado/.test(x)});
+  eq.p=passos([pre].concat(eq.p).concat(["Para o valor da expressão com um "+X+" concreto, diz por exemplo "+X+" = 3."]));
+  return eq;
  }
  if(!igual(orig,simp))L.push("Forma simplificada: "+simp);
  var xs=W(val),sub="",ts=[],tv=[],tot=0;

@@ -343,3 +343,6 @@ Lume - historico de versoes
 0.5.24
 - Expressoes com letra ("2x²+4x+8", "3x+5", "(x+1)^2") ja nao somam os numeros (dava 14): o Lume explica que nao tem um unico valor, simplifica, indica grau, delta e raizes, e pede o valor de x. "x = 3", "e se x for 10" ou "com x = 3" calculam com passos (substituir, calcular cada termo, somar).
 - Contas com passos passam a ser respondidas em texto e formatadas pelo formatador (lista de passos e resultado em destaque) em vez de HTML fixo do XLang.
+
+0.5.25
+- Expressao do 1.o/2.o grau sem "=" e sem valor para x ("2x²+4x+8", "x²-5x+6", "3x+5") passa a ser tratada como equacao igual a 0: mostra coeficientes, delta e raizes. Se delta for negativo, mostra os passos e diz que nao ha solucao real (antes so dava uma frase). Com "x = 3" calcula o valor da expressao.
