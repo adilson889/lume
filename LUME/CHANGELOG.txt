@@ -333,3 +333,6 @@ Lume - historico de versoes
 
 0.5.21
 - sugestoes.txt: retiradas as propostas de programacao (variavel, funcao, ciclo), que dependiam da base desligada.
+
+0.5.22
+- Corrigido: o nome {{BOT_NOME}} aparecia no menu lateral quando o bot ainda nao tinha arrancado. Nome por defeito passa a ser Lume no HTML.
