@@ -164,6 +164,10 @@ html,body{position:fixed;top:0;left:0;width:100%}
 .ens-barra select{flex:none;height:36px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--text);font:inherit;font-size:13px;padding:0 6px;margin-left:8px}
 .msg-ensinar .ens-ta{width:100%;border:1px solid var(--border);border-radius:12px;background:var(--card);color:var(--text);font:inherit;font-size:15px;line-height:1.5;padding:10px 12px;resize:none;min-height:120px;outline:0}
 .msg-ensinar .ens-ta:focus{border-color:var(--muted)}
+.ens-autor{display:flex;flex-direction:column;gap:4px}
+.ens-autor label{font-size:12px;color:var(--muted)}
+.ens-nome{width:100%;border:1px solid var(--border);border-radius:12px;background:var(--card);color:var(--text);font:inherit;font-size:15px;padding:9px 12px;outline:0}
+.ens-nome:focus{border-color:var(--muted)}
 .msg-ensinar .ens-prev{border:1px solid var(--border);border-radius:12px;background:var(--card);padding:10px 12px;min-height:120px;width:100%}
 .msg-ensinar .ens-prev.vazio{color:var(--muted)}
 .ens-rodape{display:flex;justify-content:space-between;gap:12px;font-size:12px;color:var(--muted);min-height:16px}
@@ -587,6 +591,10 @@ function registarAprendido(t){String(t||"").split(/\n\s*\n/).forEach(function(b)
 function lerMetaAp(){try{var o=JSON.parse(localStorage.getItem("lume_aprendido_meta")||"{}");return o&&typeof o==="object"?o:{}}catch(e){return{}}}
 function gravarMetaAp(m){try{var k=Object.keys(m);if(k.length>400)k.slice(0,k.length-400).forEach(function(x){delete m[x]});localStorage.setItem("lume_aprendido_meta",JSON.stringify(m))}catch(e){}}
 function nomeEnsino(){try{return localStorage.getItem("lume_nome")||""}catch(e){return""}}
+var NOMES_RESERVADOS=["lume","admin","administrador","dono","moderador","moderacao","claude","anthropic","sire","kixikila","botql","comunidade"];
+function limparNomeAutor(t){return String(t||"").replace(/[^\p{L}\p{N} ._-]/gu,"").replace(/\s+/g," ").trim().slice(0,30)}
+function nomeAutorValido(n){return n.length>=2&&NOMES_RESERVADOS.indexOf(n.toLowerCase())<0}
+function guardarNomeEnsino(n){try{if(n&&nomeAutorValido(n))localStorage.setItem("lume_nome",n);else localStorage.removeItem("lume_nome")}catch(e){}}
 function registarMetaAp(texto,estado){var m=lerMetaAp(),n=nomeEnsino();String(texto||"").split(/\n\s*\n/).forEach(function(b){b=b.trim();if(!b)return;var h=hBloco(b);if(!m[h])m[h]={autor:n,data:new Date().toISOString(),estado:estado}});gravarMetaAp(m)}
 function registarMetaServidor(lst){var m=lerMetaAp();lst.forEach(function(x){String(x.texto||"").split(/\n\s*\n/).forEach(function(b){b=b.trim();if(!b)return;var h=hBloco(b),p=m[h]||{};var v=x.votos&&typeof x.votos==="object"?x.votos:x,o={autor:x.autor||p.autor||"",data:x.data||p.data||"",estado:"aprovado"};if(typeof v.gostos==="number"&&typeof v.naoGostos==="number"){o.gostos=v.gostos;o.naoGostos=v.naoGostos}m[h]=o})});gravarMetaAp(m)}
 function fmtVotos(n){return n>=1000?(n/1000).toFixed(n>=10000?0:1).replace(".",",")+" mil":String(n)}
@@ -1056,9 +1064,11 @@ d.innerHTML='<label>Por favor, ensine-me a resposta certa.</label>'
 +'<textarea class="ens-ta" placeholder="Escreva a resposta certa..." aria-label="Resposta"></textarea>'
 +'<div class="msg sistema markdown ens-prev" hidden></div>'
 +'<div class="ens-rodape"><span class="ens-aviso" role="status"></span><span class="ens-cont">0/'+MAX+'</span></div>'
++'<div class="ens-autor"><label>O seu nome (opcional, aparece como autor)</label><input type="text" class="ens-nome" maxlength="30" placeholder="Anónimo" autocomplete="nickname" aria-label="O seu nome (opcional)" /></div>'
 +'<button type="button" class="ens-enviar" disabled>Enviar</button>';
 const ta=d.querySelector(".ens-ta"),prev=d.querySelector(".ens-prev"),barra=d.querySelector(".ens-barra"),
 aviso=d.querySelector(".ens-aviso"),cont=d.querySelector(".ens-cont"),env=d.querySelector(".ens-enviar"),ling=d.querySelector(".ens-ling");
+const nomeIn=d.querySelector(".ens-nome");nomeIn.value=nomeEnsino();
 
 /* Mesma normalizacao do backend: sem espacos no fim da linha e sem linhas em branco
    (uma linha em branco partiria a resposta em dois blocos de conhecimento). */
@@ -1178,6 +1188,9 @@ env.addEventListener("click",function(){
 const n=norm(ta.value),p=problemas(n);
 if(n.length<MIN){mostrarToast("Escreva uma resposta mais completa");return}
 if(p.length){mostrarToast(p[0]);return}
+const nm=limparNomeAutor(nomeIn.value);
+if(nomeIn.value.trim()&&!nomeAutorValido(nm)){mostrarToast("Esse nome não pode ser usado como autor");nomeIn.focus();return}
+guardarNomeEnsino(nm);
 env.disabled=true;
 fetch(URL_API_BOTQL+"/api/lume/aprendido/ensinar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify((function(){var au=nomeEnsino(),o={pergunta:pergunta,resposta:paraEnvio(n)};if(au)o.autor=au;return o})())}).then(function(x){
 if(x.ok){d.remove();mostrarToast("Obrigado por ensinar");return}

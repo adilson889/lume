@@ -204,6 +204,20 @@ var inp=el('input','dp-inp');inp.type='text';inp.maxLength=30;inp.placeholder=OR
 inp.onchange=function(){D.nome=inp.value.replace(/\s+/g,' ').trim().slice(0,30);inp.value=D.nome;salvar();aplicarNome();marcarTudo()};c.appendChild(inp);
 var t=el('div','dp-botoes'),b=el('button','dp-btn','Repor nome original');b.type='button';b.onclick=function(){D.nome='';inp.value='';salvar();aplicarNome();marcarTudo()};t.appendChild(b);c.appendChild(t)})}
 
+/* ---- o teu nome (autor do que ensinas) ---- */
+var RES=['lume','admin','administrador','dono','moderador','moderacao','claude','anthropic','sire','kixikila','botql','comunidade'];
+function limparNome(t){return String(t||'').replace(/[^\p{L}\p{N} ._-]/gu,'').replace(/\s+/g,' ').trim().slice(0,30)}
+function nomeOk(n){return n.length>=2&&RES.indexOf(n.toLowerCase())<0}
+function lerNomeUtil(){try{return localStorage.getItem('lume_nome')||''}catch(e){return''}}
+function subNomeUtil(){abrirSub('O teu nome',function(c){
+c.appendChild(el('div','dp-nota','Aparece como autor do que ensinares ao Lume. O nome é público e opcional: deixa vazio para ensinares sem nome.'));
+var inp=el('input','dp-inp');inp.type='text';inp.maxLength=30;inp.placeholder='Anónimo';inp.value=lerNomeUtil();c.appendChild(inp);
+var err=el('div','dp-nota');err.style.color='#C0392B';err.style.display='none';c.appendChild(err);
+inp.onchange=function(){var n=limparNome(inp.value);err.style.display='none';
+if(inp.value.trim()&&!nomeOk(n)){err.textContent='Esse nome não pode ser usado (mínimo 2 letras, e não pode parecer da equipa).';err.style.display='block';return}
+try{if(n)localStorage.setItem('lume_nome',n);else localStorage.removeItem('lume_nome')}catch(e){}inp.value=n;marcarTudo()};
+var t=el('div','dp-botoes'),b=el('button','dp-btn','Remover o meu nome');b.type='button';b.onclick=function(){try{localStorage.removeItem('lume_nome')}catch(e){}inp.value='';err.style.display='none';marcarTudo()};t.appendChild(b);c.appendChild(t)})}
+
 /* ---- voz ---- */
 function vozes(){try{return(speechSynthesis.getVoices()||[]).filter(function(v){return/^pt/i.test(v.lang)})}catch(e){return[]}}
 var rVel,rVoz,nVoz;
@@ -242,6 +256,7 @@ icone(c,'lixo','Limpar conversa',function(){if(typeof fecharSidebar==='function'
 icone(c,'alerta','Apagar tudo',function(){confirmar('Apagar tudo','Isto apaga as conversas, o que o Lume aprendeu e as definições deste aparelho.','Apagar','lumeApagarTudo')},true);
 c=secao('Geral');
 valor(c,'Nome do assistente',function(){return D.nome||ORIG.cab||'Lume'},subNome);
+valor(c,'O teu nome',function(){return lerNomeUtil()||'Anónimo'},subNomeUtil);
 c=secao('Sobre');
 var VERSAO='';
 fixo(c,'Versão',function(){return VERSAO});
