@@ -8,7 +8,7 @@
 (function(){
 "use strict";
 var CH="lume_dialogo_v1";
-var S={n:0,pend:null,humor:0,ultimoPedido:"",ultimaPergunta:"",ultimaResposta:"",ultimoEstado:null};
+var S={n:0,pend:null,humor:0,ultimoPedido:"",ultimaPergunta:"",ultimaResposta:"",ultimoEstado:null,hist:[]};
 try{var j0=sessionStorage.getItem(CH);if(j0)S=Object.assign(S,JSON.parse(j0))}catch(e){}
 function gravar(){try{sessionStorage.setItem(CH,JSON.stringify(S))}catch(e){}}
 function nz(t){return String(t||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"")}
@@ -91,6 +91,7 @@ function eco(raw){
 function registar(texto){
  try{
   var r0=String(texto||"").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();if(r0)S.ultimaResposta=r0.slice(0,1500);
+  if(r0&&Array.isArray(S.hist)&&S.hist.length){var hu=S.hist[S.hist.length-1];if(hu&&!hu.r)hu.r=r0.slice(0,300)}
   var s=String(texto||"");
   if(/^\s*(<program|<!doctype|<html)/i.test(s)||s.length>700){S.pend=null;S.ultimaPergunta="";gravar();return}
   s=s.replace(/<[^>]*>/g," ").replace(/&nbsp;/g," ").replace(/\s+/g," ").trim();
@@ -112,6 +113,7 @@ function rac(t){try{window.lumeAtualizarEtapa&&window.lumeAtualizarEtapa(t)}catc
 function cur(x,n){var s=String(x||"").replace(/\s+/g," ").trim();return s.length>n?s.slice(0,n-1)+"…":s}
 function ver(q){
  S.n++;
+ try{if(!Array.isArray(S.hist))S.hist=[];S.hist.push({n:S.n,p:String(q||"").slice(0,200),r:""});if(S.hist.length>6)S.hist.shift()}catch(e){}
  try{
   var caps=window.LumeDespachante&&window.LumeDespachante.ler?window.LumeDespachante.ler():[],t=nz(q);
   if(caps.some(function(c){return c.verbos.some(function(v){return tem(t,v)})}))S.ultimoPedido=String(q);
@@ -293,6 +295,7 @@ function memoriaTexto(){
 }
 function lista(){var m=mler();return Object.keys(m).map(function(k){return {k:k,rot:m[k].rot,val:m[k].val}})}
 function esquecer(k){var m=mler();delete m[k];mgravar(m);if(k==="nome"){try{localStorage.removeItem("lume_nome")}catch(e){}}}
-function limpar(){try{localStorage.removeItem(MK);localStorage.removeItem("lume_nome");S.ultimoPedido="";S.ultimaResposta="";gravar()}catch(e){}}
-window.LumeDialogo={memorizar:memorizar,recuperar:recuperar,memoriaTexto:memoriaTexto,lista:lista,esquecer:esquecer,limpar:limpar,ver:ver,registar:registar,reescrever:reescrever,resolver:resolver,conversar:conversar,analisar:analisar,estado:function(){return S}};
+function limpar(){try{localStorage.removeItem(MK);localStorage.removeItem("lume_nome");S.ultimoPedido="";S.ultimaResposta="";S.hist=[];gravar()}catch(e){}}
+function historico(){return Array.isArray(S.hist)?S.hist.slice():[]}
+window.LumeDialogo={memorizar:memorizar,recuperar:recuperar,memoriaTexto:memoriaTexto,lista:lista,esquecer:esquecer,limpar:limpar,ver:ver,registar:registar,reescrever:reescrever,resolver:resolver,conversar:conversar,analisar:analisar,historico:historico,estado:function(){return S}};
 })();
