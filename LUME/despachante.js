@@ -343,6 +343,17 @@ function descreverCapacidade(c,t,m,n){
  var eo=(c.objetos||[]).filter(function(o){return o==="numeros"?m.numeros>=1:o==="pecas"?m.pecas>=1:o==="componentes"?m.componentes>=1:tem(t,o)}).map(function(o){return o==="numeros"?m.numeros+(m.numeros===1?" número":" números"):o==="pecas"?m.pecas+(m.pecas===1?" peça":" peças"):o==="componentes"?m.componentes+(m.componentes===1?" componente":" componentes"):"«"+o+"»"});
  return "Das "+n+" capacidades que tenho, só «"+(NOMES_CAP[c.nome]||c.nome)+"» corresponde: encontrei o verbo «"+(ev[0]||"")+"»"+(eo.length?" e "+eo.join(", "):"")+".";
 }
+/* Contas com passos: responde em texto simples; o chat passa-o pelo formatador (lista, destaque do resultado). */
+function textoConta(fm){
+ if(fm.e&&!(fm.p&&fm.p.length))return fm.e;
+ var seq=[],notas=[],res=fm.r||"";
+ (fm.p||[]).forEach(function(x){if(/^(Primeiro|Depois|Por fim):/.test(x))seq.push(x);else notas.push(x)});
+ if(!res&&seq.length){var u=seq[seq.length-1],i=u.lastIndexOf(" = ");if(i>=0)res=u.slice(i+3)}
+ var o="Li a conta como: "+fm.m+"\n\n"+seq.join("\n");
+ if(res)o+="\n\nResultado: "+res;
+ if(notas.length)o+="\n\n"+notas.join(" ");
+ return o;
+}
 async function tentar(q){
  q=coloquial(q);
  var DL=window.LumeDialogo;
@@ -353,6 +364,7 @@ async function tentar(q){
   var mm=DL.memorizar&&DL.memorizar(q);
   if(mm){var mr=String(mm.rot||"").toLowerCase();await esp(mm.novo?(mm.antes?"Disseste um novo valor para «"+mr+"»; vou atualizar a memória.":"Disseste «"+mr+"»; vou guardá-lo na memória."):"Disseste «"+mr+"», mas isso já estava guardado.");await esp(mm.novo?(mm.antes?"Troquei «"+mm.antes+"» por «"+mm.val+"».":"Guardei «"+mm.val+"» em «"+mr+"»."):"Não mudei nada na memória.")}
   DL.ver(q);var rd=DL.resolver(q);if(rd&&rd.resposta){window.lumeOnReply({text:rd.resposta});return true}}
+ if(typeof window.lumeOnReply==="function"&&q.length<=140){var fmx=null;try{fmx=funcaoMatematica(q)}catch(_){}if(fmx&&((fmx.p&&fmx.p.length)||fmx.e)){raciocinio("Li o pedido como uma conta e fiz os passos em JavaScript; o chat formata a resposta.");window.lumeOnReply({text:textoConta(fmx)});return true}}
  if(typeof window.lumeOnReply==="function"){var cdet=detectarConversa(q);var conversa=gerarConversa(q);if(conversa){raciocinio(descreverConversa(cdet||{}));window.lumeOnReply({text:conversa});return true;}}
  var caps=lerCapacidades();if(!caps.length||typeof window.lumeOnReply!=="function")return false;
  var t=norm(q),m=medidores(q,t);
@@ -845,8 +857,82 @@ function equacao(q){
  return {f:arred(x),m:m0,p:passos(L2),e:"",r:X+" = "+F(x)};
  }catch(err){return null}
 }
+/* Expressoes com uma letra e sem "=": 2x²+4x+8, 3x+5, (x+1)^2, e "2x²+4x+8 com x = 3".
+   Sem valor para a letra, simplifica e descreve (grau, raizes); com valor, substitui e calcula, mostrando os termos. */
+var _algUltima=null;
+function expressaoAlgebrica(q){
+ try{
+ var s=String(q||"").toLowerCase().trim();
+ if(!s||s.length>100)return null;
+ s=s.replace(/^(?:por favor[, ]*)?(?:calcule|calcula|calcular|simplifique|simplifica|simplificar|resolva|resolve|resolver|expanda|expande|desenvolva|desenvolve|qual\s+(?:[eé]\s+)?o\s+valor\s+de|quanto\s+(?:[eé]|vale|d[aá]))\s*/,"").replace(/[?!.\s]+$/,"");
+ var val=null,m=/^(.*?)[,\s]*(?:com|para|quando|se|sendo|onde|e\s+se)?\s*\b([xyztnk])\s*(?:=|vale|for|igual\s+a)\s*(-|−)?\s*(\d+(?:[.,]\d+)?)$/.exec(s),X0=null;
+ if(m&&m[1].trim()){s=m[1].trim();X0=m[2];val=parseFloat(m[4].replace(",","."))*(m[3]?-1:1)}
+ if(s.indexOf("=")>=0||s.length<2||!/\d/.test(s))return null;
+ if(!/^[0-9xyztnk+\-−–*×/÷:^().,\s²³⁴⁵⁶⁷⁸⁹\[\]{}]+$/.test(s))return null;
+ if(!/[xyztnk]/.test(s.replace(/\d\s*x\s*\d/g,"#")))return null;
+ if(/\d\s+x\s+\d/.test(s))return null;
+ var vars={},P;
+ try{P=LP.poly(s,vars)}catch(e){return null}
+ var nv=Object.keys(vars);if(nv.length!==1)return null;
+ var X=nv[0];if(X0&&X0!==X)return null;
+ var g=LP.grau(P);
+ function Z(v){return Math.abs(v)<1e-12?0:v}
+ function F(n){n=Math.round(n*1e6)/1e6;if(n===0)n=0;return String(n).replace(".",",").replace("-","−")}
+ function W(n){return n<0?"("+F(n)+")":F(n)}
+ var SUP="⁰¹²³⁴⁵⁶⁷⁸⁹";
+ function pot(k){return k===0?"":k===1?X:X+(k<10?SUP.charAt(k):"^"+k)}
+ function termos(){
+  var out="";
+  for(var k=g;k>=0;k--){
+   var c=Z(P[k]||0);if(c===0&&!(k===0&&out===""))continue;
+   var mag=Math.abs(c),body=k===0?F(mag):(mag===1?"":F(mag))+pot(k);
+   out+=out===""?(c<0?"−":"")+body:" "+(c<0?"−":"+")+" "+body;
+  }
+  return out;
+ }
+ function passos(L){var n=L.length;return L.map(function(x,k){return (k===0?"Primeiro: ":k===n-1?"Por fim: ":"Depois: ")+x})}
+ var orig=s.replace(/\*/g,"×").replace(/-/g,"−").replace(/\^2/g,"²").replace(/\^3/g,"³").replace(/\s+/g," ");
+ var simp=termos(),L=[];
+ if(g===0&&val===null)return null;
+ function igual(a,b){return a.replace(/[\s×]/g,"")===b.replace(/[\s×]/g,"")}
+ if(val===null){
+  L.push("Isto é uma expressão com a letra "+X+", por isso não tem um único valor.");
+  if(!igual(orig,simp))L.push("Forma simplificada: "+simp);
+  if(g===2){
+   var a=Z(P[2]||0),b=Z(P[1]||0),c=Z(P[0]||0),D=b*b-4*a*c;if(Math.abs(D)<1e-9)D=0;
+   L.push("Polinómio do 2.º grau, com a = "+F(a)+", b = "+F(b)+" e c = "+F(c));
+   L.push("Δ = b² − 4·a·c = "+W(b)+"² − 4 × "+W(a)+" × "+W(c)+" = "+F(D));
+   if(D<0)L.push("Como Δ é negativo, a expressão nunca vale 0 para valores reais de "+X);
+   else if(D===0)L.push("A expressão vale 0 quando "+X+" = "+F(-b/(2*a)));
+   else L.push("A expressão vale 0 quando "+X+" = "+F((-b+Math.sqrt(D))/(2*a))+" ou "+X+" = "+F((-b-Math.sqrt(D))/(2*a)));
+  }else if(g===1){
+   L.push("Polinómio do 1.º grau; vale 0 quando "+X+" = "+F(-(P[0]||0)/P[1]));
+  }else if(g>2){L.push("Polinómio do "+g+".º grau.")}
+  _algUltima={s:s,t:Date.now()};
+  L.push("Diz-me o valor de "+X+" (por exemplo, "+X+" = 3) e eu calculo.");
+  return {f:"0",m:orig,p:passos(L),e:"",r:simp};
+ }
+ if(!igual(orig,simp))L.push("Forma simplificada: "+simp);
+ var xs=W(val),sub="",ts=[],tv=[],tot=0;
+ for(var k=g;k>=0;k--){
+  var c=Z(P[k]||0);if(c===0&&!(k===0&&ts.length===0))continue;
+  var pv=Math.pow(val,k),v=c*pv;tot+=v;
+  var base=k===0?F(Math.abs(c)):(Math.abs(c)===1?"":F(Math.abs(c))+" × ")+(k===1?xs:xs+(k<10?SUP.charAt(k):"^"+k));
+  ts.push((ts.length===0?(c<0?"−":""):(c<0?"− ":"+ "))+base);
+  tv.push(v);
+ }
+ sub=ts.join(" ");
+ L.push("Substituir "+X+" por "+F(val)+": "+sub);
+ if(g>0)L.push("Calcular cada termo: "+tv.map(F).join("; "));
+ L.push("Somar: "+tv.map(function(v,i){return i===0?F(v):v<0?"− "+F(-v):"+ "+F(v)}).join(" ")+" = "+F(tot));
+ return {f:String(Math.round(tot*1e9)/1e9),m:simp+" com "+X+" = "+F(val),p:passos(L),e:"",r:F(tot)};
+ }catch(err){return null}
+}
 function funcaoMatematica(q){
+  var _mp=_algUltima&&Date.now()-_algUltima.t<900000&&/^(?:e\s+)?(?:se\s+|para\s+|com\s+|quando\s+)?([xyztnk])\s*(?:=|vale|for|igual\s+a)\s*(-|−)?\s*(\d+(?:[.,]\d+)?)\s*[?!.]*$/.exec(String(q||"").toLowerCase().trim());
+  if(_mp){var _r=expressaoAlgebrica(_algUltima.s+" com "+_mp[1]+" = "+(_mp[2]?"-":"")+_mp[3]);if(_r)return _r}
   var _q=equacao(q);if(_q)return _q;
+  var _a=expressaoAlgebrica(q);if(_a)return _a;
   var _c=calculadora(q);if(_c)return _c;
  var t=norm(q).replace(/[?!.]+$/,"");
  if(/\b(frase|frases|desenh\w*|cri\w+|ger\w+|site|loja|codigo)\b/.test(t))return null;
