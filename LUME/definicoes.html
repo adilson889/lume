@@ -68,7 +68,8 @@ function salvar(){try{localStorage.setItem(K,JSON.stringify(D))}catch(e){}}
 function $(i){return document.getElementById(i)}
 function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
 function toast(m){if(typeof mostrarToast==='function')mostrarToast(m)}
-var ORIG={cab:$('sidebar-cabecalho')?$('sidebar-cabecalho').textContent:'',tit:$('titulo')?$('titulo').textContent:'',pag:document.title,av:$('avatar')?$('avatar').textContent:'L'};
+function semMarcador(s){s=String(s||'').trim();return/\{\{.*\}\}/.test(s)?'Lume':s}
+var ORIG={cab:semMarcador($('sidebar-cabecalho')?$('sidebar-cabecalho').textContent:''),tit:semMarcador($('titulo')?$('titulo').textContent:''),pag:semMarcador(document.title),av:$('avatar')?$('avatar').textContent:'L'};
 var AC={
 verde:{n:'Verde',s:'#455A0B'},
 azul:{n:'Azul',s:'#1F4E8C',on:'#FFFFFF',b:'#D6E4F5',dc:'#8DB8F0',don:'#0B2442',db:'#1D2E45'},

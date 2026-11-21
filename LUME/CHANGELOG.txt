@@ -336,3 +336,6 @@ Lume - historico de versoes
 
 0.5.22
 - Corrigido: o nome {{BOT_NOME}} aparecia no menu lateral quando o bot ainda nao tinha arrancado. Nome por defeito passa a ser Lume no HTML.
+
+0.5.23
+- Definicoes: "Nome do assistente" ja nao mostra nem repoe {{BOT_NOME}}; o nome original cai para Lume.
