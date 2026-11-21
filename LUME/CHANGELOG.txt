@@ -346,3 +346,7 @@ Lume - historico de versoes
 
 0.5.25
 - Expressao do 1.o/2.o grau sem "=" e sem valor para x ("2x²+4x+8", "x²-5x+6", "3x+5") passa a ser tratada como equacao igual a 0: mostra coeficientes, delta e raizes. Se delta for negativo, mostra os passos e diz que nao ha solucao real (antes so dava uma frase). Com "x = 3" calcula o valor da expressao.
+
+0.5.26
+- Tutor de equacoes do 2.o grau: ao escrever uma equacao (ex.: x²-2x+1=0) o Lume oferece-se para resolver juntos. Passo 1: pede os coeficientes a, b, c; passo 2: pede a formula do delta e substitui; passo 3: pede as raizes pela formula de Bhaskara. Corrige cada resposta com uma pista, avanca ao acertar ou ao dizer "nao sei". "resolve tu"/"nao" mostram tudo; "sair" termina. "resolve ..." ou "calcula ..." continuam a dar a resolucao completa.
+- dialogo.js: nao reescreve respostas enquanto o tutor esta ativo.

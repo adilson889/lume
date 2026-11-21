@@ -135,6 +135,7 @@ function completar(q){
 }
 function reescrever(q){
  try{
+  if(window.lumeTutorAtivo&&window.lumeTutorAtivo())return q;
   var cc=nz(q).replace(/[^a-z0-9 ]+/g," ").trim();
   if(S.ultimoPedido&&cc.split(" ").length<=4){
    if(/^(de novo|outra vez|repete)$/.test(cc)){rac("«"+cur(q,40)+"» refere-se ao teu último pedido; repeti-o: «"+cur(S.ultimoPedido,60)+"».");return S.ultimoPedido}

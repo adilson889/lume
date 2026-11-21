@@ -343,6 +343,115 @@ function descreverCapacidade(c,t,m,n){
  var eo=(c.objetos||[]).filter(function(o){return o==="numeros"?m.numeros>=1:o==="pecas"?m.pecas>=1:o==="componentes"?m.componentes>=1:tem(t,o)}).map(function(o){return o==="numeros"?m.numeros+(m.numeros===1?" número":" números"):o==="pecas"?m.pecas+(m.pecas===1?" peça":" peças"):o==="componentes"?m.componentes+(m.componentes===1?" componente":" componentes"):"«"+o+"»"});
  return "Das "+n+" capacidades que tenho, só «"+(NOMES_CAP[c.nome]||c.nome)+"» corresponde: encontrei o verbo «"+(ev[0]||"")+"»"+(eo.length?" e "+eo.join(", "):"")+".";
 }
+/* ===== Tutor de equacoes do 2.o grau =====
+   Conduz a resolucao passo a passo, como numa aula: oferece-se para resolver em conjunto, pede os coeficientes,
+   a formula do discriminante e as raizes, corrige cada resposta e so avanca quando a pessoa acerta,
+   desiste ("nao sei") ou pede a solucao. Estado em memoria; "resolve tu" ou "sair" terminam. */
+var _tutor=null;
+window.lumeTutorAtivo=function(){return !!(_tutor&&Date.now()-_tutor.t<1800000)};
+function tF(n){n=Math.round(n*1e6)/1e6;if(n===0)n=0;return String(n).replace(".",",").replace("-","−")}
+function tW(n){return n<0?"("+tF(n)+")":tF(n)}
+function tNum(s){
+ s=String(s||"").replace(/[−–]/g,"-").replace(/\s+/g,"");
+ var m=/^(-?\d+(?:[.,]\d+)?)\/(\d+(?:[.,]\d+)?)$/.exec(s);
+ if(m){var d=parseFloat(m[2].replace(",","."));return d?parseFloat(m[1].replace(",","."))/d:null}
+ m=/^-?\d+(?:[.,]\d+)?$/.exec(s);return m?parseFloat(s.replace(",",".")):null;
+}
+function tTermos(a,b,c,X){
+ var out="";
+ [[a,X+"²"],[b,X],[c,""]].forEach(function(t){
+  var k=t[0];if(k===0)return;
+  var mag=Math.abs(k),body=t[1]===""?tF(mag):(mag===1?"":tF(mag))+t[1];
+  out+=out===""?(k<0?"−":"")+body:" "+(k<0?"−":"+")+" "+body;
+ });
+ return out||"0";
+}
+var _tElogio=["Exatamente!","Isso mesmo!","Muito bem!","Certo!","Boa!"],_tI=0;
+function tElogio(){return _tElogio[_tI++%_tElogio.length]}
+function tNorm(t){return norm(t).replace(/[^a-z0-9=,.\-+*\/² ]/g," ").replace(/\s+/g," ").trim()}
+function tNumeros(t){var r=[],re=/-?\d+(?:[.,]\d+)?(?:\/\d+)?/g,m,s=String(t||"").replace(/[−–]/g,"-");while((m=re.exec(s)))r.push(tNum(m[0]));return r}
+function tPasso(T,etapa){
+ var e=T.q,X=e.X,a=e.a,b=e.b,c=e.c;
+ if(etapa==="coef")return "**Primeiro passo: identificar os coeficientes.**\n\nUma equação do 2.º grau escreve-se **a"+X+"² + b"+X+" + c = 0**: o **a** acompanha "+X+"², o **b** acompanha "+X+" e o **c** é o termo sem "+X+".\n\nA tua equação é **"+tTermos(a,b,c,X)+" = 0**.\n\nQuem são o **a**, o **b** e o **c**? Escreve assim, por exemplo: a = 3, b = −4, c = 7 (cuidado com os sinais).";
+ if(etapa==="deltaf")return "**Segundo passo: o discriminante Δ (delta).**\n\nO Δ diz-nos quantas raízes a equação tem. Lembras-te da fórmula? Escreve-a (ou diz «não sei» e eu mostro).";
+ if(etapa==="bh"){
+  if(T.D===0)return "**Último passo: a fórmula de Bhaskara.**\n\nComo Δ = 0, usa-se **"+X+" = −b ÷ 2a**.\n\nSubstituindo: **"+X+" = −"+tW(b)+" ÷ (2 × "+tW(a)+")**\n\nQual é o valor de "+X+"?";
+  return "**Último passo: a fórmula de Bhaskara.**\n\nComo Δ > 0, há duas raízes: **"+X+" = (−b ± √Δ) ÷ 2a**. Aqui √Δ = "+tF(Math.sqrt(T.D))+".\n\nComeça pelo sinal +: **"+X+"₁ = (−"+tW(b)+" + "+tF(Math.sqrt(T.D))+") ÷ (2 × "+tW(a)+")**\n\nQual é o valor de "+X+"₁?";
+ }
+ return "";
+}
+function tFim(msg){_tutor=null;return {texto:msg,fim:true,rac:"Terminei a resolução guiada."}}
+function tSolucao(T,pref){var o=textoConta(T.fx);_tutor=null;return {texto:(pref||"Está bem, aqui vai a resolução completa.")+"\n\n"+o,rac:"Mostrei a resolução completa em vez de a conduzir passo a passo."}}
+function tutorIniciar(fx){
+ var e=fx.q,D=e.b*e.b-4*e.a*e.c;if(Math.abs(D)<1e-9)D=0;
+ _tutor={q:e,fx:fx,etapa:"oferta",erros:0,D:D,t:Date.now(),x1:null,x2:null};
+ return {texto:"**Boa!** Temos uma equação do 2.º grau: **"+tTermos(e.a,e.b,e.c,e.X)+" = 0**.\n\nVamos resolver juntos, passo a passo? Responde **sim** ou **não** (ou **resolve tu** para veres tudo de uma vez).",rac:"Reconheci uma equação do 2.º grau e ofereci resolvê-la passo a passo."};
+}
+function tutorResponder(txt){
+ var T=_tutor;if(!T)return null;
+ T.t=Date.now();
+ var n=tNorm(txt),e=T.q,X=e.X,a=e.a,b=e.b,c=e.c,D=T.D;
+ if(/^(sair|cancelar|cancela|parar|para|esquece|esquece isso|deixa|deixa estar|chega|nao quero continuar)$/.test(n))return tFim("Combinado, ficamos por aqui. Quando quiseres, escreve outra equação.");
+ if(/^(resolve tu|resolve|resolve por mim|faz tu|mostra tudo|mostra a solucao|mostra a resolucao|diz a solucao|diz a resposta|resolve tudo)$/.test(n))return tSolucao(T);
+ var naoSei=/^(nao sei|sei la|nao me lembro|nao lembro|ajuda|ajuda me|dica|nao faco ideia|nao consigo)$/.test(n);
+ var palavras=n.split(" ").filter(Boolean).length;
+ if(T.etapa==="oferta"){
+  if(/^(sim|s|claro|bora|vamos|ok|pode ser|quero|vamos la|vamos sim|bora la|vamos a isso|sim vamos|sim quero|ya|yes)$/.test(n)){T.etapa="coef";return {texto:tPasso(T,"coef"),rac:"Passo 1: identificar os coeficientes a, b e c."}}
+  if(/^(nao|n|agora nao|nao quero|nao obrigado|diretamente|direto)$/.test(n))return tSolucao(T,"Está bem, aqui vai a resolução completa.");
+  if(palavras>=3){_tutor=null;return null}
+  return {texto:"Queres resolver passo a passo? Responde **sim** ou **não**."};
+ }
+ if(T.etapa==="coef"){
+  var got={},re=/\b([abc])\s*[=:]\s*(-|−)?\s*(\d+(?:[.,]\d+)?(?:\/\d+)?)/g,mm,txt2=String(txt).toLowerCase().replace(/[−–]/g,"-");
+  while((mm=re.exec(txt2)))got[mm[1]]=tNum((mm[2]?"-":"")+mm[3]);
+  if(Object.keys(got).length<3){var ns=tNumeros(txt2);if(ns.length===3&&palavras<=8)got={a:ns[0],b:ns[1],c:ns[2]}}
+  var certo=function(){return "Os coeficientes são **a = "+tF(a)+", b = "+tF(b)+", c = "+tF(c)+"**."};
+  var seguir=function(pre){T.etapa="deltaf";T.erros=0;return {texto:pre+"\n\n"+tPasso(T,"deltaf"),rac:"Passo 2: o discriminante Δ."}};
+  if(naoSei)return seguir(certo());
+  if(Object.keys(got).length<3){
+   if(palavras>=5){_tutor=null;return null}
+   return {texto:"Não percebi. Escreve os três valores assim: a = 3, b = −4, c = 7."};
+  }
+  if(Math.abs(got.a-a)<1e-9&&Math.abs(got.b-b)<1e-9&&Math.abs(got.c-c)<1e-9)return seguir("**"+tElogio()+"** "+certo());
+  T.erros++;
+  var errados=["a","b","c"].filter(function(k){return Math.abs(got[k]-({a:a,b:b,c:c})[k])>1e-9});
+  if(T.erros>=2)return seguir("Sem problema. "+certo());
+  return {texto:"Quase. "+(errados.length===1?"Revê o **"+errados[0]+"**":"Revê o "+errados.map(function(k){return "**"+k+"**"}).join(" e o "))+": o **a** acompanha "+X+"², o **b** acompanha "+X+" e o **c** é o termo sem "+X+". Atenção ao sinal. Tenta outra vez.",rac:"Os coeficientes estavam errados; dei uma pista."};
+ }
+ if(T.etapa==="deltaf"){
+  var f=txt.toLowerCase().replace(/[−–]/g,"-").replace(/[\s*·×.]/g,"").replace(/\^2/g,"2").replace(/²/g,"2").replace(/^(delta|δ|d|Δ)=/i,"");
+  var okf=/^b2-4ac$/.test(f);
+  var pref;
+  if(okf)pref="**"+tElogio()+"** A fórmula é **Δ = b² − 4ac**.";
+  else if(naoSei||T.erros>=1)pref="A fórmula é **Δ = b² − 4ac**.";
+  else{T.erros++;return {texto:"Não é bem essa. Pensa: o Δ usa o **b** ao quadrado e subtrai quatro vezes o **a** e o **c**. Tenta outra vez ou diz «não sei».",rac:"A fórmula do Δ não estava certa; dei uma pista."}}
+  var sub="Substituindo:\n\n**Δ = "+tW(b)+"² − 4 × "+tW(a)+" × "+tW(c)+"**\n\n**Δ = "+tF(b*b)+" − "+tW(4*a*c)+" = "+tF(D)+"**";
+  if(D<0){var r={texto:pref+"\n\n"+sub+"\n\nComo o Δ é **negativo**, não existe raiz quadrada real de Δ: a equação **não tem solução real**.\n\n**Resultado: sem solução real**\n\nPara outra equação, é só escrevê-la.",rac:"Δ negativo: sem solução real; terminei a resolução."};_tutor=null;return r}
+  T.etapa="bh";T.erros=0;
+  var interp=D===0?"Como o Δ é **zero**, a equação tem uma **raiz dupla**.":"Como o Δ é **positivo**, a equação tem **duas raízes reais diferentes**.";
+  return {texto:pref+"\n\n"+sub+"\n\n"+interp+"\n\n"+tPasso(T,"bh"),rac:"Passo 3: aplicar a fórmula de Bhaskara."};
+ }
+ if(T.etapa==="bh"||T.etapa==="bh2"){
+  var alvo=D===0?-b/(2*a):T.etapa==="bh"?(-b+Math.sqrt(D))/(2*a):(-b-Math.sqrt(D))/(2*a);
+  var nome=D===0?X:T.etapa==="bh"?X+"₁":X+"₂";
+  var ns2=tNumeros(String(txt).replace(/[x][12₁₂]?\s*=/gi," ")),v=ns2.length&&palavras<=8?ns2[ns2.length-1]:null;
+  var acertou=v!==null&&Math.abs(v-alvo)<0.01;
+  function avancar(pre){
+   if(D===0){var r2={texto:pre+"\n\n**Resultado: "+X+" = "+tF(alvo)+"** (raiz dupla)\n\nPara outra equação, é só escrevê-la.",rac:"Terminei: raiz dupla."};_tutor=null;return r2}
+   if(T.etapa==="bh"){
+    T.x1=alvo;T.etapa="bh2";T.erros=0;
+    return {texto:pre+"\n\nAgora o sinal −: **"+X+"₂ = (−"+tW(b)+" − "+tF(Math.sqrt(D))+") ÷ (2 × "+tW(a)+")**\n\nQual é o valor de "+X+"₂?",rac:"Passo 3b: a segunda raiz."};
+   }
+   var r3={texto:pre+"\n\n**Resultado: "+X+"₁ = "+tF(T.x1)+" e "+X+"₂ = "+tF(alvo)+"**\n\nPara outra equação, é só escrevê-la.",rac:"Terminei: duas raízes."};_tutor=null;return r3;
+  }
+  if(acertou)return avancar("**"+(D===0?"Acertaste em cheio!":tElogio())+"** "+nome+" = "+tF(alvo)+".");
+  if(naoSei||T.erros>=1)return avancar("Sem problema: "+nome+" = "+tF(alvo)+".");
+  if(v===null){if(palavras>=5){_tutor=null;return null}return {texto:"Escreve só o valor numérico de "+nome+"."}}
+  T.erros++;
+  return {texto:"Ainda não. Calcula primeiro o numerador: **−"+tW(b)+(D===0?"":(T.etapa==="bh"?" + ":" − ")+tF(Math.sqrt(D)))+" = "+tF(-b+(D===0?0:(T.etapa==="bh"?1:-1)*Math.sqrt(D)))+"** e o denominador **2 × "+tW(a)+" = "+tF(2*a)+"**. Depois divide. Tenta outra vez.",rac:"O valor não estava certo; mostrei o numerador e o denominador."};
+ }
+ _tutor=null;return null;
+}
 /* Contas com passos: responde em texto simples; o chat passa-o pelo formatador (lista, destaque do resultado). */
 function textoConta(fm){
  if(fm.e&&!(fm.p&&fm.p.length))return fm.e;
@@ -356,6 +465,7 @@ function textoConta(fm){
 }
 async function tentar(q){
  q=coloquial(q);
+ if(typeof window.lumeOnReply==="function"&&window.lumeTutorAtivo()){var rt=tutorResponder(q);if(rt){if(rt.rac)raciocinio(rt.rac);window.lumeOnReply({text:rt.texto});return true}}
  var DL=window.LumeDialogo;
  if(DL&&typeof window.lumeOnReply==="function"){
   var etp=window.lumeAtualizarEtapa,esp=function(t){etp&&etp(t);return Promise.resolve()};
@@ -364,7 +474,8 @@ async function tentar(q){
   var mm=DL.memorizar&&DL.memorizar(q);
   if(mm){var mr=String(mm.rot||"").toLowerCase();await esp(mm.novo?(mm.antes?"Disseste um novo valor para «"+mr+"»; vou atualizar a memória.":"Disseste «"+mr+"»; vou guardá-lo na memória."):"Disseste «"+mr+"», mas isso já estava guardado.");await esp(mm.novo?(mm.antes?"Troquei «"+mm.antes+"» por «"+mm.val+"».":"Guardei «"+mm.val+"» em «"+mr+"»."):"Não mudei nada na memória.")}
   DL.ver(q);var rd=DL.resolver(q);if(rd&&rd.resposta){window.lumeOnReply({text:rd.resposta});return true}}
- if(typeof window.lumeOnReply==="function"&&q.length<=140){var fmx=null;try{fmx=funcaoMatematica(q)}catch(_){}if(fmx&&((fmx.p&&fmx.p.length)||fmx.e)){raciocinio("Li o pedido como uma conta e fiz os passos em JavaScript; o chat formata a resposta.");window.lumeOnReply({text:textoConta(fmx)});return true}}
+ if(typeof window.lumeOnReply==="function"&&q.length<=140){var fmx=null;try{fmx=funcaoMatematica(q)}catch(_){}if(fmx&&fmx.q&&!/^(resolve|resolva|resolver|calcula|calcule|calcular|determine|encontre|quais|qual|quanto|raizes|raiz)\b/.test(norm(q))){var ti=tutorIniciar(fmx);raciocinio(ti.rac);window.lumeOnReply({text:ti.texto});return true}
+  if(fmx&&((fmx.p&&fmx.p.length)||fmx.e)){raciocinio("Li o pedido como uma conta e fiz os passos em JavaScript; o chat formata a resposta.");window.lumeOnReply({text:textoConta(fmx)});return true}}
  if(typeof window.lumeOnReply==="function"){var cdet=detectarConversa(q);var conversa=gerarConversa(q);if(conversa){raciocinio(descreverConversa(cdet||{}));window.lumeOnReply({text:conversa});return true;}}
  var caps=lerCapacidades();if(!caps.length||typeof window.lumeOnReply!=="function")return false;
  var t=norm(q),m=medidores(q,t);
@@ -840,7 +951,7 @@ function equacao(q){
   var a=c2,b=c1,c=c0,D=b*b-4*a*c;if(Math.abs(D)<1e-9)D=0;
   var dTxt="Δ = b² − 4·a·c = "+W(b)+"² − 4 × "+W(a)+" × "+W(c)+" = "+F(D);
   var L=["Passar tudo para o mesmo lado: "+termos(a,b,c)+" = 0","Coeficientes: a = "+F(a)+", b = "+F(b)+", c = "+F(c),dTxt],x1,res;
-  if(D<0){L.push("Como Δ é negativo, não existe raiz quadrada real de Δ: a equação não tem solução real");return {f:"0",m:m0,p:passos(L),e:"",r:"sem solução real"}}
+  if(D<0){L.push("Como Δ é negativo, não existe raiz quadrada real de Δ: a equação não tem solução real");return {f:"0",m:m0,p:passos(L),e:"",r:"sem solução real",q:{a:a,b:b,c:c,X:X}}}
   if(D===0){
    x1=-b/(2*a);L.push(X+" = −b ÷ 2a = "+F(x1));res=X+" = "+F(x1)+" (raiz dupla)";
   }else{
@@ -848,7 +959,7 @@ function equacao(q){
    L.push("√Δ = "+F(sq));L.push(X+"₁ = (−b + √Δ) ÷ 2a = "+F(x1));L.push(X+"₂ = (−b − √Δ) ÷ 2a = "+F(x2));
    res=X+"₁ = "+F(x1)+" e "+X+"₂ = "+F(x2);
   }
-  return {f:arred(x1),m:m0,p:passos(L),e:"",r:res};
+  return {f:arred(x1),m:m0,p:passos(L),e:"",r:res,q:{a:a,b:b,c:c,X:X}};
  }
  if(c1===0)return ER(c0===0?"Esta equação é verdadeira para qualquer valor de "+X+" (infinitas soluções).":"Esta equação não tem solução.");
  var A=c1,B=-c0,x=B/A,coef=(A===1?"":A===-1?"−":F(A))+X,L2=["Juntar os termos: "+coef+" = "+F(B)];
