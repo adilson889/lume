@@ -11,12 +11,12 @@
    antigas de uma vez, mudar VERSAO. Os ficheiros do bot sao descobertos sozinhos em LUME/bot/arquivos.json. */
 "use strict";
 
-var VERSAO = "0.5.19";
+var VERSAO = "0.5.20";
 var P = "lume-";
 var C_SHELL = P + "shell-" + VERSAO;
 var C_DADOS = P + "dados-" + VERSAO;
 var C_LIBS = P + "libs-1";
-var C_MEDIA = P + "media-1";
+var C_MEDIA = P + "media-2";
 var ATUAIS = [C_SHELL, C_DADOS, C_LIBS, C_MEDIA];
 var BASE = new URL("./", self.registration.scope);
 

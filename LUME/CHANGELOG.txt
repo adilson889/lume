@@ -327,3 +327,6 @@ Lume - historico de versoes
 
 0.5.19
 - READMEs (pt, en, zh) atualizados: a cadeia de consulta passa a ser aprendido -> sondagem -> resposta de reserva; base de programacao e Wikipedia indicadas como desligadas.
+
+0.5.20
+- PWA: os 7 icones PNG estavam corrompidos (o primeiro byte 0x89 foi trocado por EF BF BD ao carregar o ficheiro como texto), por isso o manifest era invalido e a app nao instalava. Icones regenerados a partir de logo.png (any, maskable, apple-touch, favicons). Cache de media do service worker renovada.
