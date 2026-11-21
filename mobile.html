@@ -1176,8 +1176,8 @@ function bombearFila(){
  (function passo(){
   const box=document.getElementById("digitando");
   if(!box||!FILA_ETAPAS.length){_filaOcupada=false;_filaEsperas.splice(0).forEach(f=>f());return}
-  etapaMostrar(box,FILA_ETAPAS.shift());
-  setTimeout(passo,420);
+  const tx=FILA_ETAPAS.shift();etapaMostrar(box,tx);
+  setTimeout(passo,Math.max(420,Math.min(1100,tx.length*22)));
  })();
 }
 function atualizarEtapaEspera(texto){
@@ -1190,7 +1190,7 @@ function atualizarEtapaEspera(texto){
 window.lumeAtualizarEtapa=atualizarEtapaEspera;
 window.lumeEsperarEtapas=function(){return new Promise(function(res){
  if(!_filaOcupada&&!FILA_ETAPAS.length)return res();
- const t=setTimeout(res,2000);_filaEsperas.push(function(){clearTimeout(t);res()});
+ const t=setTimeout(res,3000);_filaEsperas.push(function(){clearTimeout(t);res()});
 })};
 function esconderDigitando(){
  const e=document.getElementById("digitando");if(!e)return;
@@ -1237,7 +1237,7 @@ function formulaValida(f){
 function formulaDaMensagem(t){
  var s=String(t||"").toLowerCase().trim();
  var pareceConta=(/[0-9]/.test(s)&&(/[+*\/×÷-]/.test(s)||/\b(mais|menos|vezes|dividid[oa]|multiplicad[oa])\b/.test(s)))||(/\b(zero|um|uma|dois|duas|tr[eê]s|quatro|cinco|seis|sete|oito|nove|dez)\b/.test(s)&&/\b(mais|menos|vezes|dividid[oa]|multiplicad[oa])\b/.test(s));
- if(pareceConta&&window.lumeAtualizarEtapa)window.lumeAtualizarEtapa("A interpretar a expressão matemática...");
+ if(pareceConta&&window.lumeAtualizarEtapa)window.lumeAtualizarEtapa("Reconheci uma conta na tua mensagem: «"+String(t).replace(/\s+/g," ").trim().slice(0,50)+"»; vou interpretá-la.");
  {var fm=window.lumeFuncaoMatematica&&window.lumeFuncaoMatematica(t);if(fm)return fm}if(!s||/m[eé]dia/.test(s))return null;
  s=s.replace(/[?!=.\s]+$/,"").replace(/^(?:por favor,?\s*)?(?:calcule|calcular|resolva|resolve|quanto\s+[eé]|qual\s+o\s+resultado(?:\s+de)?)\s+/,"").trim();
  if(/^\d+(?:-\d+){2,}$/.test(s))return null;
@@ -1247,7 +1247,7 @@ function formulaDaMensagem(t){
   .replace(/(\d)\s*x\s*(?=[\d(])/g,"$1*")
   .replace(/(\d),(\d)/g,"$1.$2").replace(/\s+/g,"");
  if(f.length>80||!/^[\d+\-*\/().]+$/.test(f)||!/[+\-*\/]/.test(f))return null;
- if(window.lumeAtualizarEtapa)window.lumeAtualizarEtapa("A verificar os números e operadores...");
+ if(window.lumeAtualizarEtapa)window.lumeAtualizarEtapa("Converti a conta para «"+f+"» e vou confirmar que só tem números e operadores válidos.");
  if(!formulaValida(f))return null;
  var mostra="";
  (f.match(/\d+(?:\.\d+)?|[+\-*\/()]/g)||[]).forEach(function(k){

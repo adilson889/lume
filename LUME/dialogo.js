@@ -108,6 +108,8 @@ function registar(texto){
   S.ultimaPergunta=qs||ult;gravar();
  }catch(e){}
 }
+function rac(t){try{window.lumeAtualizarEtapa&&window.lumeAtualizarEtapa(t)}catch(e){}}
+function cur(x,n){var s=String(x||"").replace(/\s+/g," ").trim();return s.length>n?s.slice(0,n-1)+"…":s}
 function ver(q){
  S.n++;
  try{
@@ -132,8 +134,8 @@ function reescrever(q){
  try{
   var cc=nz(q).replace(/[^a-z0-9 ]+/g," ").trim();
   if(S.ultimoPedido&&cc.split(" ").length<=4){
-   if(/^(de novo|outra vez|repete)$/.test(cc))return S.ultimoPedido;
-   if(/^(mais (curto|simples|longo|detalhado)|faz mais (curto|simples))$/.test(cc))return S.ultimoPedido+" "+q;
+   if(/^(de novo|outra vez|repete)$/.test(cc)){rac("«"+cur(q,40)+"» refere-se ao teu último pedido; repeti-o: «"+cur(S.ultimoPedido,60)+"».");return S.ultimoPedido}
+   if(/^(mais (curto|simples|longo|detalhado)|faz mais (curto|simples))$/.test(cc)){rac("«"+cur(q,40)+"» altera o teu último pedido; juntei-os: «"+cur(S.ultimoPedido,60)+"».");return S.ultimoPedido+" "+q}
   }
   var p=S.pend;if(!p||S.n+1-p.n>3)return q;
   var f=analisar(q);if(f.pergunta||f.n>12||f.sim||f.nao)return q;
@@ -141,7 +143,7 @@ function reescrever(q){
   if(p.tipo!=="nome"&&p.tipo!=="numeros"&&!(p.tipo==="confirmar"&&p.sub==="ouvir")&&!DECL.test(f.raw.toLowerCase()))novo=completar(q);
   else if(p.tipo==="nome"&&/^[a-zà-ÿ]{2,20}( [a-zà-ÿ]{2,20})?$/i.test(f.raw))novo="o meu nome é "+f.raw.charAt(0).toUpperCase()+f.raw.slice(1);
   else if(p.tipo==="numeros"&&/\d/.test(q)&&S.ultimoPedido)novo=S.ultimoPedido+" "+q;
-  if(novo&&novo!==q){S.pend=null;gravar();return novo}
+  if(novo&&novo!==q){rac("Respondeste à minha pergunta anterior; completei o pedido como «"+cur(novo,60)+"».");S.pend=null;gravar();return novo}
  }catch(e){}
  return q;
 }
@@ -164,7 +166,7 @@ function resolver(q){
    var sg=pol==="neg"?dizer("segue_neg",["Queres falar sobre isso?"]):pol==="pos"?dizer("segue_pos",["O que queres fazer agora?"]):dizer("segue",["Em que posso ajudar?"]);
    S.pend=null;r=juntar([rx,dv])+" "+sg;
   }
-  if(r){gravar();return {resposta:r.trim()}}
+  if(r){rac("A tua mensagem responde "+(p.pergunta?"à pergunta que te fiz («"+cur(p.pergunta,50)+"»)":"à minha pergunta anterior")+"; respondi em conformidade.");gravar();return {resposta:r.trim()}}
  }catch(e){}
  return null;
 }
@@ -172,28 +174,28 @@ function resolver(q){
 function conversar(q){
  try{
   var f=analisar(q);if(!f.n||f.n>14)return "";
-  if(f.risco)return dizer("risco",["Lamento muito que estejas a passar por isso. Não estás sozinho. Fala agora com alguém de confiança ou com um serviço de emergência da tua zona."]);
+  if(f.risco)rac("Percebi sinais de que podes estar a passar por algo difícil; respondi com cuidado e indiquei onde procurar apoio.");if(f.risco)return dizer("risco",["Lamento muito que estejas a passar por isso. Não estás sozinho. Fala agora com alguém de confiança ou com um serviço de emergência da tua zona."]);
   /* "podes criar um projeto?": pedido sem assunto -> pergunta o que criar (a resposta e completada por reescrever) */
   if(/^(?:(?:podes|consegues|sabes|poderias|queres|quero|vamos)\s+)?(?:me\s+)?(criar|fazer|gerar|montar|construir|desenvolver|programar)\s+(?:um|uma|o|a)?\s*(projeto|projecto|app|aplicativo|aplicacao|programa|sistema|trabalho|algo|coisa|negocio)(?:\s+(?:para mim|novo|nova))?$/.test(f.c)){
    var cp=window.LumeDespachante&&window.LumeDespachante.ler?window.LumeDespachante.ler():[],np=[];
    var nmp={codigo:"código",desenhar:"desenhos",calcular:"cálculos",loja:"lojas e páginas",frases:"frases"};
    cp.forEach(function(c){np.push(nmp[c.nome]||c.nome)});
    var up=np.pop();
-   return dizer("pedido_vago",["Claro. O que queres criar? Sei trabalhar com {lista}."],{lista:(np.length?np.join(", ")+" e ":"")+up});
+   rac("Pediste para criar algo sem dizer o quê; perguntei o que queres e listei o que sei fazer.");return dizer("pedido_vago",["Claro. O que queres criar? Sei trabalhar com {lista}."],{lista:(np.length?np.join(", ")+" e ":"")+up});
   }
   if(f.identidade){
    var caps=window.LumeDespachante&&window.LumeDespachante.ler?window.LumeDespachante.ler():[],nm=[];
    var nomes={codigo:"código",desenhar:"desenhos",calcular:"cálculos",loja:"lojas e páginas",frases:"frases"};
    caps.forEach(function(c){nm.push(nomes[c.nome]||c.nome)});
    var u=nm.pop();
-   return dizer("identidade",["Sou o Lume."],{})+(u?" Sei trabalhar com "+(nm.length?nm.join(", ")+" e ":"")+u+".":"");
+   rac("Perguntaste quem sou; respondi com o meu nome e com o que sei fazer.");return dizer("identidade",["Sou o Lume."],{})+(u?" Sei trabalhar com "+(nm.length?nm.join(", ")+" e ":"")+u+".":"");
   }
-  if(f.elogio&&!f.pergunta){sentir(f);return juntar([dizer("elogio_resp",["Obrigado"]),dizer("segue",["Em que posso ajudar?"])])}
-  if(f.critica&&!f.pergunta){S.pend={tipo:"ajuda",sub:"",pergunta:"",n:S.n};return dizer("critica_resp",["Desculpa, ainda estou a aprender. Diz-me com mais detalhe o que esperavas e eu tento outra vez."])}
-  if(f.riso)return dizer("riso_resp",["Ainda bem que te ri."]);
-  if(f.sim||f.nao)return dizer(f.sim?"sim_solto":"nao_solto",["Sim a quê? Diz-me o que precisas."]);
+  if(f.elogio&&!f.pergunta){rac("Percebi um elogio; agradeci e perguntei como posso ajudar.");sentir(f);return juntar([dizer("elogio_resp",["Obrigado"]),dizer("segue",["Em que posso ajudar?"])])}
+  if(f.critica&&!f.pergunta){rac("Percebi uma crítica; pedi mais detalhe para tentar outra vez.");S.pend={tipo:"ajuda",sub:"",pergunta:"",n:S.n};return dizer("critica_resp",["Desculpa, ainda estou a aprender. Diz-me com mais detalhe o que esperavas e eu tento outra vez."])}
+  if(f.riso)rac("Percebi que te riste; respondi no mesmo tom.");if(f.riso)return dizer("riso_resp",["Ainda bem que te ri."]);
+  if(f.sim||f.nao)rac("Disseste só «"+(f.sim?"sim":"não")+"» sem eu ter perguntado nada; pedi-te para explicares melhor.");if(f.sim||f.nao)return dizer(f.sim?"sim_solto":"nao_solto",["Sim a quê? Diz-me o que precisas."]);
   if(!f.pergunta&&DECL.test(f.raw.toLowerCase().replace(/^\s+/,""))){
-   var pol=f.val.pol||"neutro",e=eco(f.raw);
+   var pol=f.val.pol||"neutro",e=eco(f.raw);rac("Contaste-me algo sobre ti; percebi um tom "+({pos:"positivo",neg:"negativo"}[pol]||"neutro")+" e devolvi a conversa.");
    sentir(f);S.ultimoEstado={pol:pol,n:S.n};
    var rx=f.val.hits?(pol==="pos"?dizer("reage_bem",["Ainda bem"]):pol==="neg"?dizer("reage_mal",["Lamento ouvir isso"]):dizer("reage_neutro",["Percebo"])):"";
    var sg=pol==="neg"?dizer("segue_neg",["Queres falar sobre isso?"]):pol==="pos"?dizer("segue_pos",["O que queres fazer agora?"]):dizer("segue_neutro",["Queres que te ajude com isso?"]);
@@ -224,10 +226,10 @@ function memorizar(q){
    var v=x[1].trim().replace(/[.!,;]+$/,"");if(!v)continue;
    if(rg[i].k==="nome")v=v.charAt(0).toUpperCase()+v.slice(1);
    var antes=m[rg[i].k]&&m[rg[i].k].val;
-   if(antes===v)return {novo:false,k:rg[i].k};
+   if(antes===v)return {novo:false,k:rg[i].k,rot:rg[i].rot,val:v};
    m[rg[i].k]={rot:rg[i].rot,val:v,t:Date.now()};mgravar(m);
    if(rg[i].k==="nome"){try{localStorage.setItem("lume_nome",v)}catch(e){}}
-   return {novo:true,k:rg[i].k,rot:rg[i].rot,val:v};
+   return {novo:true,k:rg[i].k,rot:rg[i].rot,val:v,antes:antes};
   }
  }catch(e){}
  return null;
@@ -237,7 +239,7 @@ function recuperar(q){
  if(!/(o que sabes (de|sobre) mim|lembras te de mim|o que tens guardado|o que guardaste|a tua memoria|minha memoria)/.test(c))return null;
  var m=mler(),ks=Object.keys(m);
  if(!ks.length)return {achou:false,resposta:"Ainda não tenho nada guardado sobre ti. Diz-me, por exemplo, como te chamas."};
- return {achou:true,resposta:"Sei isto sobre ti: "+ks.map(function(k){return m[k].rot.toLowerCase()+": "+m[k].val}).join("; ")+"."};
+ return {achou:true,n:ks.length,rots:ks.map(function(k){return m[k].rot.toLowerCase()}).join(", "),resposta:"Sei isto sobre ti: "+ks.map(function(k){return m[k].rot.toLowerCase()+": "+m[k].val}).join("; ")+"."};
 }
 function memoriaTexto(){
  var m=mler(),l=Object.keys(m).map(function(k){return "• "+m[k].rot+": "+m[k].val});

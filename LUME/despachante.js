@@ -301,17 +301,41 @@ function coloquial(q){
  ];
  return passos.reduce(function(x,f){return f(x)},String(q));
 }
+var NOMES_CAP={codigo:"código",desenhar:"desenhos",calcular:"cálculos",loja:"lojas e páginas",frases:"frases"};
+function raciocinio(t){try{window.lumeAtualizarEtapa&&window.lumeAtualizarEtapa(t)}catch(e){}}
+function descreverConversa(c){
+ var p=[];
+ if(c.nome)p.push("o teu nome ("+c.nome+")");
+ if(c.perguntaNome)p.push("uma pergunta sobre o teu nome");
+ if(c.saudacao)p.push("um cumprimento");
+ if(c.estado)p.push("uma pergunta sobre como estou");
+ if(c.respEstado)p.push("a tua resposta sobre como estás");
+ if(c.devolve)p.push("a pergunta devolvida a mim");
+ if(c.agradecimento)p.push("um agradecimento");
+ if(c.despedida)p.push("uma despedida");
+ if(c.ajuda)p.push("um pedido para saber o que faço");
+ if(c.hora)p.push("uma pergunta sobre as horas");
+ if(c.data)p.push("uma pergunta sobre a data");
+ if(!p.length)return "Reconheci uma conversa simples, sem pedido para nenhuma capacidade.";
+ var u=p.pop();
+ return "Li a mensagem e reconheci "+(p.length?p.join(", ")+" e ":"")+u+"; respondi como numa conversa, sem usar nenhuma capacidade.";
+}
+function descreverCapacidade(c,t,m,n){
+ var ev=c.verbos.filter(function(v){return tem(t,v)});
+ var eo=(c.objetos||[]).filter(function(o){return o==="numeros"?m.numeros>=1:o==="pecas"?m.pecas>=1:o==="componentes"?m.componentes>=1:tem(t,o)}).map(function(o){return o==="numeros"?m.numeros+(m.numeros===1?" número":" números"):o==="pecas"?m.pecas+(m.pecas===1?" peça":" peças"):o==="componentes"?m.componentes+(m.componentes===1?" componente":" componentes"):"«"+o+"»"});
+ return "Das "+n+" capacidades que tenho, só «"+(NOMES_CAP[c.nome]||c.nome)+"» corresponde: encontrei o verbo «"+(ev[0]||"")+"»"+(eo.length?" e "+eo.join(", "):"")+".";
+}
 async function tentar(q){
  q=coloquial(q);
  var DL=window.LumeDialogo;
  if(DL&&typeof window.lumeOnReply==="function"){
   var etp=window.lumeAtualizarEtapa,esp=function(t){etp&&etp(t);return Promise.resolve()};
   var rc=DL.recuperar&&DL.recuperar(q);
-  if(rc){await esp("A procurar na memória...");await esp(rc.achou?"Memória recuperada":"Nada guardado ainda",400);window.lumeOnReply({text:rc.resposta});return true}
+  if(rc){await esp("Perguntaste o que sei de ti; vou procurar na memória.");await esp(rc.achou?"Encontrei "+rc.n+(rc.n===1?" facto guardado: ":" factos guardados: ")+rc.rots+".":"Procurei na memória e ainda não há nada guardado sobre ti.");window.lumeOnReply({text:rc.resposta});return true}
   var mm=DL.memorizar&&DL.memorizar(q);
-  if(mm){await esp("A atualizar a memória...");await esp(mm.novo?"Memória atualizada":"Memória confirmada",400)}
+  if(mm){var mr=String(mm.rot||"").toLowerCase();await esp(mm.novo?(mm.antes?"Disseste um novo valor para «"+mr+"»; vou atualizar a memória.":"Disseste «"+mr+"»; vou guardá-lo na memória."):"Disseste «"+mr+"», mas isso já estava guardado.");await esp(mm.novo?(mm.antes?"Troquei «"+mm.antes+"» por «"+mm.val+"».":"Guardei «"+mm.val+"» em «"+mr+"»."):"Não mudei nada na memória.")}
   DL.ver(q);var rd=DL.resolver(q);if(rd&&rd.resposta){window.lumeOnReply({text:rd.resposta});return true}}
- if(typeof window.lumeOnReply==="function"){var conversa=gerarConversa(q);if(conversa){window.lumeAtualizarEtapa&&window.lumeAtualizarEtapa("A compor uma resposta para ti...");window.lumeOnReply({text:conversa});return true;}}
+ if(typeof window.lumeOnReply==="function"){var cdet=detectarConversa(q);var conversa=gerarConversa(q);if(conversa){raciocinio(descreverConversa(cdet||{}));window.lumeOnReply({text:conversa});return true;}}
  var caps=lerCapacidades();if(!caps.length||typeof window.lumeOnReply!=="function")return false;
  var t=norm(q),m=medidores(q,t);
  /* decide pelo verbo e pelo objeto juntos: "gera" serve a varias capacidades, "gera um botao" so a uma */
@@ -319,10 +343,11 @@ async function tentar(q){
  /* em caso de empate, ganha a unica capacidade cujas condicoes (requer) se cumprem */
  if(ativos.length>1){var cumprem=ativos.filter(function(x){return cumpre(x.requer,m)});if(cumprem.length===1)ativos=cumprem}
  if(!ativos.length&&DL){var cv=DL.conversar(q);if(cv){window.lumeOnReply({text:cv});return true}}
- if(ativos.length!==1)return false;
+ if(ativos.length!==1){raciocinio(ativos.length?"Mais de uma capacidade corresponde ("+ativos.map(function(x){return "«"+(NOMES_CAP[x.nome]||x.nome)+"»"}).join(", ")+"); passei o pedido ao motor do bot para decidir.":"Nenhuma capacidade nativa corresponde ao pedido; passei-o ao motor do bot.");return false}
  var c=ativos[0];
- if(window.lumeAtualizarEtapa){var etapas={calcular:"A executar o cálculo...",desenhar:"A preparar o desenho...",frases:"A construir frases...",codigo:"A preparar o código...",loja:"A estruturar a página..."};window.lumeAtualizarEtapa(etapas[c.nome]||("A preparar "+c.nome+"..."));}
+ raciocinio(descreverCapacidade(c,t,m,caps.length));
  if(cumpre(c.requer,m)){
+  raciocinio("O pedido tem tudo o que «"+(NOMES_CAP[c.nome]||c.nome)+"» precisa; a preparar a resposta.");
   var conversa=gerarConversa(q);if(conversa){window.lumeOnReply({text:conversa});return true;}
   if(c.nome==="frases"){window.lumeOnReply({text:gerarFrases(q)});return true;}
   var partes=c.resposta.split(","),txt=entrada(partes[0].trim(),parseInt(partes[1],10)||1);
@@ -332,6 +357,7 @@ async function tentar(q){
  }
  var liga=/(^|\s)(e|com)(\s|$)|,/.test(t);
  if(c.aviso&&liga){
+  raciocinio("O pedido junta várias coisas e «"+(NOMES_CAP[c.nome]||c.nome)+"» não cumpre as condições; avisei em vez de adivinhar.");
   var txt2=c.aviso.replace(/\{pecas\}/g,String(m.pecas)).replace(/\{lista\}/g,todasAsPecas().join(", "));
   window.lumeOnReply({text:txt2});
   return true;
