@@ -32,6 +32,24 @@ function pecasDaPergunta(t){
  });
  return nomes;
 }
+/* quantas pecas ha no pedido, contando as repeticoes: "duas casas" = 2, "uma casa e tres arvores" = 4 */
+function quantidadesPecas(t){
+ var NUM={dois:2,duas:2,tres:3,quatro:4,cinco:5,seis:6,sete:7,oito:8,nove:9,dez:10,onze:11,doze:12};
+ var vistos={},total=0;
+ arq("pecas.txt").split(/\r?\n/).forEach(function(l){
+  if(!l.trim()||l.trim().charAt(0)==="#")return;
+  var p=l.split("|");if(p.length<3)return;
+  var nome=p[0].trim(),chaves=(p[0]+","+p[1]).split(",").map(norm).filter(Boolean);
+  if(vistos[nome]||!chaves.some(function(k){return tem(t,k)}))return;
+  vistos[nome]=1;var q=1;
+  chaves.forEach(function(k){
+   var re=new RegExp("(?:^|\\s)(\\d+|dois|duas|tres|quatro|cinco|seis|sete|oito|nove|dez|onze|doze)\\s+"+k.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"(?=\\s|$)");
+   var m=re.exec(t);if(m){var v=/^\d+$/.test(m[1])?parseInt(m[1],10):NUM[m[1]];if(v>q)q=v}
+  });
+  total+=Math.min(q,12);
+ });
+ return total;
+}
 function todasAsPecas(){
  var n=[];arq("pecas.txt").split(/\r?\n/).forEach(function(l){if(!l.trim()||l.trim().charAt(0)==="#")return;var p=l.split("|");if(p.length>=3)n.push(p[0].trim())});return n;
 }
@@ -81,7 +99,7 @@ window.variaveisGerador=function(codigo){
 function medidores(q,t){
  /* "um" e "uma" sao quase sempre artigos ("cria um botao"), por isso nao contam como numeros aqui */
  var nums=(String(q).match(/-?\d+(?:[.,]\d+)?|\b(?:zero|dois|duas|tr[eê]s|quatro|cinco|seis|sete|oito|nove|dez)\b/gi)||[]);
- return{numeros:nums.length,pecas:pecasDaPergunta(t).length,componentes:componentesDaPergunta(t)};
+ return{numeros:nums.length,pecas:quantidadesPecas(t),componentes:componentesDaPergunta(t)};
 }
 function cumpre(requer,m){
  if(!requer||requer==="-")return true;
