@@ -353,3 +353,8 @@ Lume - historico de versoes
 
 0.5.27
 - Equacao do 2.o grau: o Lume faz uma sondagem "Como preferes resolver este exercicio?" com "Resolver juntos, passo a passo" e "O Lume resolve sozinho". Sozinho (ou "resolve ...", "calcula ...", "nao") resolve com os mesmos passos do tutor (coeficientes, delta, Bhaskara), sem perguntar nada.
+
+0.5.28
+- Formulas em LaTeX (KaTeX, em LUME/vendor/katex): $...$ e \(...\) na linha, $$...$$ e \[...\] em bloco. LUME/math.js ensina o marked a reconhecer a formula antes de tratar _ e *, e o chat desenha-a depois de limpar o HTML. Valores como "$5 e $10" nao contam como formula. Se a formula for invalida, mostra o erro a vermelho sem partir a mensagem.
+- Corrigido: a equacao do 2.o grau escrita sem verbo ja nao e reescrita como "calcule ..." no enviar(), por isso a sondagem abre.
+- sw.js: math.js e KaTeX no cache para funcionar sem ligacao.

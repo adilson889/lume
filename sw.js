@@ -11,7 +11,7 @@
    antigas de uma vez, mudar VERSAO. Os ficheiros do bot sao descobertos sozinhos em LUME/bot/arquivos.json. */
 "use strict";
 
-var VERSAO = "0.5.27";
+var VERSAO = "0.5.28";
 var P = "lume-";
 var C_SHELL = P + "shell-" + VERSAO;
 var C_DADOS = P + "dados-" + VERSAO;
@@ -28,6 +28,9 @@ var NUCLEO = [
   "LUME/formatador.js",
   "LUME/dialogo.js",
   "LUME/despachante.js",
+  "LUME/math.js",
+  "LUME/vendor/katex/katex.min.js",
+  "LUME/vendor/katex/katex.min.css",
   "LUME/editor/lume-editor.js",
   "LUME/vendor/nlp.min.js",
   "LUME/assets/icons/icon-192.png",
@@ -36,6 +39,26 @@ var NUCLEO = [
 var OPCIONAL = [
   "LUME/definicoes.html",
   "LUME/VERSION",
+  "LUME/vendor/katex/fonts/KaTeX_AMS-Regular.woff2",
+  "LUME/vendor/katex/fonts/KaTeX_Caligraphic-Bold.woff2",
+  "LUME/vendor/katex/fonts/KaTeX_Caligraphic-Regular.woff2",
+  "LUME/vendor/katex/fonts/KaTeX_Fraktur-Bold.woff2",
+  "LUME/vendor/katex/fonts/KaTeX_Fraktur-Regular.woff2",
+  "LUME/vendor/katex/fonts/KaTeX_Main-Bold.woff2",
+  "LUME/vendor/katex/fonts/KaTeX_Main-BoldItalic.woff2",
+  "LUME/vendor/katex/fonts/KaTeX_Main-Italic.woff2",
+  "LUME/vendor/katex/fonts/KaTeX_Main-Regular.woff2",
+  "LUME/vendor/katex/fonts/KaTeX_Math-BoldItalic.woff2",
+  "LUME/vendor/katex/fonts/KaTeX_Math-Italic.woff2",
+  "LUME/vendor/katex/fonts/KaTeX_SansSerif-Bold.woff2",
+  "LUME/vendor/katex/fonts/KaTeX_SansSerif-Italic.woff2",
+  "LUME/vendor/katex/fonts/KaTeX_SansSerif-Regular.woff2",
+  "LUME/vendor/katex/fonts/KaTeX_Script-Regular.woff2",
+  "LUME/vendor/katex/fonts/KaTeX_Size1-Regular.woff2",
+  "LUME/vendor/katex/fonts/KaTeX_Size2-Regular.woff2",
+  "LUME/vendor/katex/fonts/KaTeX_Size3-Regular.woff2",
+  "LUME/vendor/katex/fonts/KaTeX_Size4-Regular.woff2",
+  "LUME/vendor/katex/fonts/KaTeX_Typewriter-Regular.woff2",
   "LUME/assets/icons/favicon-32.png",
   "LUME/assets/icons/apple-touch-icon.png"
 ];
