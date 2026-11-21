@@ -303,3 +303,6 @@ Lume - historico de versoes
 
 0.5.12
 - Corrigido: "Ficheiro no editor" ao pedir um desenho voltava a mostrar o SVG no chat. A resposta passou a ser colocada depois das etapas de atividade, e o embrulho em ficheiro corria antes dela existir; agora espera por ela.
+
+0.5.13
+- Corrigido: "dois bolos" desenhava só um. O bolo passa a ser peça em pecas.txt, por isso o despachante conta as repetições e junta todos na mesma cena.
