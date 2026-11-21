@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#EDEEE8">
+<title>Lume sem ligação</title>
+<link rel="icon" type="image/png" sizes="32x32" href="LUME/assets/icons/favicon-32.png">
+<style>
+:root{--bg:#EDEEE8;--card:#F7F7EF;--text:#1A1B13;--muted:#5C5E50;--r:#455A0B;--on:#FFFFFF;--border:#D6D8CB}
+@media (prefers-color-scheme:dark){:root{--bg:#12140D;--card:#1F2217;--text:#E4E4DA;--muted:#A9AB9C;--r:#B3CC6B;--on:#1E2A00;--border:#33372A}}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{display:flex;align-items:center;justify-content:center;padding:max(24px,env(safe-area-inset-top)) max(24px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(24px,env(safe-area-inset-left));background:var(--bg);color:var(--text);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:360px;text-align:center}
+img{width:96px;height:96px;border-radius:50%;margin-bottom:20px}
+h1{font-size:22px;margin:0 0 8px}
+p{margin:0 0 24px;color:var(--muted)}
+button{border:0;border-radius:24px;padding:12px 28px;background:var(--r);color:var(--on);font:inherit;font-weight:600;cursor:pointer;touch-action:manipulation}
+button:active{opacity:.85}
+</style>
+</head>
+<body>
+<main>
+<img src="LUME/assets/icons/icon-192.png" alt="" width="96" height="96">
+<h1>Estás sem ligação</h1>
+<p>O Lume ainda não tem esta página guardada neste dispositivo. Liga-te à internet e tenta de novo.</p>
+<button type="button" onclick="location.reload()">Tentar de novo</button>
+</main>
+<script>
+addEventListener("online",function(){location.reload()});
+</script>
+</body>
+</html>
