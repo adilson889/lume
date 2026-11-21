@@ -1176,7 +1176,7 @@ function esconderDigitando(){
 function anexarAtividade(a){try{
  const atv=window.atividadeParaMsg;if(!Array.isArray(atv)||!atv.length)return;
  let tot=0;atv.forEach(x=>{tot+=Number(x.d)||0});
- const chip=document.createElement("button");chip.type="button";chip.className="msg-atividade";chip.setAttribute("aria-expanded","false");chip.textContent="Ver raciocínios";
+ const chip=document.createElement("button");chip.type="button";chip.className="msg-atividade";chip.setAttribute("aria-expanded","false");chip.textContent="Ver raciocínios do Lume";
  const lista=document.createElement("div");lista.className="msg-atividade-lista";lista.hidden=true;
  atv.forEach(x=>{const l=document.createElement("div");l.className="msg-atividade-linha";const t=document.createElement("span");t.textContent=String(x.t||"");const d=document.createElement("span");d.textContent=fmtDur(x.d);l.appendChild(t);l.appendChild(d);lista.appendChild(l)});
  chip.addEventListener("click",function(){lista.hidden=!lista.hidden;chip.setAttribute("aria-expanded",String(!lista.hidden))});
