@@ -68,11 +68,6 @@
         "em": "2026-11-15T19:31:05.109Z"
       },
       {
-        "h": "fdbee65b72ef182d",
-        "t": "Entendes python?:\n1-{\nSim, entendo **Python**! Posso ler e escrever código, explicar conceitos e ajudar a resolver problemas.\nAqui está um exemplo simples de Python:\n```python\ndef saudacao(nome):\n    return f\"Olá, {nome}!\"\nprint(saudacao(\"Mundo\"))\n```\n<br />\nNeste exemplo, criei uma função saudacao que recebe um nome e devolve uma mensagem formatada. O resultado impresso é: Olá, Mundo!\n}",
-        "em": "2026-11-15T19:33:54.086Z"
-      },
-      {
         "h": "0b1a61bb3d498575",
         "t": "Quem és: Sou o **Lume**, um assistente conversacional experimental.\nFui criado com **BotQL** e **XLang**, duas linguagens que me permitem entender as tuas mensagens, aprender com os utilizadores e executar ações no chat, como desenhar imagens, fazer cálculos ou gerar código.\nEstou aqui para aprender contigo. O que queres fazer hoje?",
         "em": "2026-11-15T19:36:41.345Z"
