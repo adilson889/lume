@@ -362,3 +362,9 @@ Lume - historico de versoes
 0.5.29
 - Tutor de equacoes do 2.o grau escreve as formulas em LaTeX (equacao, coeficientes, discriminante, Bhaskara com fracao e raiz, resultados), tanto passo a passo como a resolver sozinho. Testado de ponta a ponta (formatador, marked, DOMPurify, KaTeX) em todos os caminhos: delta positivo, zero e negativo.
 - sw.js: nova VERSAO para limpar a cache antiga do telemovel.
+
+0.5.30
+- Contas e exercicios passam a ser escritos em LaTeX (KaTeX): contas com passos ("2+3*4", "(5+3)*2-4"), equacoes do 1.o grau ("5x-7=3x+9"), expressoes com letra e com "x = 3", e pedidos em palavras (percentagens, raizes, fatorial, mmc e mdc, potencias, seno e cosseno, logaritmos, hipotenusa, mediana, maior e menor, "10 mais 5", "15 vezes 4"). Decimais com virgula, fracoes, raizes, potencias e funcoes ficam escritos como no caderno.
+- Pedidos simples ("raiz quadrada de 144", "25% de 80") sao calculados pelo despachante em JavaScript, sem eval, e respondidos com a formula e o resultado.
+- "Li o pedido como:" passa a ir em negrito: sem isso o formatador transformava "maior de 3, 8 e 2" numa lista.
+- Testado de ponta a ponta (despachante, formatador, marked, DOMPurify, KaTeX) em 28 pedidos: todas as formulas desenhadas, sem erros e sem texto cru.

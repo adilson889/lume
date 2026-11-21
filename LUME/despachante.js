@@ -406,7 +406,7 @@ function tutorIniciar(fx){
  var e=fx.q,D=e.b*e.b-4*e.a*e.c;if(Math.abs(D)<1e-9)D=0;
  _tutor={q:e,fx:fx,etapa:"oferta",erros:0,D:D,t:Date.now(),x1:null,x2:null};
  var eqt=tTermos(e.a,e.b,e.c,e.X).replace(/&/g,"&amp;").replace(/</g,"&lt;");
- return {texto:"",html:'<div class="ask-intro"><b>Boa!</b> Temos uma equação do 2.º grau: <b>'+eqt+' = 0</b>.<br>Como preferes resolver este exercício?</div><div class="ask-opcoes"><div class="ask-opcao" role="button" data-botql-ask="Resolver juntos, passo a passo">Resolver juntos, passo a passo</div><div class="ask-opcao" role="button" data-botql-ask="O Lume resolve sozinho">O Lume resolve sozinho</div></div>',rac:"Reconheci uma equação do 2.º grau e fiz uma sondagem: resolver juntos ou eu resolver sozinho."};
+ return {texto:"",html:'<div class="ask-intro"><b>Boa!</b> Temos uma equação do 2.º grau: <span class="lume-math" data-tex="'+lx(tTermos(e.a,e.b,e.c,e.X)+" = 0").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;")+'">'+eqt+' = 0</span>.<br>Como preferes resolver este exercício?</div><div class="ask-opcoes"><div class="ask-opcao" role="button" data-botql-ask="Resolver juntos, passo a passo">Resolver juntos, passo a passo</div><div class="ask-opcao" role="button" data-botql-ask="O Lume resolve sozinho">O Lume resolve sozinho</div></div>',rac:"Reconheci uma equação do 2.º grau e fiz uma sondagem: resolver juntos ou eu resolver sozinho."};
 }
 function tutorResponder(txt){
  var T=_tutor;if(!T)return null;
@@ -474,13 +474,86 @@ function tutorResponder(txt){
  _tutor=null;return null;
 }
 /* Contas com passos: responde em texto simples; o chat passa-o pelo formatador (lista, destaque do resultado). */
+/* ===== Contas em LaTeX (KaTeX) =====
+   mx(s) marca um pedaco de matematica dentro de um passo; md(s) troca as marcas por $...$.
+   lx(s) converte matematica em texto (×, ÷, −, ², √, Δ, vírgula decimal...) para LaTeX. */
+var MA="\u27e6",MB="\u27e7";
+function mx(s){return MA+s+MB}
+function lx(s){
+ var SP={"⁰":"0","¹":"1","²":"2","³":"3","⁴":"4","⁵":"5","⁶":"6","⁷":"7","⁸":"8","⁹":"9"},SB={"₀":"0","₁":"1","₂":"2","₃":"3","₄":"4","₅":"5","₆":"6","₇":"7","₈":"8","₉":"9"};
+ s=String(s==null?"":s).replace(/[−–]/g,"-");
+ s=s.replace(/(\d),(\d)/g,"$1{,}$2");
+ s=s.replace(/\(-b ([+-]) √Δ\) ÷ 2a/g,"\\frac{-b $1 \\sqrt{\\Delta}}{2a}").replace(/-b ÷ 2a/g,"\\frac{-b}{2a}");
+ s=s.replace(/([⁰¹²³⁴⁵⁶⁷⁸⁹]+)?√(\([^()]*\)|\d+(?:\{,\}\d+)?|Δ|[a-z])/g,function(_,i,o){o=o.charAt(0)==="("?o.slice(1,-1):o;var ix=i?i.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g,function(c){return SP[c]}):"";return "\\sqrt"+(ix?"["+ix+"]":"")+"{"+o+"}"});
+ s=s.replace(/∛(\([^()]*\)|\d+(?:\{,\}\d+)?)/g,function(_,o){return "\\sqrt[3]{"+(o.charAt(0)==="("?o.slice(1,-1):o)+"}"});
+ s=s.replace(/([⁰¹²³⁴⁵⁶⁷⁸⁹]+)/g,function(m){return "^{"+m.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]/g,function(c){return SP[c]})+"}"});
+ s=s.replace(/\^(\d+)/g,"^{$1}");
+ s=s.replace(/([₀₁₂₃₄₅₆₇₈₉]+)/g,function(m){return "_{"+m.replace(/[₀₁₂₃₄₅₆₇₈₉]/g,function(c){return SB[c]})+"}"});
+ s=s.replace(/\b(asin|acos|atan)\(/g,function(_,n){return "\\arc"+n.slice(1)+"("});
+ s=s.replace(/\b(sin|cos|tan|ln|log|exp)(?=[(_])/g,"\\$1");
+ s=s.replace(/\bsen\(/g,"\\operatorname{sen}(").replace(/\b(arredondar|floor|ceil|max|min|mmc|mdc|abs|round|mediana)\(/g,"\\operatorname{$1}(");
+ s=s.replace(/×/g," \\times ").replace(/÷/g," \\div ").replace(/·/g," \\cdot ").replace(/\*/g," \\times ").replace(/π/g,"\\pi ").replace(/Δ/g,"\\Delta ").replace(/°/g,"^{\\circ}").replace(/%/g,"\\%").replace(/≈/g," \\approx ");
+ s=s.replace(/\brad\b/g,"\\text{ rad}").replace(/(\S) e (?=\S)/g,"$1 \\text{ e } ");
+ s=s.replace(/;\s+/g,";\\ ").replace(/,\s+/g,",\\ ").replace(/\s+/g," ").trim();
+ return s;
+}
+function md(s){return String(s==null?"":s).split(/[\u27e6\u27e7]/).map(function(p,i){return i%2?"$"+lx(p)+"$":p}).join("")}
+function limparMarcas(x){return typeof x==="string"?x.replace(/[\u27e6\u27e7]/g,""):x}
+/* avalia expressoes da xlang-math (sqr, pow, lcm, median...) em JavaScript, sem eval */
+var FN={sqr:Math.sqrt,cbr:Math.cbrt,pow:Math.pow,sin:Math.sin,cos:Math.cos,tan:Math.tan,log:Math.log,log10:Math.log10,log2:Math.log2,hypot:Math.hypot,max:Math.max,min:Math.min,
+ radians:function(d){return d*Math.PI/180},PI:function(){return Math.PI},
+ round:function(x,c){var k=Math.pow(10,c||0);return Math.round(x*k)/k},
+ factorial:function(n){var r=1;for(var i=2;i<=n;i++)r*=i;return r},
+ gcd:function(a,b){a=Math.abs(a);b=Math.abs(b);while(b){var t=b;b=a%b;a=t}return a},
+ lcm:function(a,b){return a&&b?Math.abs(a*b)/FN.gcd(a,b):0},
+ median:function(){var a=[].slice.call(arguments).sort(function(x,y){return x-y}),n=a.length;return n%2?a[(n-1)/2]:(a[n/2-1]+a[n/2])/2},
+ range:function(){return Math.max.apply(null,arguments)-Math.min.apply(null,arguments)},
+ variance:function(){var a=[].slice.call(arguments),m=a.reduce(function(x,y){return x+y},0)/a.length;return a.reduce(function(x,y){return x+(y-m)*(y-m)},0)/a.length},
+ std:function(){return Math.sqrt(FN.variance.apply(null,arguments))},
+ sampleVariance:function(){var a=[].slice.call(arguments),m=a.reduce(function(x,y){return x+y},0)/a.length;return a.reduce(function(x,y){return x+(y-m)*(y-m)},0)/(a.length-1)},
+ sampleStd:function(){return Math.sqrt(FN.sampleVariance.apply(null,arguments))}};
+function avaliarF(src){
+ var s=String(src||""),i=0;
+ function ws(){while(s.charAt(i)===" ")i++}
+ function prim(){ws();var c=s.charAt(i);
+  if(c==="("){i++;var v=soma();ws();if(s.charAt(i)!==")")throw 0;i++;return v}
+  if(c==="-"){i++;return -prim()}
+  if(c==="+"){i++;return prim()}
+  if(/[0-9]/.test(c)){var m=/^\d+(?:\.\d+)?/.exec(s.slice(i));i+=m[0].length;return parseFloat(m[0])}
+  var n=/^[a-zA-Z_]\w*/.exec(s.slice(i));if(!n||!FN.hasOwnProperty(n[0]))throw 0;i+=n[0].length;ws();if(s.charAt(i)!=="(")throw 0;i++;
+  var args=[];ws();if(s.charAt(i)!==")"){for(;;){args.push(soma());ws();if(s.charAt(i)===","){i++;continue}break}}
+  ws();if(s.charAt(i)!==")")throw 0;i++;return FN[n[0]].apply(null,args)}
+ function termo(){var v=prim();for(;;){ws();var c=s.charAt(i);if(c==="*"){i++;v*=prim()}else if(c==="/"){i++;v/=prim()}else return v}}
+ function soma(){var v=termo();for(;;){ws();var c=s.charAt(i);if(c==="+"){i++;v+=termo()}else if(c==="-"){i++;v-=termo()}else return v}}
+ try{var r=soma();ws();return i===s.length&&isFinite(r)?r:null}catch(e){return null}
+}
+function respostaSimples(fm){
+ if(typeof fm.v==="number"&&isFinite(fm.v)&&!(fm.p&&fm.p.length))return "Li a conta como: "+md(fm.m)+"\n\n**Resultado:** $"+lx(tF(fm.v))+"$";
+ if(fm.f&&fm.p===undefined){var v=avaliarF(fm.f);if(v===null)return null;var r=lx(tF(v));
+  return fm.tx?"**Li o pedido como:** "+fm.m+"\n\n$$"+fm.tx+" = "+r+"$$":"O resultado de "+fm.m+" é $"+r+"$."}
+ return null;
+}
+/* "10 mais 5", "calcula 15 vezes 4", "media de 4, 6 e 8": a mesma regra do calculo.txt, mas em LaTeX */
+function contaPorPalavras(q){
+ var t=norm(q),nums=(typeof window.numerosDaPergunta==="function"?window.numerosDaPergunta(q):(t.match(/-?\d+(?:[.,]\d+)?/g)||[]).map(function(x){return parseFloat(x.replace(",","."))})).filter(function(x){return isFinite(x)});
+ if(nums.length<2)return null;
+ var n1=nums[0],n2=nums[1],v,tex,w=function(a){return a.map(function(x,i){return i?lW(x):lF(x)})};
+ if(/dividido/.test(t)){if(n2===0)return "Não dá para dividir por zero.";v=n1/n2;tex=lF(n1)+" \\div "+lW(n2)}
+ else if(/vezes/.test(t)){v=nums.reduce(function(a,b){return a*b},1);tex=w(nums).join(" \\times ")}
+ else if(/menos/.test(t)){v=n1-n2;tex=lF(n1)+" - "+lW(n2)}
+ else if(/media/.test(t)){v=nums.reduce(function(a,b){return a+b},0)/nums.length;tex="\\frac{"+nums.map(lF).join(" + ")+"}{"+nums.length+"}"}
+ else{v=nums.reduce(function(a,b){return a+b},0);tex=w(nums).join(" + ")}
+ if(!isFinite(v))return null;
+ return "Li a conta como: $"+tex+"$\n\n**Resultado:** $"+lF(v)+"$";
+}
 function textoConta(fm){
  if(fm.e&&!(fm.p&&fm.p.length))return fm.e;
  var seq=[],notas=[],res=fm.r||"";
  (fm.p||[]).forEach(function(x){if(/^(Primeiro|Depois|Por fim):/.test(x))seq.push(x);else notas.push(x)});
- if(!res&&seq.length){var u=seq[seq.length-1],i=u.lastIndexOf(" = ");if(i>=0)res=u.slice(i+3)}
- var o="Li a conta como: "+fm.m+"\n\n"+seq.join("\n");
- if(res)o+="\n\nResultado: "+res;
+ if(!res&&seq.length){var u=seq[seq.length-1],g=u.match(/\u27e6[^\u27e6\u27e7]*\u27e7/g),mm=g?g[g.length-1].slice(1,-1):u,i=mm.lastIndexOf(" = ");if(i>=0)res=mx(mm.slice(i+3))}
+ var passos=seq.map(function(x){var m=/^(Primeiro|Depois|Por fim): ([\s\S]*)$/.exec(x);return "- **"+m[1]+":** "+md(m[2])}).join("\n");
+ var o="Li a conta como: "+md(fm.m)+"\n\n"+passos;
+ if(res)o+="\n\n**Resultado:** "+md(res);
  if(notas.length)o+="\n\n"+notas.join(" ");
  return o;
 }
@@ -496,7 +569,7 @@ async function tentar(q){
   if(mm){var mr=String(mm.rot||"").toLowerCase();await esp(mm.novo?(mm.antes?"Disseste um novo valor para «"+mr+"»; vou atualizar a memória.":"Disseste «"+mr+"»; vou guardá-lo na memória."):"Disseste «"+mr+"», mas isso já estava guardado.");await esp(mm.novo?(mm.antes?"Troquei «"+mm.antes+"» por «"+mm.val+"».":"Guardei «"+mm.val+"» em «"+mr+"»."):"Não mudei nada na memória.")}
   DL.ver(q);var rd=DL.resolver(q);if(rd&&rd.resposta){window.lumeOnReply({text:rd.resposta});return true}}
  if(typeof window.lumeOnReply==="function"&&q.length<=140){var fmx=null;try{fmx=funcaoMatematica(q)}catch(_){}if(fmx&&fmx.q){if(/^(resolve|resolva|resolver|calcula|calcule|calcular|determine|encontre|quais|qual|quanto|raizes|raiz)\b/.test(norm(q))){raciocinio("Pediste a resolução; resolvi sozinho, com os mesmos passos e sem perguntas.");window.lumeOnReply({text:tSolucaoDe(fmx.q)});return true}var ti=tutorIniciar(fmx);raciocinio(ti.rac);window.lumeOnReply({text:ti.texto,html:ti.html});return true}
-  if(fmx&&((fmx.p&&fmx.p.length)||fmx.e)){raciocinio("Li o pedido como uma conta e fiz os passos em JavaScript; o chat formata a resposta.");window.lumeOnReply({text:textoConta(fmx)});return true}}
+  if(fmx&&((fmx.p&&fmx.p.length)||fmx.e)){raciocinio("Li o pedido como uma conta e fiz os passos em JavaScript; o chat formata a resposta.");window.lumeOnReply({text:textoConta(fmx)});return true}var rj=fmx&&!fmx.e?respostaSimples(fmx):null;if(rj){raciocinio("Fiz a conta em JavaScript e escrevi o resultado em LaTeX.");window.lumeOnReply({text:rj});return true}}
  if(typeof window.lumeOnReply==="function"){var cdet=detectarConversa(q);var conversa=gerarConversa(q);if(conversa){raciocinio(descreverConversa(cdet||{}));window.lumeOnReply({text:conversa});return true;}}
  var caps=lerCapacidades();if(!caps.length||typeof window.lumeOnReply!=="function")return false;
  var t=norm(q),m=medidores(q,t);
@@ -512,7 +585,7 @@ async function tentar(q){
   raciocinio("O pedido tem tudo o que «"+(NOMES_CAP[c.nome]||c.nome)+"» precisa; a preparar a resposta.");
   var conversa=gerarConversa(q);if(conversa){window.lumeOnReply({text:conversa});return true;}
   if(c.nome==="frases"){window.lumeOnReply({text:gerarFrases(q)});return true;}
-  var partes=c.resposta.split(","),txt=entrada(partes[0].trim(),parseInt(partes[1],10)||1);
+  var partes=c.resposta.split(",");if(partes[0].trim()==="rescalculo.txt"){var cj=contaPorPalavras(q);if(cj){raciocinio("Li a conta nas palavras e escrevi o resultado em LaTeX.");window.lumeOnReply({text:cj});return true}}var txt=entrada(partes[0].trim(),parseInt(partes[1],10)||1);
   if(!txt)return false;
   window.lumeOnReply({text:txt});
   return true;
@@ -738,14 +811,14 @@ function calculadora(q){
    }
   }
  }
- var m0=D(arv),res;
+ var m0=mx(D(arv)),res;
  try{res=E(arv)}catch(e){if(e instanceof Erro)return {f:"0",m:m0,p:[],e:e.msg};throw e}
  if(!isFinite(res.v))return {f:"0",m:m0,p:[],e:"Não consegui calcular esta conta."};
  var P=passos;
- if(P.length<2&&!notas.length)return {f:res.f,m:m0,p:[],e:""};
+ if(P.length<2&&!notas.length)return {f:res.f,m:m0,p:[],e:"",v:res.v};
  if(P.length>12)P=P.slice(0,6).concat(["..."],P.slice(-5));
  var n=P.length;
- P=P.map(function(t,k){return t==="..."?t:(k===0?"Primeiro: ":k===n-1?"Por fim: ":"Depois: ")+t});
+ P=P.map(function(t,k){return t==="..."?t:(k===0?"Primeiro: ":k===n-1?"Por fim: ":"Depois: ")+mx(t)});
  return {f:res.f,m:m0,p:P.concat(notas),e:""};
 }
 var LP=(function(){
@@ -939,7 +1012,7 @@ function equacao(q){
  var vars={};
  var add=LP.add,grau=LP.grau;
  function poly(t){return LP.poly(t,vars)}
- var m0=(lados[0].trim()+" = "+lados[1].trim()).replace(/[\[{]/g,"(").replace(/[\]}]/g,")");
+ var m0=mx((lados[0].trim()+" = "+lados[1].trim()).replace(/[\[{]/g,"(").replace(/[\]}]/g,")"));
  function ER(t){return {f:"0",m:m0,p:[],e:t}}
  var l,r;
  try{l=poly(lados[0]);r=poly(lados[1])}
@@ -970,23 +1043,23 @@ function equacao(q){
  function arred(v){return String(Math.round(v*1e9)/1e9)}
  if(c2!==0){
   var a=c2,b=c1,c=c0,D=b*b-4*a*c;if(Math.abs(D)<1e-9)D=0;
-  var dTxt="Δ = b² − 4·a·c = "+W(b)+"² − 4 × "+W(a)+" × "+W(c)+" = "+F(D);
-  var L=["Passar tudo para o mesmo lado: "+termos(a,b,c)+" = 0","Coeficientes: a = "+F(a)+", b = "+F(b)+", c = "+F(c),dTxt],x1,res;
-  if(D<0){L.push("Como Δ é negativo, não existe raiz quadrada real de Δ: a equação não tem solução real");return {f:"0",m:m0,p:passos(L),e:"",r:"sem solução real",q:{a:a,b:b,c:c,X:X}}}
+  var dTxt="Discriminante: "+mx("Δ = b² − 4·a·c = "+W(b)+"² − 4 × "+W(a)+" × "+W(c)+" = "+F(D));
+  var L=["Passar tudo para o mesmo lado: "+mx(termos(a,b,c)+" = 0"),"Coeficientes: "+mx("a = "+F(a)+", b = "+F(b)+", c = "+F(c)),dTxt],x1,res;
+  if(D<0){L.push("Como "+mx("Δ")+" é negativo, não existe raiz quadrada real de "+mx("Δ")+": a equação não tem solução real");return {f:"0",m:m0,p:passos(L),e:"",r:"sem solução real",q:{a:a,b:b,c:c,X:X}}}
   if(D===0){
-   x1=-b/(2*a);L.push(X+" = −b ÷ 2a = "+F(x1));res=X+" = "+F(x1)+" (raiz dupla)";
+   x1=-b/(2*a);L.push(mx(X+" = −b ÷ 2a = "+F(x1)));res=mx(X+" = "+F(x1))+" (raiz dupla)";
   }else{
    var sq=Math.sqrt(D);x1=(-b+sq)/(2*a);var x2=(-b-sq)/(2*a);
-   L.push("√Δ = "+F(sq));L.push(X+"₁ = (−b + √Δ) ÷ 2a = "+F(x1));L.push(X+"₂ = (−b − √Δ) ÷ 2a = "+F(x2));
-   res=X+"₁ = "+F(x1)+" e "+X+"₂ = "+F(x2);
+   L.push(mx("√Δ = "+F(sq)));L.push(mx(X+"₁ = (−b + √Δ) ÷ 2a = "+F(x1)));L.push(mx(X+"₂ = (−b − √Δ) ÷ 2a = "+F(x2)));
+   res=mx(X+"₁ = "+F(x1))+" e "+mx(X+"₂ = "+F(x2));
   }
   return {f:arred(x1),m:m0,p:passos(L),e:"",r:res,q:{a:a,b:b,c:c,X:X}};
  }
  if(c1===0)return ER(c0===0?"Esta equação é verdadeira para qualquer valor de "+X+" (infinitas soluções).":"Esta equação não tem solução.");
- var A=c1,B=-c0,x=B/A,coef=(A===1?"":A===-1?"−":F(A))+X,L2=["Juntar os termos: "+coef+" = "+F(B)];
- if(A!==1)L2.push("Dividir os dois lados por "+F(A)+": "+X+" = "+F(B)+" ÷ "+F(A));
- L2.push(X+" = "+F(x));
- return {f:arred(x),m:m0,p:passos(L2),e:"",r:X+" = "+F(x)};
+ var A=c1,B=-c0,x=B/A,coef=(A===1?"":A===-1?"−":F(A))+X,L2=["Juntar os termos: "+mx(coef+" = "+F(B))];
+ if(A!==1)L2.push("Dividir os dois lados por "+mx(F(A))+": "+mx(X+" = "+F(B)+" ÷ "+F(A)));
+ L2.push(mx(X+" = "+F(x)));
+ return {f:arred(x),m:m0,p:passos(L2),e:"",r:mx(X+" = "+F(x))};
  }catch(err){return null}
 }
 /* Expressoes com uma letra e sem "=": 2x²+4x+8, 3x+5, (x+1)^2, e "2x²+4x+8 com x = 3".
@@ -1029,24 +1102,24 @@ function expressaoAlgebrica(q){
  function igual(a,b){return a.replace(/[\s×]/g,"")===b.replace(/[\s×]/g,"")}
  if(val===null){
   if(g>2){
-   L.push("Isto é uma expressão com a letra "+X+", por isso não tem um único valor.");
-   if(!igual(orig,simp))L.push("Forma simplificada: "+simp);
+   L.push("Isto é uma expressão com a letra "+mx(X)+", por isso não tem um único valor.");
+   if(!igual(orig,simp))L.push("Forma simplificada: "+mx(simp));
    L.push("Polinómio do "+g+".º grau: só resolvo raízes do 1.º e 2.º grau.");
    _algUltima={s:s,t:Date.now()};
-   return {f:"0",m:orig,p:passos(L),e:"",r:simp};
+   return {f:"0",m:mx(orig),p:passos(L),e:"",r:mx(simp)};
   }
   /* sem "=": a pessoa quer as raizes, por isso resolve-se "expressao = 0" */
   var eq=equacao(s+" = 0");
   _algUltima={s:s,t:Date.now()};
   if(!eq||eq.e)return eq;
-  var pre="Não há \"=\" nem valor para "+X+": assumi que queres as raízes, ou seja, "+simp+" = 0";
-  if(!igual(orig,simp))pre="Simplificar: "+simp+". "+pre;
+  var pre="Não há \"=\" nem valor para "+mx(X)+": assumi que queres as raízes, ou seja, "+mx(simp+" = 0");
+  if(!igual(orig,simp))pre="Simplificar: "+mx(simp)+". "+pre;
   eq.p=eq.p.map(function(x){return x.replace(/^(Primeiro|Depois|Por fim): /,"")});
   eq.p=eq.p.filter(function(x){return !/^Passar tudo para o mesmo lado/.test(x)});
-  eq.p=passos([pre].concat(eq.p).concat(["Para o valor da expressão com um "+X+" concreto, diz por exemplo "+X+" = 3."]));
+  eq.p=passos([pre].concat(eq.p).concat(["Para o valor da expressão com um "+mx(X)+" concreto, diz por exemplo "+mx(X+" = 3")+"."]));
   return eq;
  }
- if(!igual(orig,simp))L.push("Forma simplificada: "+simp);
+ if(!igual(orig,simp))L.push("Forma simplificada: "+mx(simp));
  var xs=W(val),sub="",ts=[],tv=[],tot=0;
  for(var k=g;k>=0;k--){
   var c=Z(P[k]||0);if(c===0&&!(k===0&&ts.length===0))continue;
@@ -1056,10 +1129,10 @@ function expressaoAlgebrica(q){
   tv.push(v);
  }
  sub=ts.join(" ");
- L.push("Substituir "+X+" por "+F(val)+": "+sub);
- if(g>0)L.push("Calcular cada termo: "+tv.map(F).join("; "));
- L.push("Somar: "+tv.map(function(v,i){return i===0?F(v):v<0?"− "+F(-v):"+ "+F(v)}).join(" ")+" = "+F(tot));
- return {f:String(Math.round(tot*1e9)/1e9),m:simp+" com "+X+" = "+F(val),p:passos(L),e:"",r:F(tot)};
+ L.push("Substituir "+mx(X)+" por "+mx(F(val))+": "+mx(sub));
+ if(g>0)L.push("Calcular cada termo: "+mx(tv.map(F).join("; ")));
+ L.push("Somar: "+mx(tv.map(function(v,i){return i===0?F(v):v<0?"− "+F(-v):"+ "+F(v)}).join(" ")+" = "+F(tot)));
+ return {f:String(Math.round(tot*1e9)/1e9),m:mx(simp)+" com "+mx(X+" = "+F(val)),p:passos(L),e:"",r:mx(F(tot))};
  }catch(err){return null}
 }
 function funcaoMatematica(q){
@@ -1074,41 +1147,42 @@ function funcaoMatematica(q){
  function v(x){return parseFloat(String(x).replace(",","."))}
  function fmt(x){return String(x).replace(".",",")}
  function juntar(a){return a.length>1?a.slice(0,-1).map(fmt).join(", ")+" e "+fmt(a[a.length-1]):fmt(a[0])}
- function R(f,m){return {f:f,m:m}}
+ function tf(x){return fmt(x).replace(",","{,}")}
+ function R(f,m,tx){return {f:f,m:m,tx:tx}}
  var m;
  /* percentagens */
  if((m=new RegExp("desconto de "+N+"\\s*(?:%|por cento)\\s*(?:em|sobre|de|num|no|na)\\s*"+N).exec(t)))return R(fmt(v(m[2])).replace(",",".")+"*(100-"+v(m[1])+")/100","desconto de "+fmt(v(m[1]))+"% em "+fmt(v(m[2])));
  if((m=new RegExp("aumento de "+N+"\\s*(?:%|por cento)\\s*(?:em|sobre|de|num|no|na)\\s*"+N).exec(t)))return R(v(m[2])+"*(100+"+v(m[1])+")/100","aumento de "+fmt(v(m[1]))+"% em "+fmt(v(m[2])));
- if((m=new RegExp(N+"\\s*(?:%|por cento)\\s*de\\s*"+N).exec(t)))return R(v(m[1])+"*"+v(m[2])+"/100",fmt(v(m[1]))+"% de "+fmt(v(m[2])));
+ if((m=new RegExp(N+"\\s*(?:%|por cento)\\s*de\\s*"+N).exec(t)))return R(v(m[1])+"*"+v(m[2])+"/100",fmt(v(m[1]))+"% de "+fmt(v(m[2])),tf(v(m[1]))+"\\% \\times "+tf(v(m[2])));
  var nums=(typeof window.numerosDaPergunta==="function"?window.numerosDaPergunta(q):(t.match(/-?\d+(?:[.,]\d+)?/g)||[]).map(v)).filter(function(x){return isFinite(x)&&Math.abs(x)<=1e12});
  if(/\b(valor de pi|quanto vale pi|numero pi)\b/.test(t))return R("PI()","pi");
  if(!nums.length)return null;
  var x=nums[0];
  /* raizes */
- if(/raiz cubica/.test(t))return R("cbr("+x+")","raiz cúbica de "+fmt(x));
- if(/\braiz\b/.test(t)&&x>=0)return R("sqr("+x+")","raiz quadrada de "+fmt(x));
+ if(/raiz cubica/.test(t))return R("cbr("+x+")","raiz cúbica de "+fmt(x),"\\sqrt[3]{"+tf(x)+"}");
+ if(/\braiz\b/.test(t)&&x>=0)return R("sqr("+x+")","raiz quadrada de "+fmt(x),"\\sqrt{"+tf(x)+"}");
  /* teoria dos numeros */
- if(/fatorial/.test(t)&&Number.isInteger(x)&&x>=0&&x<=20)return R("factorial("+x+")","fatorial de "+fmt(x));
+ if(/fatorial/.test(t)&&Number.isInteger(x)&&x>=0&&x<=20)return R("factorial("+x+")","fatorial de "+fmt(x),tf(x)+"!");
  var ints=nums.every(function(y){return Number.isInteger(y)&&y>0});
- if(/\b(mmc|minimo multiplo comum)\b/.test(t)&&nums.length>=2&&ints)return R(nums.slice(1).reduce(function(a,b){return "lcm("+a+","+b+")"},String(nums[0])),"mmc de "+juntar(nums));
- if(/\b(mdc|maximo divisor comum)\b/.test(t)&&nums.length>=2&&ints)return R(nums.slice(1).reduce(function(a,b){return "gcd("+a+","+b+")"},String(nums[0])),"mdc de "+juntar(nums));
+ if(/\b(mmc|minimo multiplo comum)\b/.test(t)&&nums.length>=2&&ints)return R(nums.slice(1).reduce(function(a,b){return "lcm("+a+","+b+")"},String(nums[0])),"mmc de "+juntar(nums),"\\operatorname{mmc}("+nums.map(tf).join(",\\ ")+")");
+ if(/\b(mdc|maximo divisor comum)\b/.test(t)&&nums.length>=2&&ints)return R(nums.slice(1).reduce(function(a,b){return "gcd("+a+","+b+")"},String(nums[0])),"mdc de "+juntar(nums),"\\operatorname{mdc}("+nums.map(tf).join(",\\ ")+")");
  /* potencias */
- if((m=new RegExp(N+"\\s*ao\\s*(quadrado|cubo)").exec(t))){var b0=v(m[1]),e0=m[2]==="cubo"?3:2;if(isFinite(Math.pow(b0,e0)))return R("pow("+b0+","+e0+")",fmt(b0)+" ao "+m[2])}
- if((m=new RegExp(N+"\\s*(?:elevado\\s+(?:a|ao)|\\^)\\s*"+N).exec(t))){var b1=v(m[1]),e1=v(m[2]);if(Math.abs(Math.pow(b1,e1))<1e15)return R("pow("+b1+","+e1+")",fmt(b1)+" elevado a "+fmt(e1))}
+ if((m=new RegExp(N+"\\s*ao\\s*(quadrado|cubo)").exec(t))){var b0=v(m[1]),e0=m[2]==="cubo"?3:2;if(isFinite(Math.pow(b0,e0)))return R("pow("+b0+","+e0+")",fmt(b0)+" ao "+m[2],tf(b0)+"^{"+e0+"}")}
+ if((m=new RegExp(N+"\\s*(?:elevado\\s+(?:a|ao)|\\^)\\s*"+N).exec(t))){var b1=v(m[1]),e1=v(m[2]);if(Math.abs(Math.pow(b1,e1))<1e15)return R("pow("+b1+","+e1+")",fmt(b1)+" elevado a "+fmt(e1),tf(b1)+"^{"+tf(e1)+"}")}
  /* trigonometria */
  if((m=/\b(seno|sen|cosseno|cos|tangente|tan)\b/.exec(t))){
   var fn=/^s/.test(m[1])?"sin":/^c/.test(m[1])?"cos":"tan",graus=/graus|°/.test(t)||/°/.test(q);
   if(fn==="tan"&&graus&&x%180===90)return null;
-  return R(fn+"("+(graus?"radians("+x+")":x)+")",({sin:"seno",cos:"cosseno",tan:"tangente"})[fn]+" de "+fmt(x)+(graus?" graus":""));
+  return R(fn+"("+(graus?"radians("+x+")":x)+")",({sin:"seno",cos:"cosseno",tan:"tangente"})[fn]+" de "+fmt(x)+(graus?" graus":""),"\\"+fn+"("+tf(x)+(graus?"^{\\circ}":"")+")");
  }
  /* logaritmos */
  if(/\b(logaritmo|log|ln)\b/.test(t)&&x>0){
-  if(/natural|\bln\b/.test(t))return R("log("+x+")","logaritmo natural de "+fmt(x));
+  if(/natural|\bln\b/.test(t))return R("log("+x+")","logaritmo natural de "+fmt(x),"\\ln("+tf(x)+")");
   var base=/base\s*2\b/.test(t)?2:10,xb=nums[0];
   if(/base/.test(t)&&nums.length>=2){base=nums[nums.length-1];xb=nums[0];if(base!==2&&base!==10)return null}
-  if(xb>0)return R((base===2?"log2(":"log10(")+xb+")","logaritmo de "+fmt(xb)+" na base "+base);
+  if(xb>0)return R((base===2?"log2(":"log10(")+xb+")","logaritmo de "+fmt(xb)+" na base "+base,"\\log_{"+base+"}("+tf(xb)+")");
  }
- if(/hipotenusa|pitagoras/.test(t)&&nums.length>=2)return R("hypot("+nums[0]+","+nums[1]+")","hipotenusa de catetos "+juntar(nums.slice(0,2)));
+ if(/hipotenusa|pitagoras/.test(t)&&nums.length>=2)return R("hypot("+nums[0]+","+nums[1]+")","hipotenusa de catetos "+juntar(nums.slice(0,2)),"\\sqrt{"+tf(nums[0])+"^{2} + "+tf(nums[1])+"^{2}}");
  /* arredondamento */
  if(/arredond/.test(t)){
   var c=nums.length>1&&/casa/.test(t)&&Number.isInteger(nums[1])&&nums[1]>=0&&nums[1]<=10?nums[1]:null;
@@ -1117,16 +1191,16 @@ function funcaoMatematica(q){
  /* estatistica (precisa de 2 ou mais numeros) */
  if(nums.length>=2){
   var am=/amostral/.test(t),lst=nums.join(","),rot=juntar(nums);
-  if(/\bmediana\b/.test(t))return R("median("+lst+")","mediana de "+rot);
+  if(/\bmediana\b/.test(t))return R("median("+lst+")","mediana de "+rot,"\\operatorname{mediana}("+nums.map(tf).join(",\\ ")+")");
   if(/\bmoda de\b/.test(t))return R("mode("+lst+")","moda de "+rot);
-  if(/\b(maior|maximo)\b/.test(t))return R("max("+lst+")","maior de "+rot);
-  if(/\b(menor|minimo)\b/.test(t))return R("min("+lst+")","menor de "+rot);
+  if(/\b(maior|maximo)\b/.test(t))return R("max("+lst+")","maior de "+rot,"\\max("+nums.map(tf).join(",\\ ")+")");
+  if(/\b(menor|minimo)\b/.test(t))return R("min("+lst+")","menor de "+rot,"\\min("+nums.map(tf).join(",\\ ")+")");
   if(/amplitude/.test(t))return R("range("+lst+")","amplitude de "+rot);
   if(/desvio padrao/.test(t))return R((am?"sampleStd(":"std(")+lst+")","desvio padrão"+(am?" amostral":"")+" de "+rot);
   if(/variancia/.test(t))return R((am?"sampleVariance(":"variance(")+lst+")","variância"+(am?" amostral":"")+" de "+rot);
  }
  return null;
 }
-window.lumeFuncaoMatematica=funcaoMatematica;
+window.lumeFuncaoMatematica=function(q){var r=funcaoMatematica(q);if(!r)return r;var c=Object.assign({},r);c.m=limparMarcas(c.m);c.r=limparMarcas(c.r);if(c.p)c.p=c.p.map(limparMarcas);return c};
 window.LumeDespachante={tentar:tentar,pedeEntrega:pedeEntrega,ler:lerCapacidades,medidores:function(q){return medidores(q,norm(q))}};
 })();
