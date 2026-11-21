@@ -197,6 +197,36 @@ function conversar(q){
    var up=np.pop();
    rac("Pediste para criar algo sem dizer o quê; perguntei o que queres e listei o que sei fazer.");return dizer("pedido_vago",["Claro. O que queres criar? Sei trabalhar com {lista}."],{lista:(np.length?np.join(", ")+" e ":"")+up});
   }
+  /* respostas curtas sem contexto: repetir, nao percebi, concordar, hesitar, dificuldade */
+  var mc=f.c;
+  if(/^(repete|repete la|repete por favor|podes repetir|diz (de )?novo|diz outra vez|outra vez)$/.test(mc)){
+   rac("Pediste para repetir; repeti a minha última resposta.");
+   return S.ultimaResposta?dizer("meta_repete",["Digo outra vez: {r}"],{r:S.ultimaResposta}):dizer("meta_repete_vazio",["Ainda não disse nada para repetir. O que queres saber?"]);
+  }
+  if(/^(nao (entendi|percebi|compreendi)( nada| bem| isso)?|como assim|nao fez sentido|explica melhor|explica de outra forma|nao percebo|nao entendo)$/.test(mc)){
+   rac("Disseste que não percebeste; perguntei que parte ficou confusa.");
+   return dizer("meta_nao_percebi",["Desculpa. Qual parte ficou confusa? Posso explicar por passos."]);
+  }
+  if(/^(beleza|blz|show|fixe|top|legal|massa|tudo certo|perfeito|esta bom|ta bom|esta certo|entendido|percebi|entendi)$/.test(mc)){
+   rac("Concordaste; perguntei o que queres fazer a seguir.");
+   return dizer("meta_ok",["Combinado. O que queres fazer a seguir?"]);
+  }
+  if(/^(nao sei (porque|explicar|dizer|bem porque)|sem razao|sem motivo)$/.test(mc)){
+   rac("Disseste que não sabes explicar; não insisti e ofereci escuta.");
+   return dizer("meta_sem_motivo",["Às vezes acontece, não precisa de ter um motivo claro. Queres contar-me como foi o teu dia?"]);
+  }
+  if(/^(talvez|nao sei|sei la|nao faco ideia|e agora|e depois|e entao|hmm+|hum+)$/.test(mc)){
+   rac("Estás indeciso; ofereci caminhos em vez de insistir.");
+   return dizer("meta_indeciso",["Sem pressa. Podemos desenhar, calcular, criar uma página ou falar de programação. Escolhe o que preferires."]);
+  }
+  if(/^(porque|porque\s+e que|por que|porque nao|e porque)$/.test(mc)){
+   rac("Perguntaste «porquê» sem dizer de quê; pedi o assunto.");
+   return dizer("meta_porque",["Porquê o quê? Diz-me a que te referes."]);
+  }
+  if(/^(que dificil|isto e dificil|e muito dificil|nao consigo|nao estou a conseguir|estou perdido|estou perdida|estou confuso|estou confusa|nao sei por onde comecar)$/.test(mc)){
+   rac("Estás com dificuldade; ofereci ajuda por passos.");S.pend={tipo:"ajuda",sub:"",pergunta:"",n:S.n};
+   return dizer("meta_dificil",["Calma, vamos por partes. Diz-me em que estás a trabalhar e qual é o primeiro passo que te trava."]);
+  }
   var sb=sobre(f);if(sb)return sb;
   if(f.identidade){
    var caps=window.LumeDespachante&&window.LumeDespachante.ler?window.LumeDespachante.ler():[],nm=[];

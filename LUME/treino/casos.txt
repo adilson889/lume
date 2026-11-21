@@ -111,8 +111,8 @@ oii como estas | (e tu|e contigo|e desse lado|como estas|tudo bem|o teu dia)
 bom diaa | (bom dia|boa tarde|boa noite)
 obrigadoo | (nao tens de que|prazer|ainda bem|contente|fico)
 # --- recusas e hesitacoes ---
-talvez | BOT
-nao sei | BOT
+talvez | (sem pressa)
+nao sei | (sem pressa)
 # --- pedido sem assunto: pergunta o que criar e completa a resposta ---
 podes criar um projeto? | (o que queres|que tipo)
 podes criar um projeto? >> uma loja de roupa | {{nome}}
@@ -151,3 +151,22 @@ desenha uma estrela de 7 pontas | BOT
 desenha o grafico de y = x^2 | BOT
 desenha um dragao | BOT
 desenha um leao | (svg|<svg|desenho)
+como te chamas | lume
+tens nome | chamo-me lume
+quantos anos tens | (nao tenho idade)
+es homem ou mulher | (nao sou homem nem mulher)
+onde moras | (navegador)
+gostas de mim | (gosto de conversar)
+estas ai | (estou aqui)
+quem e o adilson | (adilson c\. rafael)
+conta uma piada | (programador|binario|paes)
+qual a tua linguagem favorita | (botql)
+repete | (ainda nao disse nada|digo outra vez)
+nao entendi | (qual parte)
+beleza | (combinado)
+talvez | (sem pressa)
+nao sei | (sem pressa)
+porque | (porque o que|porque? o que|diz-me a que te referes)
+que dificil | (calma|por partes)
+estou triste >> nao sei porque | (as vezes acontece)
+bom dia >> repete | (digo outra vez)

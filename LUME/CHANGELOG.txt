@@ -312,3 +312,7 @@ Lume - historico de versoes
 
 0.5.15
 - desenhos.txt ja nao tem desenhos de objetos: ficou so estrela (com pontas), graficos e a resposta de "nao sei desenhar isso". Objetos sozinhos ("desenha uma maca") passam pelo compositor e saem como peca unica; pedidos de grafico/estrela/seno continuam a ir para o bot.
+
+0.5.16
+- Cerebro: o Lume responde a perguntas pessoais (tens nome, idade, genero, onde moras, gostas de mim, estas ai, quem e o Adilson, piada, favoritos) em sobre.txt, e a respostas curtas sem contexto: "repete" (repete a ultima resposta), "nao entendi/como assim", "beleza", "talvez/nao sei/e agora", "porque", "que dificil/estou perdido", "nao sei porque".
+- Treino: 152 casos.
