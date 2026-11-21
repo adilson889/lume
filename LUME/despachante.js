@@ -305,7 +305,7 @@ async function tentar(q){
  q=coloquial(q);
  var DL=window.LumeDialogo;
  if(DL&&typeof window.lumeOnReply==="function"){
-  var etp=window.lumeAtualizarEtapa,esp=function(t,ms){etp&&etp(t);return new Promise(function(r){setTimeout(r,ms||500)})};
+  var etp=window.lumeAtualizarEtapa,esp=function(t){etp&&etp(t);return Promise.resolve()};
   var rc=DL.recuperar&&DL.recuperar(q);
   if(rc){await esp("A procurar na memória...");await esp(rc.achou?"Memória recuperada":"Nada guardado ainda",400);window.lumeOnReply({text:rc.resposta});return true}
   var mm=DL.memorizar&&DL.memorizar(q);
