@@ -380,12 +380,22 @@ function tPasso(T,etapa){
  }
  return "";
 }
+function tSolucaoDe(e){
+ var X=e.X,a=e.a,b=e.b,c=e.c,D=b*b-4*a*c;if(Math.abs(D)<1e-9)D=0;
+ var o="**Primeiro passo: identificar os coeficientes.**\n\nA equação **"+tTermos(a,b,c,X)+" = 0** tem **a = "+tF(a)+", b = "+tF(b)+", c = "+tF(c)+"** (o **a** acompanha "+X+"², o **b** acompanha "+X+" e o **c** é o termo sem "+X+").";
+ o+="\n\n**Segundo passo: o discriminante Δ.**\n\nA fórmula é **Δ = b² − 4ac**. Substituindo:\n\n**Δ = "+tW(b)+"² − 4 × "+tW(a)+" × "+tW(c)+"**\n\n**Δ = "+tF(b*b)+" − "+tW(4*a*c)+" = "+tF(D)+"**";
+ if(D<0)return o+"\n\nComo o Δ é **negativo**, não existe raiz quadrada real de Δ: a equação **não tem solução real**.\n\n**Resultado: sem solução real**";
+ if(D===0){var x=-b/(2*a);return o+"\n\nComo o Δ é **zero**, a equação tem uma **raiz dupla**.\n\n**Último passo: a fórmula de Bhaskara.**\n\n**"+X+" = −b ÷ 2a**\n\n**"+X+" = −"+tW(b)+" ÷ (2 × "+tW(a)+") = "+tF(-b)+" ÷ "+tF(2*a)+" = "+tF(x)+"**\n\n**Resultado: "+X+" = "+tF(x)+"** (raiz dupla)"}
+ var s=Math.sqrt(D),x1=(-b+s)/(2*a),x2=(-b-s)/(2*a);
+ return o+"\n\nComo o Δ é **positivo**, a equação tem **duas raízes reais diferentes**.\n\n**Último passo: a fórmula de Bhaskara.**\n\n**"+X+" = (−b ± √Δ) ÷ 2a**, com √Δ = "+tF(s)+".\n\n**"+X+"₁ = (−"+tW(b)+" + "+tF(s)+") ÷ (2 × "+tW(a)+") = "+tF(-b+s)+" ÷ "+tF(2*a)+" = "+tF(x1)+"**\n\n**"+X+"₂ = (−"+tW(b)+" − "+tF(s)+") ÷ (2 × "+tW(a)+") = "+tF(-b-s)+" ÷ "+tF(2*a)+" = "+tF(x2)+"**\n\n**Resultado: "+X+"₁ = "+tF(x1)+" e "+X+"₂ = "+tF(x2)+"**";
+}
 function tFim(msg){_tutor=null;return {texto:msg,fim:true,rac:"Terminei a resolução guiada."}}
-function tSolucao(T,pref){var o=textoConta(T.fx);_tutor=null;return {texto:(pref||"Está bem, aqui vai a resolução completa.")+"\n\n"+o,rac:"Mostrei a resolução completa em vez de a conduzir passo a passo."}}
+function tSolucao(T,pref){var o=tSolucaoDe(T.q);_tutor=null;return {texto:(pref||"Está bem, resolvo eu, com os mesmos passos.")+"\n\n"+o,rac:"Resolvi sozinho, com os mesmos passos e sem perguntas."}}
 function tutorIniciar(fx){
  var e=fx.q,D=e.b*e.b-4*e.a*e.c;if(Math.abs(D)<1e-9)D=0;
  _tutor={q:e,fx:fx,etapa:"oferta",erros:0,D:D,t:Date.now(),x1:null,x2:null};
- return {texto:"**Boa!** Temos uma equação do 2.º grau: **"+tTermos(e.a,e.b,e.c,e.X)+" = 0**.\n\nVamos resolver juntos, passo a passo? Responde **sim** ou **não** (ou **resolve tu** para veres tudo de uma vez).",rac:"Reconheci uma equação do 2.º grau e ofereci resolvê-la passo a passo."};
+ var eqt=tTermos(e.a,e.b,e.c,e.X).replace(/&/g,"&amp;").replace(/</g,"&lt;");
+ return {texto:"",html:'<div class="ask-intro"><b>Boa!</b> Temos uma equação do 2.º grau: <b>'+eqt+' = 0</b>.<br>Como preferes resolver este exercício?</div><div class="ask-opcoes"><div class="ask-opcao" role="button" data-botql-ask="Resolver juntos, passo a passo">Resolver juntos, passo a passo</div><div class="ask-opcao" role="button" data-botql-ask="O Lume resolve sozinho">O Lume resolve sozinho</div></div>',rac:"Reconheci uma equação do 2.º grau e fiz uma sondagem: resolver juntos ou eu resolver sozinho."};
 }
 function tutorResponder(txt){
  var T=_tutor;if(!T)return null;
@@ -396,10 +406,10 @@ function tutorResponder(txt){
  var naoSei=/^(nao sei|sei la|nao me lembro|nao lembro|ajuda|ajuda me|dica|nao faco ideia|nao consigo)$/.test(n);
  var palavras=n.split(" ").filter(Boolean).length;
  if(T.etapa==="oferta"){
-  if(/^(sim|s|claro|bora|vamos|ok|pode ser|quero|vamos la|vamos sim|bora la|vamos a isso|sim vamos|sim quero|ya|yes)$/.test(n)){T.etapa="coef";return {texto:tPasso(T,"coef"),rac:"Passo 1: identificar os coeficientes a, b e c."}}
-  if(/^(nao|n|agora nao|nao quero|nao obrigado|diretamente|direto)$/.test(n))return tSolucao(T,"Está bem, aqui vai a resolução completa.");
+  if(/^(sim|s|claro|bora|vamos|ok|pode ser|quero|vamos la|vamos sim|bora la|vamos a isso|sim vamos|sim quero|ya|yes|resolver juntos|resolver juntos,? passo a passo|juntos|passo a passo|resolvemos juntos)$/.test(n)){T.etapa="coef";return {texto:tPasso(T,"coef"),rac:"Passo 1: identificar os coeficientes a, b e c."}}
+  if(/^(nao|n|agora nao|nao quero|nao obrigado|diretamente|direto|o lume resolve sozinho|lume resolve sozinho|resolve sozinho|sozinho|resolve tu sozinho)$/.test(n))return tSolucao(T);
   if(palavras>=3){_tutor=null;return null}
-  return {texto:"Queres resolver passo a passo? Responde **sim** ou **não**."};
+  return {texto:"Escolhe: **resolver juntos** ou **o Lume resolve sozinho**."};
  }
  if(T.etapa==="coef"){
   var got={},re=/\b([abc])\s*[=:]\s*(-|−)?\s*(\d+(?:[.,]\d+)?(?:\/\d+)?)/g,mm,txt2=String(txt).toLowerCase().replace(/[−–]/g,"-");
@@ -474,7 +484,7 @@ async function tentar(q){
   var mm=DL.memorizar&&DL.memorizar(q);
   if(mm){var mr=String(mm.rot||"").toLowerCase();await esp(mm.novo?(mm.antes?"Disseste um novo valor para «"+mr+"»; vou atualizar a memória.":"Disseste «"+mr+"»; vou guardá-lo na memória."):"Disseste «"+mr+"», mas isso já estava guardado.");await esp(mm.novo?(mm.antes?"Troquei «"+mm.antes+"» por «"+mm.val+"».":"Guardei «"+mm.val+"» em «"+mr+"»."):"Não mudei nada na memória.")}
   DL.ver(q);var rd=DL.resolver(q);if(rd&&rd.resposta){window.lumeOnReply({text:rd.resposta});return true}}
- if(typeof window.lumeOnReply==="function"&&q.length<=140){var fmx=null;try{fmx=funcaoMatematica(q)}catch(_){}if(fmx&&fmx.q&&!/^(resolve|resolva|resolver|calcula|calcule|calcular|determine|encontre|quais|qual|quanto|raizes|raiz)\b/.test(norm(q))){var ti=tutorIniciar(fmx);raciocinio(ti.rac);window.lumeOnReply({text:ti.texto});return true}
+ if(typeof window.lumeOnReply==="function"&&q.length<=140){var fmx=null;try{fmx=funcaoMatematica(q)}catch(_){}if(fmx&&fmx.q){if(/^(resolve|resolva|resolver|calcula|calcule|calcular|determine|encontre|quais|qual|quanto|raizes|raiz)\b/.test(norm(q))){raciocinio("Pediste a resolução; resolvi sozinho, com os mesmos passos e sem perguntas.");window.lumeOnReply({text:tSolucaoDe(fmx.q)});return true}var ti=tutorIniciar(fmx);raciocinio(ti.rac);window.lumeOnReply({text:ti.texto,html:ti.html});return true}
   if(fmx&&((fmx.p&&fmx.p.length)||fmx.e)){raciocinio("Li o pedido como uma conta e fiz os passos em JavaScript; o chat formata a resposta.");window.lumeOnReply({text:textoConta(fmx)});return true}}
  if(typeof window.lumeOnReply==="function"){var cdet=detectarConversa(q);var conversa=gerarConversa(q);if(conversa){raciocinio(descreverConversa(cdet||{}));window.lumeOnReply({text:conversa});return true;}}
  var caps=lerCapacidades();if(!caps.length||typeof window.lumeOnReply!=="function")return false;

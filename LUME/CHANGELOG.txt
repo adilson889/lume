@@ -350,3 +350,6 @@ Lume - historico de versoes
 0.5.26
 - Tutor de equacoes do 2.o grau: ao escrever uma equacao (ex.: x²-2x+1=0) o Lume oferece-se para resolver juntos. Passo 1: pede os coeficientes a, b, c; passo 2: pede a formula do delta e substitui; passo 3: pede as raizes pela formula de Bhaskara. Corrige cada resposta com uma pista, avanca ao acertar ou ao dizer "nao sei". "resolve tu"/"nao" mostram tudo; "sair" termina. "resolve ..." ou "calcula ..." continuam a dar a resolucao completa.
 - dialogo.js: nao reescreve respostas enquanto o tutor esta ativo.
+
+0.5.27
+- Equacao do 2.o grau: o Lume faz uma sondagem "Como preferes resolver este exercicio?" com "Resolver juntos, passo a passo" e "O Lume resolve sozinho". Sozinho (ou "resolve ...", "calcula ...", "nao") resolve com os mesmos passos do tutor (coeficientes, delta, Bhaskara), sem perguntar nada.

@@ -7,7 +7,7 @@ function novo(){
  const A={};for(const n of JSON.parse(fs.readFileSync(B+"arquivos.json","utf8")))if(n!=="main.sql")A[n]=fs.readFileSync(B+n,"utf8");
  global.window={arquivosBot:A};
  (0,eval)(fs.readFileSync("LUME/despachante.js","utf8"));(0,eval)(fs.readFileSync("LUME/dialogo.js","utf8"));
- const o={out:[]};window.lumeOnReply=x=>{o.out.push(x.text);window.LumeDialogo.registar(x.text)};return o;
+ const o={out:[]};window.lumeOnReply=x=>{o.out.push(x.text||x.html||"");window.LumeDialogo.registar(x.text||"")};return o;
 }
 (async()=>{
  let ok=0,total=0;const falhas=[];
