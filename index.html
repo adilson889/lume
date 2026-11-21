@@ -3,8 +3,24 @@
 <html lang=pt>
 <head>
 <meta charset=UTF-8>
-<meta name=viewport content="width=device-width,initial-scale=1,user-scalable=no,interactive-widget=resizes-content">
-<title>{{BOT_NOME}}</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no,interactive-widget=resizes-content">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#EDEEE8">
+<meta name="description" content="Lume: assistente conversacional em português que conversa, calcula, desenha e ajuda com código, mesmo com ligação fraca.">
+<meta name="application-name" content="Lume">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Lume">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="LUME/assets/icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="LUME/assets/icons/favicon-16.png">
+<link rel="shortcut icon" href="LUME/assets/icons/favicon.ico">
+<link rel="apple-touch-icon" href="LUME/assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="dns-prefetch" href="https://botql-edidor.vercel.app">
+<title>Lume</title>
 <script>
 /* Ponte com a app Android (MainActivity.java): so ativa quando existe window.LumeNativo */
 (function(){
@@ -445,8 +461,25 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:64px;backgrou
 #modal-rodape .idiomas button.atual span{color:var(--on);opacity:.7}
 #modal-rodape button.ghost{flex-basis:100%;border-color:transparent;color:var(--muted);font-weight:500}
 #sidebar{visibility:hidden;transition:transform .45s cubic-bezier(.32,.72,0,1),visibility 0s linear .45s}#sidebar.show{visibility:visible;transition:transform .45s cubic-bezier(.32,.72,0,1),visibility 0s}#btn-nova-sb{padding:12px 14px!important;font-size:14px!important;min-width:0}.msg-convite{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin:2px 0 10px 0;align-self:flex-start;font-size:14px;color:var(--muted)}.msg-convite button{border:0;border-radius:18px;padding:9px 18px;font:inherit;font-weight:600;background:var(--r);color:var(--on);cursor:pointer}.msg-convite button:active{opacity:.85}.sug-chip.sug-ensinar{background:var(--r);color:var(--on);border-color:var(--r);font-weight:600}.sug-chip.sug-ensinar:active{opacity:.85;background:var(--r)}</style>
+<style id="pwa-css">
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+button,a,[role=button],select,summary{touch-action:manipulation}
+#btn-menu,#btn-nova{margin-top:env(safe-area-inset-top,0px)}
+#btn-menu{margin-left:env(safe-area-inset-left,0px)}
+#btn-nova{margin-right:env(safe-area-inset-right,0px)}
+#chat,#input-area{left:env(safe-area-inset-left,0px);right:env(safe-area-inset-right,0px)}
+#input-area{border-bottom:env(safe-area-inset-bottom,0px) solid var(--bg)}
+#pwa-cartao{position:fixed;left:12px;right:12px;bottom:calc(96px + env(safe-area-inset-bottom,0px));z-index:40;max-width:420px;margin:0 auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 14px;background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:18px;box-shadow:0 8px 28px rgba(0,0,0,.18);font-size:14px}
+#pwa-cartao span{flex:1 1 160px}
+#pwa-cartao button{border:0;border-radius:16px;padding:8px 14px;font:inherit;font-weight:600;cursor:pointer}
+#pwa-cartao .pwa-sim{background:var(--r);color:var(--on)}
+#pwa-cartao .pwa-nao{background:transparent;color:var(--muted)}
+#pwa-rede{position:fixed;left:50%;top:calc(var(--vvt,0px) + 64px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:35;max-width:calc(100% - 24px);padding:6px 14px;border-radius:16px;background:var(--text);color:var(--bg);font-size:13px;font-weight:600;text-align:center}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+</style>
 </head>
 <body>
+<noscript><p style="padding:24px;font:16px system-ui,sans-serif">O Lume precisa de JavaScript para funcionar. Ativa o JavaScript no navegador e recarrega a página.</p></noscript>
 <div id=tela-carregando>
 <svg class=splash-logo viewBox="0 0 100 100" aria-hidden=true><use href=#logo-lume /></svg>
 <div id=texto-carregando role=status>A preparar o bot...</div>
@@ -1608,7 +1641,7 @@ function menu(btn){
  fecharMenuConversa();
  var f=document.createElement("div");f.id="menu-conv-fundo";f.addEventListener("click",fecharMenuConversa);
  var m=document.createElement("div");m.id="menu-conv";
- ITENS.forEach(function(it){var b=document.createElement("button");b.type="button";b.className="menu-conv-item"+(it[0]==="Limpar conversa"?" perigo":"");b.innerHTML=it[1];var t=document.createElement("span");t.textContent=it[0];b.appendChild(t);b.addEventListener("click",function(e){e.stopPropagation();fecharMenuConversa();it[2]()});m.appendChild(b)});
+ ITENS.concat(window.lumeItemInstalar?window.lumeItemInstalar():[]).forEach(function(it){var b=document.createElement("button");b.type="button";b.className="menu-conv-item"+(it[0]==="Limpar conversa"?" perigo":"");b.innerHTML=it[1];var t=document.createElement("span");t.textContent=it[0];b.appendChild(t);b.addEventListener("click",function(e){e.stopPropagation();fecharMenuConversa();it[2]()});m.appendChild(b)});
  document.body.appendChild(f);document.body.appendChild(m);
  var r=btn.getBoundingClientRect(),w=m.offsetWidth,h=m.offsetHeight;
  m.style.left=Math.min(Math.max(12,r.right-w),innerWidth-w-12)+"px";
@@ -1804,6 +1837,115 @@ script.textContent=js.textContent;
 document.body.appendChild(script);
 })
 .catch(function(e){console.error('Não foi possível carregar as definições do Lume:',e)});
+})();
+</script>
+<script>
+(function(){
+"use strict";
+var W=window,D=document,N=navigator;
+function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){}return null}
+function standalone(){try{return W.matchMedia("(display-mode: standalone)").matches||W.matchMedia("(display-mode: minimal-ui)").matches||N.standalone===true}catch(e){return false}}
+var ios=/iphone|ipad|ipod/i.test(N.userAgent)||(N.platform==="MacIntel"&&N.maxTouchPoints>1);
+var seguro=location.protocol==="https:"||location.hostname==="localhost"||location.hostname==="127.0.0.1";
+D.documentElement.classList.toggle("pwa-standalone",standalone());
+
+/* cartao de aviso: atualizacao disponivel ou convite para instalar */
+var cartao=null;
+function fechar(){if(cartao){cartao.remove();cartao=null}}
+function mostrar(texto,sim,fnSim,nao){
+ fechar();
+ var c=D.createElement("div");c.id="pwa-cartao";c.setAttribute("role","status");
+ var s=D.createElement("span");s.textContent=texto;c.appendChild(s);
+ var b1=D.createElement("button");b1.type="button";b1.className="pwa-sim";b1.textContent=sim;
+ b1.addEventListener("click",function(){fechar();fnSim()});
+ var b2=D.createElement("button");b2.type="button";b2.className="pwa-nao";b2.textContent=nao;
+ b2.addEventListener("click",fechar);
+ c.appendChild(b1);c.appendChild(b2);D.body.appendChild(c);cartao=c;
+}
+
+/* service worker: guarda a app para abrir sem ligacao e avisa quando ha versao nova */
+var atualizar=false;
+if("serviceWorker" in N&&seguro){
+ W.addEventListener("load",function(){
+  N.serviceWorker.register("sw.js").then(function(reg){
+   function avisar(sw){
+    if(!N.serviceWorker.controller)return;
+    mostrar("Há uma nova versão do Lume.","Atualizar",function(){atualizar=true;sw.postMessage({tipo:"SKIP_WAITING"})},"Depois");
+   }
+   if(reg.waiting)avisar(reg.waiting);
+   reg.addEventListener("updatefound",function(){
+    var n=reg.installing;if(!n)return;
+    n.addEventListener("statechange",function(){if(n.state==="installed")avisar(n)});
+   });
+   var ultimo=Date.now();
+   D.addEventListener("visibilitychange",function(){
+    if(!D.hidden&&Date.now()-ultimo>600000){ultimo=Date.now();reg.update().catch(function(){})}
+   });
+   setInterval(function(){reg.update().catch(function(){})},3600000);
+  }).catch(function(){});
+ });
+ N.serviceWorker.addEventListener("controllerchange",function(){if(atualizar)location.reload()});
+}
+
+/* instalar a app */
+var evInst=null;
+function podeInstalar(){return !standalone()&&!ls("lume_pwa_instalado")&&(!!evInst||ios)}
+function instalar(){
+ if(evInst){var e=evInst;evInst=null;e.prompt();return e.userChoice.catch(function(){})}
+ if(ios&&W.modalAviso)W.modalAviso("Instalar o Lume","No Safari, toca no botão Partilhar e escolhe «Adicionar ao ecrã principal».");
+}
+W.lumeItemInstalar=function(){
+ if(!podeInstalar())return [];
+ return [["Instalar aplicação",'<svg viewBox="0 0 24 24" fill="none"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',instalar]];
+};
+function agendarConvite(){
+ if(Date.now()-(+ls("lume_pwa_convite")||0)<14*864e5)return;
+ setTimeout(function(){
+  if(!evInst||standalone()||D.hidden||cartao)return;
+  ls("lume_pwa_convite",String(Date.now()));
+  mostrar("Instalar o Lume no teu dispositivo?","Instalar",instalar,"Agora não");
+ },30000);
+}
+W.addEventListener("beforeinstallprompt",function(e){e.preventDefault();evInst=e;agendarConvite()});
+W.addEventListener("appinstalled",function(){
+ evInst=null;ls("lume_pwa_instalado","1");fechar();
+ if(W.mostrarToast)W.mostrarToast("Lume instalado");
+});
+
+/* estado da ligacao */
+var faixa=null;
+function rede(){
+ var off=N.onLine===false;
+ if(off&&!faixa){
+  faixa=D.createElement("div");faixa.id="pwa-rede";faixa.setAttribute("role","status");
+  faixa.textContent="Sem ligação. O Lume continua a funcionar com o que guardou.";
+  D.body.appendChild(faixa);
+ }else if(!off&&faixa){
+  faixa.remove();faixa=null;
+  if(W.mostrarToast)W.mostrarToast("Ligação restabelecida");
+ }
+}
+W.addEventListener("online",rede);W.addEventListener("offline",rede);
+if(D.readyState==="loading")D.addEventListener("DOMContentLoaded",rede);else rede();
+
+/* atalhos do icone (?acao=nova, ?acao=ensinar) e partilha para o Lume (?titulo, ?texto, ?link) */
+(function(){
+ var p=new URLSearchParams(location.search),a=p.get("acao"),t=[p.get("titulo"),p.get("texto"),p.get("link")].filter(Boolean).join(" ").trim();
+ if(!a&&!t)return;
+ function correr(){
+  try{
+   if(a==="nova"&&typeof novaConversa==="function")novaConversa();
+   else if(a==="ensinar"&&typeof iniciarEnsinar==="function")iniciarEnsinar();
+   if(t&&typeof inputEl!=="undefined"&&inputEl){inputEl.value=t.slice(0,2000);inputEl.dispatchEvent(new Event("input",{bubbles:true}));inputEl.focus()}
+  }catch(e){}
+  try{
+   var q=new URLSearchParams(location.search);
+   ["acao","titulo","texto","link"].forEach(function(k){q.delete(k)});
+   var s=q.toString();history.replaceState(null,"",location.pathname+(s?"?"+s:"")+location.hash);
+  }catch(e){}
+ }
+ if(D.readyState==="complete")setTimeout(correr,300);else W.addEventListener("load",function(){setTimeout(correr,600)});
+})();
 })();
 </script>
 </body>
