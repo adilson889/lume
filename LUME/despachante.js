@@ -99,7 +99,7 @@ window.variaveisGerador=function(codigo){
 function medidores(q,t){
  /* "um" e "uma" sao quase sempre artigos ("cria um botao"), por isso nao contam como numeros aqui */
  var nums=(String(q).match(/-?\d+(?:[.,]\d+)?|\b(?:zero|dois|duas|tr[eê]s|quatro|cinco|seis|sete|oito|nove|dez)\b/gi)||[]);
- return{numeros:nums.length,pecas:quantidadesPecas(t),componentes:componentesDaPergunta(t)};
+ return{numeros:nums.length,pecas:/\b(grafico|graficos|pontas|seno|funcao)\b/.test(t)||/\by\s*=/.test(t)?0:quantidadesPecas(t),componentes:componentesDaPergunta(t)};
 }
 function cumpre(requer,m){
  if(!requer||requer==="-")return true;

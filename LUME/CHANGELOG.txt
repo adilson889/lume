@@ -309,3 +309,6 @@ Lume - historico de versoes
 
 0.5.14
 - Os desenhos soltos de desenhos.txt (53 objetos: animais, comida, objetos, veiculos...) passam a ser pecas em pecas.txt, sem fundo nem chao. Agora todos se combinam e contam como a casa ("dois bolos", "um leao e um elefante", "duas macas e um bolo").
+
+0.5.15
+- desenhos.txt ja nao tem desenhos de objetos: ficou so estrela (com pontas), graficos e a resposta de "nao sei desenhar isso". Objetos sozinhos ("desenha uma maca") passam pelo compositor e saem como peca unica; pedidos de grafico/estrela/seno continuam a ir para o bot.

@@ -146,4 +146,8 @@ es open source? | (github|apache)
 desenha dois bolos | (svg|<svg|desenho|juntar)
 desenha um leao e um elefante | (svg|<svg|juntar)
 desenha duas macas e um bolo | (svg|<svg|juntar)
-desenha uma maca | BOT
+desenha uma maca | (svg|<svg|desenho)
+desenha uma estrela de 7 pontas | BOT
+desenha o grafico de y = x^2 | BOT
+desenha um dragao | BOT
+desenha um leao | (svg|<svg|desenho)
