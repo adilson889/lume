@@ -104,6 +104,12 @@
     <print><svg viewBox="0 0 100 100" width="220" height="220"><rect x="0" y="85" width="100" height="15" fill="#7cb342"></rect><rect x="35" y="40" width="30" height="25" rx="3" fill="#95a5a6"></rect><rect x="40" y="20" width="20" height="20" rx="5" fill="#bdc3c7"></rect><circle cx="45" cy="30" r="3" fill="#2c3e50"></circle><circle cx="55" cy="30" r="3" fill="#2c3e50"></circle><line x1="50" y1="20" x2="50" y2="10" stroke="#95a5a6" stroke-width="2"></line><circle cx="50" cy="10" r="3" fill="#e74c3c"></circle><rect x="25" y="45" width="10" height="5" fill="#95a5a6"></rect><rect x="65" y="45" width="10" height="5" fill="#95a5a6"></rect><rect x="40" y="65" width="5" height="20" fill="#7f8c8d"></rect><rect x="55" y="65" width="5" height="20" fill="#7f8c8d"></rect></svg></print>
 </elseif>
 
+<!-- BALÃO -->
+<elseif condition="includes(m, 'balão') || includes(m, 'balao')">
+    <print>Aqui está o teu balão:</print>
+    <print><svg viewBox="0 0 100 100" width="220" height="220"><rect x="0" y="0" width="100" height="100" fill="#fbfbf4"></rect><ellipse cx="50" cy="38" rx="24" ry="30" fill="#e53935" stroke="#b71c1c" stroke-width="2"></ellipse><ellipse cx="40" cy="26" rx="6" ry="9" fill="#fff" opacity=".35"></ellipse><polygon points="45,68 55,68 50,75" fill="#b71c1c"></polygon><path d="M50 75 Q42 83 50 89 Q58 94 50 97" stroke="#78909c" stroke-width="2" fill="none"></path></svg></print>
+</elseif>
+
 <!-- PIZZA -->
 <elseif condition="includes(m, 'pizza')">
     <print>Aqui está a tua pizza:</print>

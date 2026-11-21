@@ -24,7 +24,7 @@
     <set name="nome" value="pecas_nome[p]"></set>
     <if condition="includes(m, pecas_chaves[i]) && !includes(vistos, '|' + p + '|')">
         <set name="vistos" value="vistos + p + '|'"></set>
-        <if condition="nome == 'sol' || nome == 'lua' || nome == 'nuvem' || nome == 'estrela' || nome == 'pássaro'">
+        <if condition="nome == 'sol' || nome == 'lua' || nome == 'nuvem' || nome == 'estrela' || nome == 'pássaro' || nome == 'balão' || nome == 'cometa'">
             <set name="totalceu" value="totalceu + pecas_quantidade[p]"></set>
         </if>
         <else>
@@ -46,7 +46,7 @@
     <if condition="includes(m, pecas_chaves[i]) && !includes(usados, '|' + p + '|')">
         <set name="usados" value="usados + p + '|'"></set>
         <for var="j" from="0" to="pecas_quantidade[p] - 1">
-            <if condition="nome == 'sol' || nome == 'lua' || nome == 'nuvem' || nome == 'estrela' || nome == 'pássaro'">
+            <if condition="nome == 'sol' || nome == 'lua' || nome == 'nuvem' || nome == 'estrela' || nome == 'pássaro' || nome == 'balão' || nome == 'cometa'">
                 <if condition="totalceu <= 2"><set name="escala" value="0.78"></set></if>
                 <else><if condition="totalceu <= 4"><set name="escala" value="0.62"></set></if><else><if condition="totalceu <= 6"><set name="escala" value="0.48"></set></if><else><set name="escala" value="0.36"></set></else></else></else>
                 <if condition="totalceu == 1"><set name="x" value="(325 - 100 * escala) / 2"></set></if>
