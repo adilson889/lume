@@ -3,7 +3,7 @@
 # --- saudacoes e estado ---
 oi | ^(bom dia|boa tarde|boa noite)
 boa noite | (bom dia|boa tarde|boa noite)
-oi, como estas? | (e tu|e contigo|e desse lado|como estas|tudo bem)
+oi, como estas? | (e tu|e contigo|e desse lado|como estas|tudo bem|em ordem)
 oi, como estas? >> bem | (que bom|ainda bem|contente|feliz)
 oi, como estas? >> bem e tu? | (tambem|por aqui).*(bem)
 oi, como estas? >> cansado | (pena|lamento|sinto muito)
@@ -118,3 +118,28 @@ podes criar um projeto? | (o que queres|que tipo)
 podes criar um projeto? >> uma loja de roupa | {{nome}}
 quero fazer um app | (o que queres|que tipo)
 calcular | BOT
+# --- o Lume sabe quem e (sobre.txt) ---
+quem es? | (sou o lume).*(botql|bot)
+quem és tu | sou o lume
+qual e o teu nome | sou o lume
+como foste criada? | botql.*(regras|declarativa)
+como foste criado | botql
+como foi que foste feito | botql
+quem desenvolveu vc? | adilson
+quem é o teu desenvolvedor? | adilson
+quem te criou | adilson
+quem criou o lume | adilson
+quem e o teu criador | adilson
+como funcionas? | despachante
+como funcionar? | despachante
+como e que trabalhas | despachante
+como aprendes? | (ajuda das pessoas|validacao)
+es uma ia? | (bot de regras|nao sou uma inteligencia)
+vc e uma ia | (bot de regras|nao sou uma inteligencia)
+usas chatgpt? | (bot de regras|nao sou uma inteligencia)
+que tecnologias usas? | (botql).*(html|nlp)
+em que linguagem foste feito? | (botql).*(html|nlp)
+guardas as minhas conversas? | (navegador|dispositivo)
+usas internet? | wikipedia
+o que nao sabes fazer? | nao invento
+es open source? | (github|apache)

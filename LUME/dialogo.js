@@ -170,6 +170,20 @@ function resolver(q){
  }catch(e){}
  return null;
 }
+/* o que o Lume sabe sobre si (sobre.txt): quem e, quem o fez, como funciona, tecnologia, dados, limites */
+function sobre(f){
+ var D=window.LumeDespachante,nm={codigo:"código",desenhar:"desenhos",calcular:"cálculos",loja:"lojas e páginas",frases:"frases"},ls=[];
+ try{(D&&D.ler?D.ler():[]).forEach(function(c){ls.push(nm[c.nome]||c.nome)})}catch(e){}
+ var u=ls.pop(),lista=u?(ls.length?ls.join(", ")+" e ":"")+u:"cálculos, desenhos, páginas, frases e código";
+ var linhas=arq("sobre.txt").split(/\r?\n/);
+ for(var i=0;i<linhas.length;i++){
+  var l=linhas[i];if(!l.trim()||l.trim().charAt(0)==="#")continue;
+  var p=l.split("::");if(p.length<3)continue;
+  var re;try{re=new RegExp(p[1].trim())}catch(e){continue}
+  if(re.test(f.c)){var r=p.slice(2).join("::").split(" || ");return pick(r.map(function(x){return x.trim()}),"sobre_"+p[0].trim()).split("{lista}").join(lista)}
+ }
+ return "";
+}
 /* conversa sem pedido: identidade, elogio, critica, riso, risco, sim/nao soltos, frases de 1.a pessoa */
 function conversar(q){
  try{
@@ -183,6 +197,7 @@ function conversar(q){
    var up=np.pop();
    rac("Pediste para criar algo sem dizer o quê; perguntei o que queres e listei o que sei fazer.");return dizer("pedido_vago",["Claro. O que queres criar? Sei trabalhar com {lista}."],{lista:(np.length?np.join(", ")+" e ":"")+up});
   }
+  var sb=sobre(f);if(sb)return sb;
   if(f.identidade){
    var caps=window.LumeDespachante&&window.LumeDespachante.ler?window.LumeDespachante.ler():[],nm=[];
    var nomes={codigo:"código",desenhar:"desenhos",calcular:"cálculos",loja:"lojas e páginas",frases:"frases"};

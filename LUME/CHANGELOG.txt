@@ -296,3 +296,7 @@ Lume - historico de versoes
 0.5.10
 - Corrigido (ecra do chat): "Podes criar um projeto?" caia no bot e respondia a definicao de "projeto open source". Pedidos de criar/fazer/gerar sem assunto (projeto, app, programa, sistema...) passam a perguntar "O que queres criar?" com a lista de capacidades, e a resposta seguinte ("uma loja de roupa") e completada para "cria uma loja de roupa".
 - Treino: 101 casos.
+
+0.5.11
+- O Lume sabe falar de si: quem es, como foste criada, quem te desenvolveu, como funcionas, como aprendes, es uma IA, que tecnologias usas, guardas as minhas conversas, usas internet, o que nao sabes fazer, es open source. Respostas em bot/sobre.txt (id :: regex :: resposta).
+- Treino: 125 casos, 100%.
