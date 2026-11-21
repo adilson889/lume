@@ -139,6 +139,20 @@ function reescrever(q){
    if(/^(de novo|outra vez|repete)$/.test(cc)){rac("«"+cur(q,40)+"» refere-se ao teu último pedido; repeti-o: «"+cur(S.ultimoPedido,60)+"».");return S.ultimoPedido}
    if(/^(mais (curto|simples|longo|detalhado)|faz mais (curto|simples))$/.test(cc)){rac("«"+cur(q,40)+"» altera o teu último pedido; juntei-os: «"+cur(S.ultimoPedido,60)+"».");return S.ultimoPedido+" "+q}
   }
+  /* seguimento: "e em Python?" depois de "o que e uma funcao?" -> "o que e uma funcao em Python" */
+  var sg=String(q||"").trim().match(/^e\s+((?:em|no|na|nos|nas|com|para)\s+[^?!.]{2,30})\s*\??$/i);
+  if(sg&&Array.isArray(S.hist)&&S.hist.length){
+   var ph=S.hist[S.hist.length-1];
+   if(ph&&S.n-ph.n<=1){
+    var base=String((S.seg&&S.seg.n===ph.n)?S.seg.b:ph.p).replace(/\s*[?!.]+\s*$/,"").trim();
+    if(base.split(" ").length>=3&&/^(o que|que|qual|quais|como|quando|onde|porque|por que|quem|quanto|explica|mostra|diz|fala|cria|faz|escreve|da me|exemplo|desenha|calcula)\b/.test(nz(base))){
+     var nv=base+" "+sg[1].trim();
+     S.seg={b:base,n:S.n+1};gravar();
+     rac("«"+cur(q,40)+"» continua o assunto anterior; juntei-os: «"+cur(nv,60)+"».");
+     return nv;
+    }
+   }
+  }
   var p=S.pend;if(!p||S.n+1-p.n>3)return q;
   var f=analisar(q);if(f.pergunta||f.n>12||f.sim||f.nao)return q;
   var novo=null;
@@ -295,7 +309,7 @@ function memoriaTexto(){
 }
 function lista(){var m=mler();return Object.keys(m).map(function(k){return {k:k,rot:m[k].rot,val:m[k].val}})}
 function esquecer(k){var m=mler();delete m[k];mgravar(m);if(k==="nome"){try{localStorage.removeItem("lume_nome")}catch(e){}}}
-function limpar(){try{localStorage.removeItem(MK);localStorage.removeItem("lume_nome");S.ultimoPedido="";S.ultimaResposta="";S.hist=[];gravar()}catch(e){}}
+function limpar(){try{localStorage.removeItem(MK);localStorage.removeItem("lume_nome");S.ultimoPedido="";S.ultimaResposta="";S.hist=[];S.seg=null;gravar()}catch(e){}}
 function historico(){return Array.isArray(S.hist)?S.hist.slice():[]}
 window.LumeDialogo={memorizar:memorizar,recuperar:recuperar,memoriaTexto:memoriaTexto,lista:lista,esquecer:esquecer,limpar:limpar,ver:ver,registar:registar,reescrever:reescrever,resolver:resolver,conversar:conversar,analisar:analisar,historico:historico,estado:function(){return S}};
 })();
