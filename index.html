@@ -1290,7 +1290,7 @@ window.addEventListener("pagehide",pararVoz)})()</script>
 <script>(function(){window.atualizarBotaoEnviar=function(){var t=inputEl.value.trim().length>0||!!(window.anexo&&window.anexo.tipo==="texto");btnEnviar.classList.toggle("visivel",t);var w=document.getElementById("btn-voz-modo");if(w){w.classList.toggle("some",t);w.setAttribute("aria-hidden",t?"true":"false");w.tabIndex=t?-1:0}btnEnviar.setAttribute("aria-hidden",t?"false":"true");btnEnviar.tabIndex=t?0:-1};atualizarBotaoEnviar()})()</script>
 <script>(function(){
 /* ===== SUGESTÕES (edita esta lista à vontade) ===== */
-var SUGESTOES=["O que é recursão?","Como funciona um ciclo for?","O que é o Rust?"];
+var SUGESTOES=[];
 var box=document.getElementById("sugestoes"),chips=document.getElementById("sug-chips"),visivel=false;
 function nomeBot(){var t=(document.getElementById("titulo").textContent||"").trim();return t&&t.indexOf("{{")<0?t:""}
 function mostrar(){var n=nomeBot();document.getElementById("sug-avatar").textContent=n?n.charAt(0).toUpperCase():"B";document.getElementById("sug-titulo").textContent=n?"Olá! Eu sou o "+n:"Olá!";chips.innerHTML="";SUGESTOES.forEach(function(t,i){var b=document.createElement("button");b.className="sug-chip";b.textContent=t;b.style.animationDelay=(.08*i+.05)+"s";b.addEventListener("click",function(){inputEl.value=t;ajustarAltura();enviar()});chips.appendChild(b)});if(MODO_REPO){var be=document.createElement("button");be.className="sug-chip sug-ensinar";be.textContent="Ensinar o Lume";be.style.animationDelay=(.08*SUGESTOES.length+.05)+"s";be.addEventListener("click",function(){window.iniciarEnsinar&&window.iniciarEnsinar()});chips.appendChild(be)}box.classList.add("show")}

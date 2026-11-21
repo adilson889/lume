@@ -316,3 +316,7 @@ Lume - historico de versoes
 0.5.16
 - Cerebro: o Lume responde a perguntas pessoais (tens nome, idade, genero, onde moras, gostas de mim, estas ai, quem e o Adilson, piada, favoritos) em sobre.txt, e a respostas curtas sem contexto: "repete" (repete a ultima resposta), "nao entendi/como assim", "beleza", "talvez/nao sei/e agora", "porque", "que dificil/estou perdido", "nao sei porque".
 - Treino: 152 casos.
+
+0.5.17
+- Ecra inicial: removidos os 3 atalhos de programacao (recursao, ciclo for, Rust); fica so "Ensinar o Lume".
+- O Lume deixa de se apresentar como assistente de programacao: respostas sobre si, indecisao, piadas e privacidade ja nao falam de programacao.

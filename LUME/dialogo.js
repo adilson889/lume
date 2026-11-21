@@ -217,7 +217,7 @@ function conversar(q){
   }
   if(/^(talvez|nao sei|sei la|nao faco ideia|e agora|e depois|e entao|hmm+|hum+)$/.test(mc)){
    rac("Estás indeciso; ofereci caminhos em vez de insistir.");
-   return dizer("meta_indeciso",["Sem pressa. Podemos desenhar, calcular, criar uma página ou falar de programação. Escolhe o que preferires."]);
+   return dizer("meta_indeciso",["Sem pressa. Podemos desenhar, calcular, criar uma página ou inventar uma frase. Escolhe o que preferires."]);
   }
   if(/^(porque|porque\s+e que|por que|porque nao|e porque)$/.test(mc)){
    rac("Perguntaste «porquê» sem dizer de quê; pedi o assunto.");
