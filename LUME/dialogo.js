@@ -70,10 +70,10 @@ function analisar(q){
  var f={raw:raw,t:t,c:c,n:n,val:valencia(t)};
  f.pergunta=/\?\s*$/.test(raw)||/^(quem|qual|quais|quando|onde|como|porque|por que|quanto|quantos|o que|que)\b/.test(c);
  f.sim=/^(sim|claro|pode ser|pode|ok|okay|certo|combinado|com certeza|obvio|aham|uhum|isso|exato|exatamente|vamos|bora|vai|faz|por favor|quero|sim por favor|claro que sim|sim quero|pode sim)$/.test(c);
- f.nao=/^(nao|nao obrigado|nao obrigada|agora nao|nao quero|nao preciso|deixa|esquece|nada|nunca|nao por agora|por agora nao)$/.test(c);
+ f.nao=/^(nao|nao obrigado|nao obrigada|agora nao|nao quero|nao preciso|deixa|esquece|nada|nunca|nao por agora|por agora nao)$/.test(c)||/^(nao|nada|nenhum|nenhuma)( (por|de) (enquanto|agora|momento|hoje)| de especial| no momento| agora| ainda| obrigad[oa]| tenho| preciso)*$/.test(c)||/^(por enquanto|por agora|de momento|ainda|agora) (nada|nao)$/.test(c);
  f.devolve=/\be (tu|voce|vc|contigo|consigo|por ai|desse lado)\b/.test(c);
  f.identidade=/\b(quem es tu|quem es|o que es|que es tu|como te chamas|qual e o teu nome)\b/.test(c);
- f.elogio=/\b(es|estas|foste|ficou|voce e|voce esta|tu es)\s+(muito |mesmo |bastante )?(bom|boa|inteligente|esperto|fixe|incrivel|otimo|genial|perfeito|util)\b/.test(c)||/\b(bom trabalho|parabens|gostei|adorei|muito bem|excelente)\b/.test(c);
+ f.elogio=/\b(es|estas|foste|ficou|voce e|voce esta|tu es)\s+(muito |mesmo |bastante )?(bom|boa|inteligente|esperto|fixe|incrivel|otimo|genial|perfeito|util)\b/.test(c)||/\b(bom trabalho|parabens|gostei|adorei|muito bem|excelente)\b/.test(c)||(n<=4&&/^(muito bom|muito boa|otimo|perfeito|genial|incrivel|bem feito|boa resposta|show de bola)\b/.test(c));
  f.critica=/\b(nao (percebeste|entendeste|sabes|funciona|serve|presta)|esta errado|errado|es (burro|estupido|inutil)|nao era isso)\b/.test(c);
  f.riso=/^(k{2,}|(ha){2,}h?|(he){2,}h?|rs+|lol|ahah+|haha+)( .*)?$/.test(c);
  f.risco=/\b(me matar|suicid\w*|quero morrer|nao quero (mais )?viver|acabar com (tudo|a minha vida)|me magoar|fazer mal a mim)\b/.test(c);
