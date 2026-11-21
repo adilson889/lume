@@ -34,6 +34,7 @@ Feita em `reescrever()`:
 - «mais curto», «mais simples», «mais longo» e «mais detalhado» juntam-se ao último pedido.
 - Respostas curtas completam a pergunta pendente durante 3 turnos. Exemplo: «uma casa com árvore» passa a «desenha uma casa com árvore».
 - «repete» repete a última resposta (`conversar()`).
+- «e em Python?», «e no Java?», «e com X?» (frase que começa por «e» e uma preposição) juntam-se à pergunta ou pedido do turno anterior, se tiver pelo menos 3 palavras. Seguimentos encadeados usam sempre a pergunta original (`S.seg`).
 
 ### Memória persistente
 
@@ -49,7 +50,7 @@ Operações disponíveis em `window.LumeDialogo`: `memorizar`, `recuperar` («o 
 
 ## Lacunas
 
-- Não há assunto atual. «E em Python?» depois de uma pergunta sobre funções não funciona.
+- Não há tema guardado por capacidade nem por assunto do conhecimento. Só funcionam seguimentos do tipo «e em Python?».
 - «Mais curto» junta-se ao pedido anterior, mas não encurta a resposta anterior.
 - A expressão de «mais curto» é fixa e só funciona se o pedido anterior for de uma capacidade do despachante.
 - A memória persistente não expira. O campo `t` (data) é guardado mas não é usado.
@@ -59,7 +60,7 @@ Operações disponíveis em `window.LumeDialogo`: `memorizar`, `recuperar` («o 
 ## Plano
 
 1. Histórico curto de turnos. Feito: campo `hist` e função `historico()`. Ainda não é usado por nenhuma regra.
-2. Assunto atual: guardar o tema do último turno (capacidade ou tema do conhecimento) para resolver perguntas de seguimento.
+2. Perguntas de seguimento. Feito para «e em/no/na/com/para X». Falta guardar o tema do último turno (capacidade ou tema do conhecimento) para outros seguimentos.
 3. «Mais curto» e «mais longo» a atuarem sobre a última resposta, usando `hist`.
 4. Expiração na memória persistente, por chave (por exemplo, `nota` expira e `nome` não). Exige uma coluna nova em `memoria.txt` e ajuste do leitor em `regrasMemoria()`.
 5. Regras de `memoria.txt` que apanhem factos dentro de frases mais longas.
