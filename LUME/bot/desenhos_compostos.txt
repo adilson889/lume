@@ -16,6 +16,7 @@
 <var name="p" value="0"></var>
 <var name="nome" value="''"></var>
 <var name="escala" value="0.6"></var>
+<var name="gap" value="0"></var>
 
 <!-- 1. Contar quantas instâncias pertencem a cada zona. -->
 <for var="i" from="0" to="pecas_nchaves - 1">
@@ -48,9 +49,13 @@
             <if condition="nome == 'sol' || nome == 'lua' || nome == 'nuvem' || nome == 'estrela' || nome == 'pássaro'">
                 <if condition="totalceu <= 2"><set name="escala" value="0.78"></set></if>
                 <else><if condition="totalceu <= 4"><set name="escala" value="0.62"></set></if><else><if condition="totalceu <= 6"><set name="escala" value="0.48"></set></if><else><set name="escala" value="0.36"></set></else></else></else>
-                <if condition="totalceu == 1"><set name="x" value="112.5"></set></if>
-                <else><set name="x" value="8 + posceu * (325 - 100 * escala - 16) / (totalceu - 1)"></set></else>
-                <set name="y" value="4 + (posceu % 2) * 12"></set>
+                <if condition="totalceu == 1"><set name="x" value="(325 - 100 * escala) / 2"></set></if>
+                <else>
+                    <set name="gap" value="(325 - 16 - totalceu * 100 * escala) / (totalceu - 1)"></set>
+                    <if condition="gap > 6"><set name="gap" value="6"></set></if>
+                    <set name="x" value="(325 - (totalceu * 100 * escala + (totalceu - 1) * gap)) / 2 + posceu * (100 * escala + gap)"></set>
+                </else>
+                <set name="y" value="4"></set><if condition="totalceu > 2 && posceu % 2 == 1"><set name="y" value="16"></set></if>
                 <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' ' + y + ') scale(' + escala + ')\">' + pecas_svg[p] + '</g>'"></set>
                 <set name="posceu" value="posceu + 1"></set>
             </if>
@@ -58,8 +63,12 @@
                 <if condition="nome == 'casa' || nome == 'edifício' || nome == 'montanha' || nome == 'barco'">
                     <if condition="totalcentro <= 2"><set name="escala" value="0.78"></set></if>
                     <else><if condition="totalcentro <= 4"><set name="escala" value="0.62"></set></if><else><if condition="totalcentro <= 6"><set name="escala" value="0.48"></set></if><else><set name="escala" value="0.36"></set></else></else></else>
-                    <if condition="totalcentro == 1"><set name="x" value="112.5"></set></if>
-                    <else><set name="x" value="8 + poscentro * (325 - 100 * escala - 16) / (totalcentro - 1)"></set></else>
+                    <if condition="totalcentro == 1"><set name="x" value="(325 - 100 * escala) / 2"></set></if>
+                <else>
+                    <set name="gap" value="(325 - 16 - totalcentro * 100 * escala) / (totalcentro - 1)"></set>
+                    <if condition="gap > 6"><set name="gap" value="6"></set></if>
+                    <set name="x" value="(325 - (totalcentro * 100 * escala + (totalcentro - 1) * gap)) / 2 + poscentro * (100 * escala + gap)"></set>
+                </else>
                     <!-- Montanhas ficam no horizonte; casas e edifícios descem para o plano habitado. -->
                     <if condition="nome == 'montanha'">
                         <!-- Alinha a base da montanha exactamente com a linha do horizonte (y=165), independentemente da escala. -->
@@ -67,14 +76,14 @@
                     </if>
                     <else>
                         <if condition="nome == 'casa'">
-                            <set name="y" value="112 + (poscentro % 2) * 4"></set>
+                            <set name="y" value="112"></set><if condition="totalcentro > 4 && poscentro % 2 == 1"><set name="y" value="116"></set></if>
                         </if>
                         <else>
                             <if condition="nome == 'edifício'">
-                                <set name="y" value="100 + (poscentro % 2) * 4"></set>
+                                <set name="y" value="100"></set><if condition="totalcentro > 4 && poscentro % 2 == 1"><set name="y" value="104"></set></if>
                             </if>
                             <else>
-                                <set name="y" value="130 + (poscentro % 2) * 3"></set>
+                                <set name="y" value="130"></set><if condition="totalcentro > 4 && poscentro % 2 == 1"><set name="y" value="133"></set></if>
                             </else>
                         </else>
                     </else>
@@ -84,9 +93,13 @@
                 <else>
                     <if condition="totalterra <= 2"><set name="escala" value="0.78"></set></if>
                     <else><if condition="totalterra <= 4"><set name="escala" value="0.62"></set></if><else><if condition="totalterra <= 6"><set name="escala" value="0.48"></set></if><else><set name="escala" value="0.36"></set></else></else></else>
-                    <if condition="totalterra == 1"><set name="x" value="112.5"></set></if>
-                    <else><set name="x" value="8 + posterra * (325 - 100 * escala - 16) / (totalterra - 1)"></set></else>
-                    <set name="y" value="160 + (posterra % 2) * 4"></set>
+                    <if condition="totalterra == 1"><set name="x" value="(325 - 100 * escala) / 2"></set></if>
+                <else>
+                    <set name="gap" value="(325 - 16 - totalterra * 100 * escala) / (totalterra - 1)"></set>
+                    <if condition="gap > 6"><set name="gap" value="6"></set></if>
+                    <set name="x" value="(325 - (totalterra * 100 * escala + (totalterra - 1) * gap)) / 2 + posterra * (100 * escala + gap)"></set>
+                </else>
+                    <set name="y" value="160"></set><if condition="totalterra > 4 && posterra % 2 == 1"><set name="y" value="164"></set></if>
                     <set name="elementos" value="elementos + '<g transform=\"translate(' + x + ' ' + y + ') scale(' + escala + ')\">' + pecas_svg[p] + '</g>'"></set>
                     <set name="posterra" value="posterra + 1"></set>
                 </else>
@@ -98,7 +111,7 @@
 <var name="total" value="posceu + poscentro + posterra"></var>
 <if condition="total >= 2">
     <print>Preparei uma cena com {total} elementos, distribuídos pelo céu, plano central e terreno:</print>
-    <print><svg viewBox="0 0 325 260" width="100%" height="auto" role="img" aria-label="Cena ilustrada composta pelo Lume"><defs><linearGradient id="ceuLume" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9e3ff"/><stop offset="1" stop-color="#eef8ff"/></linearGradient></defs><rect width="325" height="260" rx="12" fill="url(#ceuLume)"/><path d="M0 165 Q70 145 135 165 T260 160 T325 165 V260 H0Z" fill="#9ccc65"/><path d="M0 195 Q80 178 155 196 T325 190 V260 H0Z" fill="#7cb342"/><path d="M0 165H325" stroke="#689f38" stroke-width="2"/><g data-raw="{elementos}"></g></svg></print>
+    <print><svg viewBox="0 0 325 260" width="100%" height="auto" role="img" aria-label="Cena ilustrada composta pelo Lume"><defs><linearGradient id="ceuLume" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9e3ff"/><stop offset="1" stop-color="#eef8ff"/></linearGradient></defs><rect width="325" height="260" rx="12" fill="url(#ceuLume)"/><path d="M0 165 Q70 145 135 165 T260 160 T325 165 V260 H0Z" fill="#9ccc65"/><path d="M0 195 Q80 178 155 196 T325 190 V260 H0Z" fill="#7cb342"/><g data-raw="{elementos}"></g></svg></print>
 </if>
 <else>
     <if condition="total == 0 && !includes(m, 'gráfico') && !includes(m, 'grafico')">
