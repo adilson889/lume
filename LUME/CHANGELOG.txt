@@ -358,3 +358,7 @@ Lume - historico de versoes
 - Formulas em LaTeX (KaTeX, em LUME/vendor/katex): $...$ e \(...\) na linha, $$...$$ e \[...\] em bloco. LUME/math.js ensina o marked a reconhecer a formula antes de tratar _ e *, e o chat desenha-a depois de limpar o HTML. Valores como "$5 e $10" nao contam como formula. Se a formula for invalida, mostra o erro a vermelho sem partir a mensagem.
 - Corrigido: a equacao do 2.o grau escrita sem verbo ja nao e reescrita como "calcule ..." no enviar(), por isso a sondagem abre.
 - sw.js: math.js e KaTeX no cache para funcionar sem ligacao.
+
+0.5.29
+- Tutor de equacoes do 2.o grau escreve as formulas em LaTeX (equacao, coeficientes, discriminante, Bhaskara com fracao e raiz, resultados), tanto passo a passo como a resolver sozinho. Testado de ponta a ponta (formatador, marked, DOMPurify, KaTeX) em todos os caminhos: delta positivo, zero e negativo.
+- sw.js: nova VERSAO para limpar a cache antiga do telemovel.

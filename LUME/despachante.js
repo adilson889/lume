@@ -370,24 +370,35 @@ var _tElogio=["Exatamente!","Isso mesmo!","Muito bem!","Certo!","Boa!"],_tI=0;
 function tElogio(){return _tElogio[_tI++%_tElogio.length]}
 function tNorm(t){return norm(t).replace(/[^a-z0-9=,.\-+*\/² ]/g," ").replace(/\s+/g," ").trim()}
 function tNumeros(t){var r=[],re=/-?\d+(?:[.,]\d+)?(?:\/\d+)?/g,m,s=String(t||"").replace(/[−–]/g,"-");while((m=re.exec(s)))r.push(tNum(m[0]));return r}
+function lF(n){n=Math.round(n*1e6)/1e6;if(n===0)n=0;return String(n).replace(".","{,}")}
+function lW(n){return n<0?"("+lF(n)+")":lF(n)}
+function lTermos(a,b,c,X){
+ var out="";
+ [[a,X+"^2"],[b,X],[c,""]].forEach(function(t){
+  var k=t[0];if(k===0)return;
+  var mag=Math.abs(k),body=t[1]===""?lF(mag):(mag===1?"":lF(mag))+t[1];
+  out+=out===""?(k<0?"-":"")+body:" "+(k<0?"-":"+")+" "+body;
+ });
+ return out||"0";
+}
 function tPasso(T,etapa){
- var e=T.q,X=e.X,a=e.a,b=e.b,c=e.c;
- if(etapa==="coef")return "**Primeiro passo: identificar os coeficientes.**\n\nUma equação do 2.º grau escreve-se **a"+X+"² + b"+X+" + c = 0**: o **a** acompanha "+X+"², o **b** acompanha "+X+" e o **c** é o termo sem "+X+".\n\nA tua equação é **"+tTermos(a,b,c,X)+" = 0**.\n\nQuem são o **a**, o **b** e o **c**? Escreve assim, por exemplo: a = 3, b = −4, c = 7 (cuidado com os sinais).";
- if(etapa==="deltaf")return "**Segundo passo: o discriminante Δ (delta).**\n\nO Δ diz-nos quantas raízes a equação tem. Lembras-te da fórmula? Escreve-a (ou diz «não sei» e eu mostro).";
+ var e=T.q,X=e.X,a=e.a,b=e.b,c=e.c,s=lF(Math.sqrt(T.D));
+ if(etapa==="coef")return "**Primeiro passo: identificar os coeficientes.**\n\nUma equação do 2.º grau escreve-se $a"+X+"^2 + b"+X+" + c = 0$: o **a** acompanha $"+X+"^2$, o **b** acompanha $"+X+"$ e o **c** é o termo sem $"+X+"$.\n\nA tua equação é:\n\n$$"+lTermos(a,b,c,X)+" = 0$$\n\nQuem são o **a**, o **b** e o **c**? Escreve assim, por exemplo: a = 3, b = −4, c = 7 (cuidado com os sinais).";
+ if(etapa==="deltaf")return "**Segundo passo: o discriminante $\\Delta$ (delta).**\n\nO $\\Delta$ diz-nos quantas raízes a equação tem. Lembras-te da fórmula? Escreve-a (ou diz «não sei» e eu mostro).";
  if(etapa==="bh"){
-  if(T.D===0)return "**Último passo: a fórmula de Bhaskara.**\n\nComo Δ = 0, usa-se **"+X+" = −b ÷ 2a**.\n\nSubstituindo: **"+X+" = −"+tW(b)+" ÷ (2 × "+tW(a)+")**\n\nQual é o valor de "+X+"?";
-  return "**Último passo: a fórmula de Bhaskara.**\n\nComo Δ > 0, há duas raízes: **"+X+" = (−b ± √Δ) ÷ 2a**. Aqui √Δ = "+tF(Math.sqrt(T.D))+".\n\nComeça pelo sinal +: **"+X+"₁ = (−"+tW(b)+" + "+tF(Math.sqrt(T.D))+") ÷ (2 × "+tW(a)+")**\n\nQual é o valor de "+X+"₁?";
+  if(T.D===0)return "**Último passo: a fórmula de Bhaskara.**\n\nComo $\\Delta = 0$, usa-se:\n\n$$"+X+" = \\frac{-b}{2a}$$\n\nSubstituindo:\n\n$$"+X+" = \\frac{-"+lW(b)+"}{2 \\times "+lW(a)+"}$$\n\nQual é o valor de $"+X+"$?";
+  return "**Último passo: a fórmula de Bhaskara.**\n\nComo $\\Delta > 0$, há duas raízes:\n\n$$"+X+" = \\frac{-b \\pm \\sqrt{\\Delta}}{2a}$$\n\nAqui $\\sqrt{\\Delta} = "+s+"$.\n\nComeça pelo sinal +:\n\n$$"+X+"_1 = \\frac{-"+lW(b)+" + "+s+"}{2 \\times "+lW(a)+"}$$\n\nQual é o valor de $"+X+"_1$?";
  }
  return "";
 }
 function tSolucaoDe(e){
  var X=e.X,a=e.a,b=e.b,c=e.c,D=b*b-4*a*c;if(Math.abs(D)<1e-9)D=0;
- var o="**Primeiro passo: identificar os coeficientes.**\n\nA equação **"+tTermos(a,b,c,X)+" = 0** tem **a = "+tF(a)+", b = "+tF(b)+", c = "+tF(c)+"** (o **a** acompanha "+X+"², o **b** acompanha "+X+" e o **c** é o termo sem "+X+").";
- o+="\n\n**Segundo passo: o discriminante Δ.**\n\nA fórmula é **Δ = b² − 4ac**. Substituindo:\n\n**Δ = "+tW(b)+"² − 4 × "+tW(a)+" × "+tW(c)+"**\n\n**Δ = "+tF(b*b)+" − "+tW(4*a*c)+" = "+tF(D)+"**";
- if(D<0)return o+"\n\nComo o Δ é **negativo**, não existe raiz quadrada real de Δ: a equação **não tem solução real**.\n\n**Resultado: sem solução real**";
- if(D===0){var x=-b/(2*a);return o+"\n\nComo o Δ é **zero**, a equação tem uma **raiz dupla**.\n\n**Último passo: a fórmula de Bhaskara.**\n\n**"+X+" = −b ÷ 2a**\n\n**"+X+" = −"+tW(b)+" ÷ (2 × "+tW(a)+") = "+tF(-b)+" ÷ "+tF(2*a)+" = "+tF(x)+"**\n\n**Resultado: "+X+" = "+tF(x)+"** (raiz dupla)"}
+ var o="**Primeiro passo: identificar os coeficientes.**\n\nA equação\n\n$$"+lTermos(a,b,c,X)+" = 0$$\n\ntem $a = "+lF(a)+"$, $b = "+lF(b)+"$ e $c = "+lF(c)+"$ (o **a** acompanha $"+X+"^2$, o **b** acompanha $"+X+"$ e o **c** é o termo sem $"+X+"$).";
+ o+="\n\n**Segundo passo: o discriminante $\\Delta$.**\n\nA fórmula é $\\Delta = b^2 - 4ac$. Substituindo:\n\n$$\\Delta = "+lW(b)+"^2 - 4 \\times "+lW(a)+" \\times "+lW(c)+"$$\n\n$$\\Delta = "+lF(b*b)+" - "+lW(4*a*c)+" = "+lF(D)+"$$";
+ if(D<0)return o+"\n\nComo o $\\Delta$ é **negativo**, não existe raiz quadrada real de $\\Delta$: a equação **não tem solução real**.\n\n**Resultado:** sem solução real";
+ if(D===0){var x=-b/(2*a);return o+"\n\nComo o $\\Delta$ é **zero**, a equação tem uma **raiz dupla**.\n\n**Último passo: a fórmula de Bhaskara.**\n\n$$"+X+" = \\frac{-b}{2a}$$\n\n$$"+X+" = \\frac{-"+lW(b)+"}{2 \\times "+lW(a)+"} = \\frac{"+lF(-b)+"}{"+lF(2*a)+"} = "+lF(x)+"$$\n\n**Resultado:** $"+X+" = "+lF(x)+"$ (raiz dupla)"}
  var s=Math.sqrt(D),x1=(-b+s)/(2*a),x2=(-b-s)/(2*a);
- return o+"\n\nComo o Δ é **positivo**, a equação tem **duas raízes reais diferentes**.\n\n**Último passo: a fórmula de Bhaskara.**\n\n**"+X+" = (−b ± √Δ) ÷ 2a**, com √Δ = "+tF(s)+".\n\n**"+X+"₁ = (−"+tW(b)+" + "+tF(s)+") ÷ (2 × "+tW(a)+") = "+tF(-b+s)+" ÷ "+tF(2*a)+" = "+tF(x1)+"**\n\n**"+X+"₂ = (−"+tW(b)+" − "+tF(s)+") ÷ (2 × "+tW(a)+") = "+tF(-b-s)+" ÷ "+tF(2*a)+" = "+tF(x2)+"**\n\n**Resultado: "+X+"₁ = "+tF(x1)+" e "+X+"₂ = "+tF(x2)+"**";
+ return o+"\n\nComo o $\\Delta$ é **positivo**, a equação tem **duas raízes reais diferentes**.\n\n**Último passo: a fórmula de Bhaskara.**\n\n$$"+X+" = \\frac{-b \\pm \\sqrt{\\Delta}}{2a}$$\n\ncom $\\sqrt{\\Delta} = "+lF(s)+"$:\n\n$$"+X+"_1 = \\frac{-"+lW(b)+" + "+lF(s)+"}{2 \\times "+lW(a)+"} = \\frac{"+lF(-b+s)+"}{"+lF(2*a)+"} = "+lF(x1)+"$$\n\n$$"+X+"_2 = \\frac{-"+lW(b)+" - "+lF(s)+"}{2 \\times "+lW(a)+"} = \\frac{"+lF(-b-s)+"}{"+lF(2*a)+"} = "+lF(x2)+"$$\n\n**Resultado:** $"+X+"_1 = "+lF(x1)+"$ e $"+X+"_2 = "+lF(x2)+"$";
 }
 function tFim(msg){_tutor=null;return {texto:msg,fim:true,rac:"Terminei a resolução guiada."}}
 function tSolucao(T,pref){var o=tSolucaoDe(T.q);_tutor=null;return {texto:(pref||"Está bem, resolvo eu, com os mesmos passos.")+"\n\n"+o,rac:"Resolvi sozinho, com os mesmos passos e sem perguntas."}}
@@ -415,7 +426,7 @@ function tutorResponder(txt){
   var got={},re=/\b([abc])\s*[=:]\s*(-|−)?\s*(\d+(?:[.,]\d+)?(?:\/\d+)?)/g,mm,txt2=String(txt).toLowerCase().replace(/[−–]/g,"-");
   while((mm=re.exec(txt2)))got[mm[1]]=tNum((mm[2]?"-":"")+mm[3]);
   if(Object.keys(got).length<3){var ns=tNumeros(txt2);if(ns.length===3&&palavras<=8)got={a:ns[0],b:ns[1],c:ns[2]}}
-  var certo=function(){return "Os coeficientes são **a = "+tF(a)+", b = "+tF(b)+", c = "+tF(c)+"**."};
+  var certo=function(){return "Os coeficientes são $a = "+lF(a)+"$, $b = "+lF(b)+"$ e $c = "+lF(c)+"$."};
   var seguir=function(pre){T.etapa="deltaf";T.erros=0;return {texto:pre+"\n\n"+tPasso(T,"deltaf"),rac:"Passo 2: o discriminante Δ."}};
   if(naoSei)return seguir(certo());
   if(Object.keys(got).length<3){
@@ -432,33 +443,33 @@ function tutorResponder(txt){
   var f=txt.toLowerCase().replace(/[−–]/g,"-").replace(/[\s*·×.]/g,"").replace(/\^2/g,"2").replace(/²/g,"2").replace(/^(delta|δ|d|Δ)=/i,"");
   var okf=/^b2-4ac$/.test(f);
   var pref;
-  if(okf)pref="**"+tElogio()+"** A fórmula é **Δ = b² − 4ac**.";
-  else if(naoSei||T.erros>=1)pref="A fórmula é **Δ = b² − 4ac**.";
+  if(okf)pref="**"+tElogio()+"** A fórmula é $\\Delta = b^2 - 4ac$.";
+  else if(naoSei||T.erros>=1)pref="A fórmula é $\\Delta = b^2 - 4ac$.";
   else{T.erros++;return {texto:"Não é bem essa. Pensa: o Δ usa o **b** ao quadrado e subtrai quatro vezes o **a** e o **c**. Tenta outra vez ou diz «não sei».",rac:"A fórmula do Δ não estava certa; dei uma pista."}}
-  var sub="Substituindo:\n\n**Δ = "+tW(b)+"² − 4 × "+tW(a)+" × "+tW(c)+"**\n\n**Δ = "+tF(b*b)+" − "+tW(4*a*c)+" = "+tF(D)+"**";
-  if(D<0){var r={texto:pref+"\n\n"+sub+"\n\nComo o Δ é **negativo**, não existe raiz quadrada real de Δ: a equação **não tem solução real**.\n\n**Resultado: sem solução real**\n\nPara outra equação, é só escrevê-la.",rac:"Δ negativo: sem solução real; terminei a resolução."};_tutor=null;return r}
+  var sub="Substituindo:\n\n$$\\Delta = "+lW(b)+"^2 - 4 \\times "+lW(a)+" \\times "+lW(c)+"$$\n\n$$\\Delta = "+lF(b*b)+" - "+lW(4*a*c)+" = "+lF(D)+"$$";
+  if(D<0){var r={texto:pref+"\n\n"+sub+"\n\nComo o $\\Delta$ é **negativo**, não existe raiz quadrada real de $\\Delta$: a equação **não tem solução real**.\n\n**Resultado:** sem solução real\n\nPara outra equação, é só escrevê-la.",rac:"Δ negativo: sem solução real; terminei a resolução."};_tutor=null;return r}
   T.etapa="bh";T.erros=0;
-  var interp=D===0?"Como o Δ é **zero**, a equação tem uma **raiz dupla**.":"Como o Δ é **positivo**, a equação tem **duas raízes reais diferentes**.";
+  var interp=D===0?"Como o $\\Delta$ é **zero**, a equação tem uma **raiz dupla**.":"Como o $\\Delta$ é **positivo**, a equação tem **duas raízes reais diferentes**.";
   return {texto:pref+"\n\n"+sub+"\n\n"+interp+"\n\n"+tPasso(T,"bh"),rac:"Passo 3: aplicar a fórmula de Bhaskara."};
  }
  if(T.etapa==="bh"||T.etapa==="bh2"){
   var alvo=D===0?-b/(2*a):T.etapa==="bh"?(-b+Math.sqrt(D))/(2*a):(-b-Math.sqrt(D))/(2*a);
-  var nome=D===0?X:T.etapa==="bh"?X+"₁":X+"₂";
+  var nome=D===0?X:T.etapa==="bh"?X+"₁":X+"₂",nomeL=D===0?X:T.etapa==="bh"?X+"_1":X+"_2";
   var ns2=tNumeros(String(txt).replace(/[x][12₁₂]?\s*=/gi," ")),v=ns2.length&&palavras<=8?ns2[ns2.length-1]:null;
   var acertou=v!==null&&Math.abs(v-alvo)<0.01;
   function avancar(pre){
-   if(D===0){var r2={texto:pre+"\n\n**Resultado: "+X+" = "+tF(alvo)+"** (raiz dupla)\n\nPara outra equação, é só escrevê-la.",rac:"Terminei: raiz dupla."};_tutor=null;return r2}
+   if(D===0){var r2={texto:pre+"\n\n**Resultado:** $"+X+" = "+lF(alvo)+"$ (raiz dupla)\n\nPara outra equação, é só escrevê-la.",rac:"Terminei: raiz dupla."};_tutor=null;return r2}
    if(T.etapa==="bh"){
     T.x1=alvo;T.etapa="bh2";T.erros=0;
-    return {texto:pre+"\n\nAgora o sinal −: **"+X+"₂ = (−"+tW(b)+" − "+tF(Math.sqrt(D))+") ÷ (2 × "+tW(a)+")**\n\nQual é o valor de "+X+"₂?",rac:"Passo 3b: a segunda raiz."};
+    return {texto:pre+"\n\nAgora o **sinal −**:\n\n$$"+X+"_2 = \\frac{-"+lW(b)+" - "+lF(Math.sqrt(D))+"}{2 \\times "+lW(a)+"}$$\n\nQual é o valor de $"+X+"_2$?",rac:"Passo 3b: a segunda raiz."};
    }
-   var r3={texto:pre+"\n\n**Resultado: "+X+"₁ = "+tF(T.x1)+" e "+X+"₂ = "+tF(alvo)+"**\n\nPara outra equação, é só escrevê-la.",rac:"Terminei: duas raízes."};_tutor=null;return r3;
+   var r3={texto:pre+"\n\n**Resultado:** $"+X+"_1 = "+lF(T.x1)+"$ e $"+X+"_2 = "+lF(alvo)+"$\n\nPara outra equação, é só escrevê-la.",rac:"Terminei: duas raízes."};_tutor=null;return r3;
   }
-  if(acertou)return avancar("**"+(D===0?"Acertaste em cheio!":tElogio())+"** "+nome+" = "+tF(alvo)+".");
-  if(naoSei||T.erros>=1)return avancar("Sem problema: "+nome+" = "+tF(alvo)+".");
-  if(v===null){if(palavras>=5){_tutor=null;return null}return {texto:"Escreve só o valor numérico de "+nome+"."}}
+  if(acertou)return avancar("**"+(D===0?"Acertaste em cheio!":tElogio())+"** $"+nomeL+" = "+lF(alvo)+"$.");
+  if(naoSei||T.erros>=1)return avancar("Sem problema: $"+nomeL+" = "+lF(alvo)+"$.");
+  if(v===null){if(palavras>=5){_tutor=null;return null}return {texto:"Escreve só o valor numérico de $"+nomeL+"$."}}
   T.erros++;
-  return {texto:"Ainda não. Calcula primeiro o numerador: **−"+tW(b)+(D===0?"":(T.etapa==="bh"?" + ":" − ")+tF(Math.sqrt(D)))+" = "+tF(-b+(D===0?0:(T.etapa==="bh"?1:-1)*Math.sqrt(D)))+"** e o denominador **2 × "+tW(a)+" = "+tF(2*a)+"**. Depois divide. Tenta outra vez.",rac:"O valor não estava certo; mostrei o numerador e o denominador."};
+  return {texto:"Ainda não. Calcula primeiro o **numerador** $-"+lW(b)+(D===0?"":(T.etapa==="bh"?" + ":" - ")+lF(Math.sqrt(D)))+" = "+lF(-b+(D===0?0:(T.etapa==="bh"?1:-1)*Math.sqrt(D)))+"$ e o **denominador** $2 \\times "+lW(a)+" = "+lF(2*a)+"$. Depois divide. Tenta outra vez.",rac:"O valor não estava certo; mostrei o numerador e o denominador."};
  }
  _tutor=null;return null;
 }
