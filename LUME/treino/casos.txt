@@ -140,7 +140,7 @@ usas chatgpt? | (bot de regras|nao sou uma inteligencia)
 que tecnologias usas? | (botql).*(html|nlp)
 em que linguagem foste feito? | (botql).*(html|nlp)
 guardas as minhas conversas? | (navegador|dispositivo)
-usas internet? | wikipedia
+usas internet? | (nao pesquiso na internet)
 o que nao sabes fazer? | nao invento
 es open source? | (github|apache)
 desenha dois bolos | (svg|<svg|desenho|juntar)

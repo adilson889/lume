@@ -320,3 +320,7 @@ Lume - historico de versoes
 0.5.17
 - Ecra inicial: removidos os 3 atalhos de programacao (recursao, ciclo for, Rust); fica so "Ensinar o Lume".
 - O Lume deixa de se apresentar como assistente de programacao: respostas sobre si, indecisao, piadas e privacidade ja nao falam de programacao.
+
+0.5.18
+- Base de programacao desligada: conhecimento_programacao.txt sai de arquivos.json e do OTHERWISE do main.sql; a pesquisa na Wikipedia (SEARCH) tambem. Ficheiro mantido no repo para ligar mais tarde. O bot so usa o aprendido (Ensinar) e a resposta de reserva.
+- Respostas do Lume sobre si deixam de falar da base e da Wikipedia.

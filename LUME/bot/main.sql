@@ -63,19 +63,14 @@ WHEN CONTAINS KEYWORDS(palavras_frases.txt) {
 
 
     -- 6. Tudo o resto: se um passo falha, o seguinte atua.
-    --    a) base escrita a mao (resposta direta)
+    --    a) (desligado) base de programacao: conhecimento_programacao.txt
     --    b) o que o Lume ja aprendeu (resposta direta)
     --    c) duvida no aprendido: mostra opcoes para escolher
-    --    d) nao sabe: pesquisa na web, grava em aprendido.txt e repete b) e c)
-    --       (se houver varias respostas, lanca a sondagem)
-    --    e) duvida na base: mostra opcoes para escolher
+    --    d) (desligado) pesquisa na web: SEARCH message INTO aprendido.txt
     --    f) nada encontrado: resposta de reserva
     OTHERWISE {
         THINK(aprendido.txt) WAITING("A pensar...", 3) OR
-        THINK(conhecimento_programacao.txt) OR
         ASK(aprendido.txt) AND REPLY "Escolha a possível resposta:" OR
-        SEARCH message INTO aprendido.txt OR
-        ASK(conhecimento_programacao.txt) AND REPLY "Escolha a possível resposta:" OR
         REPLY (respostas.txt, 7)
     }
 
