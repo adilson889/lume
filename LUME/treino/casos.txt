@@ -3,7 +3,7 @@
 # --- saudacoes e estado ---
 oi | ^(bom dia|boa tarde|boa noite)
 boa noite | (bom dia|boa tarde|boa noite)
-oi, como estas? | (e tu|e contigo|e desse lado|como estas|tudo bem|em ordem)
+oi, como estas? | (e tu|e contigo|e desse lado|como estas|tudo bem|em ordem|como esta a correr)
 oi, como estas? >> bem | (que bom|ainda bem|contente|feliz)
 oi, como estas? >> bem e tu? | (tambem|por aqui).*(bem)
 oi, como estas? >> cansado | (pena|lamento|sinto muito)
