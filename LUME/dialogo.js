@@ -92,6 +92,7 @@ function registar(texto){
  try{
   var r0=String(texto||"").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();if(r0)S.ultimaResposta=r0.slice(0,1500);
   if(r0&&Array.isArray(S.hist)&&S.hist.length){var hu=S.hist[S.hist.length-1];if(hu&&!hu.r)hu.r=r0.slice(0,300)}
+  if(S.pend&&S.pend.tipo==="proposta"&&S.pend.n===S.n){gravar();return}
   var s=String(texto||"");
   if(/^\s*(<program|<!doctype|<html)/i.test(s)||s.length>700){S.pend=null;S.ultimaPergunta="";gravar();return}
   s=s.replace(/<[^>]*>/g," ").replace(/&nbsp;/g," ").replace(/\s+/g," ").trim();
@@ -154,6 +155,7 @@ function reescrever(q){
    }
   }
   var p=S.pend;if(!p||S.n+1-p.n>3)return q;
+  if(p.tipo==="proposta"&&p.pedido){var fa=analisar(q);if(fa.sim||/^(boa ideia|bora|pode ser|combinado|quero|vamos|ok|esta bem|ta bem)\b/.test(fa.c)){S.pend=null;gravar();rac("Aceitaste a minha proposta; transformei «"+cur(q,30)+"» no pedido «"+cur(p.pedido,60)+"».");return p.pedido}}
   var f=analisar(q);if(f.pergunta||f.n>12||f.sim||f.nao)return q;
   var novo=null;
   if(p.tipo!=="nome"&&p.tipo!=="numeros"&&!(p.tipo==="confirmar"&&p.sub==="ouvir")&&!DECL.test(f.raw.toLowerCase()))novo=completar(q);
@@ -164,12 +166,59 @@ function reescrever(q){
  return q;
 }
 function sentir(f){S.humor=Math.round((0.6*S.humor+0.4*f.val.v)*100)/100}
+/* ---------- iniciativa: o utilizador entrega a decisao ao Lume (regras e propostas em sugestoes.txt) ---------- */
+var _sg=null,_sf="";
+function sugestoes(){
+ var f=arq("sugestoes.txt");if(_sg&&f===_sf)return _sg;
+ var r={delega:null,topico:null,temas:[]};
+ f.split(/\r?\n/).forEach(function(l){
+  l=l.trim();if(!l||l.charAt(0)==="#")return;
+  var p=l.split("::").map(function(x){return x.trim()});
+  try{
+   if(p[0]==="@delega"&&p[1])r.delega=new RegExp(p[1]);
+   else if(p[0]==="@topico"&&p[1])r.topico=new RegExp(p[1]);
+   else if(p.length>=3&&p[0].charAt(0)!=="@"){
+    var ops=p.slice(2).join("::").split("||").map(function(x){var a=x.split("=>");return {t:a[0].trim(),pedido:(a[1]||"").trim()}}).filter(function(o){return o.t});
+    r.temas.push({nome:p[0],re:new RegExp(p[1]),ops:ops});
+   }
+  }catch(e){}
+ });
+ _sg=r;_sf=f;return r;
+}
+/* escolhe uma proposta que ainda nao foi feita (do tema, ou de todos) e deixa-a pendente para a resposta */
+function proposta(nome,outra){
+ var g=sugestoes(),pool=[];
+ g.temas.forEach(function(x){if(!nome||x.nome===nome)x.ops.forEach(function(o){pool.push({t:o.t,pedido:o.pedido})})});
+ if(!pool.length)g.temas.forEach(function(x){x.ops.forEach(function(o){pool.push({t:o.t,pedido:o.pedido})})});
+ if(!pool.length)return "";
+ if(!Array.isArray(S.sug))S.sug=[];
+ var novos=pool.filter(function(o){return S.sug.indexOf(o.t)<0});
+ if(!novos.length){S.sug=[];novos=pool}
+ var op=pick(novos,"d_proposta");S.sug.push(op.t);if(S.sug.length>12)S.sug.shift();
+ S.pend={tipo:"proposta",sub:"",pergunta:op.t,pedido:op.pedido,tema:nome||"",n:S.n};gravar();
+ var ab=outra?dizer("delega_outra",["Certo, outra ideia"]):nome?dizer("delega_tema",["Vamos {tema} então"],{tema:nome}):dizer("delega_aceita",["Deixa comigo"]);
+ rac((outra?"Não gostaste da proposta; escolhi outra":"Escolhi uma proposta")+" que ainda não te tinha feito"+(nome?" sobre «"+nome+"»":"")+": «"+cur(op.t,70)+"».");
+ return juntar([ab,dizer("delega_proposta",["Que tal {sugestao}?"],{sugestao:op.t}),dizer("delega_pergunta",["Queres experimentar?"])]);
+}
+function iniciativa(f){
+ try{
+  if(f.identidade||f.n>9)return "";
+  var g=sugestoes(),del=!!(g.delega&&g.delega.test(f.c)),top=!!(g.topico&&g.topico.test(f.c)),tema=null;
+  g.temas.forEach(function(x){if(!tema&&x.re.test(f.c))tema=x});
+  if(!del&&!(top&&tema))return "";
+  rac("Entregaste-me a iniciativa"+(tema?" sobre «"+tema.nome+"»":"")+"; vou propor algo em vez de te pedir mais detalhes.");
+  return proposta(tema?tema.nome:"",false);
+ }catch(e){return ""}
+}
 /* resposta a uma pergunta que o Lume fez */
 function resolver(q){
  try{
   var p=S.pend;if(!p||S.n-p.n>3)return null;
-  var f=analisar(q),r=null;
-  if(p.tipo==="confirmar"||p.tipo==="ajuda"){
+  var f=analisar(q),r=null,ini="";
+  if(p.tipo==="proposta"){
+   if(f.sim||/^(boa ideia|bora|pode ser|combinado|quero|vamos|ok|esta bem|ta bem)\b/.test(f.c)){S.pend={tipo:"ajuda",sub:"",pergunta:"",n:S.n};r=dizer("sim_ajuda",["Diz-me o que precisas."])}
+   else if(f.nao||/\b(outra|outro|diferente|nao gosto|nao quero)\b/.test(f.c)){ini=proposta(p.tema,true);r=ini}
+  }else if(p.tipo==="confirmar"||p.tipo==="ajuda"){
    if(f.sim){
     S.pend=p.tipo==="confirmar"&&p.sub==="ouvir"?null:{tipo:"ajuda",sub:"",pergunta:"",n:S.n};
     r=p.sub==="ouvir"?dizer("sim_ouvir",["Estou a ouvir."]):dizer("sim_ajuda",["Diz-me o que precisas."]);
@@ -182,7 +231,8 @@ function resolver(q){
    var sg=pol==="neg"?dizer("segue_neg",["Queres falar sobre isso?"]):pol==="pos"?dizer("segue_pos",["O que queres fazer agora?"]):dizer("segue",["Em que posso ajudar?"]);
    S.pend=null;r=juntar([rx,dv])+" "+sg;
   }
-  if(r){rac("A tua mensagem responde "+(p.pergunta?"à pergunta que te fiz («"+cur(p.pergunta,50)+"»)":"à minha pergunta anterior")+"; respondi em conformidade.");gravar();return {resposta:r.trim()}}
+  if(!r){ini=iniciativa(f);if(ini)r=ini}
+  if(r){if(!ini)rac("A tua mensagem responde "+(p.pergunta?"à pergunta que te fiz («"+cur(p.pergunta,50)+"»)":"à minha pergunta anterior")+"; respondi em conformidade.");gravar();return {resposta:r.trim()}}
  }catch(e){}
  return null;
 }
@@ -213,6 +263,7 @@ function conversar(q){
    var up=np.pop();
    rac("Pediste para criar algo sem dizer o quê; perguntei o que queres e listei o que sei fazer.");return dizer("pedido_vago",["Claro. O que queres criar? Sei trabalhar com {lista}."],{lista:(np.length?np.join(", ")+" e ":"")+up});
   }
+  var ini0=iniciativa(f);if(ini0)return ini0;
   /* respostas curtas sem contexto: repetir, nao percebi, concordar, hesitar, dificuldade */
   var mc=f.c;
   if(/^(repete|repete la|repete por favor|podes repetir|diz (de )?novo|diz outra vez|outra vez)$/.test(mc)){
@@ -232,8 +283,8 @@ function conversar(q){
    return dizer("meta_sem_motivo",["Às vezes acontece, não precisa de ter um motivo claro. Queres contar-me como foi o teu dia?"]);
   }
   if(/^(talvez|nao sei|sei la|nao faco ideia|e agora|e depois|e entao|hmm+|hum+)$/.test(mc)){
-   rac("Estás indeciso; ofereci caminhos em vez de insistir.");
-   return dizer("meta_indeciso",["Sem pressa. Podemos desenhar, calcular, criar uma página ou inventar uma frase. Escolhe o que preferires."]);
+   var pi=proposta("",false);if(pi)return pi;
+   return dizer("meta_indeciso",["Sem pressa. Diz-me o que queres fazer."]);
   }
   if(/^(porque|porque\s+e que|por que|porque nao|e porque)$/.test(mc)){
    rac("Perguntaste «porquê» sem dizer de quê; pedi o assunto.");

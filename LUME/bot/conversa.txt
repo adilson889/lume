@@ -87,3 +87,21 @@ risco | Lamento muito que estejas a passar por isso. Não estás sozinho. Fala a
 pedido_vago | Claro. O que queres criar? Sei trabalhar com {lista}.
 pedido_vago | Posso ajudar. Que tipo de projeto tens em mente? Sei trabalhar com {lista}.
 pedido_vago | Vamos a isso. O que queres criar primeiro? Tenho {lista}.
+
+# --- iniciativa: o utilizador entrega a decisão ao Lume (ver sugestoes.txt) ---
+delega_aceita | Deixa comigo, eu escolho
+delega_aceita | Está bem, decido eu
+delega_aceita | Então proponho eu
+delega_aceita | Sem problema, sugiro uma coisa
+delega_tema | Vamos {tema} então
+delega_tema | Então vamos {tema}
+delega_tema | Boa, vamos {tema}
+delega_outra | Certo, outra ideia
+delega_outra | Sem problema, tenho outra
+delega_outra | Então experimenta esta
+delega_proposta | Que tal {sugestao}?
+delega_proposta | Uma ideia: {sugestao}.
+delega_proposta | Podemos {sugestao}.
+delega_pergunta | Queres experimentar?
+delega_pergunta | Começamos?
+delega_pergunta | Se preferires outra coisa, diz-me.

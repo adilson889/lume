@@ -1,0 +1,19 @@
+# Sugestões do Lume quando o utilizador lhe entrega a decisão ("decide tu", "o que sugeres?", "vamos estudar").
+# Nada aqui é resposta pronta: o Lume escolhe uma proposta que ainda não fez e junta-lhe frases de conversa.txt.
+# Os padrões (regex) são aplicados ao texto sem acentos e em minúsculas.
+#
+# @delega :: regex   -> o utilizador entrega a iniciativa ao Lume
+# @topico :: regex   -> o utilizador propõe um tema ("vamos estudar"); só conta se o tema existir abaixo
+# tema :: regex :: proposta => pedido || proposta => pedido
+#   tema   = verbo no infinitivo (aparece em "Vamos {tema} então")
+#   regex  = palavras que indicam o tema
+#   proposta = o que o Lume propõe, a continuar a frase "Que tal ...?"
+#   pedido   = o que é executado se o utilizador aceitar (opcional)
+@delega :: \b(decide (tu|voce|vc|por mim)|escolhe (tu|voce|vc|por mim)|tanto faz|qualquer coisa|qualquer uma|o que (sugeres|recomendas|propoes|podemos fazer|vamos fazer|fazemos|queres fazer|fazer agora)|sugere (algo|alguma coisa|me algo)|sugestao|surpreende ?me)\b
+@topico :: ^(vamos|bora|podemos|queres|que tal)\b
+estudar :: \b(estud\w*|aprend\w*|exercicio\w*|licao|licoes|prova|exame|tpc|escola)\b :: aprender o que é uma variável em programação => o que é uma variável || aprender o que é uma função => o que é uma função || treinar cálculo com uma conta, por exemplo 12 vezes 7 => calcula 12 vezes 7 || treinar cálculo com uma conta maior, por exemplo 345 mais 678 => calcula 345 mais 678
+programar :: \b(program\w*|codig\w*)\b :: perceber o que é uma variável => o que é uma variável || perceber o que é uma função => o que é uma função || ver o que é um ciclo => o que é um ciclo
+criar :: \b(cri\w*|constru\w*|mont\w*|projeto|projecto|app|site|pagina|loja)\b :: criar uma loja online => cria uma loja online || inventar uma frase original => inventa uma frase
+brincar :: \b(brinc\w*|diverti\w*|jog\w*|piada|passatempo|aborrec\w*|entret\w*)\b :: desenhar uma cena com várias coisas, por exemplo uma casa com árvore e sol => desenha uma casa com árvore e sol || desenhar uma cena com animais, por exemplo um gato, um cão e uma flor => desenha um gato, um cão e uma flor || inventar uma frase aleatória => inventa uma frase
+desenhar :: \b(desenh\w*|pint\w*|arte)\b :: desenhar uma casa com sol e uma nuvem => desenha uma casa com sol e uma nuvem || desenhar um foguete com estrelas => desenha um foguete com estrelas || desenhar duas bolas e uma estrela => desenha duas bolas e uma estrela
+calcular :: \b(calcul\w*|conta|contas|matematica|numeros)\b :: fazer uma conta de multiplicar, por exemplo 15 vezes 8 => calcula 15 vezes 8 || fazer uma soma maior, por exemplo 1250 mais 780 => calcula 1250 mais 780
