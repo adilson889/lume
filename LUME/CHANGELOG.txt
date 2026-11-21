@@ -330,3 +330,6 @@ Lume - historico de versoes
 
 0.5.20
 - PWA: os 7 icones PNG estavam corrompidos (o primeiro byte 0x89 foi trocado por EF BF BD ao carregar o ficheiro como texto), por isso o manifest era invalido e a app nao instalava. Icones regenerados a partir de logo.png (any, maskable, apple-touch, favicons). Cache de media do service worker renovada.
+
+0.5.21
+- sugestoes.txt: retiradas as propostas de programacao (variavel, funcao, ciclo), que dependiam da base desligada.
