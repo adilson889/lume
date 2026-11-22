@@ -423,3 +423,8 @@ Lume - historico de versoes
 
 0.5.42
 - Corrigido de vez o texto cru nos pedidos novos (geometria, unidades, regra de tres, juros, sistemas, estatistica...): o enviar() so reescreve a mensagem como "calcule ..." nas contas simples sem passos; em tudo o resto envia o pedido original ao despachante. Testado com 26 pedidos pelo mesmo caminho do enviar(): 0 falhas.
+
+0.5.43
+- Expressoes algebricas com fracoes ("1/x + 3", "x/2 + x/3", "2/(x-1) - 3/x", "(x²-9)/(x-3)", "1/x + 3 com x = 2"): condicoes de existencia, mmc dos denominadores, soma dos numeradores, simplificacao pelo fator comum e substituicao. Aritmetica exata (coeficientes racionais).
+- Testes automaticos por substituicao em dois pontos diferentes (evitando os polos).
+- Treino: 211/211.

@@ -222,3 +222,10 @@ converte 5 km em m | sobre os testes.*unidade base
 se 3 kg custam 12, quanto custam 5 kg | sobre os testes.*proporcao
 juros simples de 1000 a 5% durante 3 anos | sobre os testes.*taxa a partir dos juros
 (1/3)+(1/4) | sobre os testes
+1/x + 3 | frac\{3x \+ 1\}\{x\}
+x/2 + x/3 | frac\{5x\}\{6\}
+2/(x-1) - 3/x | frac\{-x \+ 3\}
+(x²-9)/(x-3) | x \+ 3
+1/x + 3 com x = 2 | frac\{7\}\{2\}
+1/x + 1/(x+1) | frac\{2x \+ 1\}\{x\(x \+ 1\)\}
+(x+1)/(x-2) + 3 | sobre os testes.*substituir x

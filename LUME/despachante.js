@@ -1184,6 +1184,178 @@ function equacao(q){
 }
 /* Expressoes com uma letra e sem "=": 2x²+4x+8, 3x+5, (x+1)^2, e "2x²+4x+8 com x = 3".
    Sem valor para a letra, simplifica e descreve (grau, raizes); com valor, substitui e calcula, mostrando os termos. */
+/* ===== Expressoes algebricas com fracoes (funcoes racionais) =====
+   "1/x + 3", "x/2 + x/3", "2/(x-1) - 3/x", "(x²-9)/(x-3)", e "... com x = 2".
+   Coeficientes racionais exactos; mmc dos denominadores, soma dos numeradores, simplificacao pelo mdc dos polinomios. */
+var RF=(function(){
+ function gi(a,b){a=Math.abs(a);b=Math.abs(b);while(b){var t=b;b=a%b;a=t}return a}
+ function Fr(n,d){if(d===undefined)d=1;if(d===0)throw "z";if(d<0){n=-n;d=-d}var g=gi(n,d)||1;if(Math.abs(n)>1e12||d>1e12)throw "g";return {n:n/g,d:d/g}}
+ function fa(a,b){return Fr(a.n*b.d+b.n*a.d,a.d*b.d)}
+ function fm(a,b){return Fr(a.n*b.n,a.d*b.d)}
+ function fv(a,b){return Fr(a.n*b.d,a.d*b.n)}
+ var Z0=Fr(0),U1=Fr(1);
+ function tr(a){a=a.slice();while(a.length>1&&a[a.length-1].n===0)a.pop();return a.length?a:[Z0]}
+ function nulo(a){return a.length===1&&a[0].n===0}
+ function gr(a){return a.length-1}
+ function pa(a,b,sg){var r=[],n=Math.max(a.length,b.length);for(var k=0;k<n;k++)r.push(fa(a[k]||Z0,fm(b[k]||Z0,Fr(sg))));return tr(r)}
+ function pm(a,b){var r=[];for(var i=0;i<a.length;i++)for(var j=0;j<b.length;j++)r[i+j]=fa(r[i+j]||Z0,fm(a[i],b[j]));if(r.length>12)throw "g";return tr(r)}
+ function pd(a,b){var q=[],r=a.slice(),lb=b[b.length-1];if(nulo(b))throw "z";for(var k=r.length-b.length;k>=0;k--){var c=fv(r[k+b.length-1]||Z0,lb);q[k]=c;for(var j=0;j<b.length;j++)r[k+j]=fa(r[k+j]||Z0,fm(fm(c,b[j]),Fr(-1)))}return {q:tr(q.length?q:[Z0]),r:tr(r.slice(0,Math.max(b.length-1,1)))}}
+ function mdc(a,b){while(!nulo(b)){var r=pd(a,b).r;a=b;b=r}return a}
+ function ints(a){var L=1;a.forEach(function(c){L=L/gi(L,c.d)*c.d});var v=a.map(function(c){return c.n*(L/c.d)});return {v:v,L:L}}
+ /* forma inteira e primitiva (coeficiente principal positivo); devolve {p, k} com a = k * p */
+ function prim(a){var t=ints(a),g=0;t.v.forEach(function(x){g=gi(g,x)});g=g||1;var s=a[a.length-1].n<0?-1:1;return {p:t.v.map(function(x){return Fr(s*x/g)}),k:Fr(s*g,t.L)}}
+ function norm(n,d){
+  if(nulo(n))return {n:[Z0],d:[U1]};
+  var g=mdc(n,d);if(gr(g)>0){n=pd(n,g).q;d=pd(d,g).q}
+  var pn=prim(n),pd2=prim(d),k=fv(pn.k,pd2.k);
+  return {n:pm(pn.p,[Fr(k.n)]),d:pm(pd2.p,[Fr(k.d)])};
+ }
+ function rf(n,d){return norm(n,d)}
+ function ra(a,b,sg){return rf(pa(pm(a.n,b.d),pm(b.n,a.d),sg),pm(a.d,b.d))}
+ function rm(a,b){return rf(pm(a.n,b.n),pm(a.d,b.d))}
+ function rd(a,b){if(nulo(b.n))throw "z";return rf(pm(a.n,b.d),pm(a.d,b.n))}
+ function rp(a,k){var r={n:[U1],d:[U1]},b=k<0?{n:a.d,d:a.n}:a;if(k<0&&nulo(a.n))throw "z";for(var i=0;i<Math.abs(k);i++)r=rm(r,b);return r}
+ function ev(P,x){var s=Z0;for(var k=P.length-1;k>=0;k--)s=fa(fm(s,x),P[k]);return s}
+ function evf(P,x){var s=0;for(var k=P.length-1;k>=0;k--)s=s*x+P[k].n/P[k].d;return s}
+ return {Fr:Fr,fa:fa,fm:fm,fv:fv,Z0:Z0,U1:U1,tr:tr,nulo:nulo,gr:gr,pa:pa,pm:pm,pd:pd,mdc:mdc,prim:prim,rf:rf,ra:ra,rm:rm,rd:rd,rp:rp,ev:ev,evf:evf,gi:gi,ints:ints}
+})();
+function racional(q){
+ try{
+ var s=String(q||"").toLowerCase().trim();
+ if(!s||s.length>100)return null;
+ s=s.replace(/^(?:por favor[, ]*)?(?:calcule|calcula|calcular|simplifique|simplifica|simplificar|resolva|resolve|resolver|efetue|efectue|reduza|reduz|reduzir|qual\s+(?:[eé]\s+)?o\s+valor\s+de|quanto\s+(?:[eé]|vale|d[aá]))\s*/,"").replace(/[?!.\s]+$/,"");
+ var val=null,mv=/^(.*?)[,\s]*(?:com|para|quando|se|sendo|onde|e\s+se)?\s*\b([xyztnk])\s*(?:=|vale|for|igual\s+a)\s*(-|−)?\s*(\d+(?:[.,]\d+)?)$/.exec(s);
+ if(mv&&mv[1].trim()){s=mv[1].trim();val=(mv[3]?-1:1)*parseFloat(mv[4].replace(",","."))}
+ if(s.indexOf("=")>=0||!/[\/÷]/.test(s)||!/[xyztnk]/.test(s))return null;
+ if(!/^[0-9xyztnk+\-−–*×/÷^().,\s²³⁴⁵⁶⁷⁸⁹]+$/.test(s))return null;
+ if(/\d\s+x\s+\d/.test(s))return null;
+ var t=s.replace(/[−–]/g,"-").replace(/×/g,"*").replace(/÷/g,"/").replace(/,/g,".");
+ var SUPD="⁰¹²³⁴⁵⁶⁷⁸⁹",tk=[],i=0,m,c,vr=null;
+ while(i<t.length){
+  c=t.charAt(i);
+  if(/\s/.test(c)){i++;continue}
+  if((m=/^\d+(?:\.\d+)?/.exec(t.slice(i)))){var dc=m[0].split(".");tk.push({n:RF.Fr(parseInt(dc[0]+(dc[1]||""),10),Math.pow(10,(dc[1]||"").length))});i+=m[0].length;continue}
+  if(/[a-z]/.test(c)){if(/[a-z]/.test(t.charAt(i+1))||(i>0&&/[a-z]/.test(t.charAt(i-1))))return null;if(vr&&vr!==c)return null;vr=c;tk.push({v:1});i++;continue}
+  if((m=/^[⁰¹²³⁴⁵⁶⁷⁸⁹]+/.exec(t.slice(i)))){tk.push({o:"^"});tk.push({n:RF.Fr(parseInt(m[0].split("").map(function(h){return SUPD.indexOf(h)}).join(""),10)),e:1});i+=m[0].length;continue}
+  tk.push({o:c});i++;
+ }
+ if(!vr)return null;
+ var X=vr,tt=[];
+ tk.forEach(function(b){var a=tt[tt.length-1];if(a&&(a.n!==undefined||a.v||a.o===")")&&(b.n!==undefined&&!b.e||b.v||b.o==="("))tt.push({o:"*"});tt.push(b)});
+ var p=0;function ok(o){return tt[p]&&tt[p].o===o}
+ function atom(){var k=tt[p++];if(!k)throw 0;if(k.n!==undefined)return {t:"n",v:k.n};if(k.v)return {t:"x"};if(k.o==="("){var r=soma();if(!ok(")"))throw 0;p++;return r}throw 0}
+ function pot(){var b=atom();if(ok("^")){p++;var sg=1;if(ok("-")){p++;sg=-1}var k=tt[p++];if(!k||k.n===undefined||k.n.d!==1||k.n.n>8)throw 0;return {t:"^",a:b,k:sg*k.n.n}}return b}
+ function un(){if(ok("-")){p++;return {t:"neg",a:un()}}if(ok("+")){p++;return un()}return pot()}
+ function termo(){var r=un();while(ok("*")||ok("/")){var o=tt[p++].o;r={t:o,a:r,b:un()}}return r}
+ var tops=null;
+ function soma(top){var l=[{sg:1,nd:termo()}];while(ok("+")||ok("-")){var o=tt[p++].o;l.push({sg:o==="+"?1:-1,nd:termo()})}if(top)tops=l;var r=l[0].nd;for(var j=1;j<l.length;j++)r={t:l[j].sg>0?"+":"-",a:r,b:l[j].nd};return r}
+ var ast=soma(true);if(p<tt.length)return null;
+ var ONE=RF.rf([RF.U1],[RF.U1]);
+ function E(n){
+  switch(n.t){
+   case "n":return RF.rf([n.v],[RF.U1]);
+   case "x":return RF.rf([RF.Z0,RF.U1],[RF.U1]);
+   case "neg":return RF.rm(E(n.a),RF.rf([RF.Fr(-1)],[RF.U1]));
+   case "+":return RF.ra(E(n.a),E(n.b),1);
+   case "-":return RF.ra(E(n.a),E(n.b),-1);
+   case "*":return RF.rm(E(n.a),E(n.b));
+   case "/":return RF.rd(E(n.a),E(n.b));
+   case "^":return RF.rp(E(n.a),n.k);
+  }
+ }
+ function EF(n,x){
+  switch(n.t){
+   case "n":return n.v.n/n.v.d;case "x":return x;case "neg":return -EF(n.a,x);
+   case "+":return EF(n.a,x)+EF(n.b,x);case "-":return EF(n.a,x)-EF(n.b,x);
+   case "*":return EF(n.a,x)*EF(n.b,x);case "/":return EF(n.a,x)/EF(n.b,x);case "^":return Math.pow(EF(n.a,x),n.k);
+  }
+ }
+ var R=E(ast),terms=tops.map(function(o){return {sg:o.sg,r:E(o.nd),nd:o.nd}});
+ /* formatacao */
+ function F(n){return String(n).replace("-","−")}
+ function pw(k){return k===0?"":k===1?X:X+"^{"+k+"}"}
+ function pT(P){var o="",g=RF.gr(P);for(var k=g;k>=0;k--){var c=P[k];if(c.n===0&&g>0)continue;var nn=c.n,mag=Math.abs(nn),body=k===0?String(mag):(mag===1?"":String(mag))+pw(k);o+=o===""?(nn<0?"-":"")+body:" "+(nn<0?"-":"+")+" "+body}return o||"0"}
+ function nt(P){var n=0;for(var k=0;k<P.length;k++)if(P[k].n!==0)n++;return n}
+ function par(P){return nt(P)>1||(RF.gr(P)===0&&P[0].n<0)?"("+pT(P)+")":pT(P)}
+ function fT(N,D){return RF.gr(D)===0&&D[0].n===1?pT(N):"\\frac{"+pT(N)+"}{"+pT(D)+"}"}
+ function rT(r){return fT(r.n,r.d)}
+ var L=[],Rstr=null,nome=function(){return mx(X)};
+ var hasDen=false;terms.forEach(function(t){if(t.r.d.length>1||t.r.d[0].n!==1)hasDen=true});
+ function den1(r){return r.d.length===1&&r.d[0].n===1}
+ var varDen=terms.some(function(t){return t.r.d.length>1});
+ /* condicoes de existencia: raizes racionais de denominadores lineares */
+ function conds(ds){var out=[];function add(rt){var tx=rt.d===1?String(rt.n):"\\frac{"+rt.n+"}{"+rt.d+"}",z=X+" \\neq "+tx;if(out.indexOf(z)<0)out.push(z)}
+  ds.forEach(function(D){
+   if(RF.gr(D)===1)add(RF.fv(RF.fm(D[0],RF.Fr(-1)),D[1]));
+   else if(RF.gr(D)===2){var A=D[2],B=D[1],C=D[0],dl=RF.fa(RF.fm(B,B),RF.fm(RF.Fr(-4),RF.fm(A,C))),sq=Math.sqrt(dl.n/dl.d);
+    if(dl.n>=0&&Number.isInteger(dl.n)&&dl.d===1&&Number.isInteger(sq)){var tw=RF.fm(RF.Fr(2),A);add(RF.fv(RF.fa(RF.fm(B,RF.Fr(-1)),RF.Fr(sq)),tw));if(sq!==0)add(RF.fv(RF.fa(RF.fm(B,RF.Fr(-1)),RF.Fr(-sq)),tw))}}
+  });return out}
+ var orig=terms.map(function(t,k){return (k===0?(t.sg<0?"-":""):(t.sg<0?" - ":" + "))+(t.r.n.length>1&&k>0&&den1(t.r)&&false?"":rT(t.r))}).join("");
+ var Dres=terms.filter(function(t){return !den1(t.r)}).map(function(t){return t.r.d});
+ var nTermosDen=Dres.length;
+ if(terms.length===1){
+  var nd=terms[0].nd;if(nd.t!=="/")return null;
+  var an=E(nd.a),bn=E(nd.b),rawN=RF.pm(an.n,bn.d),rawD=RF.pm(an.d,bn.n),g=RF.mdc(rawN,rawD);
+  if(RF.gr(g)<1)return null;
+  var gp=RF.prim(g).p;
+  var cs=conds([bn.n]);
+  orig=fT(rawN,rawD);
+  if(cs.length)L.push("Condição para a expressão existir (o denominador não pode ser zero): "+mx(cs.join(",\\ ")));
+  L.push("Há um fator comum no numerador e no denominador: "+mx(par(gp)));
+  L.push("Dividir o numerador e o denominador por "+mx(par(gp))+": "+mx(fT(rawN,rawD)+" = "+fT(R.n,R.d)));
+ }else{
+  if(!hasDen)return null;
+  var cs2=conds(Dres);
+  if(cs2.length)L.push("Condições para a expressão existir (os denominadores não podem ser zero): "+mx(cs2.join(",\\ ")));
+  /* mmc: parte numerica e parte polinomial */
+  var dist=[];Dres.forEach(function(D){var pp=RF.prim(D).p;if(RF.gr(pp)===0)return;if(!dist.some(function(z){return RF.gr(z)===RF.gr(pp)&&z.every(function(c,k){return c.n===pp[k].n&&c.d===pp[k].d})}))dist.push(pp)});
+  var Lp=[RF.U1],coprimos=true;
+  dist.forEach(function(pp){var g2=RF.mdc(Lp,pp);if(RF.gr(g2)>0)coprimos=false;Lp=RF.prim(RF.pd(RF.pm(Lp,pp),g2).q).p});
+  var Lc=1;Dres.forEach(function(D){var c=RF.prim(D).k;Lc=Lc/RF.gi(Lc,c.n)*c.n});
+  var Lfull=RF.pm(Lp,[RF.Fr(Lc)]);
+  var Lstr=coprimos&&dist.length>0?[Lc>1?String(Lc):""].concat(dist.map(function(pp){return dist.length>1||Lc>1?par(pp):pT(pp)})).filter(Boolean).join(""):pT(Lfull);
+  if(Dres.length>=2||dist.length>1||Lc>1){
+   if(Dres.length>=2||RF.gr(Lp)>0&&terms.length>1||Lc>1)L.push("Denominador comum: o mmc dos denominadores é "+mx(Lstr));
+  }
+  var Nsum=[RF.Z0],partes=[];
+  terms.forEach(function(t){
+   var mult=RF.pd(Lfull,t.r.d).q,numer=RF.pm(t.r.n,mult);
+   Nsum=RF.pa(Nsum,numer,t.sg);
+   partes.push((partes.length===0?(t.sg<0?"-":""):(t.sg<0?" - ":" + "))+(RF.gr(mult)===0&&mult[0].n===1?"\\frac{"+pT(t.r.n)+"}{"+Lstr+"}":"\\frac{"+(RF.gr(t.r.n)===0&&t.r.n[0].n===1?par(mult):par(t.r.n)+" \\times "+par(mult))+"}{"+Lstr+"}"));
+  });
+  L.push("Escrever cada termo com esse denominador: "+mx(partes.join("")));
+  L.push("Juntar numa só fração e desenvolver o numerador: "+mx("\\frac{"+pT(Nsum)+"}{"+Lstr+"}"));
+  var nz=RF.nulo(Nsum),ratio=RF.rf(Nsum,Lfull);
+  var igualP=function(A,B){return A.length===B.length&&A.every(function(c,k){return c.n===B[k].n&&c.d===B[k].d})};
+  var semSimp=nz||(igualP(ratio.n,Nsum)&&igualP(ratio.d,Lfull));
+  if(!semSimp)L.push("Simplificar, dividindo o numerador e o denominador pelo fator comum"+(RF.gr(RF.mdc(Nsum,Lfull))>0?" "+mx(par(RF.prim(RF.mdc(Nsum,Lfull)).p)):"")+": "+mx("\\frac{"+pT(Nsum)+"}{"+Lstr+"} = "+rT(R)));
+  else Rstr=nz?"0":"\\frac{"+pT(Nsum)+"}{"+Lstr+"}";
+ }
+ if(val!==null){
+  var vx=val===Math.round(val)?RF.Fr(Math.round(val)):RF.Fr(Math.round(val*1000),1000);
+  var Dv=RF.ev(R.d,vx);if(Dv.n===0)return {f:"0",m:mx(orig)+" com "+mx(X+" = "+F(val)),p:[],e:"Com "+X+" = "+F(val).replace(".",",")+" o denominador fica zero, por isso a expressão não está definida."};
+  var Nv=RF.ev(R.n,vx),res=RF.fv(Nv,Dv);
+  var vt=vx.d===1?(vx.n<0?"("+vx.n+")":String(vx.n)):"\\frac{"+vx.n+"}{"+vx.d+"}";
+  var sbs=function(P){var o=[],g=RF.gr(P);for(var k=g;k>=0;k--){var c=P[k];if(c.n===0&&g>0)continue;var mag=Math.abs(c.n),b=k===0?String(mag):(mag===1?"":String(mag)+" \\times ")+(k===1?vt:vt+"^{"+k+"}");o.push((o.length===0?(c.n<0?"-":""):(c.n<0?"- ":"+ "))+b)}return o.join(" ")||"0"};
+  L.push("Substituir "+mx(X)+" por "+mx(vt)+": "+(RF.gr(R.d)===0&&R.d[0].n===1?mx(sbs(R.n)):mx("\\frac{"+sbs(R.n)+"}{"+sbs(R.d)+"}")));
+  var rs=res.d===1?String(res.n):"\\frac{"+res.n+"}{"+res.d+"}";
+  L.push("Calcular: "+mx(((RF.gr(R.d)===0&&R.d[0].n===1)||Nv.d>1||Dv.d>1||(Nv.n===res.n&&Dv.n===res.d)?"":"\\frac{"+Nv.n+"}{"+Dv.n+"} = ")+rs+(res.d===1?"":" \\approx "+String(Math.round(res.n/res.d*1e4)/1e4).replace(".","{,}"))));
+  var vf=res.n/res.d;
+  var okv=Math.abs(terms.reduce(function(a,t){return a+t.sg*EF(t.nd,val)},0)-vf)<1e-6*(Math.abs(vf)+1);
+  var nL=L.length;
+  return {f:String(Math.round(vf*1e9)/1e9),m:mx(orig)+" com "+mx(X+" = "+F(val)),p:L.map(function(x,k){return (k===0?"Primeiro: ":k===nL-1?"Por fim: ":"Depois: ")+x}),e:"",r:mx(rs),tt:TT2({d:"calcular a expressão original com "+X+" = "+F(val),t:"expressão original",ok:okv,c:"A expressão original, com "+md(mx(X+" = "+F(val)))+", dá "+md(mx(String(Math.round(terms.reduce(function(a,t){return a+t.sg*EF(t.nd,val)},0)*1e4)/1e4).replace(".","{,}")))+", igual a "+md(mx(String(Math.round(vf*1e4)/1e4).replace(".","{,}")))+"."},{d:"recalcular com outro caminho",t:"valor exato",ok:Math.abs(Dv.n)>0,c:"O valor exato é a fração "+md(mx(rs))+"."})};
+ }
+ /* testes: dois pontos diferentes, evitando os polos */
+ var pts=[2,3,-2,5,7,-3,4,6],usados=[];
+ pts.forEach(function(x){if(usados.length<2&&RF.ev(R.d,RF.Fr(x)).n!==0&&terms.every(function(t){return RF.ev(t.r.d,RF.Fr(x)).n!==0&&isFinite(EF(t.nd,x))}))usados.push(x)});
+ function tst(x,k){var a=terms.reduce(function(s2,t){return s2+t.sg*EF(t.nd,x)},0),b=RF.evf(R.n,x)/RF.evf(R.d,x),f4=function(z){return String(Math.round(z*1e4)/1e4).replace(".","{,}")};return {d:"substituir "+X+" por "+F(x)+" na expressão original e no resultado",t:"substituir "+X+" = "+F(x),ok:Math.abs(a-b)<=1e-6*(Math.abs(a)+1),c:"Com "+md(mx(X+" = "+F(x)))+", a expressão original dá "+md(mx(f4(a)))+" e o resultado dá "+md(mx(f4(b)))+"."}}
+ var TT=usados.length===2?TT2(tst(usados[0]),tst(usados[1])):undefined;
+ L.push("Resultado simplificado.");
+ L.pop();
+ var nn2=L.length;if(!nn2)return null;
+ return {f:"0",m:mx(orig),p:L.map(function(x,k){return (k===0?"Primeiro: ":k===nn2-1?"Por fim: ":"Depois: ")+x}),e:"",r:mx(Rstr||rT(R)),tt:TT};
+ }catch(err){return null}
+}
 var _algUltima=null;
 function expressaoAlgebrica(q){
  try{
@@ -1627,6 +1799,7 @@ function funcaoMatematica(q){
   var _mp=_algUltima&&Date.now()-_algUltima.t<900000&&/^(?:e\s+)?(?:se\s+|para\s+|com\s+|quando\s+)?([xyztnk])\s*(?:=|vale|for|igual\s+a)\s*(-|−)?\s*(\d+(?:[.,]\d+)?)\s*[?!.]*$/.exec(String(q||"").toLowerCase().trim());
   if(_mp){var _r=expressaoAlgebrica(_algUltima.s+" com "+_mp[1]+" = "+(_mp[2]?"-":"")+_mp[3]);if(_r)return _r}
   var _s=sistema(q);if(_s)return _s;
+  var _rc=racional(q);if(_rc)return _rc;
   var _q=equacao(q);if(_q)return _q;
   var _a=expressaoAlgebrica(q);if(_a)return _a;
   var _fr=fracoes(q);if(_fr)return _fr;
