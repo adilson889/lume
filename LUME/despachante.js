@@ -427,14 +427,18 @@ function tTestes(e){
  var t2="**Teste 2: soma e produto das raízes**\n\nA soma das raízes tem de ser $-\\frac{b}{a} = -\\frac{"+lW(b)+"}{"+lW(a)+"} = "+lF(S)+"$, e $"+X+"_1 + "+X+"_2 = "+lF(r1)+" + "+lW(r2)+" = "+lF(r1+r2)+"$ $"+marca(okS).replace(" \\;","")+"$.\n\nO produto tem de ser $\\frac{c}{a} = \\frac{"+lF(c)+"}{"+lF(a)+"} = "+lF(P)+"$, e $"+X+"_1 \\times "+X+"_2 = "+lF(r1)+" \\times "+lW(r2)+" = "+lF(r1*r2)+"$ $"+marca(okP).replace(" \\;","")+"$.";
  var fim=ok?"Os dois testes deram o mesmo resultado que a fórmula de Bhaskara, por isso a resposta está **correta** e podes usá-la com confiança.":"Algum teste não bateu, por isso **não te aconselho a usar esta resposta**.";
  var antes="Antes de te responder, deixa-me testar o resultado por dois caminhos diferentes: substituir as raízes na equação e conferir a soma e o produto das raízes.\n\n"+(ok?"Bom, os testes passaram e deram o mesmo resultado. Vou então mostrar-te os passos.":"Hmm, os testes não deram o mesmo resultado, por isso não te aconselho a usar esta resposta. Mesmo assim, aqui estão os passos para veres onde pode estar a diferença.")+"\n\n";
- return {ok:ok,antes:antes,depois:"**Sobre os testes**\n\n"+t1+t2+"\n\n"+fim};
+ var xs=D===0?X+" = "+tF(r1):X+"₁ = "+tF(r1)+" e "+X+"₂ = "+tF(r2);
+ var et=["A testar o resultado por dois caminhos","Teste 1: a substituir "+xs+" na equação","Teste 2: a conferir a soma ("+tF(S)+") e o produto ("+tF(P)+") das raízes",ok?"Os testes passaram e deram o mesmo resultado":"Os testes não bateram: não recomendo esta resposta","A preparar a resposta com os cálculos"];
+ return {ok:ok,etapas:et,antes:antes,depois:"**Sobre os testes**\n\n"+t1+t2+"\n\n"+fim};
 }
+var _etapasTestes=null;
 function tSolucaoDe(e){
  var corpo=tSolucaoCorpo(e),t=tTestes(e);
+ _etapasTestes=t?t.etapas:null;
  if(!t)return corpo;
  return t.antes+corpo+"\n\n"+t.depois;
 }
-function tSolucao(T,pref){var o=tSolucaoDe(T.q);_tutor=null;return {texto:(pref||"Está bem, resolvo eu, com os mesmos passos.")+"\n\n"+o,rac:"Resolvi sozinho, com os mesmos passos e sem perguntas."}}
+function tSolucao(T,pref){var o=tSolucaoDe(T.q);_tutor=null;return {texto:(pref||"Está bem, resolvo eu, com os mesmos passos.")+"\n\n"+o,rac:"Resolvi sozinho, com os mesmos passos e sem perguntas.",etapas:_etapasTestes}}
 function tutorIniciar(fx){
  var e=fx.q,D=e.b*e.b-4*e.a*e.c;if(Math.abs(D)<1e-9)D=0;
  _tutor={q:e,fx:fx,etapa:"oferta",erros:0,D:D,t:Date.now(),x1:null,x2:null};
@@ -592,7 +596,7 @@ function textoConta(fm){
 }
 async function tentar(q){
  q=coloquial(q);
- if(typeof window.lumeOnReply==="function"&&window.lumeTutorAtivo()){var rt=tutorResponder(q);if(rt){if(rt.rac)raciocinio(rt.rac);window.lumeOnReply({text:rt.texto});return true}}
+ if(typeof window.lumeOnReply==="function"&&window.lumeTutorAtivo()){var rt=tutorResponder(q);if(rt){if(rt.etapas&&rt.etapas.length)rt.etapas.forEach(raciocinio);else if(rt.rac)raciocinio(rt.rac);window.lumeOnReply({text:rt.texto});return true}}
  var DL=window.LumeDialogo;
  if(DL&&typeof window.lumeOnReply==="function"){
   var etp=window.lumeAtualizarEtapa,esp=function(t){etp&&etp(t);return Promise.resolve()};

@@ -1296,7 +1296,7 @@ function atualizarEtapaEspera(texto){
 window.lumeAtualizarEtapa=atualizarEtapaEspera;
 window.lumeEsperarEtapas=function(){return new Promise(function(res){
  if(!_filaOcupada&&!FILA_ETAPAS.length)return res();
- const t=setTimeout(res,3000);_filaEsperas.push(function(){clearTimeout(t);res()});
+ const t=setTimeout(res,9000);_filaEsperas.push(function(){clearTimeout(t);res()});
 })};
 function esconderDigitando(){
  const e=document.getElementById("digitando");if(!e)return;

@@ -377,3 +377,8 @@ Lume - historico de versoes
 - Equacao do 2.o grau resolvida pelo Lume: antes da resolucao o Lume diz que vai testar o resultado por dois caminhos (substituir as raizes na equacao e conferir a soma e o produto das raizes) e que os testes passaram; depois do Resultado mostra os dois testes com as contas em LaTeX e conclui que a resposta esta correta e pode ser usada. Se algum teste nao bater, avisa para nao usar a resposta. Sem painel nem registo.
 - A funcao verificadora (tTestes) e independente da formula de Bhaskara usada na resposta; vale para delta positivo e delta zero (delta negativo continua sem testes).
 - sw.js: nova VERSAO para limpar a cache antiga do telemovel.
+
+0.5.33
+- Os testes da equacao do 2.o grau passam a aparecer primeiro como etapas da Atividade, uma a uma: "A testar o resultado por dois caminhos", "Teste 1: a substituir x1 e x2 na equacao", "Teste 2: a conferir a soma e o produto das raizes", "Os testes passaram e deram o mesmo resultado" e, no fim, "A preparar a resposta com os calculos". So depois aparece a resposta com os calculos e a seccao "Sobre os testes". Se um teste falhar, a etapa diz que nao recomenda a resposta.
+- index.html: a espera pelas etapas antes de mostrar a resposta sobe de 3 s para 9 s, para dar tempo as etapas dos testes.
+- sw.js: nova VERSAO para limpar a cache antiga do telemovel.
