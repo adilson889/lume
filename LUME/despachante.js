@@ -391,7 +391,7 @@ function tPasso(T,etapa){
  }
  return "";
 }
-function tSolucaoDe(e){
+function tSolucaoCorpo(e){
  var X=e.X,a=e.a,b=e.b,c=e.c,D=b*b-4*a*c;if(Math.abs(D)<1e-9)D=0;
  var o="**Primeiro passo: identificar os coeficientes.**\n\nA equação\n\n$$"+lTermos(a,b,c,X)+" = 0$$\n\ntem $a = "+lF(a)+"$, $b = "+lF(b)+"$ e $c = "+lF(c)+"$ (o **a** acompanha $"+X+"^2$, o **b** acompanha $"+X+"$ e o **c** é o termo sem $"+X+"$).";
  o+="\n\n**Segundo passo: o discriminante $\\Delta$.**\n\nA fórmula é $\\Delta = b^2 - 4ac$. Substituindo:\n\n$$\\Delta = "+lW(b)+"^2 - 4 \\times "+lW(a)+" \\times "+lW(c)+"$$\n\n$$\\Delta = "+lF(b*b)+" - "+lW(4*a*c)+" = "+lF(D)+"$$";
@@ -401,6 +401,39 @@ function tSolucaoDe(e){
  return o+"\n\nComo o $\\Delta$ é **positivo**, a equação tem **duas raízes reais diferentes**.\n\n**Último passo: a fórmula de Bhaskara.**\n\n$$"+X+" = \\frac{-b \\pm \\sqrt{\\Delta}}{2a}$$\n\ncom $\\sqrt{\\Delta} = "+lF(s)+"$:\n\n$$"+X+"_1 = \\frac{-"+lW(b)+" + "+lF(s)+"}{2 \\times "+lW(a)+"} = \\frac{"+lF(-b+s)+"}{"+lF(2*a)+"} = "+lF(x1)+"$$\n\n$$"+X+"_2 = \\frac{-"+lW(b)+" - "+lF(s)+"}{2 \\times "+lW(a)+"} = \\frac{"+lF(-b-s)+"}{"+lF(2*a)+"} = "+lF(x2)+"$$\n\n**Resultado:** $"+X+"_1 = "+lF(x1)+"$ e $"+X+"_2 = "+lF(x2)+"$";
 }
 function tFim(msg){_tutor=null;return {texto:msg,fim:true,rac:"Terminei a resolução guiada."}}
+function tSubst(a,b,c,r){
+ var it=[[a,(Math.abs(a)===1?"":lF(Math.abs(a))+" \\times ")+lW(r)+"^2",a*r*r],[b,(Math.abs(b)===1?"":lF(Math.abs(b))+" \\times ")+lW(r),b*r],[c,lF(Math.abs(c)),c]].filter(function(t){return t[0]!==0});
+ var l1="",l2="",tot=a*r*r+b*r+c,mag=Math.abs(a*r*r)+Math.abs(b*r)+Math.abs(c)+1;
+ it.forEach(function(t,i){
+  l1+=i===0?(t[0]<0?"-":"")+t[1]:" "+(t[0]<0?"-":"+")+" "+t[1];
+  l2+=i===0?(t[2]<0?"-":"")+lF(Math.abs(t[2])):" "+(t[2]<0?"-":"+")+" "+lF(Math.abs(t[2]));
+ });
+ var ok=Math.abs(tot)<=1e-6*mag;
+ return {tex:l1+" = "+l2+" = "+(ok?"0":lF(tot)),ok:ok};
+}
+function tTestes(e){
+ var X=e.X,a=e.a,b=e.b,c=e.c,D=b*b-4*a*c;if(Math.abs(D)<1e-9)D=0;
+ if(D<0)return null;
+ var s=Math.sqrt(D),r1=(-b+s)/(2*a),r2=(-b-s)/(2*a),ok=true;
+ var marca=function(v){return v?" \\;\\checkmark":" \\;\\text{falhou}"};
+ var t1="**Teste 1: substituir na equação**\n\n";
+ (D===0?[[r1,X]]:[[r1,X+"_1"],[r2,X+"_2"]]).forEach(function(p){
+  var sb=tSubst(a,b,c,p[0]);if(!sb.ok)ok=false;
+  t1+="Para $"+p[1]+" = "+lF(p[0])+"$:\n\n$$"+sb.tex+marca(sb.ok)+"$$\n\n";
+ });
+ var S=-b/a,P=c/a,tol=1e-6*(Math.abs(S)+Math.abs(P)+1);
+ var okS=Math.abs(r1+r2-S)<=tol,okP=Math.abs(r1*r2-P)<=tol;
+ if(!okS||!okP)ok=false;
+ var t2="**Teste 2: soma e produto das raízes**\n\nA soma das raízes tem de ser $-\\frac{b}{a} = -\\frac{"+lW(b)+"}{"+lW(a)+"} = "+lF(S)+"$, e $"+X+"_1 + "+X+"_2 = "+lF(r1)+" + "+lW(r2)+" = "+lF(r1+r2)+"$ $"+marca(okS).replace(" \\;","")+"$.\n\nO produto tem de ser $\\frac{c}{a} = \\frac{"+lF(c)+"}{"+lF(a)+"} = "+lF(P)+"$, e $"+X+"_1 \\times "+X+"_2 = "+lF(r1)+" \\times "+lW(r2)+" = "+lF(r1*r2)+"$ $"+marca(okP).replace(" \\;","")+"$.";
+ var fim=ok?"Os dois testes deram o mesmo resultado que a fórmula de Bhaskara, por isso a resposta está **correta** e podes usá-la com confiança.":"Algum teste não bateu, por isso **não te aconselho a usar esta resposta**.";
+ var antes="Antes de te responder, deixa-me testar o resultado por dois caminhos diferentes: substituir as raízes na equação e conferir a soma e o produto das raízes.\n\n"+(ok?"Bom, os testes passaram e deram o mesmo resultado. Vou então mostrar-te os passos.":"Hmm, os testes não deram o mesmo resultado, por isso não te aconselho a usar esta resposta. Mesmo assim, aqui estão os passos para veres onde pode estar a diferença.")+"\n\n";
+ return {ok:ok,antes:antes,depois:"**Sobre os testes**\n\n"+t1+t2+"\n\n"+fim};
+}
+function tSolucaoDe(e){
+ var corpo=tSolucaoCorpo(e),t=tTestes(e);
+ if(!t)return corpo;
+ return t.antes+corpo+"\n\n"+t.depois;
+}
 function tSolucao(T,pref){var o=tSolucaoDe(T.q);_tutor=null;return {texto:(pref||"Está bem, resolvo eu, com os mesmos passos.")+"\n\n"+o,rac:"Resolvi sozinho, com os mesmos passos e sem perguntas."}}
 function tutorIniciar(fx){
  var e=fx.q,D=e.b*e.b-4*e.a*e.c;if(Math.abs(D)<1e-9)D=0;

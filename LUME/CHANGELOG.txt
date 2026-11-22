@@ -372,3 +372,8 @@ Lume - historico de versoes
 0.5.31
 - KaTeX expandido: fracoes com passos ("1/2 + 1/3", "3/4 x 2/5", "simplifica 12/18", "3/4 de 20"), sistemas de duas equacoes (adicao por omissao; "pelo metodo da substituicao" isola e substitui; indeterminado e impossivel detetados), media, variancia e desvio padrao (populacional e amostral) com passos.
 - Treino: aceita LaTeX nas respostas; 186/186.
+
+0.5.32
+- Equacao do 2.o grau resolvida pelo Lume: antes da resolucao o Lume diz que vai testar o resultado por dois caminhos (substituir as raizes na equacao e conferir a soma e o produto das raizes) e que os testes passaram; depois do Resultado mostra os dois testes com as contas em LaTeX e conclui que a resposta esta correta e pode ser usada. Se algum teste nao bater, avisa para nao usar a resposta. Sem painel nem registo.
+- A funcao verificadora (tTestes) e independente da formula de Bhaskara usada na resposta; vale para delta positivo e delta zero (delta negativo continua sem testes).
+- sw.js: nova VERSAO para limpar a cache antiga do telemovel.
