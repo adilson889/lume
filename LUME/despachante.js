@@ -687,6 +687,10 @@ async function tentar(q){
   var mm=DL.memorizar&&DL.memorizar(q);
   if(mm){var mr=String(mm.rot||"").toLowerCase();await esp(mm.novo?(mm.antes?"Disseste um novo valor para «"+mr+"»; vou atualizar a memória.":"Disseste «"+mr+"»; vou guardá-lo na memória."):"Disseste «"+mr+"», mas isso já estava guardado.");await esp(mm.novo?(mm.antes?"Troquei «"+mm.antes+"» por «"+mm.val+"».":"Guardei «"+mm.val+"» em «"+mr+"»."):"Não mudei nada na memória.")}
   DL.ver(q);var rd=DL.resolver(q);if(rd&&rd.resposta){window.lumeOnReply({text:rd.resposta});return true}}
+ if(typeof window.lumeOnReply==="function"&&window.LumeCodigoChat&&q.length<=400){
+  var cod=null;try{cod=window.LumeCodigoChat.responder(q)}catch(_){}
+  if(cod){(cod.etapas||[]).forEach(function(e,i){raciocinio(e,i>=2?T_ETAPA_TESTE:undefined)});window.lumeOnReply({text:cod.texto});return true}
+ }
  if(typeof window.lumeOnReply==="function"&&window.LumeFisica&&q.length<=700){
   var fis=null;try{fis=window.LumeFisica.analisar(q)}catch(_){}
   if(fis){

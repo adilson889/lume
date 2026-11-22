@@ -449,3 +449,9 @@ Lume - historico de versoes
 - Testes por dois caminhos (cada um e uma etapa da Atividade, 8 s, e a seccao "Sobre os testes"): 1) unidades (analise dimensional) e 2) prova real, recalculando um dos dados a partir do resultado.
 - Nao apanha conversas nem contas do dia a dia: so entra quando ha dados com unidades fisicas e o enunciado nomeia o que se pede. Testado com 22 exercicios de resposta conhecida (todos certos) e contra todas as mensagens do treino (0 falsos positivos).
 - Treino: 15 casos novos de Fisica.
+
+0.5.48
+- Codigo TypeScript no chat (LUME/codigo.js + LUME/vendor/xlang-codigo.js): pedidos como "cria a variavel alunos com 120" ou "cria as variaveis preco com 250, quantidade com 3 e total como preco vezes quantidade". O Lume le os nomes e valores, o gerador monta o codigo por regras (sem modelos prontos) e o resultado e verificado antes de aparecer.
+- Os nomes dados pelo utilizador ficam exatamente como escritos; nomes com acentos ou palavras reservadas sao recusados com explicacao.
+- Passos na Atividade; os dois testes (nomes/tipos e ordem/80 colunas) usam 8 s cada.
+- Por agora: const com number, string e boolean e contas simples. A biblioteca vai crescer (funcoes, if, ciclos, arrays).
