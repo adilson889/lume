@@ -116,10 +116,10 @@ Cada verificação aparece como "Teste N", como já se faz nas contas.
 | M6 | classes e verificação por execução |
 | M7 | C++ com as mesmas camadas |
 
-## 8. Decisões a confirmar
+## 8. Decisões tomadas
 
-1. Os nomes que o Lume inventa (funções, variáveis auxiliares) ficam em português sem acentos (`calcularMedia`)? Os do utilizador ficam como ele escreve.
-2. Estilo: 2 espaços, aspas simples, ponto e vírgula, 80 colunas.
-3. Funções: `function nome()` em vez de funções de seta, por omissão.
-4. Onde vive isto: regras em `LUME/codigo/` do repositório do Lume, e a montagem/interpretação como biblioteca `xlang.codigo` no HTMLx-lang.
-5. Quando o tipo de uma variável do utilizador não é dito: perguntar por sondagem, ou escolher e avisar?
+1. **Nomes inventados pelo Lume: português sem acentos, `camelCase`** (`calcularMedia`). Os acentos são válidos em TypeScript mas dão problemas de ficheiros e ferramentas; o ASCII evita isso e mantém a coerência com os nomes do utilizador, que ficam exatamente como ele escreve.
+2. **Estilo: 2 espaços, aspas simples, ponto e vírgula sempre, 80 colunas.** É o estilo mais comum em TypeScript, e 80 colunas cabem no ecrã do telemóvel sem quebrar o código no chat.
+3. **`function nome() {}` por omissão; função de seta só em funções passadas como argumento** (callbacks). As declarações têm nome claro nos erros, e a ordem fixa do ficheiro já resolve a ordem de uso.
+4. **Regras em `LUME/codigo/` (Lume); montagem e interpretador como biblioteca `xlang.codigo` (HTMLx-lang).** Os dados crescem sem tocar no motor, e o motor serve outros bots.
+5. **Tipo em falta: sondagem só quando a resposta muda a estrutura do código** (ex.: `alunos` ser um número ou uma lista). Quando for um pormenor (valor inicial, nome de uma auxiliar), o Lume escolhe o mais provável e diz qual escolheu. Evita perguntas a mais sem arriscar código errado.
