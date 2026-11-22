@@ -221,3 +221,4 @@ area do circulo de raio 3 | sobre os testes.*formula inversa
 converte 5 km em m | sobre os testes.*unidade base
 se 3 kg custam 12, quanto custam 5 kg | sobre os testes.*proporcao
 juros simples de 1000 a 5% durante 3 anos | sobre os testes.*taxa a partir dos juros
+(1/3)+(1/4) | sobre os testes

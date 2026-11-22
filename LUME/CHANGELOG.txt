@@ -417,3 +417,6 @@ Lume - historico de versoes
 - Testes automaticos tambem nos pedidos novos (fracoes, sistemas, media, variancia e desvio padrao, geometria, unidades, regra de tres e juros): o Lume testa o resultado por dois caminhos diferentes, mostra-os como etapas da Atividade e acrescenta a seccao "Sobre os testes" com as contas em LaTeX.
 - Corrigido o simbolo de percentagem nos juros.
 - Treino: 203/203.
+
+0.5.41
+- Corrigido: "(1/3)+(1/4)" aparecia com texto cru ("rac{1}{3}", "imes"). O enviar() reescrevia a mensagem como "calcule <LaTeX>" e as barras invertidas perdiam-se; agora, quando a conta ja vem em LaTeX, envia-se o pedido original ao despachante (index.html e mobile.html).
