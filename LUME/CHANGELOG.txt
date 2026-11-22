@@ -387,3 +387,9 @@ Lume - historico de versoes
 - Corrigido: com o tutor da equacao do 2.o grau a meio (a pedir a, b e c), escrever outra equacao (ex.: x^2-9=0) era tratado como resposta e dava "Nao percebi. Escreve os tres valores". Agora o Lume reconhece que e uma equacao nova, deixa a anterior e abre a sondagem da nova. As respostas normais do tutor (a = 1, b = 0, c = -9; delta; x1 = 3) continuam a ser tratadas como respostas.
 - Equacoes com um termo em falta (x^2-9=0, x^2+4x=0, 3x^2=12) ja eram reconhecidas (o termo em falta vale 0).
 - sw.js: nova VERSAO para limpar a cache antiga do telemovel.
+
+0.5.35
+- As etapas dos testes da equacao do 2.o grau passam a durar 4 s cada (as 5 etapas: "A testar o resultado por dois caminhos" ate "A preparar a resposta com os calculos"). As restantes etapas da Atividade mantem o tempo anterior (caracteres x 22 ms, entre 420 ms e 1100 ms).
+- despachante.js: raciocinio(texto, ms) e window.lumeAtualizarEtapa(texto, ms) aceitam uma duracao opcional; as etapas dos testes enviam 4000.
+- index.html e mobile.html: a fila de etapas usa a duracao indicada quando existe; a espera pelas etapas antes de mostrar a resposta passa a somar o tempo extra dos testes (9 s + extra no index.html, 3 s + extra no mobile.html), para a resposta nao saltar as etapas.
+- sw.js: nova VERSAO para limpar a cache antiga do telemovel.
