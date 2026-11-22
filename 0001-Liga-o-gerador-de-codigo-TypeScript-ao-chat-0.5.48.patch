@@ -1,0 +1,582 @@
+From 90a6714af416dfda905f6fcba27f2043a60d1ac8 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Mon, 23 Nov 2026 00:50:35 +0100
+Subject: [PATCH] Liga o gerador de codigo TypeScript ao chat (0.5.48)
+
+Pedidos como 'cria a variavel alunos com 120' sao lidos por LUME/codigo.js e
+montados por vendor/xlang-codigo.js, com verificacao antes de mostrar.
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01WSxEuMqWJctVEWGHazoT3g
+---
+ LUME/CHANGELOG.txt          |   6 +
+ LUME/VERSION                |   2 +-
+ LUME/codigo.js              | 118 +++++++++++++
+ LUME/despachante.js         |   4 +
+ LUME/vendor/xlang-codigo.js | 328 ++++++++++++++++++++++++++++++++++++
+ README.md                   |   2 +-
+ index.html                  |   2 +-
+ mobile.html                 |   2 +-
+ sw.js                       |   4 +-
+ 9 files changed, 463 insertions(+), 5 deletions(-)
+ create mode 100644 LUME/codigo.js
+ create mode 100644 LUME/vendor/xlang-codigo.js
+
+diff --git a/LUME/CHANGELOG.txt b/LUME/CHANGELOG.txt
+index be28a26..7eafeef 100644
+--- a/LUME/CHANGELOG.txt
++++ b/LUME/CHANGELOG.txt
+@@ -449,3 +449,9 @@ Lume - historico de versoes
+ - Testes por dois caminhos (cada um e uma etapa da Atividade, 8 s, e a seccao "Sobre os testes"): 1) unidades (analise dimensional) e 2) prova real, recalculando um dos dados a partir do resultado.
+ - Nao apanha conversas nem contas do dia a dia: so entra quando ha dados com unidades fisicas e o enunciado nomeia o que se pede. Testado com 22 exercicios de resposta conhecida (todos certos) e contra todas as mensagens do treino (0 falsos positivos).
+ - Treino: 15 casos novos de Fisica.
++
++0.5.48
++- Codigo TypeScript no chat (LUME/codigo.js + LUME/vendor/xlang-codigo.js): pedidos como "cria a variavel alunos com 120" ou "cria as variaveis preco com 250, quantidade com 3 e total como preco vezes quantidade". O Lume le os nomes e valores, o gerador monta o codigo por regras (sem modelos prontos) e o resultado e verificado antes de aparecer.
++- Os nomes dados pelo utilizador ficam exatamente como escritos; nomes com acentos ou palavras reservadas sao recusados com explicacao.
++- Passos na Atividade; os dois testes (nomes/tipos e ordem/80 colunas) usam 8 s cada.
++- Por agora: const com number, string e boolean e contas simples. A biblioteca vai crescer (funcoes, if, ciclos, arrays).
+diff --git a/LUME/VERSION b/LUME/VERSION
+index 2bc6824..0ab079f 100644
+--- a/LUME/VERSION
++++ b/LUME/VERSION
+@@ -1 +1 @@
+-0.5.47
++0.5.48
+diff --git a/LUME/codigo.js b/LUME/codigo.js
+new file mode 100644
+index 0000000..7cb8cc0
+--- /dev/null
++++ b/LUME/codigo.js
+@@ -0,0 +1,118 @@
++/* Lume - pedidos de codigo (TypeScript). Le o pedido em portugues, tira os nomes e valores
++   do utilizador e entrega-os ao gerador (vendor/xlang-codigo.js), que monta o codigo por regras.
++   Os nomes do utilizador ficam exatamente como foram escritos. Nao usa modelos de linguagem. */
++(function(){
++"use strict";
++var ID="[A-Za-z_$][A-Za-z0-9_$]*";
++var NOME_RE=new RegExp("^"+ID+"$");
++var ACENTO_RE=/[À-ÿ]/;
++var OPS=[[/^(?:mais|\+)$/i,"+"],[/^(?:menos|-)$/i,"-"],[/^(?:vezes|multiplicado por|x|\*)$/i,"*"],[/^(?:dividido por|sobre|\/)$/i,"/"]];
++
++function sa(t){return String(t||"").normalize("NFD").replace(/[̀-ͯ]/g,"")}
++
++/* Valor simples: numero, texto entre aspas, verdadeiro/falso. Devolve {tipo,valor} ou null. */
++function valorSimples(v){
++ v=v.trim();
++ if(/^-?\d+(?:[.,]\d+)?$/.test(v))return{tipo:"number",valor:parseFloat(v.replace(",","."))};
++ var m=v.match(/^(?:"([^"]*)"|'([^']*)'|«([^»]*)»|“([^”]*)”)$/);
++ if(m)return{tipo:"string",valor:m[1]!==undefined?m[1]:m[2]!==undefined?m[2]:m[3]!==undefined?m[3]:m[4]};
++ if(/^(?:verdadeiro|true)$/i.test(v))return{tipo:"boolean",valor:true};
++ if(/^(?:falso|false)$/i.test(v))return{tipo:"boolean",valor:false};
++ return null;
++}
++
++function operando(t){
++ t=t.trim();
++ var s=valorSimples(t);
++ if(s&&s.tipo==="number")return{num:s.valor};
++ if(new RegExp("^"+ID+"$").test(t))return{nome:t};
++ if(/[À-ÿ]/.test(t)&&/^[A-Za-zÀ-ÿ_$][A-Za-z0-9À-ÿ_$]*$/.test(t))return{acento:t};
++ return null;
++}
++
++/* Parte uma conta "a vezes b" em esquerda, operador, direita. */
++function conta(v){
++ var m=v.match(/^(.+?)\s*(\+|\*|\/)\s*(.+)$/)||v.match(/^(.+?)\s+(mais|menos|vezes|multiplicado por|dividido por|sobre|x|-)\s+(.+)$/i);
++ if(!m)return null;
++ var op=null;for(var i=0;i<OPS.length;i++)if(OPS[i][0].test(m[2])){op=OPS[i][1];break}
++ var a=operando(m[1]),b=operando(m[3]);
++ if(!op||!a||!b)return null;
++ return{esq:a,op:op,dir:b};
++}
++
++function limparPedido(t){
++ t=t.trim().replace(/[.!?]+$/,"");
++ var m=t.match(/^(?:por favor[,\s]+)?(?:cria|criar|crie|faz|faca|faça|gera|gerar|gere|escreve|escrever|escreva|declara|declarar|declare)(?:-me)?\s+(?:me\s+)?(.*)$/i);
++ if(!m)return null;
++ var resto=m[1];
++ if(!/^(?:(?:um|uma|uns|umas|o|a|os|as|dois|duas)\s+)?(?:c[oó]digo|vari[aá]ve(?:l|is)|constantes?|const)\b/i.test(resto))return null;
++ if(!/\b(?:vari[aá]ve(?:l|is)|constantes?|const|typescript|ts)\b/i.test(t))return null;
++ resto=resto.replace(/\b(?:em|com)\s+(?:typescript|ts)\b/ig,"")
++  .replace(/^(?:um|uma|uns|umas|o|a|os|as|dois|duas)\s+/i,"")
++  .replace(/^(?:c[oó]digo\s+(?:com|de|para)\s+)?(?:(?:uma?|as|os|duas|dois)\s+)?(?:vari[aá]ve(?:l|is)|constantes?|const)\s+(?:chamad[ao]s?\s+|com o nome\s+|de nome\s+)?/i,"")
++  .trim();
++ return resto;
++}
++
++/* Analisa o pedido. Devolve null se nao for um pedido de codigo, ou {linhas,utilizador,erro?}. */
++function analisar(q){
++ var resto=limparPedido(String(q||""));
++ if(resto===null||!resto)return null;
++ var partes=resto.split(/\s*;\s*|,\s+|\s+e\s+/).filter(function(x){return x.trim()});
++ var linhas=[],tipos={},erro=null;
++ for(var i=0;i<partes.length&&!erro;i++){
++  var p=partes[i].trim().replace(/^(?:a|o|uma?)\s+(?:vari[aá]vel|constante)\s+/i,"").replace(/^(?:vari[aá]vel|constante)\s+/i,"").replace(/^(?:a|o)\s+(?=\S+\s+(?:de|como|=|com|igual)\b)/i,"");
++  var m=p.match(/^([A-Za-zÀ-ÿ_$][A-Za-z0-9À-ÿ_$]*)\s*(?:=|:|igual a|valendo|vale|com\s+(?:o\s+)?valor(?:\s+de)?|com|como|de|valor)\s+(.+)$/i);
++  if(!m){erro="Não percebi «"+partes[i].trim()+"». Escreve por exemplo: cria a variável alunos com 120.";break}
++  var nome=m[1],val=m[2].trim();
++  if(ACENTO_RE.test(nome)){erro="O nome «"+nome+"» tem acentos. Em TypeScript uso nomes sem acentos (por exemplo «"+sa(nome)+"»); diz-me com que nome o queres.";break}
++  if(!NOME_RE.test(nome)){erro="«"+nome+"» não é um nome válido.";break}
++  var s=valorSimples(val),l;
++  if(s){l=[nome,s.tipo,s.valor];tipos[nome]=s.tipo}
++  else{
++   var c=conta(val);
++   if(!c){erro="Não percebi o valor «"+val+"» de «"+nome+"». Uso números, textos entre aspas, verdadeiro/falso ou contas como preco vezes quantidade.";break}
++   if(c.esq.acento||c.dir.acento){erro="Os nomes «"+(c.esq.acento||c.dir.acento)+"» têm acentos; usa nomes sem acentos.";break}
++   var ta=c.esq.nome?tipos[c.esq.nome]:"number";
++   l=[nome,ta||"number",c.esq.nome||c.esq.num,c.op,c.dir.nome||c.dir.num];tipos[nome]=ta||"number";
++  }
++  linhas.push(l);
++ }
++ var usados={};
++ linhas.forEach(function(l){if(l.length===5){[l[2],l[4]].forEach(function(x){if(typeof x==="string")usados[x]=1})}});
++ var utilizador=linhas.length===1?[linhas[0][0]]:linhas.map(function(l){return l[0]}).filter(function(n){return usados[n]});
++ return{linhas:linhas,utilizador:utilizador,erro:erro};
++}
++
++/* Monta, verifica e devolve {texto, letras, etapas} ou {erro}. */
++function gerar(pedido){
++ var C=window.LumeCodigo;
++ if(!C)return{erro:"O gerador de código não está carregado."};
++ var etapas=[];
++ var nomes=pedido.linhas.map(function(l){return l[0]});
++ etapas.push("Li o pedido em TypeScript: "+pedido.linhas.length+(pedido.linhas.length===1?" declaração":" declarações")+" ("+nomes.join(", ")+"). Os nomes ficam exatamente como escreveste.");
++ var p;
++ try{p=C.deLinhas(pedido.utilizador,pedido.linhas)}catch(e){return{erro:String(e.message||e)}}
++ etapas.push("Montei cada declaração letra a letra pelas regras: const, nome, dois pontos, tipo, igual, valor e ponto e vírgula.");
++ var texto;
++ try{texto=C.gerar(p.programa,p.tabela).replace(/\n$/,"")}catch(e){return{erro:String(e.message||e)}}
++ var falta=nomes.filter(function(n){return texto.indexOf("const "+n+":")<0});
++ if(falta.length)return{erro:"O código gerado não tem a variável «"+falta[0]+"» com o nome exato."};
++ etapas.push("Teste 1: confirmei que as variáveis que pediste (\""+nomes.join("\", \"")+"\") estão declaradas com o nome e o tipo exatos.");
++ etapas.push("Teste 2: confirmei a ordem (declarar antes de usar), os tipos das contas e que nenhuma linha passa de 80 colunas.");
++ return{texto:texto,letras:C.emitirLetras(p.programa),etapas:etapas};
++}
++
++function responder(q){
++ var pedido=analisar(q);
++ if(!pedido)return null;
++ if(pedido.erro)return{texto:pedido.erro,etapas:["Percebi que é um pedido de código, mas não consegui ler os nomes e valores com segurança."]};
++ var r=gerar(pedido);
++ if(r.erro)return{texto:"Não vou mostrar código duvidoso: "+r.erro,etapas:["Montei o código mas a verificação recusou-o."]};
++ r.texto="```ts\n"+r.texto+"\n```";
++ return r;
++}
++
++window.LumeCodigoChat={analisar:analisar,gerar:gerar,responder:responder};
++if(typeof module!=="undefined"&&module.exports)module.exports=window.LumeCodigoChat;
++})();
+diff --git a/LUME/despachante.js b/LUME/despachante.js
+index cefaf7b..16a641d 100644
+--- a/LUME/despachante.js
++++ b/LUME/despachante.js
+@@ -687,6 +687,10 @@ async function tentar(q){
+   var mm=DL.memorizar&&DL.memorizar(q);
+   if(mm){var mr=String(mm.rot||"").toLowerCase();await esp(mm.novo?(mm.antes?"Disseste um novo valor para «"+mr+"»; vou atualizar a memória.":"Disseste «"+mr+"»; vou guardá-lo na memória."):"Disseste «"+mr+"», mas isso já estava guardado.");await esp(mm.novo?(mm.antes?"Troquei «"+mm.antes+"» por «"+mm.val+"».":"Guardei «"+mm.val+"» em «"+mr+"»."):"Não mudei nada na memória.")}
+   DL.ver(q);var rd=DL.resolver(q);if(rd&&rd.resposta){window.lumeOnReply({text:rd.resposta});return true}}
++ if(typeof window.lumeOnReply==="function"&&window.LumeCodigoChat&&q.length<=400){
++  var cod=null;try{cod=window.LumeCodigoChat.responder(q)}catch(_){}
++  if(cod){(cod.etapas||[]).forEach(function(e,i){raciocinio(e,i>=2?T_ETAPA_TESTE:undefined)});window.lumeOnReply({text:cod.texto});return true}
++ }
+  if(typeof window.lumeOnReply==="function"&&window.LumeFisica&&q.length<=700){
+   var fis=null;try{fis=window.LumeFisica.analisar(q)}catch(_){}
+   if(fis){
+diff --git a/LUME/vendor/xlang-codigo.js b/LUME/vendor/xlang-codigo.js
+new file mode 100644
+index 0000000..7865910
+--- /dev/null
++++ b/LUME/vendor/xlang-codigo.js
+@@ -0,0 +1,328 @@
++// xlang-codigo.js - XLang Code Library v0.1 (prova de conceito)
++// Gera TypeScript letra a letra a partir de uma árvore de nós, sem templates prontos.
++// Camadas: nós -> verificador -> emissor (regras de sintaxe em dados) -> texto.
++// As variáveis do utilizador entram com o nome exato e são verificadas antes de mostrar.
++// Uso no XLang: <import name="xlang.codigo"> e {tsPrograma(utilizador, linhas)}.
++// Uso no Lume (JavaScript): window.LumeCodigo (ou require em Node).
++(function() {
++    'use strict';
++
++    // ===== CONSTANTES =====
++    const LARGURA_MAXIMA = 80;
++    const INDENTACAO = 2;
++    const TIPOS = ['number', 'string', 'boolean'];
++    const OPERADORES = { number: ['+', '-', '*', '/'], string: ['+'], boolean: [] };
++    const PALAVRAS_RESERVADAS = new Set([
++        'break', 'case', 'catch', 'class', 'const', 'continue', 'debugger', 'default',
++        'delete', 'do', 'else', 'enum', 'export', 'extends', 'false', 'finally', 'for',
++        'function', 'if', 'import', 'in', 'instanceof', 'new', 'null', 'return', 'super',
++        'switch', 'this', 'throw', 'true', 'try', 'typeof', 'var', 'void', 'while', 'with',
++        'yield', 'let', 'static', 'implements', 'interface', 'package', 'private',
++        'protected', 'public', 'await'
++    ]);
++
++    // ===== REGRAS DE SINTAXE (dados) =====
++    // Texto literal é emitido letra a letra. "@x" é um encaixe. ESP, FIM, INDENTA e
++    // DESINDENTA são as únicas fontes de espaços, quebras de linha e indentação.
++    const ESP = { controlo: 'espaco' };
++    const FIM = { controlo: 'fim' };
++    const INDENTA = { controlo: 'indenta' };
++    const DESINDENTA = { controlo: 'desindenta' };
++
++    const REGRAS = {
++        Declaracao: ['@palavra', ESP, '@nome', ':', ESP, '@tipo', ESP, '=', ESP, '@valor', ';', FIM],
++        Funcao: ['function', ESP, '@nome', '(', '@params', ')', ':', ESP, '@retorno', ESP,
++            '{', FIM, INDENTA, '@corpo', DESINDENTA, '}', FIM],
++        Retorno: ['return', ESP, '@expr', ';', FIM],
++        Binaria: ['@esq', ESP, '@op', ESP, '@dir'],
++        Parametro: ['@nome', ':', ESP, '@tipo']
++    };
++
++    // ===== NÓS =====
++    function declaracao(palavra, nome, tipo, valor) { return { forma: 'Declaracao', palavra, nome, tipo, valor }; }
++    function funcao(nome, params, retornoTipo, corpo) { return { forma: 'Funcao', nome, params, retorno: retornoTipo, corpo }; }
++    function retorno(expr) { return { forma: 'Retorno', expr }; }
++    function literal(valor) { return { forma: 'Literal', valor }; }
++    function ident(nome) { return { forma: 'Ident', nome }; }
++    function binaria(esq, op, dir) { return { forma: 'Binaria', esq, op, dir }; }
++    function parametro(nome, tipo) { return { forma: 'Parametro', nome, tipo }; }
++
++    // ===== TABELA DE SÍMBOLOS =====
++    function criarTabela() { return { utilizador: new Map() }; }
++
++    function registarUtilizador(tabela, nome, tipo) {
++        const problema = nomeValido(nome);
++        if (problema) throw new Error(problema);
++        tabela.utilizador.set(nome, tipo || null);
++        return tabela;
++    }
++
++    // ===== VERIFICADOR =====
++    function nomeValido(nome) {
++        if (typeof nome !== 'string' || !/^[A-Za-z_$][A-Za-z0-9_$]*$/.test(nome)) {
++            return '"' + nome + '" não é um nome válido (letras, números, _ e $, sem começar por número).';
++        }
++        if (PALAVRAS_RESERVADAS.has(nome)) {
++            return '"' + nome + '" é uma palavra reservada do TypeScript; escolhe outro nome.';
++        }
++        return null;
++    }
++
++    function ordemDe(no) {
++        if (no.forma === 'Declaracao') return no.palavra === 'const' ? 1 : 2;
++        return 3;
++    }
++
++    function tipoDaExpressao(no, escopo, usados, problemas) {
++        switch (no.forma) {
++            case 'Literal': {
++                const tipo = typeof no.valor;
++                if (!TIPOS.includes(tipo) || (tipo === 'number' && !Number.isFinite(no.valor))) {
++                    problemas.push('Valor não suportado: ' + String(no.valor) + '.');
++                    return null;
++                }
++                return tipo;
++            }
++            case 'Ident':
++                usados.add(no.nome);
++                if (!escopo.has(no.nome)) {
++                    problemas.push('"' + no.nome + '" é usada antes de ser declarada.');
++                    return null;
++                }
++                return escopo.get(no.nome);
++            case 'Binaria': {
++                const esq = tipoDaExpressao(no.esq, escopo, usados, problemas);
++                const dir = tipoDaExpressao(no.dir, escopo, usados, problemas);
++                if (!esq || !dir) return null;
++                if (esq !== dir) {
++                    problemas.push('Não se pode combinar ' + esq + ' com ' + dir + ' em "' + no.op + '".');
++                    return null;
++                }
++                if (!OPERADORES[esq].includes(no.op)) {
++                    problemas.push('O operador "' + no.op + '" não vale para ' + esq + '.');
++                    return null;
++                }
++                return esq;
++            }
++            default:
++                problemas.push('Expressão desconhecida: ' + no.forma + '.');
++                return null;
++        }
++    }
++
++    function verificarDeclaracao(no, escopo, usados, problemas) {
++        if (no.palavra !== 'const' && no.palavra !== 'let') problemas.push('Palavra desconhecida: ' + no.palavra + '.');
++        if (!TIPOS.includes(no.tipo)) problemas.push('Tipo desconhecido: ' + no.tipo + '.');
++        const tipoValor = tipoDaExpressao(no.valor, escopo, usados, problemas);
++        if (tipoValor && tipoValor !== no.tipo) {
++            problemas.push('"' + no.nome + '" é ' + no.tipo + ' mas o valor é ' + tipoValor + '.');
++        }
++        escopo.set(no.nome, no.tipo);
++    }
++
++    function verificarFuncao(no, escopo, usados, problemas) {
++        const local = new Map(escopo);
++        no.params.forEach(function(p) {
++            const problema = nomeValido(p.nome);
++            if (problema) problemas.push(problema);
++            if (!TIPOS.includes(p.tipo)) problemas.push('Tipo desconhecido: ' + p.tipo + '.');
++            local.set(p.nome, p.tipo);
++        });
++        if (!TIPOS.includes(no.retorno)) problemas.push('Tipo desconhecido: ' + no.retorno + '.');
++        const ultimo = no.corpo[no.corpo.length - 1];
++        if (!ultimo || ultimo.forma !== 'Retorno') problemas.push('A função "' + no.nome + '" tem de acabar com return.');
++        no.corpo.forEach(function(passo) {
++            if (passo.forma !== 'Retorno') {
++                problemas.push('Instrução não suportada na função "' + no.nome + '": ' + passo.forma + '.');
++                return;
++            }
++            const tipo = tipoDaExpressao(passo.expr, local, usados, problemas);
++            if (tipo && tipo !== no.retorno) {
++                problemas.push('A função "' + no.nome + '" devolve ' + no.retorno + ' mas o return é ' + tipo + '.');
++            }
++        });
++    }
++
++    // Devolve a lista de problemas (vazia se estiver tudo certo).
++    function verificar(programa, tabela) {
++        const problemas = [];
++        const escopo = new Map();
++        const declarados = new Set();
++        const usados = new Set();
++        let ordemAnterior = 0;
++
++        programa.forEach(function(no) {
++            const ordem = ordemDe(no);
++            if (ordem < ordemAnterior) {
++                problemas.push('"' + no.nome + '" está fora de ordem: constantes, depois variáveis, depois funções.');
++            }
++            ordemAnterior = Math.max(ordemAnterior, ordem);
++
++            const problemaNome = nomeValido(no.nome);
++            if (problemaNome) problemas.push(problemaNome);
++            if (declarados.has(no.nome)) problemas.push('"' + no.nome + '" já foi declarada.');
++            declarados.add(no.nome);
++
++            if (no.forma === 'Declaracao') verificarDeclaracao(no, escopo, usados, problemas);
++            else if (no.forma === 'Funcao') verificarFuncao(no, escopo, usados, problemas);
++            else problemas.push('Nó desconhecido: ' + no.forma + '.');
++        });
++
++        // Variáveis do utilizador: declaradas com o nome exato e, havendo mais código, usadas.
++        tabela.utilizador.forEach(function(tipo, nome) {
++            if (!declarados.has(nome)) {
++                problemas.push('A variável do utilizador "' + nome + '" não foi declarada.');
++                return;
++            }
++            if (tipo && escopo.get(nome) !== tipo) {
++                problemas.push('A variável do utilizador "' + nome + '" devia ser ' + tipo + '.');
++            }
++            if (programa.length > 1 && !usados.has(nome)) {
++                problemas.push('A variável do utilizador "' + nome + '" não é usada em lado nenhum.');
++            }
++        });
++        return problemas;
++    }
++
++    // ===== EMISSOR (letra a letra) =====
++    function criarEmissor() {
++        const letras = [];
++        let nivel = 0;
++        let inicioDeLinha = true;
++        return {
++            letras: letras,
++            letra: function(c) {
++                if (inicioDeLinha) {
++                    for (let i = 0; i < nivel * INDENTACAO; i++) letras.push(' ');
++                    inicioDeLinha = false;
++                }
++                letras.push(c);
++            },
++            texto: function(s) { for (const c of s) this.letra(c); },
++            espaco: function() { this.letra(' '); },
++            fim: function() { letras.push('\n'); inicioDeLinha = true; },
++            indenta: function() { nivel++; },
++            desindenta: function() { nivel--; }
++        };
++    }
++
++    function emitirLiteral(valor, em) {
++        if (typeof valor !== 'string') {
++            em.texto(String(valor));
++            return;
++        }
++        em.letra("'");
++        for (const c of valor) {
++            if (c === "'" || c === '\\') em.letra('\\');
++            em.letra(c);
++        }
++        em.letra("'");
++    }
++
++    function emitirExpressao(no, em) {
++        if (no.forma === 'Literal') emitirLiteral(no.valor, em);
++        else if (no.forma === 'Ident') em.texto(no.nome);
++        else aplicarRegra(no.forma, no, em);
++    }
++
++    function preencher(encaixe, no, em) {
++        switch (encaixe) {
++            case 'palavra': case 'nome': case 'tipo': case 'op': case 'retorno':
++                em.texto(no[encaixe]);
++                break;
++            case 'valor': case 'expr': case 'esq': case 'dir':
++                emitirExpressao(no[encaixe], em);
++                break;
++            case 'params':
++                no.params.forEach(function(p, i) {
++                    if (i > 0) { em.texto(','); em.espaco(); }
++                    aplicarRegra('Parametro', p, em);
++                });
++                break;
++            case 'corpo':
++                no.corpo.forEach(function(passo) { aplicarRegra(passo.forma, passo, em); });
++                break;
++            default:
++                throw new Error('Encaixe desconhecido: ' + encaixe + '.');
++        }
++    }
++
++    function aplicarRegra(nomeRegra, no, em) {
++        REGRAS[nomeRegra].forEach(function(item) {
++            if (item === ESP) em.espaco();
++            else if (item === FIM) em.fim();
++            else if (item === INDENTA) em.indenta();
++            else if (item === DESINDENTA) em.desindenta();
++            else if (item.charAt(0) === '@') preencher(item.slice(1), no, em);
++            else em.texto(item);
++        });
++    }
++
++    // Devolve a lista de letras, na ordem em que o Lume as escreveria.
++    function emitirLetras(programa) {
++        const em = criarEmissor();
++        programa.forEach(function(no, i) {
++            const separar = i > 0 && (no.forma === 'Funcao' || programa[i - 1].forma === 'Funcao');
++            if (separar) em.fim();
++            aplicarRegra(no.forma, no, em);
++        });
++        return em.letras;
++    }
++
++    // ===== GERAR =====
++    function gerar(programa, tabela) {
++        const problemas = verificar(programa, tabela || criarTabela());
++        if (problemas.length) throw new Error(problemas.join('\n'));
++        const texto = emitirLetras(programa).join('');
++        const longas = texto.split('\n').filter(function(l) { return l.length > LARGURA_MAXIMA; });
++        if (longas.length) throw new Error('Há linhas com mais de ' + LARGURA_MAXIMA + ' colunas.');
++        return texto;
++    }
++
++    const API = {
++        criarTabela: criarTabela, registarUtilizador: registarUtilizador,
++        declaracao: declaracao, funcao: funcao, retorno: retorno, parametro: parametro,
++        literal: literal, ident: ident, binaria: binaria,
++        verificar: verificar, emitirLetras: emitirLetras, gerar: gerar,
++        deLinhas: null
++    };
++
++    // ===== LIGAÇÃO AO XLANG =====
++    function esc(s) {
++        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
++    }
++
++    function operando(x) { return typeof x === 'string' ? ident(x) : literal(x); }
++
++    // utilizador: nomes dados pelo utilizador. linhas: [nome, tipo, valor] ou
++    // [nome, tipo, esq, op, dir]. Em esq e dir, texto é o nome de uma variável.
++    function programaDasLinhas(utilizador, linhas) {
++        if (!Array.isArray(utilizador)) throw new Error('tsPrograma: "utilizador" deve ser uma lista de nomes.');
++        if (!Array.isArray(linhas) || linhas.length === 0) throw new Error('tsPrograma: "linhas" deve ser uma lista não vazia.');
++        const tabela = criarTabela();
++        utilizador.forEach(function(nome) { registarUtilizador(tabela, nome); });
++        const programa = linhas.map(function(l) {
++            if (!Array.isArray(l) || (l.length !== 3 && l.length !== 5)) {
++                throw new Error('tsPrograma: cada linha é [nome, tipo, valor] ou [nome, tipo, esq, op, dir].');
++            }
++            const valor = l.length === 3 ? literal(l[2]) : binaria(operando(l[2]), l[3], operando(l[4]));
++            return declaracao('const', l[0], l[1], valor);
++        });
++        return { programa: programa, tabela: tabela };
++    }
++
++    API.deLinhas = programaDasLinhas;
++
++    if (typeof window !== 'undefined') {
++        window.LumeCodigo = API;
++        if (window.XLangRegistry) {
++            const html = function(s) { return window.XLangHtml ? new window.XLangHtml(s) : s; };
++            window.XLangRegistry.register('tsPrograma', function(utilizador, linhas) {
++                const p = programaDasLinhas(utilizador, linhas);
++                const codigo = gerar(p.programa, p.tabela).replace(/\n$/, '');
++                return html('<pre style="white-space:pre;overflow-x:auto;margin:0"><code>' + esc(codigo) + '</code></pre>');
++            });
++        }
++    }
++    if (typeof module !== 'undefined' && module.exports) module.exports = API;
++})();
+diff --git a/README.md b/README.md
+index 2842606..9129589 100644
+--- a/README.md
++++ b/README.md
+@@ -74,7 +74,7 @@ LUME/
+   editor/lume-editor.js         ponte do editor no chat (cartões de ficheiro)
+   TEMPLATES.md                  como criar templates (páginas HTML/JS e XLang)
+   COMPONENTES.md                gerador de código HTML + CSS (componentes.txt e cores.txt)
+-  CODIGO_TYPESCRIPT.md          rascunho: gerador de código TypeScript por regras, letra a letra (não implementado)
++  CODIGO_TYPESCRIPT.md          gerador de código TypeScript por regras (codigo.js + vendor/xlang-codigo.js; ligado ao chat desde 0.5.48)
+   CHANGELOG.txt
+   VERSION
+ ```
+diff --git a/index.html b/index.html
+index fbdee38..b5d80c3 100644
+--- a/index.html
++++ b/index.html
+@@ -1849,7 +1849,7 @@ window.anexarFicheiro=function(){
+ };
+ })()</script>
+ <script src="LUME/formatador.js"></script><script src="LUME/dialogo.js"></script>
+-<script src="LUME/fisica.js"></script><script src="LUME/despachante.js"></script>
++<script src="LUME/fisica.js"></script><script src="LUME/vendor/xlang-codigo.js"></script><script src="LUME/codigo.js"></script><script src="LUME/despachante.js"></script>
+ <script src="LUME/editor/lume-editor.js"></script>
+ <!-- Definições carregadas de LUME/definicoes.html -->
+ <script id="lume-defs-loader">
+diff --git a/mobile.html b/mobile.html
+index 7101c63..700258d 100644
+--- a/mobile.html
++++ b/mobile.html
+@@ -1874,7 +1874,7 @@ window.anexarFicheiro=function(){
+ };
+ })()</script>
+ <script src="LUME/formatador.js"></script><script src="LUME/dialogo.js"></script>
+-<script src="LUME/fisica.js"></script><script src="LUME/despachante.js"></script>
++<script src="LUME/fisica.js"></script><script src="LUME/vendor/xlang-codigo.js"></script><script src="LUME/codigo.js"></script><script src="LUME/despachante.js"></script>
+ <script src="LUME/editor/lume-editor.js"></script>
+ <!-- Definições carregadas de LUME/definicoes.html -->
+ <script id="lume-defs-loader">
+diff --git a/sw.js b/sw.js
+index 44b9ee4..b36e495 100644
+--- a/sw.js
++++ b/sw.js
+@@ -11,7 +11,7 @@
+    antigas de uma vez, mudar VERSAO. Os ficheiros do bot sao descobertos sozinhos em LUME/bot/arquivos.json. */
+ "use strict";
+ 
+-var VERSAO = "0.5.47";
++var VERSAO = "0.5.48";
+ var P = "lume-";
+ var C_SHELL = P + "shell-" + VERSAO;
+ var C_DADOS = P + "dados-" + VERSAO;
+@@ -29,6 +29,8 @@ var NUCLEO = [
+   "LUME/dialogo.js",
+   "LUME/despachante.js",
+   "LUME/fisica.js",
++  "LUME/codigo.js",
++  "LUME/vendor/xlang-codigo.js",
+   "LUME/math.js",
+   "LUME/vendor/katex/katex.min.js",
+   "LUME/vendor/katex/katex.min.css",
+-- 
+2.43.0
+
