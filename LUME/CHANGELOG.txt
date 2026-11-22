@@ -397,3 +397,9 @@ Lume - historico de versoes
 0.5.36
 - As etapas dos testes da equacao do 2.o grau passam de 4 s para 8 s cada, para dar tempo de ler (despachante.js: raciocinio(e, 8000)). A espera pelas etapas antes de mostrar a resposta ja soma este tempo extra sozinha.
 - sw.js: nova VERSAO para limpar a cache antiga do telemovel.
+
+0.5.37
+- Testes tambem nas equacoes do 1.o grau: o Lume substitui a incognita nos dois lados da equacao original (Teste 1) e confere a equacao simplificada, com tudo no mesmo lado (Teste 2). Aparecem como etapas da Atividade e na seccao "Sobre os testes", como nas equacoes do 2.o grau.
+- Testes tambem nas contas simples (calculadora): Teste 1 recalcula a conta de novo diretamente sobre a expressao; Teste 2 faz a prova real com a operacao inversa (soma/subtracao/multiplicacao/divisao, raiz quadrada e cubica, quadrado e cubo). Se a conta nao tiver prova real (potencias gerais, fatorial, percentagem, trigonometria, logaritmos), so faz o Teste 1 ou nao testa.
+- despachante.js: T_ETAPA_TESTE (8000 ms) passa a ser a duracao unica das etapas de teste; novas funcoes tTestes1, tTestesCalc e comTestes.
+- sw.js: nova VERSAO para limpar a cache antiga do telemovel.

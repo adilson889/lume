@@ -439,6 +439,73 @@ function tSolucaoDe(e){
  return t.antes+corpo+"\n\n"+t.depois;
 }
 function tSolucao(T,pref){var o=tSolucaoDe(T.q);_tutor=null;return {texto:(pref||"Está bem, resolvo eu, com os mesmos passos.")+"\n\n"+o,rac:"Resolvi sozinho, com os mesmos passos e sem perguntas.",etapas:_etapasTestes}}
+var T_ETAPA_TESTE=8000;
+function comTestes(fm,corpo){
+ var t=fm&&fm.tt;
+ if(!t||!t.etapas||!t.etapas.length)return corpo;
+ t.etapas.forEach(function(e){raciocinio(e,T_ETAPA_TESTE)});
+ return t.antes+corpo+"\n\n"+t.depois;
+}
+/* testes da equacao do 1.o grau: substituir nos dois lados e conferir a forma simplificada */
+function tTestes1(l,r,c1,c0,x,X){
+ try{
+  var av=function(p,v){var s=0;for(var k=p.length-1;k>=0;k--)s=s*v+(p[k]||0);return s};
+  var le=av(l,x),ld=av(r,x),s2=c1*x+c0;
+  if(!isFinite(le)||!isFinite(ld)||!isFinite(s2))return null;
+  var ok1=Math.abs(le-ld)<=1e-6*(Math.abs(le)+Math.abs(ld)+1),ok2=Math.abs(s2)<=1e-6*(Math.abs(c1*x)+Math.abs(c0)+1),ok=ok1&&ok2;
+  var sg=c0<0?"-":"+";
+  var t1="**Teste 1: substituir na equação**\n\nPara $"+X+" = "+lF(x)+"$, o lado esquerdo vale $"+lF(le)+"$ e o lado direito vale $"+lF(ld)+"$"+(ok1?", por isso são iguais $\\checkmark$.":", por isso **não** são iguais (falhou).");
+  var t2="**Teste 2: equação simplificada**\n\nDepois de passar tudo para o mesmo lado, a equação fica $"+lF(c1)+X+" "+sg+" "+lF(Math.abs(c0))+" = 0$. Com $"+X+" = "+lF(x)+"$:\n\n$$"+lF(c1)+" \\times "+lW(x)+" "+sg+" "+lF(Math.abs(c0))+" = "+lF(s2)+(ok2?" \;\\checkmark":" \;\\text{falhou}")+"$$";
+  var fim=ok?"Os dois testes deram o mesmo resultado, por isso a resposta está **correta** e podes usá-la com confiança.":"Algum teste não bateu, por isso **não te aconselho a usar esta resposta**.";
+  var antes="Antes de te responder, deixa-me testar o resultado por dois caminhos diferentes: substituir "+X+" nos dois lados da equação e conferir a equação simplificada.\n\n"+(ok?"Bom, os testes passaram e deram o mesmo resultado. Vou então mostrar-te os passos.":"Hmm, os testes não deram o mesmo resultado, por isso não te aconselho a usar esta resposta. Mesmo assim, aqui estão os passos para veres onde pode estar a diferença.")+"\n\n";
+  var et=["A testar o resultado por dois caminhos","Teste 1: a substituir "+X+" = "+tF(x)+" nos dois lados da equação","Teste 2: a conferir a equação simplificada ("+tF(c1)+X+" "+(c0<0?"−":"+")+" "+tF(Math.abs(c0))+" = 0)",ok?"Os testes passaram e deram o mesmo resultado":"Os testes não bateram: não recomendo esta resposta","A preparar a resposta com os cálculos"];
+  return {ok:ok,etapas:et,antes:antes,depois:"**Sobre os testes**\n\n"+t1+"\n\n"+t2+"\n\n"+fim};
+ }catch(e){return null}
+}
+/* testes das contas simples: recalcular sobre a expressao e prova real com a operacao inversa */
+function tTestesCalc(arv,v,D,F,W){
+ var av=function(n){
+  switch(n.t){
+   case "n":return n.v;
+   case "c":return Math.PI;
+   case "g":return av(n.x);
+   case "neg":return -av(n.x);
+   case "p":{var a=av(n.x);if(n.op==="²")return a*a;if(n.op==="³")return a*a*a;if(n.op==="%")return a/100;throw 0}
+   case "b":{var l=av(n.l),r=av(n.r);if(n.op==="+")return l+r;if(n.op==="-")return l-r;if(n.op==="*")return l*r;if(n.op==="/")return l/r;return Math.pow(l,r)}
+   case "fn":{if(n.a.length!==1)throw 0;var x=av(n.a[0]);if(n.n==="sqrt")return Math.sqrt(x);if(n.n==="cbrt")return Math.cbrt(x);if(n.n==="abs")return Math.abs(x);throw 0}
+  }
+  throw 0;
+ };
+ var v1=av(arv);if(!isFinite(v1))return null;
+ var ok=true,ok1=Math.abs(v1-v)<=1e-9*(Math.abs(v)+1);if(!ok1)ok=false;
+ var top=arv;while(top&&top.t==="g")top=top.x;
+ var t1="**Teste 1: recalcular a conta**\n\nRefiz a conta de novo, diretamente sobre a expressão "+md(mx(D(arv)))+", e deu "+md(mx(F(v1)))+(ok1?", o mesmo resultado (confere).":", diferente de "+md(mx(F(v)))+" (não confere).");
+ var t2=null,txt="",nome="",inv=0,alvo=0;
+ if(top.t==="b"&&"+-*/".indexOf(top.op)>=0){
+  var l=av(top.l),r=av(top.r);
+  if(top.op==="+"){inv=v-r;alvo=l;txt=F(v)+" − "+W(r)+" = "+F(inv);nome="Numa soma, o resultado menos uma parcela tem de dar a outra parcela."}
+  else if(top.op==="-"){inv=v+r;alvo=l;txt=F(v)+" + "+W(r)+" = "+F(inv);nome="Numa subtração, o resultado mais o número que foi tirado tem de dar o número de partida."}
+  else if(top.op==="*"&&r!==0){inv=v/r;alvo=l;txt=F(v)+" ÷ "+W(r)+" = "+F(inv);nome="Numa multiplicação, o resultado dividido por um fator tem de dar o outro fator."}
+  else if(top.op==="/"){inv=v*r;alvo=l;txt=F(v)+" × "+W(r)+" = "+F(inv);nome="Numa divisão, o resultado vezes o divisor tem de dar o dividendo."}
+ }else if(top.t==="fn"&&top.a.length===1&&(top.n==="sqrt"||top.n==="cbrt")){
+  var xx=av(top.a[0]);
+  if(top.n==="sqrt"){inv=v*v;alvo=xx;txt=W(v)+"² = "+F(inv);nome="Numa raiz quadrada, o resultado ao quadrado tem de dar o número que estava dentro da raiz."}
+  else{inv=v*v*v;alvo=xx;txt=W(v)+"³ = "+F(inv);nome="Numa raiz cúbica, o resultado ao cubo tem de dar o número que estava dentro da raiz."}
+ }else if(top.t==="p"&&(top.op==="²"||top.op==="³")){
+  var xp=av(top.x);
+  if(top.op==="²"){inv=Math.sqrt(v);alvo=Math.abs(xp);txt="√"+F(v)+" = "+F(inv);nome="Num quadrado, a raiz quadrada do resultado tem de dar o número de partida (sem sinal)."}
+  else{inv=Math.cbrt(v);alvo=xp;txt="∛"+F(v)+" = "+F(inv);nome="Num cubo, a raiz cúbica do resultado tem de dar o número de partida."}
+ }
+ if(nome){
+  var ok2=Math.abs(inv-alvo)<=1e-6*(Math.abs(alvo)+1);if(!ok2)ok=false;
+  t2="**Teste 2: prova real**\n\n"+nome+" Aqui: "+md(mx(txt))+", e o valor esperado é "+md(mx(F(alvo)))+(ok2?" (confere).":" (não confere).");
+ }
+ var n=t2?2:1;
+ var fim=ok?(n===2?"Os dois testes deram":"O teste deu")+" o mesmo resultado, por isso a resposta está **correta** e podes usá-la com confiança.":"Algum teste não bateu, por isso **não te aconselho a usar esta resposta**.";
+ var antes="Antes de te responder, deixa-me testar o resultado"+(n===2?" por dois caminhos diferentes: recalcular a conta de novo e fazer a prova real com a operação inversa.":" recalculando a conta de novo.")+"\n\n"+(ok?"Bom, "+(n===2?"os testes passaram e deram":"o teste passou e deu")+" o mesmo resultado. Vou então mostrar-te os passos.":"Hmm, os testes não deram o mesmo resultado, por isso não te aconselho a usar esta resposta. Mesmo assim, aqui estão os passos para veres onde pode estar a diferença.")+"\n\n";
+ var et=[n===2?"A testar o resultado por dois caminhos":"A testar o resultado","Teste 1: a recalcular a conta de novo"].concat(t2?["Teste 2: a fazer a prova real com a operação inversa"]:[],[ok?(n===2?"Os testes passaram e deram o mesmo resultado":"O teste passou e deu o mesmo resultado"):"Os testes não bateram: não recomendo esta resposta","A preparar a resposta com os cálculos"]);
+ return {ok:ok,etapas:et,antes:antes,depois:"**Sobre os testes**\n\n"+t1+(t2?"\n\n"+t2:"")+"\n\n"+fim};
+}
 function tutorIniciar(fx){
  var e=fx.q,D=e.b*e.b-4*e.a*e.c;if(Math.abs(D)<1e-9)D=0;
  _tutor={q:e,fx:fx,etapa:"oferta",erros:0,D:D,t:Date.now(),x1:null,x2:null};
@@ -598,7 +665,7 @@ function textoConta(fm){
 }
 async function tentar(q){
  q=coloquial(q);
- if(typeof window.lumeOnReply==="function"&&window.lumeTutorAtivo()){var rt=tutorResponder(q);if(rt){if(rt.etapas&&rt.etapas.length)rt.etapas.forEach(function(e){raciocinio(e,8000)});else if(rt.rac)raciocinio(rt.rac);window.lumeOnReply({text:rt.texto});return true}}
+ if(typeof window.lumeOnReply==="function"&&window.lumeTutorAtivo()){var rt=tutorResponder(q);if(rt){if(rt.etapas&&rt.etapas.length)rt.etapas.forEach(function(e){raciocinio(e,T_ETAPA_TESTE)});else if(rt.rac)raciocinio(rt.rac);window.lumeOnReply({text:rt.texto});return true}}
  var DL=window.LumeDialogo;
  if(DL&&typeof window.lumeOnReply==="function"){
   var etp=window.lumeAtualizarEtapa,esp=function(t){etp&&etp(t);return Promise.resolve()};
@@ -608,7 +675,7 @@ async function tentar(q){
   if(mm){var mr=String(mm.rot||"").toLowerCase();await esp(mm.novo?(mm.antes?"Disseste um novo valor para «"+mr+"»; vou atualizar a memória.":"Disseste «"+mr+"»; vou guardá-lo na memória."):"Disseste «"+mr+"», mas isso já estava guardado.");await esp(mm.novo?(mm.antes?"Troquei «"+mm.antes+"» por «"+mm.val+"».":"Guardei «"+mm.val+"» em «"+mr+"»."):"Não mudei nada na memória.")}
   DL.ver(q);var rd=DL.resolver(q);if(rd&&rd.resposta){window.lumeOnReply({text:rd.resposta});return true}}
  if(typeof window.lumeOnReply==="function"&&q.length<=140){var fmx=null;try{fmx=funcaoMatematica(q)}catch(_){}if(fmx&&fmx.q){if(/^(resolve|resolva|resolver|calcula|calcule|calcular|determine|encontre|quais|qual|quanto|raizes|raiz)\b/.test(norm(q))){raciocinio("Pediste a resolução; resolvi sozinho, com os mesmos passos e sem perguntas.");window.lumeOnReply({text:tSolucaoDe(fmx.q)});return true}var ti=tutorIniciar(fmx);raciocinio(ti.rac);window.lumeOnReply({text:ti.texto,html:ti.html});return true}
-  if(fmx&&((fmx.p&&fmx.p.length)||fmx.e)){raciocinio("Li o pedido como uma conta e fiz os passos em JavaScript; o chat formata a resposta.");window.lumeOnReply({text:textoConta(fmx)});return true}var rj=fmx&&!fmx.e?respostaSimples(fmx):null;if(rj){raciocinio("Fiz a conta em JavaScript e escrevi o resultado em LaTeX.");window.lumeOnReply({text:rj});return true}}
+  if(fmx&&((fmx.p&&fmx.p.length)||fmx.e)){raciocinio("Li o pedido como uma conta e fiz os passos em JavaScript; o chat formata a resposta.");window.lumeOnReply({text:comTestes(fmx,textoConta(fmx))});return true}var rj=fmx&&!fmx.e?respostaSimples(fmx):null;if(rj){raciocinio("Fiz a conta em JavaScript e escrevi o resultado em LaTeX.");window.lumeOnReply({text:comTestes(fmx,rj)});return true}}
  if(typeof window.lumeOnReply==="function"){var cdet=detectarConversa(q);var conversa=gerarConversa(q);if(conversa){raciocinio(descreverConversa(cdet||{}));window.lumeOnReply({text:conversa});return true;}}
  var caps=lerCapacidades();if(!caps.length||typeof window.lumeOnReply!=="function")return false;
  var t=norm(q),m=medidores(q,t);
@@ -853,12 +920,13 @@ function calculadora(q){
  var m0=mx(D(arv)),res;
  try{res=E(arv)}catch(e){if(e instanceof Erro)return {f:"0",m:m0,p:[],e:e.msg};throw e}
  if(!isFinite(res.v))return {f:"0",m:m0,p:[],e:"Não consegui calcular esta conta."};
+ var TT=null;try{TT=tTestesCalc(arv,res.v,D,F,W)}catch(e){TT=null}
  var P=passos;
- if(P.length<2&&!notas.length)return {f:res.f,m:m0,p:[],e:"",v:res.v};
+ if(P.length<2&&!notas.length)return {f:res.f,m:m0,p:[],e:"",v:res.v,tt:TT};
  if(P.length>12)P=P.slice(0,6).concat(["..."],P.slice(-5));
  var n=P.length;
  P=P.map(function(t,k){return t==="..."?t:(k===0?"Primeiro: ":k===n-1?"Por fim: ":"Depois: ")+mx(t)});
- return {f:res.f,m:m0,p:P.concat(notas),e:""};
+ return {f:res.f,m:m0,p:P.concat(notas),e:"",tt:TT};
 }
 var LP=(function(){
  var SUPD="⁰¹²³⁴⁵⁶⁷⁸⁹";
@@ -1098,7 +1166,7 @@ function equacao(q){
  var A=c1,B=-c0,x=B/A,coef=(A===1?"":A===-1?"−":F(A))+X,L2=["Juntar os termos: "+mx(coef+" = "+F(B))];
  if(A!==1)L2.push("Dividir os dois lados por "+mx(F(A))+": "+mx(X+" = "+F(B)+" ÷ "+F(A)));
  L2.push(mx(X+" = "+F(x)));
- return {f:arred(x),m:m0,p:passos(L2),e:"",r:mx(X+" = "+F(x))};
+ return {f:arred(x),m:m0,p:passos(L2),e:"",r:mx(X+" = "+F(x)),tt:tTestes1(l,r,c1,c0,x,X)};
  }catch(err){return null}
 }
 /* Expressoes com uma letra e sem "=": 2x²+4x+8, 3x+5, (x+1)^2, e "2x²+4x+8 com x = 3".
