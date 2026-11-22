@@ -412,3 +412,8 @@ Lume - historico de versoes
 0.5.39
 - Novos pedidos com passos em LaTeX: geometria (area, perimetro, volume de quadrado, retangulo, triangulo, circulo, trapezio, losango, cubo, cilindro, esfera, cone...), conversao de unidades (comprimento, massa, volume, tempo, temperatura), regra de tres (direta e inversa) e juros simples e compostos.
 - Treino: 195/195.
+
+0.5.40
+- Testes automaticos tambem nos pedidos novos (fracoes, sistemas, media, variancia e desvio padrao, geometria, unidades, regra de tres e juros): o Lume testa o resultado por dois caminhos diferentes, mostra-os como etapas da Atividade e acrescenta a seccao "Sobre os testes" com as contas em LaTeX.
+- Corrigido o simbolo de percentagem nos juros.
+- Treino: 203/203.

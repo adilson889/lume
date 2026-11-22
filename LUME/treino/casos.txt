@@ -213,3 +213,11 @@ converte 5 km em m | 5000
 se 3 kg custam 12, quanto custam 5 kg | x = 20
 juros simples de 1000 a 5% durante 3 anos | M = 1150
 juros compostos 1000 5% 3 anos | 1157
+1/2 + 1/3 | sobre os testes.*irredutivel
+x + y = 10 e x - y = 2 | sobre os testes.*substituir nas duas equacoes
+media de 4, 6 e 8 | sobre os testes.*soma dos desvios
+desvio padrão de 2, 4, 4, 4, 5, 5, 7, 9 | sobre os testes.*formula alternativa
+area do circulo de raio 3 | sobre os testes.*formula inversa
+converte 5 km em m | sobre os testes.*unidade base
+se 3 kg custam 12, quanto custam 5 kg | sobre os testes.*proporcao
+juros simples de 1000 a 5% durante 3 anos | sobre os testes.*taxa a partir dos juros

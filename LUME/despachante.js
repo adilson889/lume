@@ -439,6 +439,16 @@ function tSolucaoDe(e){
  return t.antes+corpo+"\n\n"+t.depois;
 }
 function tSolucao(T,pref){var o=tSolucaoDe(T.q);_tutor=null;return {texto:(pref||"Está bem, resolvo eu, com os mesmos passos.")+"\n\n"+o,rac:"Resolvi sozinho, com os mesmos passos e sem perguntas.",etapas:_etapasTestes}}
+/* testes genericos (2 caminhos) para os pedidos novos: a={d,t,c,ok}, b={d,t,c,ok}; c leva matematica em md(mx(..)) */
+function eqn(a,b){return Math.abs(a-b)<=1e-6*(Math.abs(b)+1)}
+function TT2(a,b){
+ var ok=a.ok&&b.ok;
+ var et=["A testar o resultado por dois caminhos","Teste 1: "+a.t,"Teste 2: "+b.t,ok?"Os testes passaram e deram o mesmo resultado":"Os testes não bateram: não recomendo esta resposta","A preparar a resposta com os cálculos"];
+ var antes="Antes de te responder, deixa-me testar o resultado por dois caminhos diferentes: "+a.d+" e "+b.d+".\n\n"+(ok?"Bom, os testes passaram e deram o mesmo resultado. Vou então mostrar-te os passos.":"Hmm, os testes não deram o mesmo resultado, por isso não te aconselho a usar esta resposta. Mesmo assim, aqui estão os passos para veres onde pode estar a diferença.")+"\n\n";
+ var fim=ok?"Os dois testes deram o mesmo resultado, por isso a resposta está **correta** e podes usá-la com confiança.":"Algum teste não bateu, por isso **não te aconselho a usar esta resposta**.";
+ var mk=function(i,x){return "**Teste "+i+": "+x.t+"**\n\n"+x.c+(x.ok?" $\\checkmark$":" (falhou)")};
+ return {ok:ok,etapas:et,antes:antes,depois:"**Sobre os testes**\n\n"+mk(1,a)+"\n\n"+mk(2,b)+"\n\n"+fim};
+}
 var T_ETAPA_TESTE=8000;
 function comTestes(fm,corpo){
  var t=fm&&fm.tt;
@@ -1337,7 +1347,14 @@ function fracoes(q){
  else if(r.d!==1)L.push("Em decimal: "+mx(fr(r)+" \\approx "+Fd(val)));
  if(!L.length)return null;
  var n=L.length;
- return {f:String(Math.round(val*1e9)/1e9),m:mx(v.l),p:L.map(function(t,k){return (k===0?"Primeiro: ":k===n-1?"Por fim: ":"Depois: ")+t}),e:"",r:mx(fr(r)+(r.d===1?"":tail))};
+ var _q2=0,_fd=function(x){return String(Math.round(x*1e4)/1e4).replace(".","{,}")};
+ function _ea(){var t=tk[_q2++];if(t==="("){var v2=_es();_q2++;return v2}if(t==="-")return -_ea();var mm=/^(\d+)\/(\d+)$/.exec(t);if(mm)return +mm[1]/+mm[2];return +t}
+ function _et(){var a=_ea();while(tk[_q2]==="×"||tk[_q2]==="÷"){var o=tk[_q2++],b=_ea();a=o==="×"?a*b:a/b}return a}
+ function _es(){var a=_et();while(tk[_q2]==="+"||tk[_q2]==="-"){var o=tk[_q2++],b=_et();a=o==="+"?a+b:a-b}return a}
+ var _dv=_es(),_g2=gcd(r.n,r.d),_o1=eqn(_dv,val),_o2=_g2===1;
+ var _tt=TT2({d:"fazer a conta toda em decimais",t:"conta em decimais",ok:_o1,c:"Fazendo a conta toda em decimais dá "+md(mx(_fd(_dv)))+" e a fração do resultado, "+md(mx(fr(r)))+", também vale "+md(mx(_fd(val)))+(_o1?"":" (não confere)")+"."},
+  {d:"ver se a fração final está simplificada",t:"fração irredutível",ok:_o2,c:"O máximo divisor comum de "+md(mx(Math.abs(r.n)))+" e "+md(mx(r.d))+" é "+md(mx(_g2))+(_o2?", por isso já não se pode simplificar mais.":", por isso ainda se podia simplificar.")});
+ return {tt:_tt,f:String(Math.round(val*1e9)/1e9),m:mx(v.l),p:L.map(function(t,k){return (k===0?"Primeiro: ":k===n-1?"Por fim: ":"Depois: ")+t}),e:"",r:mx(fr(r)+(r.d===1?"":tail))};
  }catch(err){return null}
 }
 /* ===== Sistemas de duas equacoes com duas incognitas =====
@@ -1431,7 +1448,13 @@ function sistema(q){
   ver();
  }
  var n=L.length;
- return {f:String(Math.round(xv*1e9)/1e9),m:m0,p:L.map(function(t,k){return (k===0?"Primeiro: ":k===n-1?"Por fim: ":"Depois: ")+t}),e:"",r:mx(X+" = "+F(xv))+" e "+mx(Y+" = "+F(yv))};
+ var _l1=a1*xv+b1*yv,_l2=a2*xv+b2*yv,_s1=eqn(_l1,c1)&&eqn(_l2,c2),_x2,_y2;
+ if(a1!==0){_y2=(c2-a2*c1/a1)/(b2-a2*b1/a1);_x2=(c1-b1*_y2)/a1}else{_y2=c1/b1;_x2=(c2-b2*_y2)/a2}
+ var _s2=eqn(_x2,xv)&&eqn(_y2,yv);
+ var _lh=function(a,b){var o=[];if(a!==0)o.push(W(a)+" \\times "+W(xv));if(b!==0)o.push(W(b)+" \\times "+W(yv));return o.join(" + ")||"0"};
+ var _tt=TT2({d:"substituir "+X+" e "+Y+" nas duas equações",t:"substituir nas duas equações",ok:_s1,c:"Com "+md(mx(X+" = "+F(xv)+",\\ "+Y+" = "+F(yv)))+": na equação (1), "+md(mx(_lh(a1,b1)+" = "+F(_l1)))+" (esperado "+md(mx(F(c1)))+"); na equação (2), "+md(mx(_lh(a2,b2)+" = "+F(_l2)))+" (esperado "+md(mx(F(c2)))+")."},
+  {d:"resolver outra vez por outro caminho (isolar uma incógnita e substituir)",t:"resolver por outro caminho",ok:_s2,c:"Isolando uma incógnita e substituindo na outra equação, obtém-se "+md(mx(X+" = "+F(_x2)+",\\ "+Y+" = "+F(_y2)))+(_s2?", igual à solução encontrada.":", diferente da solução encontrada.")});
+ return {tt:_tt,f:String(Math.round(xv*1e9)/1e9),m:m0,p:L.map(function(t,k){return (k===0?"Primeiro: ":k===n-1?"Por fim: ":"Depois: ")+t}),e:"",r:mx(X+" = "+F(xv))+" e "+mx(Y+" = "+F(yv))};
  }catch(err){return null}
 }
 /* ===== Estatistica com passos: media, variancia e desvio padrao ===== */
@@ -1444,18 +1467,24 @@ function estatistica(tipo,nums,am){
  function chk(x){if(Math.abs(Math.round(x*1e4)/1e4-x)>1e-12)arred=true;return x}
  L.push("Somar os valores: "+mx(nums.map(function(x,i){return i?(x<0?"− "+F(-x):"+ "+F(x)):F(x)}).join(" ")+" = "+F(soma)));
  L.push("Dividir pela quantidade de valores ("+mx(n)+"): "+mx("\\bar{x} = "+F(soma)+" \\div "+n+" = "+F(chk(mu))));
- if(tipo==="media")return {f:String(mu),m:"média de "+mx(nums.map(F).join(", ")),p:L.map(function(t,k){return (k===0?"Primeiro: ":k===L.length-1?"Por fim: ":"Depois: ")+t}),e:"",r:mx("\\bar{x} = "+F(mu))};
+ var _ss=nums.reduce(function(a,b){return a+b/n},0),_sd=nums.reduce(function(a,b){return a+(b-mu)},0);
+ var _ttm=TT2({d:"recalcular a média dividindo cada valor por "+n,t:"recalcular a média",ok:eqn(_ss,mu),c:"Somando cada valor dividido por "+md(mx(n))+" obtém-se "+md(mx(F(_ss)))+", igual à média "+md(mx(F(mu)))+"."},
+  {d:"ver se a soma dos desvios é zero",t:"soma dos desvios",ok:Math.abs(_sd)<1e-6*(Math.abs(soma)+1),c:"A soma dos desvios em relação à média tem de ser zero; aqui dá "+md(mx(F(Math.abs(_sd)<1e-9?0:_sd)))+"."});
+ if(tipo==="media")return {tt:_ttm,f:String(mu),m:"média de "+mx(nums.map(F).join(", ")),p:L.map(function(t,k){return (k===0?"Primeiro: ":k===L.length-1?"Por fim: ":"Depois: ")+t}),e:"",r:mx("\\bar{x} = "+F(mu))};
  var ds=nums.map(function(x){return x-mu}),qs=ds.map(function(d){return d*d}),sq=qs.reduce(function(a,b){return a+b},0);
  L.push("Calcular o desvio de cada valor em relação à média ("+mx("x_i - \\bar{x}")+"): "+mx(nums.map(function(x,i){return F(x)+" - "+W(chk(mu))+" = "+F(chk(ds[i]))}).join(";\\ ")));
  L.push("Elevar cada desvio ao quadrado: "+mx(ds.map(function(d,i){return W(chk(d))+"^{2} = "+F(chk(qs[i]))}).join(";\\ ")));
  L.push("Somar os quadrados: "+mx(qs.map(function(x,i){return i?"+ "+F(x):F(x)}).join(" ")+" = "+F(chk(sq))));
  var den=am?n-1:n,vr=sq/den,sym=am?"s":"\\sigma";
  L.push("Variância"+(am?" amostral (divide por "+mx("n - 1")+")":" (divide por "+mx("n")+")")+": "+mx(sym+"^{2} = "+F(sq)+" \\div "+den+" = "+F(chk(vr))));
- if(tipo==="variancia"){var n1=L.length;return {f:String(vr),m:"variância"+(am?" amostral":"")+" de "+mx(nums.map(F).join(", ")),p:L.map(function(t,k){return (k===0?"Primeiro: ":k===n1-1?"Por fim: ":"Depois: ")+t}),e:"",r:mx(sym+"^{2} = "+F(vr))+(arred?" (valores arredondados a 4 casas decimais)":"")}}
+ var _q1=nums.reduce(function(a,b){return a+b*b},0),_alt=am?(_q1-n*mu*mu)/(n-1):_q1/n-mu*mu,_sdv=Math.sqrt(vr);
+ var _ttv=TT2({d:"usar a fórmula alternativa da variância (média dos quadrados menos o quadrado da média)",t:"fórmula alternativa",ok:eqn(_alt,vr),c:"Pela fórmula alternativa, a variância dá "+md(mx(F(_alt)))+", igual a "+md(mx(F(vr)))+"."},
+  {d:"conferir que a raiz quadrada da variância ao quadrado volta à variância",t:"raiz e quadrado",ok:eqn(_sdv*_sdv,vr)&&vr>=0,c:"A raiz quadrada de "+md(mx(F(vr)))+" é "+md(mx(F(_sdv)))+" e, elevada ao quadrado, dá "+md(mx(F(_sdv*_sdv)))+"."});
+ if(tipo==="variancia"){var n1=L.length;return {tt:_ttv,f:String(vr),m:"variância"+(am?" amostral":"")+" de "+mx(nums.map(F).join(", ")),p:L.map(function(t,k){return (k===0?"Primeiro: ":k===n1-1?"Por fim: ":"Depois: ")+t}),e:"",r:mx(sym+"^{2} = "+F(vr))+(arred?" (valores arredondados a 4 casas decimais)":"")}}
  var sd=Math.sqrt(vr);
  L.push("O desvio padrão é a raiz quadrada da variância: "+mx(sym+" = \\sqrt{"+F(chk(vr))+"} = "+F(chk(sd))));
  var n2=L.length;
- return {f:String(sd),m:"desvio padrão"+(am?" amostral":"")+" de "+mx(nums.map(F).join(", ")),p:L.map(function(t,k){return (k===0?"Primeiro: ":k===n2-1?"Por fim: ":"Depois: ")+t}),e:"",r:mx(sym+" = "+F(sd))+(arred?" (valores arredondados a 4 casas decimais)":"")};
+ return {tt:_ttv,f:String(sd),m:"desvio padrão"+(am?" amostral":"")+" de "+mx(nums.map(F).join(", ")),p:L.map(function(t,k){return (k===0?"Primeiro: ":k===n2-1?"Por fim: ":"Depois: ")+t}),e:"",r:mx(sym+" = "+F(sd))+(arred?" (valores arredondados a 4 casas decimais)":"")};
  }catch(err){return null}
 }
 /* ===== Geometria, unidades, regra de tres e juros, com passos ===== */
@@ -1466,14 +1495,14 @@ function aplicadas(q){
  var ns=(t.match(/\d+(?:[.,]\d+)?/g)||[]).map(function(x){return parseFloat(x.replace(",","."))});
  if(!ns.length||ns.length>4)return null;
  function F(n){n=Math.round(n*1e4)/1e4;if(n===0)n=0;return String(n).replace(".",",").replace("-","−")}
- function out(m,L,r,f){var n=L.length;return {f:String(f),m:m,p:L.map(function(s,k){return (k===0?"Primeiro: ":k===n-1?"Por fim: ":"Depois: ")+s}),e:"",r:r}}
+ function out(m,L,r,f,tt){var n=L.length;return {tt:tt,f:String(f),m:m,p:L.map(function(s,k){return (k===0?"Primeiro: ":k===n-1?"Por fim: ":"Depois: ")+s}),e:"",r:r}}
  var m;
  /* ---- juros ---- */
  if(/\bjuros?\b|\bmontante\b/.test(t)&&ns.length>=3){
   var C=ns[0],i=ns[1],n=ns[2],comp=/composto/.test(t);
   if(C>0&&i>=0&&n>0&&n<=600){
    var L=[];
-   L.push("Dados: capital "+mx("C = "+F(C))+", taxa "+mx("i = "+F(i)+"\\% = "+F(i/100))+", tempo "+mx("t = "+F(n)));
+   L.push("Dados: capital "+mx("C = "+F(C))+", taxa "+mx("i = "+F(i)+"% = "+F(i/100))+", tempo "+mx("t = "+F(n)));
    var J,M;
    if(comp){
     M=C*Math.pow(1+i/100,n);J=M-C;
@@ -1487,7 +1516,10 @@ function aplicadas(q){
     L.push("O montante é o capital mais os juros: "+mx("M = "+F(C)+" + "+F(J)+" = "+F(M)));
    }
    L.push("A taxa e o tempo têm de estar na mesma unidade (por exemplo, % ao ano e anos).");
-   return out("juros "+(comp?"compostos":"simples"),L,mx("J = "+F(J))+" e "+mx("M = "+F(M)),Math.round(M*100)/100);
+   var tj=TT2({d:"conferir que o montante é o capital mais os juros",t:"montante = capital + juros",ok:eqn(C+J,M),c:"Somando "+md(mx(F(C)+" + "+F(J)))+" obtém-se "+md(mx(F(C+J)))+", igual ao montante "+md(mx(F(M)))+"."},
+   comp?{d:"descobrir o tempo a partir do montante com logaritmos",t:"tempo a partir do montante",ok:i>0?eqn(Math.log(M/C)/Math.log(1+i/100),n):true,c:"Pelos logaritmos, "+md(mx("t = \\frac{\\ln(M/C)}{\\ln(1 + i)} = "+F(i>0?Math.log(M/C)/Math.log(1+i/100):n)))+", igual ao tempo dado."}
+   :{d:"descobrir a taxa a partir dos juros",t:"taxa a partir dos juros",ok:eqn(J/(C*n)*100,i),c:"Pela fórmula inversa, "+md(mx("i = \\frac{J}{C \\times t} = \\frac{"+F(J)+"}{"+F(C)+" \\times "+F(n)+"} = "+F(J/(C*n)*100)+"%"))+", igual à taxa dada."});
+   return out("juros "+(comp?"compostos":"simples"),L,mx("J = "+F(J))+" e "+mx("M = "+F(M)),Math.round(M*100)/100,tj);
   }
  }
  /* ---- regra de tres ---- */
@@ -1505,7 +1537,10 @@ function aplicadas(q){
     L.push("Multiplicar em cruz: "+mx(F(A)+" \\times x = "+F(B)+" \\times "+F(Cc)));
     L.push("Isolar "+mx("x")+": "+mx("x = \\frac{"+F(B)+" \\times "+F(Cc)+"}{"+F(A)+"} = \\frac{"+F(B*Cc)+"}{"+F(A)+"} = "+F(x)));
    }
-   return out("regra de três",L,mx("x = "+F(x)),Math.round(x*1e6)/1e6);
+   var o1=inv?eqn(A*B,Cc*x):eqn(A/Cc,B/x),x2=inv?B*(A/Cc):B*(Cc/A);
+   var tr=TT2({d:"substituir "+"x"+" na proporção",t:"substituir na proporção",ok:o1,c:inv?"Com "+md(mx("x = "+F(x)))+": "+md(mx(F(A)+" \\times "+F(B)+" = "+F(A*B)+"\\text{ e }"+F(Cc)+" \\times "+F(x)+" = "+F(Cc*x)))+".":"Com "+md(mx("x = "+F(x)))+": "+md(mx("\\frac{"+F(A)+"}{"+F(Cc)+"} = "+F(A/Cc)+"\\text{ e }\\frac{"+F(B)+"}{"+F(x)+"} = "+F(B/x)))+"."},
+    {d:"calcular com o fator de variação",t:"fator de variação",ok:eqn(x2,x),c:"O fator é "+md(mx(inv?F(A/Cc):F(Cc/A)))+" e "+md(mx(F(B)+" \\times "+F(inv?A/Cc:Cc/A)+" = "+F(x2)))+", igual a "+md(mx("x"))+"."});
+   return out("regra de três",L,mx("x = "+F(x)),Math.round(x*1e6)/1e6,tr);
   }
  }
  /* ---- unidades ---- */
@@ -1524,7 +1559,11 @@ function aplicadas(q){
     if(u2==="F"){res=c*9/5+32;L.push("Passar de Celsius para Fahrenheit: "+mx("F = C \\times \\frac{9}{5} + 32 = "+F(c)+" \\times \\frac{9}{5} + 32 = "+F(res)))}
     else if(u2==="K"){res=c+273.15;L.push("Passar de Celsius para Kelvin: "+mx("K = C + 273{,}15 = "+F(c)+" + 273{,}15 = "+F(res)))}
     if(!L.length)return null;
-    return out("converter "+F(v)+" "+nome[u1]+" para "+nome[u2],L,mx(F(v)+"\\ "+({C:"^{\\circ}C",F:"^{\\circ}F",K:"K"})[u1]+" = "+F(res)+"\\ "+({C:"^{\\circ}C",F:"^{\\circ}F",K:"K"})[u2]),Math.round(res*1e6)/1e6);
+    var kv=function(val,u){return u==="C"?val+273.15:u==="F"?(val-32)*5/9+273.15:val},tk1=kv(v,u1),tk2=kv(res,u2);
+    var back=u1==="C"?(u2==="F"?(res-32)*5/9:res-273.15):u1==="F"?(u2==="C"?res*9/5+32:(res-273.15)*9/5+32):(u2==="C"?res+273.15:(res-32)*5/9+273.15);
+    var tt1=TT2({d:"voltar à unidade de partida",t:"conversão inversa",ok:eqn(back,v),c:"Fazendo o caminho de volta, "+md(mx(F(res)+"\\ "+nome[u2]))+" dá "+md(mx(F(back)+"\\ "+nome[u1]))+", igual ao valor dado."},
+     {d:"comparar as duas temperaturas em Kelvin",t:"comparar em Kelvin",ok:eqn(tk1,tk2),c:"Em Kelvin, a temperatura de partida é "+md(mx(F(tk1)))+" e a de chegada é "+md(mx(F(tk2)))+"."});
+    return out("converter "+F(v)+" "+nome[u1]+" para "+nome[u2],L,mx(F(v)+"\\ "+({C:"^{\\circ}C",F:"^{\\circ}F",K:"K"})[u1]+" = "+F(res)+"\\ "+({C:"^{\\circ}C",F:"^{\\circ}F",K:"K"})[u2]),Math.round(res*1e6)/1e6,tt1);
    }
    var cat=null;["m","g","l","s"].forEach(function(k){if(U[k][u1]&&U[k][u2])cat=k});
    if(cat){
@@ -1533,7 +1572,9 @@ function aplicadas(q){
     if(r>=1)L.push("Relação entre as unidades: "+mx("1"+tu(u1)+" = "+F(Math.round(r*1e9)/1e9)+tu(u2)));
     else L.push("Relação entre as unidades: "+mx("1"+tu(u2)+" = "+F(Math.round(1/r*1e9)/1e9)+tu(u1)));
     L.push(r>=1?"Multiplicar pelo fator: "+mx(F(v)+" \\times "+F(Math.round(r*1e9)/1e9)+" = "+F(res)):"Dividir pelo fator: "+mx(F(v)+" \\div "+F(Math.round(1/r*1e9)/1e9)+" = "+F(res)));
-    return out("converter "+F(v)+" "+u1+" para "+u2,L,mx(F(v)+tu(u1)+" = "+F(res)+tu(u2)),Math.round(res*1e9)/1e9);
+    var tu2=TT2({d:"converter de volta para "+u1,t:"conversão inversa",ok:eqn(res*f2/f1,v),c:"Convertendo "+md(mx(F(res)+tu(u2)))+" de volta, obtém-se "+md(mx(F(res*f2/f1)+tu(u1)))+", igual ao valor dado."},
+     {d:"comparar as duas quantidades na unidade base",t:"comparar na unidade base",ok:eqn(v*f1,res*f2),c:"Na unidade base, "+md(mx(F(v)+tu(u1)))+" vale "+md(mx(F(v*f1)))+" e "+md(mx(F(res)+tu(u2)))+" vale "+md(mx(F(res*f2)))+"."});
+    return out("converter "+F(v)+" "+u1+" para "+u2,L,mx(F(v)+tu(u1)+" = "+F(res)+tu(u2)),Math.round(res*1e9)/1e9,tu2);
    }
   }
  }
@@ -1570,7 +1611,13 @@ function aplicadas(q){
    var us=un?"\\text{ "+un+"}"+(ex>1?"^{"+ex+"}":""):"";
    L.push("Calcular: "+mx(e[2](a).split("=")[0]+"= "+(e[4]?F(val):F(val))+us));
    if(e[4])L[L.length-1]="Calcular (com "+mx("\\pi \\approx 3{,}14159")+"): "+mx(e[2](a).split("=")[0]+"\\approx "+F(Math.round(val*100)/100)+us);
-   return out(nm+" "+G[gi][2],L,mx(e[2](a).split("=")[0]+(e[4]?"\\approx ":"= ")+F(e[4]?Math.round(val*100)/100:val)+us),Math.round(val*1e6)/1e6);
+   var nmf=G[gi][0].split("|")[0],a0=ns[0],bk;
+   var IV={"cubo":{V:function(){return Math.cbrt(val)},A:function(){return Math.sqrt(val/6)}},"paralelepipedo":{V:function(){return val/(a[1]*a[2])},A:function(){return (val/2-a[1]*a[2])/(a[1]+a[2])}},"cilindro":{V:function(){return Math.sqrt(val/(P*a[1]))},A:function(){return (-a[1]+Math.sqrt(a[1]*a[1]+2*val/P))/2}},"esfera":{V:function(){return Math.cbrt(3*val/(4*P))},A:function(){return Math.sqrt(val/(4*P))}},"cone":{V:function(){return Math.sqrt(3*val/(P*a[1]))}},"quadrado":{A:function(){return Math.sqrt(val)},P:function(){return val/4}},"retangulo":{A:function(){return val/a[1]},P:function(){return val/2-a[1]}},"triangulo":{A:function(){return 2*val/a[1]},P:function(){return val-a[1]-a[2]}},"trapezio":{A:function(){return 2*val/a[2]-a[1]}},"losango":{A:function(){return 2*val/a[1]}},"paralelogramo":{A:function(){return val/a[1]}},"circulo":{A:function(){return Math.sqrt(val/P)},P:function(){return val/(2*P)}}};
+   bk=IV[nmf]&&IV[nmf][gr]?IV[nmf][gr]():a[0];
+   var shown=Math.round(val*100)/100;
+   var tg=TT2({d:"usar a fórmula ao contrário para voltar ao valor de partida",t:"fórmula inversa",ok:eqn(bk,a[0]),c:"Com a fórmula ao contrário, a partir de "+md(mx(F(val)))+" recupera-se o primeiro dado, "+md(mx(F(bk)))+", igual a "+md(mx(F(a[0])))+"."},
+    {d:"ver se o resultado faz sentido e se o arredondamento é razoável",t:"resultado possível",ok:val>0&&isFinite(val)&&Math.abs(shown-val)<=0.005+1e-9,c:"O resultado "+md(mx(F(val)))+" é positivo, como tem de ser para um(a) "+nm+", e o valor mostrado, "+md(mx(F(shown)))+", difere do exato por menos de "+md(mx("0{,}005"))+"."});
+   return out(nm+" "+G[gi][2],L,mx(e[2](a).split("=")[0]+(e[4]?"\\approx ":"= ")+F(e[4]?Math.round(val*100)/100:val)+us),Math.round(val*1e6)/1e6,tg);
   }
  }
  return null;
