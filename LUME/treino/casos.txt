@@ -204,3 +204,12 @@ x + y = 10 e x - y = 2 | x = 6
 resolve o sistema 2x - y = 4; x + 3y = 9 pelo método da substituição | x = 3
 media de 4, 6 e 8 | bar\{x\} = 6
 desvio padrão de 2, 4, 4, 4, 5, 5, 7, 9 | sigma = 2
+area do quadrado de lado 5 cm | A = 25
+perimetro do circulo de raio 3 | 18,85|18\{,\}85
+volume do cilindro com raio 2 e altura 5 | 62
+converte 5 km em m | 5000
+25 graus celsius em fahrenheit | 77
+3 horas em minutos | 180
+se 3 kg custam 12, quanto custam 5 kg | x = 20
+juros simples de 1000 a 5% durante 3 anos | M = 1150
+juros compostos 1000 5% 3 anos | 1157

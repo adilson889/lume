@@ -1458,6 +1458,124 @@ function estatistica(tipo,nums,am){
  return {f:String(sd),m:"desvio padrão"+(am?" amostral":"")+" de "+mx(nums.map(F).join(", ")),p:L.map(function(t,k){return (k===0?"Primeiro: ":k===n2-1?"Por fim: ":"Depois: ")+t}),e:"",r:mx(sym+" = "+F(sd))+(arred?" (valores arredondados a 4 casas decimais)":"")};
  }catch(err){return null}
 }
+/* ===== Geometria, unidades, regra de tres e juros, com passos ===== */
+function aplicadas(q){
+ try{
+ var t=norm(q).replace(/[?!.]+$/,"");
+ if(!t||t.length>160)return null;
+ var ns=(t.match(/\d+(?:[.,]\d+)?/g)||[]).map(function(x){return parseFloat(x.replace(",","."))});
+ if(!ns.length||ns.length>4)return null;
+ function F(n){n=Math.round(n*1e4)/1e4;if(n===0)n=0;return String(n).replace(".",",").replace("-","−")}
+ function out(m,L,r,f){var n=L.length;return {f:String(f),m:m,p:L.map(function(s,k){return (k===0?"Primeiro: ":k===n-1?"Por fim: ":"Depois: ")+s}),e:"",r:r}}
+ var m;
+ /* ---- juros ---- */
+ if(/\bjuros?\b|\bmontante\b/.test(t)&&ns.length>=3){
+  var C=ns[0],i=ns[1],n=ns[2],comp=/composto/.test(t);
+  if(C>0&&i>=0&&n>0&&n<=600){
+   var L=[];
+   L.push("Dados: capital "+mx("C = "+F(C))+", taxa "+mx("i = "+F(i)+"\\% = "+F(i/100))+", tempo "+mx("t = "+F(n)));
+   var J,M;
+   if(comp){
+    M=C*Math.pow(1+i/100,n);J=M-C;
+    L.push("Juros compostos: o montante é "+mx("M = C(1 + i)^{t}"));
+    L.push("Substituir: "+mx("M = "+F(C)+" \\times (1 + "+F(i/100)+")^{"+F(n)+"} = "+F(C)+" \\times "+F(Math.pow(1+i/100,n))+" = "+F(M)));
+    L.push("Os juros são o montante menos o capital: "+mx("J = "+F(M)+" - "+F(C)+" = "+F(J)));
+   }else{
+    J=C*i/100*n;M=C+J;
+    L.push("Juros simples: "+mx("J = C \\times i \\times t"));
+    L.push("Substituir: "+mx("J = "+F(C)+" \\times "+F(i/100)+" \\times "+F(n)+" = "+F(J)));
+    L.push("O montante é o capital mais os juros: "+mx("M = "+F(C)+" + "+F(J)+" = "+F(M)));
+   }
+   L.push("A taxa e o tempo têm de estar na mesma unidade (por exemplo, % ao ano e anos).");
+   return out("juros "+(comp?"compostos":"simples"),L,mx("J = "+F(J))+" e "+mx("M = "+F(M)),Math.round(M*100)/100);
+  }
+ }
+ /* ---- regra de tres ---- */
+ if((/regra de tres/.test(t)||(/^se\b/.test(t)&&/\bquant[oa]s?\b/.test(t)))&&ns.length===3){
+  var inv=/inversa|inversamente|trabalhadores|operarios|pedreiros|pessoas|maquinas|torneiras|velocidade/.test(t);
+  var A=ns[0],B=ns[1],Cc=ns[2];
+  if(A>0&&B>0&&Cc>0){
+   var x=inv?A*B/Cc:B*Cc/A,L=[];
+   L.push("Organizar os dados: "+mx("\\begin{array}{c|c} "+F(A)+" & "+F(B)+" \\\\ "+F(Cc)+" & x \\end{array}"));
+   if(inv){
+    L.push("As grandezas são **inversamente** proporcionais (uma sobe, a outra desce), por isso multiplicam-se os valores da mesma linha: "+mx(F(A)+" \\times "+F(B)+" = "+F(Cc)+" \\times x"));
+    L.push("Isolar "+mx("x")+": "+mx("x = \\frac{"+F(A)+" \\times "+F(B)+"}{"+F(Cc)+"} = \\frac{"+F(A*B)+"}{"+F(Cc)+"} = "+F(x)));
+   }else{
+    L.push("As grandezas são **diretamente** proporcionais, por isso as razões são iguais: "+mx("\\frac{"+F(A)+"}{"+F(Cc)+"} = \\frac{"+F(B)+"}{x}"));
+    L.push("Multiplicar em cruz: "+mx(F(A)+" \\times x = "+F(B)+" \\times "+F(Cc)));
+    L.push("Isolar "+mx("x")+": "+mx("x = \\frac{"+F(B)+" \\times "+F(Cc)+"}{"+F(A)+"} = \\frac{"+F(B*Cc)+"}{"+F(A)+"} = "+F(x)));
+   }
+   return out("regra de três",L,mx("x = "+F(x)),Math.round(x*1e6)/1e6);
+  }
+ }
+ /* ---- unidades ---- */
+ var U={m:{mm:.001,cm:.01,dm:.1,m:1,km:1000},g:{mg:.001,g:1,kg:1000,t:1e6},l:{ml:.001,cl:.01,l:1},s:{s:1,min:60,h:3600,d:86400,sem:604800}};
+ var AL={milimetro:"mm",milimetros:"mm",centimetro:"cm",centimetros:"cm",decimetro:"dm",decimetros:"dm",metro:"m",metros:"m",quilometro:"km",quilometros:"km",kilometro:"km",kilometros:"km",miligrama:"mg",miligramas:"mg",grama:"g",gramas:"g",quilo:"kg",quilos:"kg",quilograma:"kg",quilogramas:"kg",kilo:"kg",kilos:"kg",tonelada:"t",toneladas:"t",mililitro:"ml",mililitros:"ml",centilitro:"cl",centilitros:"cl",litro:"l",litros:"l",segundo:"s",segundos:"s",minuto:"min",minutos:"min",hora:"h",horas:"h",dia:"d",dias:"d",semana:"sem",semanas:"sem",celsius:"C",fahrenheit:"F",kelvin:"K",c:"C",f:"F",k:"K"};
+ function ua(s){if(AL[s])return AL[s];return null}
+ if((m=/(-?\d+(?:[.,]\d+)?)\s*(?:graus?\s+)?([a-z]+)\s+(?:em|para|pra|a)\s+(?:graus?\s+)?([a-z]+)\b/.exec(t))){
+  var v=parseFloat(m[1].replace(",",".")),u1=ua(m[2])||(U.m[m[2]]||U.g[m[2]]||U.l[m[2]]||U.s[m[2]]?m[2]:null),u2=ua(m[3])||(U.m[m[3]]||U.g[m[3]]||U.l[m[3]]||U.s[m[3]]?m[3]:null);
+  if(u1&&u2&&u1!==u2){
+   var T1={C:1,F:1,K:1};
+   if(T1[u1]&&T1[u2]){
+    var L=[],c=v,nome={C:"°C",F:"°F",K:"K"};
+    if(u1==="F"){c=(v-32)*5/9;L.push("Passar para Celsius: "+mx("C = (F - 32) \\times \\frac{5}{9} = ("+F(v)+" - 32) \\times \\frac{5}{9} = "+F(c)))}
+    else if(u1==="K"){c=v-273.15;L.push("Passar para Celsius: "+mx("C = K - 273{,}15 = "+F(v)+" - 273{,}15 = "+F(c)))}
+    var res=c;
+    if(u2==="F"){res=c*9/5+32;L.push("Passar de Celsius para Fahrenheit: "+mx("F = C \\times \\frac{9}{5} + 32 = "+F(c)+" \\times \\frac{9}{5} + 32 = "+F(res)))}
+    else if(u2==="K"){res=c+273.15;L.push("Passar de Celsius para Kelvin: "+mx("K = C + 273{,}15 = "+F(c)+" + 273{,}15 = "+F(res)))}
+    if(!L.length)return null;
+    return out("converter "+F(v)+" "+nome[u1]+" para "+nome[u2],L,mx(F(v)+"\\ "+({C:"^{\\circ}C",F:"^{\\circ}F",K:"K"})[u1]+" = "+F(res)+"\\ "+({C:"^{\\circ}C",F:"^{\\circ}F",K:"K"})[u2]),Math.round(res*1e6)/1e6);
+   }
+   var cat=null;["m","g","l","s"].forEach(function(k){if(U[k][u1]&&U[k][u2])cat=k});
+   if(cat){
+    var f1=U[cat][u1],f2=U[cat][u2],r=f1/f2,res=v*r,L=[];
+    var tu=function(x){return "\\text{ "+x+"}"};
+    if(r>=1)L.push("Relação entre as unidades: "+mx("1"+tu(u1)+" = "+F(Math.round(r*1e9)/1e9)+tu(u2)));
+    else L.push("Relação entre as unidades: "+mx("1"+tu(u2)+" = "+F(Math.round(1/r*1e9)/1e9)+tu(u1)));
+    L.push(r>=1?"Multiplicar pelo fator: "+mx(F(v)+" \\times "+F(Math.round(r*1e9)/1e9)+" = "+F(res)):"Dividir pelo fator: "+mx(F(v)+" \\div "+F(Math.round(1/r*1e9)/1e9)+" = "+F(res)));
+    return out("converter "+F(v)+" "+u1+" para "+u2,L,mx(F(v)+tu(u1)+" = "+F(res)+tu(u2)),Math.round(res*1e9)/1e9);
+   }
+  }
+ }
+ /* ---- geometria ---- */
+ if(/\b(area|perimetro|volume|circunferencia)\b/.test(t)){
+  var gr=/volume/.test(t)?"V":/perimetro|circunferencia/.test(t)?"P":"A";
+  var P=Math.PI;
+  function rr(a){return F(a)}
+  var G=[
+   ["cubo",{V:[1,"V = a^{3}",function(a){return "V = "+F(a[0])+"^{3}"},function(a){return a[0]*a[0]*a[0]}],A:[1,"A = 6a^{2}",function(a){return "A = 6 \\times "+F(a[0])+"^{2}"},function(a){return 6*a[0]*a[0]}]},"do cubo"],
+   ["paralelepipedo|bloco|caixa",{V:[3,"V = c \\times l \\times h",function(a){return "V = "+a.map(F).join(" \\times ")},function(a){return a[0]*a[1]*a[2]}],A:[3,"A = 2(cl + ch + lh)",function(a){return "A = 2("+F(a[0])+"\\times"+F(a[1])+" + "+F(a[0])+"\\times"+F(a[2])+" + "+F(a[1])+"\\times"+F(a[2])+")"},function(a){return 2*(a[0]*a[1]+a[0]*a[2]+a[1]*a[2])}]},"do paralelepípedo"],
+   ["cilindro",{V:[2,"V = \\pi r^{2} h",function(a){return "V = \\pi \\times "+F(a[0])+"^{2} \\times "+F(a[1])},function(a){return P*a[0]*a[0]*a[1]},1],A:[2,"A = 2\\pi r(r + h)",function(a){return "A = 2 \\times \\pi \\times "+F(a[0])+" \\times ("+F(a[0])+" + "+F(a[1])+")"},function(a){return 2*P*a[0]*(a[0]+a[1])},1]},"do cilindro"],
+   ["esfera",{V:[1,"V = \\frac{4}{3}\\pi r^{3}",function(a){return "V = \\frac{4}{3} \\times \\pi \\times "+F(a[0])+"^{3}"},function(a){return 4/3*P*Math.pow(a[0],3)},1],A:[1,"A = 4\\pi r^{2}",function(a){return "A = 4 \\times \\pi \\times "+F(a[0])+"^{2}"},function(a){return 4*P*a[0]*a[0]},1]},"da esfera"],
+   ["cone",{V:[2,"V = \\frac{\\pi r^{2} h}{3}",function(a){return "V = \\frac{\\pi \\times "+F(a[0])+"^{2} \\times "+F(a[1])+"}{3}"},function(a){return P*a[0]*a[0]*a[1]/3},1]},"do cone"],
+   ["quadrado",{A:[1,"A = l^{2}",function(a){return "A = "+F(a[0])+"^{2}"},function(a){return a[0]*a[0]}],P:[1,"P = 4l",function(a){return "P = 4 \\times "+F(a[0])},function(a){return 4*a[0]}]},"do quadrado"],
+   ["retangulo",{A:[2,"A = b \\times h",function(a){return "A = "+F(a[0])+" \\times "+F(a[1])},function(a){return a[0]*a[1]}],P:[2,"P = 2(b + h)",function(a){return "P = 2 \\times ("+F(a[0])+" + "+F(a[1])+")"},function(a){return 2*(a[0]+a[1])}]},"do retângulo"],
+   ["triangulo",{A:[2,"A = \\frac{b \\times h}{2}",function(a){return "A = \\frac{"+F(a[0])+" \\times "+F(a[1])+"}{2}"},function(a){return a[0]*a[1]/2}],P:[3,"P = a + b + c",function(a){return "P = "+a.map(F).join(" + ")},function(a){return a[0]+a[1]+a[2]}]},"do triângulo"],
+   ["trapezio",{A:[3,"A = \\frac{(B + b) \\times h}{2}",function(a){return "A = \\frac{("+F(a[0])+" + "+F(a[1])+") \\times "+F(a[2])+"}{2}"},function(a){return (a[0]+a[1])*a[2]/2}]},"do trapézio"],
+   ["losango",{A:[2,"A = \\frac{D \\times d}{2}",function(a){return "A = \\frac{"+F(a[0])+" \\times "+F(a[1])+"}{2}"},function(a){return a[0]*a[1]/2}]},"do losango"],
+   ["paralelogramo",{A:[2,"A = b \\times h",function(a){return "A = "+F(a[0])+" \\times "+F(a[1])},function(a){return a[0]*a[1]}]},"do paralelogramo"],
+   ["circulo|circunferencia|disco",{A:[1,"A = \\pi r^{2}",function(a){return "A = \\pi \\times "+F(a[0])+"^{2}"},function(a){return P*a[0]*a[0]},1],P:[1,"P = 2\\pi r",function(a){return "P = 2 \\times \\pi \\times "+F(a[0])},function(a){return 2*P*a[0]},1]},"do círculo"]
+  ];
+  for(var gi=0;gi<G.length;gi++){
+   if(!new RegExp("\\b("+G[gi][0]+")\\b").test(t))continue;
+   var e=G[gi][1][gr];if(!e)return null;
+   var a=ns.slice(),L=[],dia=/diametro/.test(t)&&e[0]===1&&gi>=3&&/esfera|circulo|circunferencia|disco/.test(G[gi][0]);
+   var nm=gr==="A"?"área":gr==="P"?"perímetro":"volume";
+   if(a.length<e[0])return null;
+   a=a.slice(0,e[0]);
+   if(dia){L.push("O diâmetro é "+mx("d = "+F(a[0]))+", por isso o raio é "+mx("r = \\frac{d}{2} = \\frac{"+F(a[0])+"}{2} = "+F(a[0]/2)));a=[a[0]/2]}
+   L.push("Fórmula do "+nm+" "+G[gi][2]+": "+mx(e[1]));
+   L.push("Substituir os valores: "+mx(e[2](a)));
+   var val=e[3](a),un=(t.match(/\b(mm|cm|dm|km|m)\b/)||[])[1],ex=gr==="V"?3:gr==="A"?2:1;
+   var us=un?"\\text{ "+un+"}"+(ex>1?"^{"+ex+"}":""):"";
+   L.push("Calcular: "+mx(e[2](a).split("=")[0]+"= "+(e[4]?F(val):F(val))+us));
+   if(e[4])L[L.length-1]="Calcular (com "+mx("\\pi \\approx 3{,}14159")+"): "+mx(e[2](a).split("=")[0]+"\\approx "+F(Math.round(val*100)/100)+us);
+   return out(nm+" "+G[gi][2],L,mx(e[2](a).split("=")[0]+(e[4]?"\\approx ":"= ")+F(e[4]?Math.round(val*100)/100:val)+us),Math.round(val*1e6)/1e6);
+  }
+ }
+ return null;
+ }catch(err){return null}
+}
 function funcaoMatematica(q){
   var _mp=_algUltima&&Date.now()-_algUltima.t<900000&&/^(?:e\s+)?(?:se\s+|para\s+|com\s+|quando\s+)?([xyztnk])\s*(?:=|vale|for|igual\s+a)\s*(-|−)?\s*(\d+(?:[.,]\d+)?)\s*[?!.]*$/.exec(String(q||"").toLowerCase().trim());
   if(_mp){var _r=expressaoAlgebrica(_algUltima.s+" com "+_mp[1]+" = "+(_mp[2]?"-":"")+_mp[3]);if(_r)return _r}
@@ -1465,6 +1583,7 @@ function funcaoMatematica(q){
   var _q=equacao(q);if(_q)return _q;
   var _a=expressaoAlgebrica(q);if(_a)return _a;
   var _fr=fracoes(q);if(_fr)return _fr;
+  var _ap=aplicadas(q);if(_ap)return _ap;
   var _c=calculadora(q);if(_c)return _c;
  var t=norm(q).replace(/[?!.]+$/,"");
  if(/\b(frase|frases|desenh\w*|cri\w+|ger\w+|site|loja|codigo)\b/.test(t))return null;

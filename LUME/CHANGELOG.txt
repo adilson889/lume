@@ -408,3 +408,7 @@ Lume - historico de versoes
 - Equacao do 1.o grau: "Juntar os termos" passa a mostrar todos os termos juntos (letra de um lado, numeros do outro, ex.: x = 9 - 7 ou 2x - x = 10 - 3) e so depois "Simplificar" mostra o resultado (x = 2). Deixou de repetir o mesmo "x = 2" em dois passos seguidos.
 - Teste 2 do 1.o grau: o coeficiente 1 ja nao aparece como "1x" e o visto deixou de mostrar um ";" a mais.
 - sw.js: nova VERSAO para limpar a cache antiga do telemovel.
+
+0.5.39
+- Novos pedidos com passos em LaTeX: geometria (area, perimetro, volume de quadrado, retangulo, triangulo, circulo, trapezio, losango, cubo, cilindro, esfera, cone...), conversao de unidades (comprimento, massa, volume, tempo, temperatura), regra de tres (direta e inversa) e juros simples e compostos.
+- Treino: 195/195.
