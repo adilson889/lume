@@ -455,10 +455,10 @@ function tTestes1(l,r,c1,c0,x,X){
   var ok1=Math.abs(le-ld)<=1e-6*(Math.abs(le)+Math.abs(ld)+1),ok2=Math.abs(s2)<=1e-6*(Math.abs(c1*x)+Math.abs(c0)+1),ok=ok1&&ok2;
   var sg=c0<0?"-":"+";
   var t1="**Teste 1: substituir na equação**\n\nPara $"+X+" = "+lF(x)+"$, o lado esquerdo vale $"+lF(le)+"$ e o lado direito vale $"+lF(ld)+"$"+(ok1?", por isso são iguais $\\checkmark$.":", por isso **não** são iguais (falhou).");
-  var t2="**Teste 2: equação simplificada**\n\nDepois de passar tudo para o mesmo lado, a equação fica $"+lF(c1)+X+" "+sg+" "+lF(Math.abs(c0))+" = 0$. Com $"+X+" = "+lF(x)+"$:\n\n$$"+lF(c1)+" \\times "+lW(x)+" "+sg+" "+lF(Math.abs(c0))+" = "+lF(s2)+(ok2?" \;\\checkmark":" \;\\text{falhou}")+"$$";
+  var t2="**Teste 2: equação simplificada**\n\nDepois de passar tudo para o mesmo lado, a equação fica $"+(c1===1?"":c1===-1?"-":lF(c1))+X+" "+sg+" "+lF(Math.abs(c0))+" = 0$. Com $"+X+" = "+lF(x)+"$:\n\n$$"+lF(c1)+" \\times "+lW(x)+" "+sg+" "+lF(Math.abs(c0))+" = "+lF(s2)+(ok2?" \\checkmark":" \\text{falhou}")+"$$";
   var fim=ok?"Os dois testes deram o mesmo resultado, por isso a resposta está **correta** e podes usá-la com confiança.":"Algum teste não bateu, por isso **não te aconselho a usar esta resposta**.";
   var antes="Antes de te responder, deixa-me testar o resultado por dois caminhos diferentes: substituir "+X+" nos dois lados da equação e conferir a equação simplificada.\n\n"+(ok?"Bom, os testes passaram e deram o mesmo resultado. Vou então mostrar-te os passos.":"Hmm, os testes não deram o mesmo resultado, por isso não te aconselho a usar esta resposta. Mesmo assim, aqui estão os passos para veres onde pode estar a diferença.")+"\n\n";
-  var et=["A testar o resultado por dois caminhos","Teste 1: a substituir "+X+" = "+tF(x)+" nos dois lados da equação","Teste 2: a conferir a equação simplificada ("+tF(c1)+X+" "+(c0<0?"−":"+")+" "+tF(Math.abs(c0))+" = 0)",ok?"Os testes passaram e deram o mesmo resultado":"Os testes não bateram: não recomendo esta resposta","A preparar a resposta com os cálculos"];
+  var et=["A testar o resultado por dois caminhos","Teste 1: a substituir "+X+" = "+tF(x)+" nos dois lados da equação","Teste 2: a conferir a equação simplificada ("+(c1===1?"":c1===-1?"−":tF(c1))+X+" "+(c0<0?"−":"+")+" "+tF(Math.abs(c0))+" = 0)",ok?"Os testes passaram e deram o mesmo resultado":"Os testes não bateram: não recomendo esta resposta","A preparar a resposta com os cálculos"];
   return {ok:ok,etapas:et,antes:antes,depois:"**Sobre os testes**\n\n"+t1+"\n\n"+t2+"\n\n"+fim};
  }catch(e){return null}
 }
@@ -1163,9 +1163,12 @@ function equacao(q){
   return {f:arred(x1),m:m0,p:passos(L),e:"",r:res,q:{a:a,b:b,c:c,X:X}};
  }
  if(c1===0)return ER(c0===0?"Esta equação é verdadeira para qualquer valor de "+X+" (infinitas soluções).":"Esta equação não tem solução.");
- var A=c1,B=-c0,x=B/A,coef=(A===1?"":A===-1?"−":F(A))+X,L2=["Juntar os termos: "+mx(coef+" = "+F(B))];
- if(A!==1)L2.push("Dividir os dois lados por "+mx(F(A))+": "+mx(X+" = "+F(B)+" ÷ "+F(A)));
- L2.push(mx(X+" = "+F(x)));
+ var A=c1,B=-c0,x=B/A,coef=(A===1?"":A===-1?"−":F(A))+X;
+ var jt=function(ts){var o="";ts.forEach(function(t){var k=Z(t[0]);if(k===0)return;var mg=Math.abs(k),b=t[1]===""?F(mg):(mg===1?"":F(mg))+t[1];o+=o===""?(k<0?"−":"")+b:" "+(k<0?"−":"+")+" "+b});return o||"0"};
+ var esq=jt([[l[1]||0,X],[-(r[1]||0),X]]),dir=jt([[r[0]||0,""],[-(l[0]||0),""]]),simp=coef+" = "+F(B);
+ var L2=["Juntar os termos: "+mx(esq+" = "+dir)];
+ if(simp!==esq+" = "+dir)L2.push("Simplificar: "+mx(simp));
+ if(A!==1){L2.push("Dividir os dois lados por "+mx(F(A))+": "+mx(X+" = "+F(B)+" ÷ "+F(A)));L2.push(mx(X+" = "+F(x)))}
  return {f:arred(x),m:m0,p:passos(L2),e:"",r:mx(X+" = "+F(x)),tt:tTestes1(l,r,c1,c0,x,X)};
  }catch(err){return null}
 }

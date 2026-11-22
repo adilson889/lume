@@ -403,3 +403,8 @@ Lume - historico de versoes
 - Testes tambem nas contas simples (calculadora): Teste 1 recalcula a conta de novo diretamente sobre a expressao; Teste 2 faz a prova real com a operacao inversa (soma/subtracao/multiplicacao/divisao, raiz quadrada e cubica, quadrado e cubo). Se a conta nao tiver prova real (potencias gerais, fatorial, percentagem, trigonometria, logaritmos), so faz o Teste 1 ou nao testa.
 - despachante.js: T_ETAPA_TESTE (8000 ms) passa a ser a duracao unica das etapas de teste; novas funcoes tTestes1, tTestesCalc e comTestes.
 - sw.js: nova VERSAO para limpar a cache antiga do telemovel.
+
+0.5.38
+- Equacao do 1.o grau: "Juntar os termos" passa a mostrar todos os termos juntos (letra de um lado, numeros do outro, ex.: x = 9 - 7 ou 2x - x = 10 - 3) e so depois "Simplificar" mostra o resultado (x = 2). Deixou de repetir o mesmo "x = 2" em dois passos seguidos.
+- Teste 2 do 1.o grau: o coeficiente 1 ja nao aparece como "1x" e o visto deixou de mostrar um ";" a mais.
+- sw.js: nova VERSAO para limpar a cache antiga do telemovel.
