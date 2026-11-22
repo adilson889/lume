@@ -312,10 +312,12 @@ function coloquial(q){
  var B="(?<![\\p{L}\\d])",E="(?![\\p{L}\\d])";
  function R(p,r,f){return function(x){return x.replace(new RegExp(p,f||"giu"),r)}}
  var passos=[
-  R(B+"(tô|tou|to)"+E+"(?=\\s+(bem|mal|cansad|com|a\\s|muito|feliz|triste|otim|ok|fixe|doente|aqui|de\\s))","estou"),
+  R(B+"(tô|tou)"+E+"(?=\\s+\\p{L})","estou"),R(B+"to"+E+"(?=\\s+(bem|mal|cansad|com|a\\s|muito|feliz|triste|otim|ok|fixe|doente|aqui|de\\s|\\p{L}+(ndo|ado|ada|ido|ida)\\b))","estou"),
   R(B+"tá"+E,"está"),R(B+"pra"+E,"para"),R(B+"vc"+E,"você"),R(B+"(tbm|tb)"+E,"também"),
   R(B+"(obg|obgd|brigado|brigada)"+E,"obrigado"),R(B+"pq"+E,"porque"),
-  R(B+"o+i+"+E,"oi"),R(B+"bom\\s+dia+"+E,"bom dia"),R(B+"boa\\s+tarde+"+E,"boa tarde"),R(B+"boa\\s+noite+"+E,"boa noite")
+  R(B+"o+i+"+E,"oi"),R(B+"bom\\s+dia+"+E,"bom dia"),R(B+"boa\\s+tarde+"+E,"boa tarde"),R(B+"boa\\s+noite+"+E,"boa noite"),
+  /* gerundio brasileiro -> "a" + infinitivo: "estou descansando" -> "estou a descansar" */
+  function(x){return x.replace(new RegExp(B+"(estou|estás|está|estamos|estão|estava|estavas|estávamos|estavam|ando|andas|anda)\\s+(\\p{L}+?)(ando|endo|indo)"+E,"giu"),function(m,a,b,c){return a+" a "+b+({ando:"ar",endo:"er",indo:"ir"}[c.toLowerCase()])})}
  ];
  return passos.reduce(function(x,f){return f(x)},String(q));
 }

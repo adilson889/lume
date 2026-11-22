@@ -1,0 +1,9 @@
+# Situações que o utilizador descreve de si ("em que estás a trabalhar?" -> "nada", "tô descansando", "estudo física"...).
+# classe :: regex || regex      (aplicado ao texto sem acentos e em minúsculas; a 1.ª classe que corresponder decide)
+# As frases de resposta vivem em conversa.txt: reage_<classe> e segue_<classe>. Para uma classe nova basta
+# acrescentar a linha aqui e as frases lá (sem frases, usa as de "geral").
+nada :: \b(nada|nenhum|nenhuma|ninguem)\b || \bnao (trabalho|estudo|faco|estou a (trabalhar|estudar|fazer)|preciso|quero|me apetece|ha|tenho)\b || \b(desempregad\w*|sem (trabalho|projeto|projecto|emprego|fazer nada))\b || ^(por enquanto|por agora|de momento|ainda) nao\b
+descanso :: \b(descans\w*|relax\w*|repous\w*|sossego\w*|folg\w*|ferias|livre|desocupad\w*|deit\w*|dorm\w*|sesta|preguic\w*|de boa|de boas|a toa|ocios\w*)\b
+lazer :: \b(a ver (tv|televisao|serie\w*|filme\w*|video\w*|novela\w*|futebol)|a jogar|a ouvir musica|a passear|a sair|na praia|com (os |as )?(amigos|amigas|a familia|a minha familia)|a conversar|a cozinhar|a comer|de passeio|a treinar|no ginasio)\b
+estudo :: \b(estud\w*|exame\w*|prova\w*|tpc|licao|licoes|faculdade|escola|curso|a ler|a aprender|trabalho de (casa|escola))\b
+trabalho :: \b(trabalh\w*|projeto|projecto|app|aplicativo|site|codigo|programa\w*|servico|reuniao|relatorio|escritorio|emprego|negocio|loja|tarefa\w*|a desenvolver|a criar|a construir)\b

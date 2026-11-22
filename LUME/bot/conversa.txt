@@ -105,3 +105,41 @@ delega_proposta | Podemos {sugestao}.
 delega_pergunta | Queres experimentar?
 delega_pergunta | Começamos?
 delega_pergunta | Se preferires outra coisa, diz-me.
+
+# --- situações descritas pelo utilizador (ver situacoes.txt): reage_<classe> + segue_<classe> ---
+reage_nada | Sem problema
+reage_nada | Tudo bem
+reage_nada | Percebo
+segue_nada | Se te apetecer, diz-me o que queres fazer
+segue_nada | Estou por aqui quando precisares
+segue_nada | Podemos conversar ou fazer qualquer coisa, se quiseres
+reage_descanso | Faz bem descansar
+reage_descanso | Descansar também é importante
+reage_descanso | Aproveita o descanso
+segue_descanso | Quando te apetecer fazer algo, diz-me
+segue_descanso | Se quiseres, posso sugerir algo leve
+segue_descanso | Queres conversar um pouco?
+reage_lazer | Que bom
+reage_lazer | Parece um bom momento
+reage_lazer | Boa, aproveita
+segue_lazer | Queres contar-me mais?
+segue_lazer | Se quiseres, falamos disso
+segue_lazer | Quando quiseres fazer algo comigo, diz-me
+reage_estudo | Estudar é um bom caminho
+reage_estudo | Boa, estudar compensa
+reage_estudo | Que bom ver-te a estudar
+segue_estudo | Diz-me o tema e vejo como posso ajudar
+segue_estudo | Em que matéria posso ajudar-te?
+segue_estudo | Queres que te explique algum conceito?
+reage_trabalho | Entendi
+reage_trabalho | Percebo, tens trabalho em mãos
+reage_trabalho | Boa, bom trabalho
+segue_trabalho | Em que parte posso ajudar?
+segue_trabalho | Queres que te ajude com isso?
+segue_trabalho | Qual é o próximo passo?
+reage_geral | Percebo
+reage_geral | Entendi
+reage_geral | Está bem
+segue_geral | Queres contar-me mais?
+segue_geral | Diz-me melhor o que queres fazer e eu ajudo
+segue_geral | Se quiseres, posso sugerir algo para fazermos

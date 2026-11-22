@@ -232,3 +232,24 @@ x/2 + x/3 | frac\{5x\}\{6\}
 1/a + 3 | frac\{3a \+ 1\}\{a\}
 2m+5 com m=2 | 9
 de 5 a 10 | MATH-
+# --- situacoes descritas pelo utilizador (situacoes.txt) e iniciativa (sugestoes.txt) ---
+oi >> nada | (sem problema|tudo bem|percebo|por aqui|apetecer)
+oi >> nada por enquanto | (sem problema|tudo bem|percebo|por aqui|apetecer)
+oi >> nao trabalho | (sem problema|tudo bem|percebo|por aqui|apetecer)
+oi >> por agora nada | (sem problema|tudo bem|percebo|por aqui|apetecer)
+oi >> estou sem fazer nada | (sem problema|tudo bem|percebo|por aqui|apetecer)
+oi >> to descansando | (descansar|descanso|apetecer|sugerir|conversar)
+oi >> to relaxado | (descansar|descanso|apetecer|sugerir|conversar)
+oi >> estou de folga | (descansar|descanso|apetecer|sugerir|conversar)
+oi >> tou a ver tv | (que bom|bom momento|aproveita)
+oi >> estudo fisica | (estudar|materia|tema|conceito)
+oi >> estou a estudar | (estudar|materia|tema|conceito)
+oi >> estou a trabalhar num projeto | (entendi|percebo|bom trabalho|trabalho em maos)
+to descansando | (descansar|descanso|apetecer|sugerir|conversar)
+oi >> decide tu | (que tal|uma ideia|podemos)
+oi >> o que sugeres? | (que tal|uma ideia|podemos)
+sei la, o que podemos fazer? | (que tal|uma ideia|podemos)
+oi >> vamos estudar, ou fazer qualquer coisa | (que tal|uma ideia|podemos)
+oi >> vamos estudar >> sim | resultado
+oi >> vamos estudar >> nao | (outra ideia|tenho outra|experimenta esta)
+oi >> muito bom | (obrigado|bom ouvir|contente)

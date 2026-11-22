@@ -251,6 +251,26 @@ function sobre(f){
  }
  return "";
 }
+/* ---------- situacoes: o que o utilizador descreve de si (classes em situacoes.txt, frases em conversa.txt) ---------- */
+var _ss=null,_ssf="";
+function situacoes(){
+ var f=arq("situacoes.txt");if(_ss&&f===_ssf)return _ss;
+ var r=[];
+ f.split(/\r?\n/).forEach(function(l){
+  l=l.trim();if(!l||l.charAt(0)==="#")return;
+  var i=l.indexOf("::");if(i<1)return;
+  var c=l.slice(0,i).trim(),res=[];
+  l.slice(i+2).split("||").forEach(function(x){x=x.trim();if(x)try{res.push(new RegExp(x))}catch(e){}});
+  if(c&&res.length)r.push({c:c,res:res});
+ });
+ _ss=r;_ssf=f;return r;
+}
+function situacao(f){var r=[];situacoes().forEach(function(x){if(x.res.some(function(e){return e.test(f.c)}))r.push(x.c)});return r}
+function acolher(f,classe,porque){
+ sentir(f);S.pend=null;gravar();
+ rac(porque+" Reconheci «"+classe+"» no que disseste; reagi e deixei a conversa aberta.");
+ return juntar([dizer("reage_"+classe,["Percebo"]),dizer("segue_"+classe,["Queres contar-me mais?"])]);
+}
 /* conversa sem pedido: identidade, elogio, critica, riso, risco, sim/nao soltos, frases de 1.a pessoa */
 function conversar(q){
  try{
@@ -306,6 +326,13 @@ function conversar(q){
   if(f.elogio&&!f.pergunta){rac("Percebi um elogio; agradeci e perguntei como posso ajudar.");sentir(f);return juntar([dizer("elogio_resp",["Obrigado"]),dizer("segue",["Em que posso ajudar?"])])}
   if(f.critica&&!f.pergunta){rac("Percebi uma crítica; pedi mais detalhe para tentar outra vez.");S.pend={tipo:"ajuda",sub:"",pergunta:"",n:S.n};return dizer("critica_resp",["Desculpa, ainda estou a aprender. Diz-me com mais detalhe o que esperavas e eu tento outra vez."])}
   if(f.riso)rac("Percebi que te riste; respondi no mesmo tom.");if(f.riso)return dizer("riso_resp",["Ainda bem que te ri."]);
+  /* situacao descrita pelo utilizador ("nada", "tô descansando", "estudo fisica"): so depois de uma pergunta minha, ou em 1.a pessoa */
+  var pq=S.pend&&S.n-S.pend.n<=3&&["ajuda","livre","confirmar","estado"].indexOf(S.pend.tipo)>=0;
+  var pp=/^(eu |entao |pois |ah |ai )?(estou|to|tou|ando|fico|vou|faco|fiz|estive|fui|tive|costumo|continuo|nao|nada|por enquanto|por agora|de momento|ainda|so |apenas |sem )/.test(f.c);
+  if(!f.pergunta&&f.n<=12&&(pq||pp)){
+   var st=situacao(f);
+   if(st.length)return acolher(f,st[0],pq?"Respondeste à minha pergunta.":"Falaste de ti.");
+  }
   if(f.sim||f.nao)rac("Disseste só «"+(f.sim?"sim":"não")+"» sem eu ter perguntado nada; pedi-te para explicares melhor.");if(f.sim||f.nao)return dizer(f.sim?"sim_solto":"nao_solto",["Sim a quê? Diz-me o que precisas."]);
   if(!f.pergunta&&DECL.test(f.raw.toLowerCase().replace(/^\s+/,""))){
    var pol=f.val.pol||"neutro",e=eco(f.raw);rac("Contaste-me algo sobre ti; percebi um tom "+({pos:"positivo",neg:"negativo"}[pol]||"neutro")+" e devolvi a conversa.");
@@ -314,6 +341,7 @@ function conversar(q){
    var sg=pol==="neg"?dizer("segue_neg",["Queres falar sobre isso?"]):pol==="pos"?dizer("segue_pos",["O que queres fazer agora?"]):dizer("segue_neutro",["Queres que te ajude com isso?"]);
    return juntar([dizer("eco_modelo",["{eco}"],{eco:e}),rx,sg]);
   }
+  if(!f.pergunta&&f.n<=10&&pq&&/^(eu )?(ando|fico|vou|faco|fiz|estive|fui|tive|costumo|continuo|estou|to|tou)\b/.test(f.c))return acolher(f,"geral","A tua mensagem seguiu uma pergunta minha e não pede nada que eu saiba fazer.");
  }catch(err){}
  return "";
 }

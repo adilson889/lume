@@ -431,3 +431,10 @@ Lume - historico de versoes
 
 0.5.44
 - Expressoes algebricas (com e sem fracoes) aceitam qualquer letra como incognita, exceto "e" (a, b, m, p, ...). As equacoes e os sistemas ja aceitavam. "5 a 3" e "de 5 a 10" continuam a nao ser tratados como contas.
+
+0.5.45
+- Respostas a perguntas do Lume tratadas por classes e nao por frases soltas: "nada", "nao trabalho", "to descansando", "to relaxado", "estou de folga", "tou a ver tv", "estudo fisica", "estou a trabalhar num projeto"... O vocabulario vive em bot/situacoes.txt (nada, descanso, lazer, estudo, trabalho) e as frases em conversa.txt (reage_<classe> e segue_<classe>). Classe nova = uma linha em situacoes.txt mais as frases.
+- Coloquial: "to/to/tou" seguido de qualquer palavra passa a "estou" e o gerundio brasileiro passa a "a + infinitivo" ("estou descansando" -> "estou a descansar").
+- Iniciativa: "decide tu", "o que sugeres?", "sei la, o que podemos fazer?" e "vamos estudar, ou fazer qualquer coisa" fazem o Lume propor algo de bot/sugestoes.txt sem repetir; "sim" executa o pedido da proposta, "nao" ou "outra" propoe outra.
+- Elogios curtos ("muito bom", "perfeito", "genial") e "nada por enquanto" passam a ser reconhecidos em vez de cairem no motor do bot.
+- Treino: 20 casos novos em treino/casos.txt (por correr).
