@@ -368,3 +368,7 @@ Lume - historico de versoes
 - Pedidos simples ("raiz quadrada de 144", "25% de 80") sao calculados pelo despachante em JavaScript, sem eval, e respondidos com a formula e o resultado.
 - "Li o pedido como:" passa a ir em negrito: sem isso o formatador transformava "maior de 3, 8 e 2" numa lista.
 - Testado de ponta a ponta (despachante, formatador, marked, DOMPurify, KaTeX) em 28 pedidos: todas as formulas desenhadas, sem erros e sem texto cru.
+
+0.5.31
+- KaTeX expandido: fracoes com passos ("1/2 + 1/3", "3/4 x 2/5", "simplifica 12/18", "3/4 de 20"), sistemas de duas equacoes (adicao por omissao; "pelo metodo da substituicao" isola e substitui; indeterminado e impossivel detetados), media, variancia e desvio padrao (populacional e amostral) com passos.
+- Treino: aceita LaTeX nas respostas; 186/186.

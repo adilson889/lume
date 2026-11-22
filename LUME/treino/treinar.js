@@ -16,7 +16,7 @@ function novo(){
   const i=l.lastIndexOf(" | ");const msgs=l.slice(0,i).split(" >> "),esp=l.slice(i+3).trim();
   const o=novo();let r=false,resp="",q2="";
   if(/^MATH[+-]$/.test(esp)){const m=window.lumeFuncaoMatematica(msgs[0]);const bom=esp==="MATH+"?!!m:!m;total++;if(bom)ok++;else falhas.push([l,m?"reconheceu: "+m.m:"nao reconheceu"]);continue}
-  for(const q of msgs){o.out=[];q2=window.LumeDialogo.reescrever(q);r=await window.LumeDespachante.tentar(q2);resp=o.out.join(" ").replace(/<[^>]+>/g," ").replace(/\s+/g," ").trim()}
+  for(const q of msgs){o.out=[];q2=window.LumeDialogo.reescrever(q);r=await window.LumeDespachante.tentar(q2);resp=o.out.join(" ").replace(/<[^>]+>/g," ").replace(/\$/g,"").replace(/_\{?(\d)\}?/g,(m,d)=>"₀₁₂₃₄₅₆₇₈₉"[d]).replace(/\s+/g," ").trim()}
   const raw=o.out.join(" ");
   let bom;
   if(esp==="BOT")bom=!r||/^\s*(<program|<!--)/.test(raw)===false&&!r;

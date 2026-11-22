@@ -1135,11 +1135,226 @@ function expressaoAlgebrica(q){
  return {f:String(Math.round(tot*1e9)/1e9),m:mx(simp)+" com "+mx(X+" = "+F(val)),p:passos(L),e:"",r:mx(F(tot))};
  }catch(err){return null}
 }
+/* ===== Fracoes com passos =====
+   "1/2 + 1/3", "3/4 × 2/5", "(1/2 + 1/3) ÷ 5/6", "simplifica 12/18", "3/4 de 20".
+   Aritmetica exacta com inteiros: mmc para somar e subtrair, produto cruzado, inverso para dividir e simplificacao final. */
+function fracoes(q){
+ try{
+ var o=String(q||"").toLowerCase().trim();
+ if(!o||o.length>120)return null;
+ var s=o.replace(/^(?:por favor[, ]*)?(?:calcula|calcule|calcular|resolve|resolva|resolver|simplifica|simplifique|simplificar|reduz|reduza|reduzir|efetue|efectue|quanto\s+[eé]|qual\s+[eé]\s+o\s+resultado\s+d[ea])\s*/,"").replace(/^(?:a\s+)?(?:fra[cç][aã]o|fra[cç][oõ]es|express[aã]o)\s+(?:de\s+)?/,"").replace(/[?!.=\s]+$/,"");
+ var pedeSimp=/\b(simplif\w*|reduz\w*)\b/.test(o)||/fra[cç][aã]o/.test(o);
+ s=s.replace(/(\d+\/\d+)\s+de\s+(\d+)/g,"$1 × $2").replace(/\bmais\b/g,"+").replace(/\bmenos\b/g,"-").replace(/\b(?:vezes|multiplicado\s+por)\b/g,"×").replace(/\b(?:dividido\s+por|a\s+dividir\s+por|dividido)\b/g,"÷");
+ s=s.replace(/[−–]/g,"-").replace(/\s+\/\s+/g," ÷ ").replace(/(?<=[\d)])\s*[x*]\s*(?=[\d(])/g,"×").replace(/(?<=[\d)])\s*:\s*(?=[\d(])/g,"÷");
+ if(!/^[\d\s+\-×÷\/()]+$/.test(s))return null;
+ if(!/\d+\/\d+/.test(s))return null;
+ var tk=s.match(/\d+\/\d+|\d+|[+\-×÷()]/g);if(!tk||tk.join("").replace(/\s/g,"")!==s.replace(/\s/g,""))return null;
+ var L=[],ER=function(t){return {f:"0",m:mx(s),p:[],e:t}};
+ function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){var t=b;b=a%b;a=t}return a||1}
+ function R(n,d){if(d===0)throw "z";if(d<0){n=-n;d=-d}return {n:n,d:d}}
+ function grande(r){if(Math.abs(r.n)>1e12||r.d>1e12)throw "g"}
+ function fr(r){return r.d===1?String(r.n):(r.n<0?"-":"")+"\\frac{"+Math.abs(r.n)+"}{"+r.d+"}"}
+ function frp(r){return r.n<0?"("+fr(r)+")":fr(r)}
+ function simp(r,rot){var g=gcd(r.n,r.d);if(g>1){var n=R(r.n/g,r.d/g);L.push("Simplificar "+mx(fr(r))+", dividindo o numerador e o denominador por "+mx(g)+": "+mx(fr(r)+" = "+fr(n)));return n}return r}
+ var p=0;
+ function atom(){
+  var t=tk[p++];if(t===undefined)throw 0;
+  if(t==="("){var v=soma();if(tk[p++]!==")")throw 0;return {r:v.r,l:"\\left("+v.l+"\\right)"}}
+  if(t==="-"){var a=atom();return {r:R(-a.r.n,a.r.d),l:"-"+a.l}}
+  var m=/^(\d+)\/(\d+)$/.exec(t);
+  if(m)return {r:R(parseInt(m[1],10),parseInt(m[2],10)),l:"\\frac{"+m[1]+"}{"+m[2]+"}"};
+  if(/^\d+$/.test(t))return {r:R(parseInt(t,10),1),l:t};
+  throw 0;
+ }
+ function termo(){
+  var a=atom();
+  while(tk[p]==="×"||tk[p]==="÷"){
+   var op=tk[p++],b=atom(),r;
+   if(op==="×"){
+    r=R(a.r.n*b.r.n,a.r.d*b.r.d);grande(r);
+    L.push("Multiplicar os numeradores entre si e os denominadores entre si: "+mx(frp(a.r)+" \\times "+frp(b.r)+" = \\frac{"+a.r.n+" \\times "+b.r.n+"}{"+a.r.d+" \\times "+b.r.d+"} = "+fr(r)));
+   }else{
+    if(b.r.n===0)throw "z";
+    var inv=R(b.r.d,b.r.n);r=R(a.r.n*inv.n,a.r.d*inv.d);grande(r);
+    L.push("Dividir é multiplicar pelo inverso da segunda fração ("+mx(fr(b.r)+" \\to "+fr(inv))+"): "+mx(frp(a.r)+" \\div "+frp(b.r)+" = "+frp(a.r)+" \\times "+frp(inv)+" = "+fr(r)));
+   }
+   r=simp(r);a={r:r,l:a.l+(op==="×"?" \\times ":" \\div ")+b.l};
+  }
+  return a;
+ }
+ function soma(){
+  var a=termo();
+  while(tk[p]==="+"||tk[p]==="-"){
+   var op=tk[p++],b=termo(),r,sg=op==="+"?1:-1,sy=op==="+"?" + ":" - ";
+   if(a.r.d===b.r.d){
+    r=R(a.r.n+sg*b.r.n,a.r.d);
+    L.push("Os denominadores são iguais ("+mx(a.r.d)+"), por isso "+(sg>0?"somam":"subtraem")+"-se só os numeradores: "+mx(frp(a.r)+sy+frp(b.r)+" = \\frac{"+a.r.n+sy+(b.r.n<0?"("+b.r.n+")":b.r.n)+"}{"+a.r.d+"} = "+fr(r)));
+   }else{
+    var mm=a.r.d/gcd(a.r.d,b.r.d)*b.r.d;grande({n:mm,d:1});
+    var na=a.r.n*(mm/a.r.d),nb=b.r.n*(mm/b.r.d);
+    L.push("Denominadores diferentes: o mmc de "+mx(a.r.d)+" e "+mx(b.r.d)+" é "+mx(mm));
+    L.push("Converter para o denominador "+mx(mm)+": "+mx(frp(a.r)+" = \\frac{"+a.r.n+" \\times "+(mm/a.r.d)+"}{"+mm+"} = "+fr(R(na,mm))+"\\quad e \\quad "+frp(b.r)+" = \\frac{"+b.r.n+" \\times "+(mm/b.r.d)+"}{"+mm+"} = "+fr(R(nb,mm))));
+    r=R(na+sg*nb,mm);
+    L.push((sg>0?"Somar":"Subtrair")+" os numeradores: "+mx(fr(R(na,mm))+sy+frp(R(nb,mm))+" = \\frac{"+na+sy+(nb<0?"("+nb+")":nb)+"}{"+mm+"} = "+fr(r)));
+   }
+   grande(r);r=simp(r);a={r:r,l:a.l+sy+b.l};
+  }
+  return a;
+ }
+ var v;
+ try{
+  if(tk.length===1&&/\//.test(tk[0])){
+   if(!pedeSimp)return null;
+   var mt=/^(\d+)\/(\d+)$/.exec(tk[0]),n0=parseInt(mt[1],10),d0=parseInt(mt[2],10);
+   if(d0===0)return ER("Não dá para dividir por zero: o denominador não pode ser 0.");
+   var g0=gcd(n0,d0),r0=R(n0/g0,d0/g0);
+   L.push("Procurar o mdc de "+mx(n0)+" e "+mx(d0)+": "+mx("\\operatorname{mdc}("+n0+",\\ "+d0+") = "+g0));
+   L.push(g0>1?"Dividir o numerador e o denominador por "+mx(g0)+": "+mx("\\frac{"+n0+" \\div "+g0+"}{"+d0+" \\div "+g0+"} = "+fr(r0)):"O mdc é "+mx(1)+", por isso a fração já está na forma mais simples");
+   v={r:r0,l:"\\frac{"+n0+"}{"+d0+"}"};
+  }else{
+   v=soma();if(p<tk.length)return null;
+  }
+ }catch(e){
+  if(e==="z")return ER("Não dá para dividir por zero.");
+  if(e==="g")return ER("Os números ficaram demasiado grandes para eu mostrar os passos.");
+  return null;
+ }
+ var r=v.r,val=r.n/r.d;
+ function Fd(x){x=Math.round(x*1e4)/1e4;return String(x).replace(".","{,}")}
+ var tail=r.d===1?"":(Math.abs(r.n)>r.d?" = "+(r.n<0?"-":"")+Math.floor(Math.abs(r.n)/r.d)+"\\frac{"+(Math.abs(r.n)%r.d)+"}{"+r.d+"}":"")+" \\approx "+Fd(val);
+ if(r.d!==1&&Math.abs(r.n)%r.d===0)tail=" \\approx "+Fd(val);
+ if(r.d!==1&&Math.abs(r.n)>r.d)L.push("Escrever como número misto e em decimal: "+mx(fr(r)+tail));
+ else if(r.d!==1)L.push("Em decimal: "+mx(fr(r)+" \\approx "+Fd(val)));
+ if(!L.length)return null;
+ var n=L.length;
+ return {f:String(Math.round(val*1e9)/1e9),m:mx(v.l),p:L.map(function(t,k){return (k===0?"Primeiro: ":k===n-1?"Por fim: ":"Depois: ")+t}),e:"",r:mx(fr(r)+(r.d===1?"":tail))};
+ }catch(err){return null}
+}
+/* ===== Sistemas de duas equacoes com duas incognitas =====
+   "x + y = 10 e x - y = 2", "sistema: 2x+3y=12; x-y=1", "... pelo metodo da substituicao".
+   Por omissao usa o metodo da adicao (eliminar uma incognita); com "substituicao" isola e substitui. */
+function sistema(q){
+ try{
+ var o=String(q||"").toLowerCase().trim();
+ if(!o||o.length>140||(o.match(/=/g)||[]).length!==2)return null;
+ var subst=/substitui/.test(o);
+ var s=o.replace(/\b(?:pelo|usando|com|por|utilizando|atrav[eé]s\s+d[oa])\s+(?:o\s+)?m[eé]todo\s+(?:da|de|do)\s+[^\s;,]+/g," ").replace(/^(?:por favor[, ]*)?(?:resolve|resolva|resolver|calcula|calcule|determina|determine|encontra|encontre)?\s*(?:o\s+)?(?:sistema(?:\s+de\s+equa[cç][aã]o|\s+de\s+equa[cç][oõ]es)?)?\s*[:\-]?\s*/,"").replace(/[?!.\s]+$/,"");
+ var cnt=function(t){return (t.match(/=/g)||[]).length},eqs=null,re=/\s*(?:;|\n|&|\be\b|,)\s*/g,m;
+ while((m=re.exec(s))){var a=s.slice(0,m.index),b=s.slice(m.index+m[0].length);if(cnt(a)===1&&cnt(b)===1){eqs=[a,b];break}if(!m[0].length)re.lastIndex++}
+ if(!eqs)return null;
+ function lin(side,cf,sg){
+  var t=side.replace(/\s+/g,"").replace(/[−–]/g,"-").replace(/,/g,".").replace(/[×*]/g,"");
+  if(!t)return false;
+  var rx=/^([+-]?)(\d+(?:\.\d+)?)?([a-z])?/,pos=0;
+  while(pos<t.length){
+   var mm=rx.exec(t.slice(pos));if(!mm||!mm[0].length||(!mm[2]&&!mm[3]))return false;
+   var sgn=(mm[1]==="-"?-1:1)*sg,num=mm[2]!==undefined?parseFloat(mm[2]):1,k=mm[3]||"#";
+   cf[k]=(cf[k]||0)+sgn*num;pos+=mm[0].length;
+  }
+  return true;
+ }
+ var cfs=[{},{}];
+ for(var i=0;i<2;i++){var ld=eqs[i].split("=");if(!lin(ld[0],cfs[i],1)||!lin(ld[1],cfs[i],-1))return null}
+ var vs={};cfs.forEach(function(c){Object.keys(c).forEach(function(k){if(k!=="#")vs[k]=1})});
+ var vn=Object.keys(vs).sort();
+ var m0=mx(eqs.map(function(e){return e.trim().replace(/-/g,"−")}).join(" ; "));
+ var ER=function(t){return {f:"0",m:m0,p:[],e:t}};
+ if(vn.length>2)return ER("Só resolvo sistemas de duas equações com duas incógnitas.");
+ if(vn.length<2)return null;
+ var X=vn[0],Y=vn[1];
+ function Z(v){return Math.abs(v)<1e-12?0:v}
+ var a1=Z(cfs[0][X]||0),b1=Z(cfs[0][Y]||0),c1=-(cfs[0]["#"]||0),a2=Z(cfs[1][X]||0),b2=Z(cfs[1][Y]||0),c2=-(cfs[1]["#"]||0);
+ c1=Z(c1);c2=Z(c2);
+ function F(n){n=Math.round(n*1e6)/1e6;if(n===0)n=0;return String(n).replace(".",",").replace("-","−")}
+ function W(n){return n<0?"("+F(n)+")":F(n)}
+ function eqt(a,b,c){
+  var out="";
+  [[a,X],[b,Y]].forEach(function(t){var k=t[0];if(k===0)return;var mag=Math.abs(k),body=(mag===1?"":F(mag))+t[1];out+=out===""?(k<0?"−":"")+body:" "+(k<0?"−":"+")+" "+body});
+  return (out||"0")+" = "+F(c);
+ }
+ var D=a1*b2-a2*b1;
+ if(Math.abs(D)<1e-12){
+  var prop=Math.abs(a1*c2-a2*c1)<1e-9&&Math.abs(b1*c2-b2*c1)<1e-9;
+  return ER(prop?"As duas equações dizem o mesmo (uma é múltipla da outra): o sistema é indeterminado, tem infinitas soluções.":"As equações são incompatíveis (mesmos coeficientes de "+X+" e "+Y+" mas resultados diferentes): o sistema é impossível, não tem solução.");
+ }
+ var xv=(c1*b2-c2*b1)/D,yv=(a1*c2-a2*c1)/D;
+ var L=["Escrever o sistema: "+mx("(1)\\ "+eqt(a1,b1,c1))+" e "+mx("(2)\\ "+eqt(a2,b2,c2))];
+ function tx1(k,v){return k===1?W(v):k===-1?"-"+W(v):F(k)+" \\times "+W(v)}
+ function tyc(k){return k===1?"":F(k)}
+ function ver(){L.push("Verificar na equação (2): "+mx(tx1(a2,xv)+(b2<0?" - "+(Math.abs(b2)===1?"":F(-b2)+" \\times ")+W(yv):" + "+(b2===1?"":F(b2)+" \\times ")+W(yv))+" = "+F(a2*xv+b2*yv))+(Math.abs(a2*xv+b2*yv-c2)<1e-6?", igual ao segundo membro: confere":""))}
+ var algum0=(a1===0||b1===0||a2===0||b2===0);
+ if(subst||algum0){
+  /* isolar uma incognita: prefere equacao com coeficiente ±1 ou com um zero */
+  var cand=[[0,X],[0,Y],[1,X],[1,Y]].filter(function(c){var k=c[0]?(c[1]===X?a2:b2):(c[1]===X?a1:b1);return k!==0});
+  cand.sort(function(p,q2){function sc(c){var k=Math.abs(c[0]?(c[1]===X?a2:b2):(c[1]===X?a1:b1)),oth=c[0]?(c[1]===X?b2:a2):(c[1]===X?b1:a1);return (oth===0?-2:0)+(k===1?-1:0)}return sc(p)-sc(q2)});
+  var e1=cand[0][0],V=cand[0][1],U=V===X?Y:X;
+  var A=[[a1,b1,c1],[a2,b2,c2]][e1],B=[[a1,b1,c1],[a2,b2,c2]][1-e1];
+  var kv=V===X?A[0]:A[1],ku=V===X?A[1]:A[0],pp=A[2]/kv,qq=-ku/kv;
+  function lintxt(p0,q0,U0){var t="";if(p0!==0)t=F(p0);if(q0!==0){var mag=Math.abs(q0),body=(mag===1?"":F(mag))+U0;t+=t===""?(q0<0?"−":"")+body:" "+(q0<0?"−":"+")+" "+body}return t||"0"}
+  L.push("Isolar "+mx(V)+" na equação ("+(e1+1)+"): "+mx(V+" = "+lintxt(pp,qq,U)));
+  var kb=V===X?B[0]:B[1],kub=V===X?B[1]:B[0],tot=kub+kb*qq,rhs=B[2]-kb*pp;
+  var uc=function(k){return k===1?"":k===-1?"−":F(k)};
+  if(qq===0){
+   L.push("Substituir "+mx(V+" = "+F(pp))+" na equação ("+(2-e1)+"): "+mx((kb===0?"":(kb===1?"":kb===-1?"−":F(kb)+" \\times ")+W(pp)+" ")+(kub<0?"− "+(kub===-1?"":F(-kub)):(kb===0?"":"+ ")+(kub===1?"":F(kub)))+U+" = "+F(B[2])));
+   var rhs0=B[2]-kb*pp;
+   if(kub!==1)L.push(mx(U+" = "+F(rhs0)+" \\div "+W(kub)+" = "+F(rhs0/kub)));
+   else L.push(mx(U+" = "+F(rhs0)));
+   var uv0=rhs0/kub,vv0=pp;
+   xv=V===X?vv0:uv0;yv=V===X?uv0:vv0;ver();
+  }else{
+  L.push("Substituir "+mx(V)+" na equação ("+(2-e1)+"): "+mx((kb===1?"":kb===-1?"−":F(kb))+"\\left("+lintxt(pp,qq,U)+"\\right) "+(kub<0?"− "+(kub===-1?"":F(-kub)):"+ "+(kub===1?"":F(kub)))+U+" = "+F(B[2])));
+  L.push("Desenvolver e agrupar: "+mx(uc(tot)+U+" = "+F(rhs)));
+  var uv=rhs/tot;
+  if(tot!==1)L.push(mx(U+" = "+F(rhs)+" \\div "+W(tot)+" = "+F(uv)));
+  var vv=pp+qq*uv;
+  L.push("Voltar à expressão de "+mx(V)+": "+mx(V+" = "+(pp!==0?F(pp)+(qq<0?" - ":" + "):(qq<0?"-":""))+(Math.abs(qq)===1?"":F(Math.abs(qq))+" \\times ")+W(uv)+" = "+F(vv)));
+  xv=V===X?vv:uv;yv=V===X?uv:vv;ver();
+  }
+ }else{
+  var g=1;if([a1,b1,a2,b2].every(Number.isInteger)){var gg=function(x,y){x=Math.abs(x);y=Math.abs(y);while(y){var t=y;y=x%y;x=t}return x};var l=Math.abs(b1*b2)/gg(b1,b2);g=l}else g=Math.abs(b1*b2);
+  var m1=g/Math.abs(b1),m2=g/Math.abs(b2),mesmo=(b1>0)===(b2>0);
+  L.push(m1===1&&m2===1?"Os coeficientes de "+mx(Y)+" são "+(mesmo?"iguais":"simétricos")+", por isso já se pode eliminar "+mx(Y):"Para eliminar "+mx(Y)+": "+[m1!==1?"multiplicar (1) por "+mx(F(m1)):"",m2!==1?"multiplicar (2) por "+mx(F(m2)):""].filter(Boolean).join(" e ")+": "+mx("(1)\\ "+eqt(a1*m1,b1*m1,c1*m1))+" e "+mx("(2)\\ "+eqt(a2*m2,b2*m2,c2*m2)));
+  var Ax=mesmo?a1*m1-a2*m2:a1*m1+a2*m2,Cx=mesmo?c1*m1-c2*m2:c1*m1+c2*m2;
+  L.push((mesmo?"Subtrair":"Somar")+" as duas equações (os termos em "+mx(Y)+" cancelam): "+mx((Ax===1?"":Ax===-1?"−":F(Ax))+X+" = "+F(Cx)));
+  L.push(mx(X+" = "+F(Cx)+" \\div "+W(Ax)+" = "+F(xv)));
+  L.push("Substituir "+mx(X+" = "+F(xv))+" na equação (1): "+mx(tx1(a1,xv)+(b1<0?" - "+tyc(-b1)+Y:" + "+tyc(b1)+Y).replace(" + 0"+Y,"")+" = "+F(c1)+" \\Rightarrow "+(Math.abs(b1)===1?"":(b1===-1?"":"")+F(b1))+Y+" = "+F(c1-a1*xv))+(Math.abs(b1)===1&&b1>0?"":", logo "+mx(Y+" = "+F(yv))));
+  ver();
+ }
+ var n=L.length;
+ return {f:String(Math.round(xv*1e9)/1e9),m:m0,p:L.map(function(t,k){return (k===0?"Primeiro: ":k===n-1?"Por fim: ":"Depois: ")+t}),e:"",r:mx(X+" = "+F(xv))+" e "+mx(Y+" = "+F(yv))};
+ }catch(err){return null}
+}
+/* ===== Estatistica com passos: media, variancia e desvio padrao ===== */
+function estatistica(tipo,nums,am){
+ try{
+ var n=nums.length;if(n<2||n>12)return null;
+ function F(x){x=Math.round(x*1e4)/1e4;if(x===0)x=0;return String(x).replace(".",",").replace("-","−")}
+ function W(x){return x<0?"("+F(x)+")":F(x)}
+ var soma=nums.reduce(function(a,b){return a+b},0),mu=soma/n,L=[],arred=false;
+ function chk(x){if(Math.abs(Math.round(x*1e4)/1e4-x)>1e-12)arred=true;return x}
+ L.push("Somar os valores: "+mx(nums.map(function(x,i){return i?(x<0?"− "+F(-x):"+ "+F(x)):F(x)}).join(" ")+" = "+F(soma)));
+ L.push("Dividir pela quantidade de valores ("+mx(n)+"): "+mx("\\bar{x} = "+F(soma)+" \\div "+n+" = "+F(chk(mu))));
+ if(tipo==="media")return {f:String(mu),m:"média de "+mx(nums.map(F).join(", ")),p:L.map(function(t,k){return (k===0?"Primeiro: ":k===L.length-1?"Por fim: ":"Depois: ")+t}),e:"",r:mx("\\bar{x} = "+F(mu))};
+ var ds=nums.map(function(x){return x-mu}),qs=ds.map(function(d){return d*d}),sq=qs.reduce(function(a,b){return a+b},0);
+ L.push("Calcular o desvio de cada valor em relação à média ("+mx("x_i - \\bar{x}")+"): "+mx(nums.map(function(x,i){return F(x)+" - "+W(chk(mu))+" = "+F(chk(ds[i]))}).join(";\\ ")));
+ L.push("Elevar cada desvio ao quadrado: "+mx(ds.map(function(d,i){return W(chk(d))+"^{2} = "+F(chk(qs[i]))}).join(";\\ ")));
+ L.push("Somar os quadrados: "+mx(qs.map(function(x,i){return i?"+ "+F(x):F(x)}).join(" ")+" = "+F(chk(sq))));
+ var den=am?n-1:n,vr=sq/den,sym=am?"s":"\\sigma";
+ L.push("Variância"+(am?" amostral (divide por "+mx("n - 1")+")":" (divide por "+mx("n")+")")+": "+mx(sym+"^{2} = "+F(sq)+" \\div "+den+" = "+F(chk(vr))));
+ if(tipo==="variancia"){var n1=L.length;return {f:String(vr),m:"variância"+(am?" amostral":"")+" de "+mx(nums.map(F).join(", ")),p:L.map(function(t,k){return (k===0?"Primeiro: ":k===n1-1?"Por fim: ":"Depois: ")+t}),e:"",r:mx(sym+"^{2} = "+F(vr))+(arred?" (valores arredondados a 4 casas decimais)":"")}}
+ var sd=Math.sqrt(vr);
+ L.push("O desvio padrão é a raiz quadrada da variância: "+mx(sym+" = \\sqrt{"+F(chk(vr))+"} = "+F(chk(sd))));
+ var n2=L.length;
+ return {f:String(sd),m:"desvio padrão"+(am?" amostral":"")+" de "+mx(nums.map(F).join(", ")),p:L.map(function(t,k){return (k===0?"Primeiro: ":k===n2-1?"Por fim: ":"Depois: ")+t}),e:"",r:mx(sym+" = "+F(sd))+(arred?" (valores arredondados a 4 casas decimais)":"")};
+ }catch(err){return null}
+}
 function funcaoMatematica(q){
   var _mp=_algUltima&&Date.now()-_algUltima.t<900000&&/^(?:e\s+)?(?:se\s+|para\s+|com\s+|quando\s+)?([xyztnk])\s*(?:=|vale|for|igual\s+a)\s*(-|−)?\s*(\d+(?:[.,]\d+)?)\s*[?!.]*$/.exec(String(q||"").toLowerCase().trim());
   if(_mp){var _r=expressaoAlgebrica(_algUltima.s+" com "+_mp[1]+" = "+(_mp[2]?"-":"")+_mp[3]);if(_r)return _r}
+  var _s=sistema(q);if(_s)return _s;
   var _q=equacao(q);if(_q)return _q;
   var _a=expressaoAlgebrica(q);if(_a)return _a;
+  var _fr=fracoes(q);if(_fr)return _fr;
   var _c=calculadora(q);if(_c)return _c;
  var t=norm(q).replace(/[?!.]+$/,"");
  if(/\b(frase|frases|desenh\w*|cri\w+|ger\w+|site|loja|codigo)\b/.test(t))return null;
@@ -1191,11 +1406,14 @@ function funcaoMatematica(q){
  /* estatistica (precisa de 2 ou mais numeros) */
  if(nums.length>=2){
   var am=/amostral/.test(t),lst=nums.join(","),rot=juntar(nums);
+  if(/\bmedia\s+(?:aritmetica\s+)?(?:de|dos|das|entre)\b|^(?:calcula|calcule|qual\s+e)\s+(?:a\s+)?media\b/.test(t)&&!/ponderada/.test(t)){var _e0=estatistica("media",nums);if(_e0)return _e0}
   if(/\bmediana\b/.test(t))return R("median("+lst+")","mediana de "+rot,"\\operatorname{mediana}("+nums.map(tf).join(",\\ ")+")");
   if(/\bmoda de\b/.test(t))return R("mode("+lst+")","moda de "+rot);
   if(/\b(maior|maximo)\b/.test(t))return R("max("+lst+")","maior de "+rot,"\\max("+nums.map(tf).join(",\\ ")+")");
   if(/\b(menor|minimo)\b/.test(t))return R("min("+lst+")","menor de "+rot,"\\min("+nums.map(tf).join(",\\ ")+")");
   if(/amplitude/.test(t))return R("range("+lst+")","amplitude de "+rot);
+  if(/desvio padrao/.test(t)){var _e1=estatistica("desvio",nums,am);if(_e1)return _e1}
+  if(/variancia/.test(t)){var _e2=estatistica("variancia",nums,am);if(_e2)return _e2}
   if(/desvio padrao/.test(t))return R((am?"sampleStd(":"std(")+lst+")","desvio padrão"+(am?" amostral":"")+" de "+rot);
   if(/variancia/.test(t))return R((am?"sampleVariance(":"variance(")+lst+")","variância"+(am?" amostral":"")+" de "+rot);
  }
