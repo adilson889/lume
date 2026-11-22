@@ -1125,7 +1125,7 @@ function equacao(q){
  s=s.replace(/^(?:por favor[, ]*)?(?:calcule|calcula|resolva|resolve|resolver|qual\s+(?:[eé]\s+)?o\s+valor\s+de)\s*/,"").replace(/[?!.\s]+$/,"");
  var lados=s.split("=");
  if(lados.length!==2||!lados[0].trim()||!lados[1].trim())return null;
- if(/\d\s+x\s+\d/.test(s))return null;
+ if(/\d\s+[a-z]\s+\d/.test(s))return null;
  var vars={};
  var add=LP.add,grau=LP.grau;
  function poly(t){return LP.poly(t,vars)}
@@ -1224,11 +1224,11 @@ function racional(q){
  var s=String(q||"").toLowerCase().trim();
  if(!s||s.length>100)return null;
  s=s.replace(/^(?:por favor[, ]*)?(?:calcule|calcula|calcular|simplifique|simplifica|simplificar|resolva|resolve|resolver|efetue|efectue|reduza|reduz|reduzir|qual\s+(?:[eé]\s+)?o\s+valor\s+de|quanto\s+(?:[eé]|vale|d[aá]))\s*/,"").replace(/[?!.\s]+$/,"");
- var val=null,mv=/^(.*?)[,\s]*(?:com|para|quando|se|sendo|onde|e\s+se)?\s*\b([xyztnk])\s*(?:=|vale|for|igual\s+a)\s*(-|−)?\s*(\d+(?:[.,]\d+)?)$/.exec(s);
+ var val=null,mv=/^(.*?)[,\s]*(?:com|para|quando|se|sendo|onde|e\s+se)?\s*\b([a-df-z])\s*(?:=|vale|for|igual\s+a)\s*(-|−)?\s*(\d+(?:[.,]\d+)?)$/.exec(s);
  if(mv&&mv[1].trim()){s=mv[1].trim();val=(mv[3]?-1:1)*parseFloat(mv[4].replace(",","."))}
- if(s.indexOf("=")>=0||!/[\/÷]/.test(s)||!/[xyztnk]/.test(s))return null;
- if(!/^[0-9xyztnk+\-−–*×/÷^().,\s²³⁴⁵⁶⁷⁸⁹]+$/.test(s))return null;
- if(/\d\s+x\s+\d/.test(s))return null;
+ if(s.indexOf("=")>=0||!/[\/÷]/.test(s)||!/[a-df-z]/.test(s))return null;
+ if(!/^[0-9a-df-z+\-−–*×/÷^().,\s²³⁴⁵⁶⁷⁸⁹]+$/.test(s))return null;
+ if(/\d\s+[a-z]\s+\d/.test(s))return null;
  var t=s.replace(/[−–]/g,"-").replace(/×/g,"*").replace(/÷/g,"/").replace(/,/g,".");
  var SUPD="⁰¹²³⁴⁵⁶⁷⁸⁹",tk=[],i=0,m,c,vr=null;
  while(i<t.length){
@@ -1362,12 +1362,12 @@ function expressaoAlgebrica(q){
  var s=String(q||"").toLowerCase().trim();
  if(!s||s.length>100)return null;
  s=s.replace(/^(?:por favor[, ]*)?(?:calcule|calcula|calcular|simplifique|simplifica|simplificar|resolva|resolve|resolver|expanda|expande|desenvolva|desenvolve|qual\s+(?:[eé]\s+)?o\s+valor\s+de|quanto\s+(?:[eé]|vale|d[aá]))\s*/,"").replace(/[?!.\s]+$/,"");
- var val=null,m=/^(.*?)[,\s]*(?:com|para|quando|se|sendo|onde|e\s+se)?\s*\b([xyztnk])\s*(?:=|vale|for|igual\s+a)\s*(-|−)?\s*(\d+(?:[.,]\d+)?)$/.exec(s),X0=null;
+ var val=null,m=/^(.*?)[,\s]*(?:com|para|quando|se|sendo|onde|e\s+se)?\s*\b([a-df-z])\s*(?:=|vale|for|igual\s+a)\s*(-|−)?\s*(\d+(?:[.,]\d+)?)$/.exec(s),X0=null;
  if(m&&m[1].trim()){s=m[1].trim();X0=m[2];val=parseFloat(m[4].replace(",","."))*(m[3]?-1:1)}
  if(s.indexOf("=")>=0||s.length<2||!/\d/.test(s))return null;
- if(!/^[0-9xyztnk+\-−–*×/÷:^().,\s²³⁴⁵⁶⁷⁸⁹\[\]{}]+$/.test(s))return null;
- if(!/[xyztnk]/.test(s.replace(/\d\s*x\s*\d/g,"#")))return null;
- if(/\d\s+x\s+\d/.test(s))return null;
+ if(!/^[0-9a-df-z+\-−–*×/÷:^().,\s²³⁴⁵⁶⁷⁸⁹\[\]{}]+$/.test(s))return null;
+ if(!/[a-df-z]/.test(s.replace(/\d\s*x\s*\d/g,"#")))return null;
+ if(/\d\s+[a-z]\s+\d/.test(s))return null;
  var vars={},P;
  try{P=LP.poly(s,vars)}catch(e){return null}
  var nv=Object.keys(vars);if(nv.length!==1)return null;
@@ -1796,7 +1796,7 @@ function aplicadas(q){
  }catch(err){return null}
 }
 function funcaoMatematica(q){
-  var _mp=_algUltima&&Date.now()-_algUltima.t<900000&&/^(?:e\s+)?(?:se\s+|para\s+|com\s+|quando\s+)?([xyztnk])\s*(?:=|vale|for|igual\s+a)\s*(-|−)?\s*(\d+(?:[.,]\d+)?)\s*[?!.]*$/.exec(String(q||"").toLowerCase().trim());
+  var _mp=_algUltima&&Date.now()-_algUltima.t<900000&&/^(?:e\s+)?(?:se\s+|para\s+|com\s+|quando\s+)?([a-df-z])\s*(?:=|vale|for|igual\s+a)\s*(-|−)?\s*(\d+(?:[.,]\d+)?)\s*[?!.]*$/.exec(String(q||"").toLowerCase().trim());
   if(_mp){var _r=expressaoAlgebrica(_algUltima.s+" com "+_mp[1]+" = "+(_mp[2]?"-":"")+_mp[3]);if(_r)return _r}
   var _s=sistema(q);if(_s)return _s;
   var _rc=racional(q);if(_rc)return _rc;

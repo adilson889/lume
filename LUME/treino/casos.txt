@@ -229,3 +229,6 @@ x/2 + x/3 | frac\{5x\}\{6\}
 1/x + 3 com x = 2 | frac\{7\}\{2\}
 1/x + 1/(x+1) | frac\{2x \+ 1\}\{x\(x \+ 1\)\}
 (x+1)/(x-2) + 3 | sobre os testes.*substituir x
+1/a + 3 | frac\{3a \+ 1\}\{a\}
+2m+5 com m=2 | 9
+de 5 a 10 | MATH-

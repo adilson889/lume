@@ -428,3 +428,6 @@ Lume - historico de versoes
 - Expressoes algebricas com fracoes ("1/x + 3", "x/2 + x/3", "2/(x-1) - 3/x", "(x²-9)/(x-3)", "1/x + 3 com x = 2"): condicoes de existencia, mmc dos denominadores, soma dos numeradores, simplificacao pelo fator comum e substituicao. Aritmetica exata (coeficientes racionais).
 - Testes automaticos por substituicao em dois pontos diferentes (evitando os polos).
 - Treino: 211/211.
+
+0.5.44
+- Expressoes algebricas (com e sem fracoes) aceitam qualquer letra como incognita, exceto "e" (a, b, m, p, ...). As equacoes e os sistemas ja aceitavam. "5 a 3" e "de 5 a 10" continuam a nao ser tratados como contas.
