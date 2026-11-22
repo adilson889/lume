@@ -393,3 +393,7 @@ Lume - historico de versoes
 - despachante.js: raciocinio(texto, ms) e window.lumeAtualizarEtapa(texto, ms) aceitam uma duracao opcional; as etapas dos testes enviam 4000.
 - index.html e mobile.html: a fila de etapas usa a duracao indicada quando existe; a espera pelas etapas antes de mostrar a resposta passa a somar o tempo extra dos testes (9 s + extra no index.html, 3 s + extra no mobile.html), para a resposta nao saltar as etapas.
 - sw.js: nova VERSAO para limpar a cache antiga do telemovel.
+
+0.5.36
+- As etapas dos testes da equacao do 2.o grau passam de 4 s para 8 s cada, para dar tempo de ler (despachante.js: raciocinio(e, 8000)). A espera pelas etapas antes de mostrar a resposta ja soma este tempo extra sozinha.
+- sw.js: nova VERSAO para limpar a cache antiga do telemovel.

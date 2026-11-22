@@ -598,7 +598,7 @@ function textoConta(fm){
 }
 async function tentar(q){
  q=coloquial(q);
- if(typeof window.lumeOnReply==="function"&&window.lumeTutorAtivo()){var rt=tutorResponder(q);if(rt){if(rt.etapas&&rt.etapas.length)rt.etapas.forEach(function(e){raciocinio(e,4000)});else if(rt.rac)raciocinio(rt.rac);window.lumeOnReply({text:rt.texto});return true}}
+ if(typeof window.lumeOnReply==="function"&&window.lumeTutorAtivo()){var rt=tutorResponder(q);if(rt){if(rt.etapas&&rt.etapas.length)rt.etapas.forEach(function(e){raciocinio(e,8000)});else if(rt.rac)raciocinio(rt.rac);window.lumeOnReply({text:rt.texto});return true}}
  var DL=window.LumeDialogo;
  if(DL&&typeof window.lumeOnReply==="function"){
   var etp=window.lumeAtualizarEtapa,esp=function(t){etp&&etp(t);return Promise.resolve()};
