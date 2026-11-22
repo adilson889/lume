@@ -438,3 +438,6 @@ Lume - historico de versoes
 - Iniciativa: "decide tu", "o que sugeres?", "sei la, o que podemos fazer?" e "vamos estudar, ou fazer qualquer coisa" fazem o Lume propor algo de bot/sugestoes.txt sem repetir; "sim" executa o pedido da proposta, "nao" ou "outra" propoe outra.
 - Elogios curtos ("muito bom", "perfeito", "genial") e "nada por enquanto" passam a ser reconhecidos em vez de cairem no motor do bot.
 - Treino: 20 casos novos em treino/casos.txt (por correr).
+
+0.5.46
+- Guardar o desenho de uma resposta como imagem: no menu das respostas (tres pontos) aparecem "Guardar como PNG" e "Guardar como JPEG" quando a resposta tem um desenho. O SVG e convertido no proprio aparelho (sem servidor). No telemovel abre a partilha (que permite guardar); no computador descarrega o ficheiro. JPEG leva fundo branco. ".jpg" e ".jpeg" sao o mesmo formato; o ficheiro sai como .jpg.
