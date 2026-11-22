@@ -74,6 +74,7 @@ LUME/
   editor/lume-editor.js         ponte do editor no chat (cartões de ficheiro)
   TEMPLATES.md                  como criar templates (páginas HTML/JS e XLang)
   COMPONENTES.md                gerador de código HTML + CSS (componentes.txt e cores.txt)
+  CODIGO_TYPESCRIPT.md          rascunho: gerador de código TypeScript por regras, letra a letra (não implementado)
   CHANGELOG.txt
   VERSION
 ```
