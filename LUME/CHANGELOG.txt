@@ -382,3 +382,8 @@ Lume - historico de versoes
 - Os testes da equacao do 2.o grau passam a aparecer primeiro como etapas da Atividade, uma a uma: "A testar o resultado por dois caminhos", "Teste 1: a substituir x1 e x2 na equacao", "Teste 2: a conferir a soma e o produto das raizes", "Os testes passaram e deram o mesmo resultado" e, no fim, "A preparar a resposta com os calculos". So depois aparece a resposta com os calculos e a seccao "Sobre os testes". Se um teste falhar, a etapa diz que nao recomenda a resposta.
 - index.html: a espera pelas etapas antes de mostrar a resposta sobe de 3 s para 9 s, para dar tempo as etapas dos testes.
 - sw.js: nova VERSAO para limpar a cache antiga do telemovel.
+
+0.5.34
+- Corrigido: com o tutor da equacao do 2.o grau a meio (a pedir a, b e c), escrever outra equacao (ex.: x^2-9=0) era tratado como resposta e dava "Nao percebi. Escreve os tres valores". Agora o Lume reconhece que e uma equacao nova, deixa a anterior e abre a sondagem da nova. As respostas normais do tutor (a = 1, b = 0, c = -9; delta; x1 = 3) continuam a ser tratadas como respostas.
+- Equacoes com um termo em falta (x^2-9=0, x^2+4x=0, 3x^2=12) ja eram reconhecidas (o termo em falta vale 0).
+- sw.js: nova VERSAO para limpar a cache antiga do telemovel.

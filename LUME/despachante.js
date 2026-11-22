@@ -451,6 +451,8 @@ function tutorResponder(txt){
  var n=tNorm(txt),e=T.q,X=e.X,a=e.a,b=e.b,c=e.c,D=T.D;
  if(/^(sair|cancelar|cancela|parar|para|esquece|esquece isso|deixa|deixa estar|chega|nao quero continuar)$/.test(n))return tFim("Combinado, ficamos por aqui. Quando quiseres, escreve outra equação.");
  if(/^(resolve tu|resolve|resolve por mim|faz tu|mostra tudo|mostra a solucao|mostra a resolucao|diz a solucao|diz a resposta|resolve tudo)$/.test(n))return tSolucao(T);
+ var fmN=null;try{fmN=funcaoMatematica(txt)}catch(_){}
+ if(fmN&&fmN.q){_tutor=null;return null}
  var naoSei=/^(nao sei|sei la|nao me lembro|nao lembro|ajuda|ajuda me|dica|nao faco ideia|nao consigo)$/.test(n);
  var palavras=n.split(" ").filter(Boolean).length;
  if(T.etapa==="oferta"){
