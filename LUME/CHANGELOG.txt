@@ -441,3 +441,11 @@ Lume - historico de versoes
 
 0.5.46
 - Guardar o desenho de uma resposta como imagem: no menu das respostas (tres pontos) aparecem "Guardar como PNG" e "Guardar como JPEG" quando a resposta tem um desenho. O SVG e convertido no proprio aparelho (sem servidor). No telemovel abre a partilha (que permite guardar); no computador descarrega o ficheiro. JPEG leva fundo branco. ".jpg" e ".jpeg" sao o mesmo formato; o ficheiro sai como .jpg.
+
+0.5.47
+- Fisica (LUME/fisica.js): motor geral, sem casos fixos. Le o enunciado, encontra os numeros com unidades (km/h, g, cm3, ohm, kWh, graus...), converte para o SI, decide que grandeza e cada um (pela unidade, pelo simbolo "m = 2 kg" e pelas palavras ao redor), percebe o que se pede e procura numa tabela de ~45 formulas a que liga os dados ao pedido, com ate dois calculos intermedios (ex.: forca a partir de 0 a 20 m/s em 10 s; energia cinetica de uma pedra que cai de 20 m). Isola a incognita sozinho, usa g = 9,8 m/s2 quando faz falta (diz que usou) e "parte do repouso", "ate parar", "cai", "agua" sao percebidos.
+- Areas: cinematica (MRU, MRUV, Torricelli, queda livre), movimento circular, dinamica (Newton, peso, atrito, Hooke, momento, impulso), gravitacao, energia e trabalho, potencia, hidrostatica (densidade, pressao, empuxo), termologia (calor, ΔT, gases), ondas, eletricidade (Ohm, potencia, carga, Coulomb, campo).
+- Mesmo fluxo dos outros exercicios: sondagem "Resolver juntos, passo a passo" ou "O Lume resolve sozinho"; juntos pergunta a formula e o valor; tudo em LaTeX (dados, formula, forma isolada, substituicao, calculo e resultado) e pede o resultado "em <unidade>" quando o enunciado o pede.
+- Testes por dois caminhos (cada um e uma etapa da Atividade, 8 s, e a seccao "Sobre os testes"): 1) unidades (analise dimensional) e 2) prova real, recalculando um dos dados a partir do resultado.
+- Nao apanha conversas nem contas do dia a dia: so entra quando ha dados com unidades fisicas e o enunciado nomeia o que se pede. Testado com 22 exercicios de resposta conhecida (todos certos) e contra todas as mensagens do treino (0 falsos positivos).
+- Treino: 15 casos novos de Fisica.

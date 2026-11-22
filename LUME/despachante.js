@@ -527,6 +527,7 @@ function tutorIniciar(fx){
 function tutorResponder(txt){
  var T=_tutor;if(!T)return null;
  T.t=Date.now();
+ if(T.tipo==="fis"){var rf=window.LumeFisica?window.LumeFisica.responder(T,txt,{fim:function(){_tutor=null}}):null;if(!rf)_tutor=null;return rf}
  var n=tNorm(txt),e=T.q,X=e.X,a=e.a,b=e.b,c=e.c,D=T.D;
  if(/^(sair|cancelar|cancela|parar|para|esquece|esquece isso|deixa|deixa estar|chega|nao quero continuar)$/.test(n))return tFim("Combinado, ficamos por aqui. Quando quiseres, escreve outra equação.");
  if(/^(resolve tu|resolve|resolve por mim|faz tu|mostra tudo|mostra a solucao|mostra a resolucao|diz a solucao|diz a resposta|resolve tudo)$/.test(n))return tSolucao(T);
@@ -686,6 +687,18 @@ async function tentar(q){
   var mm=DL.memorizar&&DL.memorizar(q);
   if(mm){var mr=String(mm.rot||"").toLowerCase();await esp(mm.novo?(mm.antes?"Disseste um novo valor para «"+mr+"»; vou atualizar a memória.":"Disseste «"+mr+"»; vou guardá-lo na memória."):"Disseste «"+mr+"», mas isso já estava guardado.");await esp(mm.novo?(mm.antes?"Troquei «"+mm.antes+"» por «"+mm.val+"».":"Guardei «"+mm.val+"» em «"+mr+"»."):"Não mudei nada na memória.")}
   DL.ver(q);var rd=DL.resolver(q);if(rd&&rd.resposta){window.lumeOnReply({text:rd.resposta});return true}}
+ if(typeof window.lumeOnReply==="function"&&window.LumeFisica&&q.length<=700){
+  var fis=null;try{fis=window.LumeFisica.analisar(q)}catch(_){}
+  if(fis){
+   if(/^(resolve|resolva|resolver)\b/.test(norm(q))){
+    raciocinio("Li o exercício de Física, identifiquei os dados e o que se pede, e resolvi sozinho, com os mesmos passos e sem perguntas.");
+    var sf=window.LumeFisica.solucao(fis);sf.etapas.forEach(function(e){raciocinio(e,T_ETAPA_TESTE)});
+    window.lumeOnReply({text:sf.texto});return true}
+   var of=window.LumeFisica.oferta(fis);
+   _tutor={tipo:"fis",fis:fis,etapa:"oferta",erros:0,t:Date.now()};
+   raciocinio(of.rac);window.lumeOnReply({text:"",html:of.html});return true;
+  }
+ }
  if(typeof window.lumeOnReply==="function"&&q.length<=140){var fmx=null;try{fmx=funcaoMatematica(q)}catch(_){}if(fmx&&fmx.q){if(/^(resolve|resolva|resolver|calcula|calcule|calcular|determine|encontre|quais|qual|quanto|raizes|raiz)\b/.test(norm(q))){raciocinio("Pediste a resolução; resolvi sozinho, com os mesmos passos e sem perguntas.");window.lumeOnReply({text:tSolucaoDe(fmx.q)});return true}var ti=tutorIniciar(fmx);raciocinio(ti.rac);window.lumeOnReply({text:ti.texto,html:ti.html});return true}
   if(fmx&&((fmx.p&&fmx.p.length)||fmx.e)){raciocinio("Li o pedido como uma conta e fiz os passos em JavaScript; o chat formata a resposta.");window.lumeOnReply({text:comTestes(fmx,textoConta(fmx))});return true}var rj=fmx&&!fmx.e?respostaSimples(fmx):null;if(rj){raciocinio("Fiz a conta em JavaScript e escrevi o resultado em LaTeX.");window.lumeOnReply({text:comTestes(fmx,rj)});return true}}
  if(typeof window.lumeOnReply==="function"){var cdet=detectarConversa(q);var conversa=gerarConversa(q);if(conversa){raciocinio(descreverConversa(cdet||{}));window.lumeOnReply({text:conversa});return true;}}

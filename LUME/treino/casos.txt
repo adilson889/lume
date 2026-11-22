@@ -253,3 +253,19 @@ oi >> vamos estudar, ou fazer qualquer coisa | (que tal|uma ideia|podemos)
 oi >> vamos estudar >> sim | resultado
 oi >> vamos estudar >> nao | (outra ideia|tenho outra|experimenta esta)
 oi >> muito bom | (obrigado|bom ouvir|contente)
+# --- fisica: sondagem, passo a passo, LaTeX e testes ---
+Um corpo de 2 kg tem aceleração de 3 m/s². Calcule a força resultante. | exercicio de fisica.*como preferes
+Um corpo de 2 kg tem aceleração de 3 m/s². Calcule a força resultante. >> O Lume resolve sozinho | resultado:\*\* f = 6
+Um corpo de 2 kg tem aceleração de 3 m/s². Calcule a força resultante. >> Resolver juntos, passo a passo | que formula liga
+Um corpo de 2 kg tem aceleração de 3 m/s². Calcule a força resultante. >> sim >> F = m * a >> 6 N | exatamente.*resultado:\*\* f = 6
+Um corpo de 2 kg tem aceleração de 3 m/s². Calcule a força resultante. >> sim >> nao sei >> 20 >> 30 | sobre os testes
+Um carro de 1200 kg parte do repouso e atinge 20 m/s em 10 s. Qual é a força resultante? >> sozinho | resultado:\*\* f = 2400
+Qual o peso de um corpo de 70 kg? >> sozinho | resultado:\*\* p = 686
+Um carro percorre 150 km em 2 h. Qual a velocidade média em m/s? >> sozinho | 20\{,\}833
+Calcule a energia cinética de um corpo de 4 kg a 5 m/s. >> sozinho | resultado:\*\* e_c = 50
+Uma pedra de 2 kg cai de uma altura de 20 m. Calcule a energia cinética ao chegar ao chão. >> sozinho | resultado:\*\* e_c = 392
+Um bloco de 5 kg é puxado com 20 N e o coeficiente de atrito é 0,2. Qual a aceleração? >> sozinho | resultado:\*\* a = 2\{,\}04
+Quanto calor é preciso para aquecer 2 kg de água de 20 °C a 80 °C? >> sozinho | resultado:\*\* q = 502320
+Resolve: Um fio de 10 ohm é percorrido por 2 A. Qual a tensão? | resultado:\*\* u = 20
+Um corpo de 2 kg tem aceleração de 3 m/s². Calcule a força resultante. >> sozinho | teste 2.*prova real
+Comprei 2 kg de arroz e 3 kg de feijão, quanto pesa tudo? | BOT

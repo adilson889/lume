@@ -6,7 +6,7 @@ function novo(){
  const st={};global.sessionStorage={getItem:k=>st[k]||null,setItem:(k,v)=>{st[k]=v}};global.localStorage=global.sessionStorage;
  const A={};for(const n of JSON.parse(fs.readFileSync(B+"arquivos.json","utf8")))if(n!=="main.sql")A[n]=fs.readFileSync(B+n,"utf8");
  global.window={arquivosBot:A};
- (0,eval)(fs.readFileSync("LUME/despachante.js","utf8"));(0,eval)(fs.readFileSync("LUME/dialogo.js","utf8"));
+ (0,eval)(fs.readFileSync("LUME/fisica.js","utf8"));(0,eval)(fs.readFileSync("LUME/despachante.js","utf8"));(0,eval)(fs.readFileSync("LUME/dialogo.js","utf8"));
  const o={out:[]};window.lumeOnReply=x=>{o.out.push(x.text||x.html||"");window.LumeDialogo.registar(x.text||"")};return o;
 }
 (async()=>{
