@@ -1,0 +1,29 @@
+name: Aplicar patch
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  aplicar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Aplicar os patches
+        run: |
+          git config user.name "adilson889"
+          git config user.email "adilson889@users.noreply.github.com"
+          git am patches/*.patch
+
+      - name: Apagar a pasta de patches
+        run: |
+          git rm -rq patches
+          git commit -m "Remove patches ja aplicados"
+
+      - name: Enviar para a main
+        run: git push origin HEAD:main
