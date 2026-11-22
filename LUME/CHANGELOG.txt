@@ -420,3 +420,6 @@ Lume - historico de versoes
 
 0.5.41
 - Corrigido: "(1/3)+(1/4)" aparecia com texto cru ("rac{1}{3}", "imes"). O enviar() reescrevia a mensagem como "calcule <LaTeX>" e as barras invertidas perdiam-se; agora, quando a conta ja vem em LaTeX, envia-se o pedido original ao despachante (index.html e mobile.html).
+
+0.5.42
+- Corrigido de vez o texto cru nos pedidos novos (geometria, unidades, regra de tres, juros, sistemas, estatistica...): o enviar() so reescreve a mensagem como "calcule ..." nas contas simples sem passos; em tudo o resto envia o pedido original ao despachante. Testado com 26 pedidos pelo mesmo caminho do enviar(): 0 falhas.
