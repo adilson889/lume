@@ -461,3 +461,6 @@ Lume - historico de versoes
 - O lexico (acoes, operacoes como mais/vezes/soma/dobro/metade, palavras vazias) e dados no topo de LUME/codigo.js, pronto para crescer ou passar para ficheiro.
 - Aceita varias formas da mesma ideia: "a mais b", "soma a e b", "multiplica largura por altura", "o dobro de uma variavel", "a metade do preco". "a" e "o" tambem funcionam como nomes de variaveis.
 - Se faltar um nome, o Lume inventa-o e diz qual foi; os nomes dados ficam exatos. Contas misturadas (a mais b vezes c) ainda sao recusadas com explicacao.
+
+0.5.52
+- Equacoes do 2.o grau: no fim da resolucao (tutor ou "resolve ...") o Lume desenha a parabola com o vertice e as raizes marcadas, usando a xlang-grafico carregada do CDN (nada copiado para este repo).

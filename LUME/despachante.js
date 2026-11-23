@@ -440,7 +440,7 @@ function tSolucaoDe(e){
  if(!t)return corpo;
  return t.antes+corpo+"\n\n"+t.depois;
 }
-function tSolucao(T,pref){var o=tSolucaoDe(T.q);_tutor=null;return {texto:(pref||"Está bem, resolvo eu, com os mesmos passos.")+"\n\n"+o,rac:"Resolvi sozinho, com os mesmos passos e sem perguntas.",etapas:_etapasTestes}}
+function tSolucao(T,pref){var o=tSolucaoDe(T.q);_tutor=null;return {texto:(pref||"Está bem, resolvo eu, com os mesmos passos.")+"\n\n"+o,rac:"Resolvi sozinho, com os mesmos passos e sem perguntas.",etapas:_etapasTestes,g:tGraf(T.q)}}
 /* testes genericos (2 caminhos) para os pedidos novos: a={d,t,c,ok}, b={d,t,c,ok}; c leva matematica em md(mx(..)) */
 function eqn(a,b){return Math.abs(a-b)<=1e-6*(Math.abs(b)+1)}
 function TT2(a,b){
@@ -518,6 +518,11 @@ function tTestesCalc(arv,v,D,F,W){
  var et=[n===2?"A testar o resultado por dois caminhos":"A testar o resultado","Teste 1: a recalcular a conta de novo"].concat(t2?["Teste 2: a fazer a prova real com a operação inversa"]:[],[ok?(n===2?"Os testes passaram e deram o mesmo resultado":"O teste passou e deu o mesmo resultado"):"Os testes não bateram: não recomendo esta resposta","A preparar a resposta com os cálculos"]);
  return {ok:ok,etapas:et,antes:antes,depois:"**Sobre os testes**\n\n"+t1+(t2?"\n\n"+t2:"")+"\n\n"+fim};
 }
+/* Grafico da parabola no fim da resolucao: bloco XLang com a lib xlang-grafico (carregada do CDN pelo interpretador). */
+function tGraf(q){
+ var n=function(v){return String(+(+v).toFixed(6))};
+ return '<script type="text/xlang"><program><import name="xlang.grafico"></import><print>{plotParabola('+n(q.a)+', '+n(q.b)+', '+n(q.c)+')}</print></program><\/script>';
+}
 function tutorIniciar(fx){
  var e=fx.q,D=e.b*e.b-4*e.a*e.c;if(Math.abs(D)<1e-9)D=0;
  _tutor={q:e,fx:fx,etapa:"oferta",erros:0,D:D,t:Date.now(),x1:null,x2:null};
@@ -566,7 +571,7 @@ function tutorResponder(txt){
   else if(naoSei||T.erros>=1)pref="A fórmula é $\\Delta = b^2 - 4ac$.";
   else{T.erros++;return {texto:"Não é bem essa. Pensa: o Δ usa o **b** ao quadrado e subtrai quatro vezes o **a** e o **c**. Tenta outra vez ou diz «não sei».",rac:"A fórmula do Δ não estava certa; dei uma pista."}}
   var sub="Substituindo:\n\n$$\\Delta = "+lW(b)+"^2 - 4 \\times "+lW(a)+" \\times "+lW(c)+"$$\n\n$$\\Delta = "+lF(b*b)+" - "+lW(4*a*c)+" = "+lF(D)+"$$";
-  if(D<0){var r={texto:pref+"\n\n"+sub+"\n\nComo o $\\Delta$ é **negativo**, não existe raiz quadrada real de $\\Delta$: a equação **não tem solução real**.\n\n**Resultado:** sem solução real\n\nPara outra equação, é só escrevê-la.",rac:"Δ negativo: sem solução real; terminei a resolução."};_tutor=null;return r}
+  if(D<0){var r={texto:pref+"\n\n"+sub+"\n\nComo o $\\Delta$ é **negativo**, não existe raiz quadrada real de $\\Delta$: a equação **não tem solução real**.\n\n**Resultado:** sem solução real\n\nPara outra equação, é só escrevê-la.",rac:"Δ negativo: sem solução real; terminei a resolução.",g:tGraf(T.q)};_tutor=null;return r}
   T.etapa="bh";T.erros=0;
   var interp=D===0?"Como o $\\Delta$ é **zero**, a equação tem uma **raiz dupla**.":"Como o $\\Delta$ é **positivo**, a equação tem **duas raízes reais diferentes**.";
   return {texto:pref+"\n\n"+sub+"\n\n"+interp+"\n\n"+tPasso(T,"bh"),rac:"Passo 3: aplicar a fórmula de Bhaskara."};
@@ -577,12 +582,12 @@ function tutorResponder(txt){
   var ns2=tNumeros(String(txt).replace(/[x][12₁₂]?\s*=/gi," ")),v=ns2.length&&palavras<=8?ns2[ns2.length-1]:null;
   var acertou=v!==null&&Math.abs(v-alvo)<0.01;
   function avancar(pre){
-   if(D===0){var r2={texto:pre+"\n\n**Resultado:** $"+X+" = "+lF(alvo)+"$ (raiz dupla)\n\nPara outra equação, é só escrevê-la.",rac:"Terminei: raiz dupla."};_tutor=null;return r2}
+   if(D===0){var r2={texto:pre+"\n\n**Resultado:** $"+X+" = "+lF(alvo)+"$ (raiz dupla)\n\nPara outra equação, é só escrevê-la.",rac:"Terminei: raiz dupla.",g:tGraf(T.q)};_tutor=null;return r2}
    if(T.etapa==="bh"){
     T.x1=alvo;T.etapa="bh2";T.erros=0;
     return {texto:pre+"\n\nAgora o **sinal −**:\n\n$$"+X+"_2 = \\frac{-"+lW(b)+" - "+lF(Math.sqrt(D))+"}{2 \\times "+lW(a)+"}$$\n\nQual é o valor de $"+X+"_2$?",rac:"Passo 3b: a segunda raiz."};
    }
-   var r3={texto:pre+"\n\n**Resultado:** $"+X+"_1 = "+lF(T.x1)+"$ e $"+X+"_2 = "+lF(alvo)+"$\n\nPara outra equação, é só escrevê-la.",rac:"Terminei: duas raízes."};_tutor=null;return r3;
+   var r3={texto:pre+"\n\n**Resultado:** $"+X+"_1 = "+lF(T.x1)+"$ e $"+X+"_2 = "+lF(alvo)+"$\n\nPara outra equação, é só escrevê-la.",rac:"Terminei: duas raízes.",g:tGraf(T.q)};_tutor=null;return r3;
   }
   if(acertou)return avancar("**"+(D===0?"Acertaste em cheio!":tElogio())+"** $"+nomeL+" = "+lF(alvo)+"$.");
   if(naoSei||T.erros>=1)return avancar("Sem problema: $"+nomeL+" = "+lF(alvo)+"$.");
@@ -678,7 +683,7 @@ function textoConta(fm){
 }
 async function tentar(q){
  q=coloquial(q);
- if(typeof window.lumeOnReply==="function"&&window.lumeTutorAtivo()){var rt=tutorResponder(q);if(rt){if(rt.etapas&&rt.etapas.length)rt.etapas.forEach(function(e){raciocinio(e,T_ETAPA_TESTE)});else if(rt.rac)raciocinio(rt.rac);window.lumeOnReply({text:rt.texto});return true}}
+ if(typeof window.lumeOnReply==="function"&&window.lumeTutorAtivo()){var rt=tutorResponder(q);if(rt){if(rt.etapas&&rt.etapas.length)rt.etapas.forEach(function(e){raciocinio(e,T_ETAPA_TESTE)});else if(rt.rac)raciocinio(rt.rac);window.lumeOnReply({text:rt.texto});if(rt.g)window.lumeOnReply({html:rt.g});return true}}
  var DL=window.LumeDialogo;
  if(DL&&typeof window.lumeOnReply==="function"){
   var etp=window.lumeAtualizarEtapa,esp=function(t){etp&&etp(t);return Promise.resolve()};
@@ -703,7 +708,7 @@ async function tentar(q){
    raciocinio(of.rac);window.lumeOnReply({text:"",html:of.html});return true;
   }
  }
- if(typeof window.lumeOnReply==="function"&&q.length<=140){var fmx=null;try{fmx=funcaoMatematica(q)}catch(_){}if(fmx&&fmx.q){if(/^(resolve|resolva|resolver|calcula|calcule|calcular|determine|encontre|quais|qual|quanto|raizes|raiz)\b/.test(norm(q))){raciocinio("Pediste a resolução; resolvi sozinho, com os mesmos passos e sem perguntas.");window.lumeOnReply({text:tSolucaoDe(fmx.q)});return true}var ti=tutorIniciar(fmx);raciocinio(ti.rac);window.lumeOnReply({text:ti.texto,html:ti.html});return true}
+ if(typeof window.lumeOnReply==="function"&&q.length<=140){var fmx=null;try{fmx=funcaoMatematica(q)}catch(_){}if(fmx&&fmx.q){if(/^(resolve|resolva|resolver|calcula|calcule|calcular|determine|encontre|quais|qual|quanto|raizes|raiz)\b/.test(norm(q))){raciocinio("Pediste a resolução; resolvi sozinho, com os mesmos passos e sem perguntas.");window.lumeOnReply({text:tSolucaoDe(fmx.q)});window.lumeOnReply({html:tGraf(fmx.q)});return true}var ti=tutorIniciar(fmx);raciocinio(ti.rac);window.lumeOnReply({text:ti.texto,html:ti.html});return true}
   if(fmx&&((fmx.p&&fmx.p.length)||fmx.e)){raciocinio("Li o pedido como uma conta e fiz os passos em JavaScript; o chat formata a resposta.");window.lumeOnReply({text:comTestes(fmx,textoConta(fmx))});return true}var rj=fmx&&!fmx.e?respostaSimples(fmx):null;if(rj){raciocinio("Fiz a conta em JavaScript e escrevi o resultado em LaTeX.");window.lumeOnReply({text:comTestes(fmx,rj)});return true}}
  if(typeof window.lumeOnReply==="function"){var cdet=detectarConversa(q);var conversa=gerarConversa(q);if(conversa){raciocinio(descreverConversa(cdet||{}));window.lumeOnReply({text:conversa});return true;}}
  var caps=lerCapacidades();if(!caps.length||typeof window.lumeOnReply!=="function")return false;
