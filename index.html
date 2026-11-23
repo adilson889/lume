@@ -949,13 +949,15 @@ function prepararXlangSql(src){
 /* HTMLx-lang: corre os blocos <script type="text/xlang"> devolvidos pelo motor dentro do balão */
 /* Commit do HTMLx-lang usado pelo chat. Fixo para a CDN nao servir um xlang-modules.json antigo; mudar quando houver modulos novos. */
 const XLANG_COMMIT="fa5dbc4a93c92ecf7c56591b357a12560414884a";
+/* O interpretador declara "class XLangInterpreter" no topo do script: isso fica no ambito global mas nao em window. */
+function xlangClasse(){try{return window.XLangInterpreter||(typeof XLangInterpreter!=="undefined"?XLangInterpreter:null)}catch(_){return null}}
 let _xlangPromessa=null;
 function carregarXlang(){
- if(window.XLangInterpreter)return Promise.resolve();
+ if(xlangClasse())return Promise.resolve();
  if(!_xlangPromessa){
   _xlangPromessa=carregarScript("https://cdn.jsdelivr.net/gh/adilson889/HTMLx-lang@"+XLANG_COMMIT+"/xlang-interpreter.js")
    .catch(function(){return carregarScript("xlang-interpreter.js")})
-   .then(function(){if(!window.XLangInterpreter)throw new Error("interpretador indisponível")});
+   .then(function(){if(!xlangClasse())throw new Error("interpretador indisponível")});
   _xlangPromessa.catch(function(){_xlangPromessa=null});
  }
  return _xlangPromessa;
@@ -994,7 +996,7 @@ async function executarXlang(slot,codigo){
  try{
   await carregarXlang();
   slot.textContent="";
-  await new window.XLangInterpreter(slot).run(codigo);
+  await new (xlangClasse())(slot).run(codigo);
   inserirMarcacaoBruta(slot);
   realcarCodigo(slot);
  }catch(e){
