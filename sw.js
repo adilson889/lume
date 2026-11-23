@@ -11,7 +11,7 @@
    antigas de uma vez, mudar VERSAO. Os ficheiros do bot sao descobertos sozinhos em LUME/bot/arquivos.json. */
 "use strict";
 
-var VERSAO = "0.5.57";
+var VERSAO = "0.5.58";
 var P = "lume-";
 var C_SHELL = P + "shell-" + VERSAO;
 var C_DADOS = P + "dados-" + VERSAO;

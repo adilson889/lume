@@ -493,3 +493,20 @@ Princípio DRY: recomendação de evitar duplicação desnecessária de lógica 
 Princípio KISS: recomendação de preferir soluções simples e compreensíveis, evitando complexidade sem necessidade.
 
 Princípio SOLID: conjunto de cinco princípios de desenho de software orientado a objectos que ajudam a organizar sistemas e reduzir dependências rígidas.
+
+PWA (aplicação web progressiva, app instalável): site que se instala como aplicação e funciona sem ligação. Precisa de HTTPS, um manifest (nome, ícones, cores, start_url) e um service worker, que guarda ficheiros em cache. Instala-se pelo menu do navegador, em Adicionar ao ecrã principal.
+
+Service worker (trabalhador de serviço, sw.js): script que corre em segundo plano e controla os pedidos da página. Permite cache, uso sem ligação e atualizações. Ao mudar a versão da app, muda-se a versão do cache para o telemóvel descarregar os ficheiros novos.
+
+TWA (Trusted Web Activity, app Android de PWA, PWA para APK): app Android que abre o teu PWA em ecrã inteiro, sem barra de endereço, usando o Chrome. Para funcionar precisa de HTTPS, manifest, service worker, uma app Android assinada e o ficheiro /.well-known/assetlinks.json no teu domínio com o package e o SHA-256 da chave. No telemóvel dá para gerar com o PWABuilder (pwabuilder.com): colas o URL, escolhes Android, defines o package e descarregas o APK e o AAB.
+
+assetlinks.json (digital asset links, ligação do site à app): ficheiro em /.well-known/assetlinks.json que prova que a app Android e o site são do mesmo dono. Tem relation delegate_permission/common.handle_all_urls, namespace android_app, package_name e sha256_cert_fingerprints. Tem de responder 200, em application/json e sem redirecionamento. Se estiver errado, a app mostra a barra de endereço.
+
+SHA-256 da chave (impressão digital, fingerprint): código da chave que assina a app Android, no formato AA:BB:CC. Vai no assetlinks.json. Com a Play Store, a Google reassina a app, por isso acrescenta-se também o SHA-256 da assinatura da Play, que está na Play Console, em Integridade da app.
+
+PWABuilder (gerar APK de um site): serviço gratuito em pwabuilder.com que analisa o PWA, aponta o que falta e gera o pacote Android (APK e AAB) com a chave de assinatura. Guarda sempre o ficheiro da chave e as palavras-passe, porque sem eles não podes atualizar a mesma app.
+
+Bubblewrap (ferramenta de TWA): ferramenta de linha de comandos da Google que cria um TWA a partir do manifest. Precisa de Node, JDK e Android SDK. O PWABuilder usa-a por baixo.
+
+AAB e APK (pacote Android): o APK instala-se directamente no telemóvel; o AAB (Android App Bundle) é o formato exigido pela Play Store, que depois gera os APK para cada dispositivo.
+

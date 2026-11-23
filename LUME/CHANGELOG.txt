@@ -479,3 +479,6 @@ Lume - historico de versoes
 
 0.5.57
 - Interpretador XLang fixado ao commit 634d392 (com a correcao dos desenhos): os desenhos por pecas e composicao voltam a aparecer.
+
+0.5.58
+- Guia completo de PWA para app Android (TWA) em LUME/TWA.md e 8 entradas no conhecimento do Lume (PWA, service worker, TWA, assetlinks.json, SHA-256, PWABuilder, Bubblewrap, AAB e APK). vercel.json ja serve /.well-known/assetlinks.json como application/json.
