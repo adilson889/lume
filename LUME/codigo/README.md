@@ -12,6 +12,7 @@ Camada que lê um pedido escrito em português ("cria uma função que calcula o
 | `nucleo.js` | Núcleo: palavras, contas, descoberta da intenção, `responder` |
 | `variaveis.js` | Intenção: declarar variáveis e constantes |
 | `funcoes.js` | Intenção: criar funções (contas, dobro, metade, maior/menor com if) |
+| `listas.js` | Listas e ciclos: "cria uma lista notas com 10, 12 e 15"; funções que somam, multiplicam, tiram a média ou contam os elementos de uma lista (com for) |
 | `condicoes.js` | Resultado de funções com condição: "verdadeiro se a for maior que b", "'positivo' se n for maior que 0 senão 'negativo'", "se n é par" |
 
 Ordem de carregamento: gerador, léxico, núcleo, intenções e resultados (a lista está em `../codigo.js`).
