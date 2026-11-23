@@ -12,8 +12,9 @@ Camada que lê um pedido escrito em português ("cria uma função que calcula o
 | `nucleo.js` | Núcleo: palavras, contas, descoberta da intenção, `responder` |
 | `variaveis.js` | Intenção: declarar variáveis e constantes |
 | `funcoes.js` | Intenção: criar funções (contas, dobro, metade, maior/menor com if) |
+| `condicoes.js` | Resultado de funções com condição: "verdadeiro se a for maior que b", "'positivo' se n for maior que 0 senão 'negativo'", "se n é par" |
 
-Ordem de carregamento: gerador, léxico, núcleo, intenções (a lista está em `../codigo.js`).
+Ordem de carregamento: gerador, léxico, núcleo, intenções e resultados (a lista está em `../codigo.js`).
 
 ## Juntar uma capacidade nova
 
@@ -30,6 +31,10 @@ PT.registar({
 
 2. Acrescenta o nome do ficheiro à lista `FICHEIROS` em `../codigo.js`.
 3. Palavras novas vão para `lexico.js`.
+
+## Juntar um tipo novo de resultado de função
+
+Uma função pode devolver coisas muito diferentes. Em vez de crescer `funcoes.js`, cada tipo de resultado é um ficheiro que se regista com `PT.registarResultado({nome, ler})`. `ler(cauda)` recebe as palavras depois de «devolve» e devolve `null` (não é comigo), `{erro}`, ou `{nomes, nomeSugerido, retorno, descricao, montar}`, onde `montar(C, no)` devolve os passos do corpo da função. Ver `condicoes.js`.
 
 ## Regras que valem para todas as intenções
 
