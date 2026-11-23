@@ -455,3 +455,9 @@ Lume - historico de versoes
 - Os nomes dados pelo utilizador ficam exatamente como escritos; nomes com acentos ou palavras reservadas sao recusados com explicacao.
 - Passos na Atividade; os dois testes (nomes/tipos e ordem/80 colunas) usam 8 s cada.
 - Por agora: const com number, string e boolean e contas simples. A biblioteca vai crescer (funcoes, if, ciclos, arrays).
+
+0.5.51
+- Codigo no chat: leitura por interpretacao em vez de frases fixas. O Lume parte o pedido em palavras, descobre a intencao (variavel ou funcao) pelas palavras do lexico, extrai nomes, valores e a operacao, e so depois entrega ao gerador.
+- O lexico (acoes, operacoes como mais/vezes/soma/dobro/metade, palavras vazias) e dados no topo de LUME/codigo.js, pronto para crescer ou passar para ficheiro.
+- Aceita varias formas da mesma ideia: "a mais b", "soma a e b", "multiplica largura por altura", "o dobro de uma variavel", "a metade do preco". "a" e "o" tambem funcionam como nomes de variaveis.
+- Se faltar um nome, o Lume inventa-o e diz qual foi; os nomes dados ficam exatos. Contas misturadas (a mais b vezes c) ainda sao recusadas com explicacao.
