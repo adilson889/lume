@@ -470,3 +470,6 @@ Lume - historico de versoes
 
 0.5.54
 - Tabelas e graficos por intencao, sem frases fixas: o Lume procura o substantivo (tabela, grafico, curva...) e le os dados que vierem com ele: numeros soltos (com ou sem "calcula a media"), linhas com colunas ("Nome  Idade / Ana 12 anos"), pares nome-valor (barras ou pizza), tabuada, e funcoes escritas de qualquer forma (y = ..., f(x)=..., 2x+1). Usa xlang-tabela e xlang-grafico do CDN.
+
+0.5.55
+- Cache das bibliotecas do CDN renovada (libs-2): o telemovel deixa de usar o interpretador XLang antigo e os desenhos voltam a aparecer.
