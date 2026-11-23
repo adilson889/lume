@@ -33,7 +33,7 @@ function interpretarFuncao(ws){
   var pn=params.length?params:hr.nomes,inv=!nome;
   if(!pn.length)return{erro:"Percebi a condição, mas não sei com que variáveis a função trabalha. Diz-me os nomes, por exemplo «que recebe n»."};
   for(var u=0;u<pn.length;u++){var eu=erroNome(pn[u]);if(eu)return{erro:eu}}
-  return{tipo:"funcao",funcao:{nome:nome||hr.nomeSugerido,params:pn,montar:hr.montar,retorno:hr.retorno,descricao:hr.descricao,nomeInventado:inv,inventados:[]}};
+  return{tipo:"funcao",funcao:{nome:nome||hr.nomeSugerido,params:pn,montar:hr.montar,retorno:hr.retorno,tipoParam:hr.tipoParam||"number",descricao:hr.descricao,nomeInventado:inv,inventados:[]}};
  }
  var ex=expressao(cauda,params[0]);
  if(ex.erro)return{erro:ex.erro};
@@ -52,7 +52,7 @@ function gerarFuncao(f){
  if(!C)return{erro:"O gerador de código não está carregado."};
  var no=function(o){return o.nome!==undefined?C.ident(o.nome):C.literal(o.num)};
  var e,passos,tipoRet="number";
- if(f.montar){var mm=f.montar(C,no);passos=mm;tipoRet=f.retorno}
+ if(f.montar){passos=f.montar(C,no,f.params);tipoRet=f.retorno}
  else if(f.escolha){e=no(f.itens[0]);passos=[C.se(C.comparacao(no(f.itens[0]),f.escolha,no(f.itens[1])),[C.retorno(no(f.itens[0]))]),C.retorno(no(f.itens[1]))]}
  else{e=no(f.itens[0]);for(var i=1;i<f.itens.length;i++)e=C.binaria(e,f.ops[i-1],no(f.itens[i]));passos=[C.retorno(e)]}
  var tabela=C.criarTabela(),texto,programa;
@@ -60,10 +60,10 @@ function gerarFuncao(f){
  var etapas=["Intenção: criar uma função"+(f.montar?" "+f.descricao:f.escolha?" que escolhe o "+f.palavraEscolha+" de dois valores, com um if":f.unario?" que calcula o "+f.unario:op?" com uma "+nomeOp[op]:"")+". Parâmetros: "+f.params.join(", ")+"."+(f.inventados&&f.inventados.length?" Não deste nome à variável, por isso chamei-lhe «"+f.inventados[0]+"».":"")+(f.nomeInventado?" Não deste nome à função, por isso chamei-lhe «"+f.nome+"».":" Os nomes que deste ficam exatamente como escreveste.")];
  try{
   C.registarUtilizador(tabela,f.nome);
-  programa=[C.funcao(f.nome,f.params.map(function(n){return C.parametro(n,"number")}),tipoRet,passos)];
+  programa=[C.funcao(f.nome,f.params.map(function(n){return C.parametro(n,f.tipoParam||"number")}),tipoRet,passos)];
   etapas.push("Montei a função letra a letra pelas regras: function, nome, parâmetros com tipo, tipo de retorno, chaveta, return e fecho.");
   texto=C.gerar(programa,tabela).replace(/\n$/,"");
-  var sem=f.params.filter(function(n){return texto.indexOf(n+": number")<0});
+  var sem=f.params.filter(function(n){return texto.indexOf(n+": "+(f.tipoParam||"number"))<0});
   if(texto.indexOf("function "+f.nome+"(")<0||sem.length)return{erro:"O código gerado não tem os nomes exatos que pediste."};
   etapas.push("Teste 1: confirmei que a função «"+f.nome+"» e os parâmetros estão com o nome e o tipo exatos.");
   etapas.push("Teste 2: confirmei que todos os nomes usados no return existem como parâmetros, que os tipos batem certo e que nenhuma linha passa de 80 colunas.");
