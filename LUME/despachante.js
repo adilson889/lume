@@ -709,7 +709,7 @@ async function tentar(q){
   }
  }
  if(typeof window.lumeOnReply==="function"&&q.length<=140){var fmx=null;try{fmx=funcaoMatematica(q)}catch(_){}if(fmx&&fmx.q){if(/^(resolve|resolva|resolver|calcula|calcule|calcular|determine|encontre|quais|qual|quanto|raizes|raiz)\b/.test(norm(q))){raciocinio("Pediste a resolução; resolvi sozinho, com os mesmos passos e sem perguntas.");window.lumeOnReply({text:tSolucaoDe(fmx.q)});window.lumeOnReply({html:tGraf(fmx.q)});return true}var ti=tutorIniciar(fmx);raciocinio(ti.rac);window.lumeOnReply({text:ti.texto,html:ti.html});return true}
-  if(fmx&&((fmx.p&&fmx.p.length)||fmx.e)){raciocinio("Li o pedido como uma conta e fiz os passos em JavaScript; o chat formata a resposta.");window.lumeOnReply({text:comTestes(fmx,textoConta(fmx))});return true}var rj=fmx&&!fmx.e?respostaSimples(fmx):null;if(rj){raciocinio("Fiz a conta em JavaScript e escrevi o resultado em LaTeX.");window.lumeOnReply({text:comTestes(fmx,rj)});return true}}
+  if(fmx&&((fmx.p&&fmx.p.length)||fmx.e)){raciocinio("Li o pedido como uma conta e fiz os passos em JavaScript; o chat formata a resposta.");window.lumeOnReply({text:comTestes(fmx,textoConta(fmx))});if(_estNums&&!fmx.e)window.lumeOnReply({html:tTab(_estNums)});return true}var rj=fmx&&!fmx.e?respostaSimples(fmx):null;if(rj){raciocinio("Fiz a conta em JavaScript e escrevi o resultado em LaTeX.");window.lumeOnReply({text:comTestes(fmx,rj)});if(_estNums&&!fmx.e)window.lumeOnReply({html:tTab(_estNums)});return true}}
  if(typeof window.lumeOnReply==="function"){var cdet=detectarConversa(q);var conversa=gerarConversa(q);if(conversa){raciocinio(descreverConversa(cdet||{}));window.lumeOnReply({text:conversa});return true;}}
  var caps=lerCapacidades();if(!caps.length||typeof window.lumeOnReply!=="function")return false;
  var t=norm(q),m=medidores(q,t);
@@ -1819,7 +1819,15 @@ function aplicadas(q){
  return null;
  }catch(err){return null}
 }
+/* Tabelas da xlang-tabela para pedidos de estatistica: resumo sempre, frequencias se houver valores repetidos. */
+var _estNums=null;
+function tTab(e){
+ var v="["+e.nums.map(function(x){return String(+(+x).toFixed(8))}).join(", ")+"]";
+ var rep=e.nums.some(function(x,i){return e.nums.indexOf(x)!==i});
+ return '<script type="text/xlang"><program><import name="xlang.tabela"></import><array name="v" value="'+v+'"></array>'+(rep?"<print>{tabFrequencies(v)}</print>":"")+"<print>{tabStats(v, "+(e.am?"true":"false")+")}</print></program><\/script>";
+}
 function funcaoMatematica(q){
+ _estNums=null;
   var _mp=_algUltima&&Date.now()-_algUltima.t<900000&&/^(?:e\s+)?(?:se\s+|para\s+|com\s+|quando\s+)?([a-df-z])\s*(?:=|vale|for|igual\s+a)\s*(-|−)?\s*(\d+(?:[.,]\d+)?)\s*[?!.]*$/.exec(String(q||"").toLowerCase().trim());
   if(_mp){var _r=expressaoAlgebrica(_algUltima.s+" com "+_mp[1]+" = "+(_mp[2]?"-":"")+_mp[3]);if(_r)return _r}
   var _s=sistema(q);if(_s)return _s;
@@ -1879,6 +1887,7 @@ function funcaoMatematica(q){
  /* estatistica (precisa de 2 ou mais numeros) */
  if(nums.length>=2){
   var am=/amostral/.test(t),lst=nums.join(","),rot=juntar(nums);
+  _estNums={nums:nums,am:am};
   if(/\bmedia\s+(?:aritmetica\s+)?(?:de|dos|das|entre)\b|^(?:calcula|calcule|qual\s+e)\s+(?:a\s+)?media\b/.test(t)&&!/ponderada/.test(t)){var _e0=estatistica("media",nums);if(_e0)return _e0}
   if(/\bmediana\b/.test(t))return R("median("+lst+")","mediana de "+rot,"\\operatorname{mediana}("+nums.map(tf).join(",\\ ")+")");
   if(/\bmoda de\b/.test(t))return R("mode("+lst+")","moda de "+rot);

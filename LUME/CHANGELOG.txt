@@ -464,3 +464,6 @@ Lume - historico de versoes
 
 0.5.52
 - Equacoes do 2.o grau: no fim da resolucao (tutor ou "resolve ...") o Lume desenha a parabola com o vertice e as raizes marcadas, usando a xlang-grafico carregada do CDN (nada copiado para este repo).
+
+0.5.53
+- Estatistica (media, mediana, moda, variancia, desvio padrao, amplitude...): depois dos passos o Lume mostra a tabela de resumo e, se houver valores repetidos, a tabela de frequencias (xlang-tabela, carregada do CDN). Sem frases fixas: as tabelas trazem o proprio titulo.
