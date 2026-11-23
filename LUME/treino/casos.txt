@@ -148,7 +148,7 @@ desenha um leao e um elefante | (svg|<svg|juntar)
 desenha duas macas e um bolo | (svg|<svg|juntar)
 desenha uma maca | (svg|<svg|desenho)
 desenha uma estrela de 7 pontas | BOT
-desenha o grafico de y = x^2 | BOT
+desenha o grafico de y = x^2 | plotParabola\(1, 0, 0\)
 desenha um dragao | BOT
 desenha um leao | (svg|<svg|desenho)
 como te chamas | lume
@@ -269,3 +269,9 @@ Quanto calor é preciso para aquecer 2 kg de água de 20 °C a 80 °C? >> sozinh
 Resolve: Um fio de 10 ohm é percorrido por 2 A. Qual a tensão? | resultado:\*\* u = 20
 Um corpo de 2 kg tem aceleração de 3 m/s². Calcule a força resultante. >> sozinho | teste 2.*prova real
 Comprei 2 kg de arroz e 3 kg de feijão, quanto pesa tudo? | BOT
+gere o grafico da funcao y = x^2 - 4x + 3 | plotParabola\(1, -4, 3\)
+quero ver a curva de f(x)=x^2-9 | plotParabola\(1, 0, -9\)
+faz um grafico de 2x+1 | plotLinear\(2, 1\)
+organiza esses numeros numa tabela 4 4 5 7 9 e calcula a media | tabStats
+cria uma tabela para a turma\nNome completo   Idade\nAna 12 anos\nBruno 13 anos | tabTable
+tabuada do 7 em tabela | tabMultiplication\(7, 10\)

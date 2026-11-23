@@ -681,9 +681,115 @@ function textoConta(fm){
  if(notas.length)o+="\n\n"+notas.join(" ");
  return o;
 }
+/* ===== Pedidos visuais por intencao: tabelas e graficos (xlang-tabela / xlang-grafico, via CDN) =====
+   Nao depende de frases: procura o substantivo (tabela, grafico...) e le os dados que vierem com ele
+   (numeros soltos, linhas com colunas, pares nome-valor, uma funcao). */
+function visTxt(s){return String(s==null?"":s).replace(/[<>"{}\\&`]/g," ").replace(/'/g,"’").replace(/\s+/g," ").trim()}
+function visLit(s){var t=visTxt(s);return /^-?\d+(?:\.\d+)?$/.test(t)?t:"'"+t+"'"}
+function visCols(l){
+ l=String(l).trim();var p;
+ if(/\t/.test(l))p=l.split(/\t+/);else if(/[;|]/.test(l))p=l.split(/\s*[;|]\s*/);else if(/\s{2,}/.test(l))p=l.split(/\s{2,}/);else p=[l];
+ return p.map(visTxt).filter(Boolean);
+}
+function visLinhas(q0){
+ var ls=String(q0).split(/\r?\n/).map(function(x){return x.trim()}).filter(Boolean);
+ if(ls.length<3)return null;
+ var dados=ls.slice(1),cab=null;
+ if(!/\d/.test(dados[0])){cab=visCols(dados[0].replace(/[.:]+\s*$/,"").replace(/[.:](\s{2,})/,"$1"));dados=dados.slice(1)}
+ if(!dados.length||dados.length>60)return null;
+ var k=cab&&cab.length>1?cab.length:Math.max.apply(null,dados.map(function(l){return visCols(l).length}));
+ var rows=dados.map(function(l){
+  var c=visCols(l);
+  if(c.length<2||c.length<k){
+   var m=k===2&&/^(.*?)\s+(-?\d+(?:[.,]\d+)?(?:\s+[^\s\d]+)?)$/.exec(l);
+   if(m)c=[visTxt(m[1]),visTxt(m[2])];
+   else{var tk=l.split(/\s+/).map(visTxt);if(tk.length===k)c=tk}
+  }
+  while(c.length<k)c.push("");
+  return c.slice(0,6);
+ });
+ k=Math.min(k,6);
+ if(k<2)return null;
+ if(!cab)cab=[];while(cab.length<k)cab.push("Coluna "+(cab.length+1));
+ return {cab:cab.slice(0,k),rows:rows.map(function(r){return r.slice(0,k)})};
+}
+function visNums(t){
+ var out=[],re=/-?\d+(?:,\d+)+|-?\d+(?:\.\d+)?/g,m;
+ while((m=re.exec(String(t)))!==null){
+  var x=m[0];
+  if(x.indexOf(",")>=0){var ps=x.split(",");if(ps.length>=3)ps.forEach(function(v){out.push(parseFloat(v))});else out.push(parseFloat(ps[0]+"."+ps[1]))}
+  else out.push(parseFloat(x));
+ }
+ return out.filter(function(x){return isFinite(x)&&Math.abs(x)<=1e12});
+}
+function visEquacao(t){
+ var tk=String(t).split(/\s+/),ini=-1,fim=-1;
+ function mat(x){return /^(?:f\(x\)|[xy]|[\d(+\-−*\/^.,=²³fxy)]+)$/i.test(x)}
+ for(var i=0;i<tk.length;i++){
+  if(!mat(tk[i])){if(ini>=0&&/[xy]/i.test(tk.slice(ini,fim+1).join("")))break;ini=-1;continue}
+  if(ini<0)ini=i;fim=i;
+ }
+ if(ini<0)return null;
+ var e=tk.slice(ini,fim+1).join("");
+ return /[xy]/i.test(e)?e.replace(/[.,]+$/,""):null;
+}
+function visProg(corpo){return '<script type="text/xlang"><program>'+corpo+'</program><\/script>'}
+function pedidoVisual(q0){
+ q0=String(q0||"");if(q0.length>3000)return null;
+ var t=norm(q0),tab=/\b(tabela|tabelas|quadro|grelha)\b/.test(t),gra=/\b(grafico|graficos|plot|plote|curva|parabola|histograma|diagrama)\b/.test(t);
+ if(!tab&&!gra)return null;
+ var imp=function(n){return '<import name="xlang.'+n+'"></import>'};
+ if(tab&&!gra){
+  if(/\b(verdade|periodica|nutricional|classificacao|campeonato|precos?)\b/.test(t))return null;
+  if(/\b(multiplicacao|multiplicar|tabuada)\b/.test(t)){var mn=visNums(t)[0];if(mn!==undefined&&Number.isInteger(mn)&&mn>=0&&mn<=1000)return{rac:"Pediste a tabuada; montei a tabela.",html:[visProg(imp("tabela")+"<print>{tabMultiplication("+mn+", 10)}</print>")]}}
+  var L=visLinhas(q0);
+  if(L){
+   var h="["+L.cab.map(visLit).join(", ")+"]",r="["+L.rows.map(function(x){return "["+x.map(visLit).join(", ")+"]"}).join(", ")+"]";
+   return{rac:"Li as linhas e as colunas que escreveste e organizei-as numa tabela.",html:[visProg(imp("tabela")+'<array name="h" value="'+h+'"></array><array name="r" value="'+r+'"></array><print>{tabTable(h, r)}</print>')]};
+  }
+  var ns=visNums(t);
+  if(ns.length>=2&&ns.length<=60){
+   var v="["+ns.map(function(x){return String(+(+x).toFixed(8))}).join(", ")+"]",rep=ns.some(function(x,i){return ns.indexOf(x)!==i});
+   var calc=/\b(media|mediana|moda|variancia|desvio|amplitude|estatistic|resumo|calcul\w*|soma|maximo|minimo)\b/.test(t),am=/amostra/.test(t);
+   var rows2="["+ns.map(function(x,i){return "["+(i+1)+", "+(+(+x).toFixed(8))+"]"}).join(", ")+"]";
+   var c="<array name=\"v\" value=\""+v+"\"></array><array name=\"r\" value=\""+rows2+"\"></array><print>{tabTable(['n', 'Valor'], r, 'Valores')}</print>";
+   if(rep||calc)c+="<print>{tabFrequencies(v)}</print>";
+   if(calc)c+="<print>{tabStats(v, "+(am?"true":"false")+")}</print>";
+   return{rac:"Organizei os números numa tabela"+(calc?" e calculei as medidas estatísticas.":"."),html:[visProg(imp("tabela")+c)]};
+  }
+  return null;
+ }
+ if(gra){
+  var eq=visEquacao(t);
+  if(eq){
+   var gr=null;try{gr=graficoFuncao("grafico de "+eq)}catch(_){}
+   if(gr&&!gr.e&&gr.c){
+    var n8=function(x){return String(+(+x).toFixed(8))},cc=gr.c;
+    var fn=cc[2]!==0?"plotParabola("+n8(cc[2])+", "+n8(cc[1])+", "+n8(cc[0])+")":"plotLinear("+n8(cc[1])+", "+n8(cc[0])+")";
+    return{rac:"Percebi que queres o gráfico da função e li a expressão que escreveste.",html:[visProg(imp("grafico")+"<print>{"+fn+"}</print>")]};
+   }
+   return null;
+  }
+  var D=null;
+  var src=q0.split(/\r?\n/).map(function(x){return x.trim()}).filter(Boolean);
+  if(src.length>=3){
+   var pares=src.slice(1).map(function(l){var c=visCols(l);if(c.length>=2&&isFinite(parseFloat(c[1].replace(",","."))))return[c[0],parseFloat(c[1].replace(",","."))];var m=/^(.*?)\s+(-?\d+(?:[.,]\d+)?)\s*\S*$/.exec(l);return m?[visTxt(m[1]),parseFloat(m[2].replace(",","."))]:null});
+   if(pares.every(Boolean)&&pares.length>=2&&pares.length<=30)D=pares;
+  }
+  if(D){
+   var lb="["+D.map(function(p){return "'"+visTxt(p[0])+"'"}).join(", ")+"]",vl="["+D.map(function(p){return +p[1].toFixed(8)}).join(", ")+"]";
+   var pie=/\b(pizza|torta|circular|setores)\b/.test(t)&&D.every(function(p){return p[1]>=0});
+   return{rac:"Li os nomes e os valores que escreveste e desenhei o gráfico.",html:[visProg(imp("grafico")+'<array name="l" value="'+lb+'"></array><array name="v" value="'+vl+'"></array><print>{'+(pie?"plotPie":"plotBars")+"(l, v)}</print>")]};
+  }
+ }
+ return null;
+}
 async function tentar(q){
+ var _q0=q;
  q=coloquial(q);
  if(typeof window.lumeOnReply==="function"&&window.lumeTutorAtivo()){var rt=tutorResponder(q);if(rt){if(rt.etapas&&rt.etapas.length)rt.etapas.forEach(function(e){raciocinio(e,T_ETAPA_TESTE)});else if(rt.rac)raciocinio(rt.rac);window.lumeOnReply({text:rt.texto});if(rt.g)window.lumeOnReply({html:rt.g});return true}}
+ var _vis=null;try{_vis=pedidoVisual(_q0)}catch(_){}
+ if(_vis&&typeof window.lumeOnReply==="function"){raciocinio(_vis.rac);_vis.html.forEach(function(h){window.lumeOnReply({html:h})});return true}
  var DL=window.LumeDialogo;
  if(DL&&typeof window.lumeOnReply==="function"){
   var etp=window.lumeAtualizarEtapa,esp=function(t){etp&&etp(t);return Promise.resolve()};
@@ -1054,7 +1160,7 @@ function graficoFuncao(q){
  var ERRO={e:"Só desenho gráficos de funções do 1.º e 2.º grau, como y = 2x+1 ou y = x²-4x+3."},P,vv={},ei=eq.indexOf("=");
  try{
   if(ei>=0){
-   if(!/gr[aá]fico|plot|fun[cç][aã]o|desenh|tra[cç]a/.test(t))return null;
+   if(!/gr[aá]fico|plot|curva|par[aá]bola|esbo[cç]|represent|visualiz|fun[cç][aã]o|desenh|tra[cç]a/.test(t))return null;
    var le=eq.slice(0,ei).trim().replace(/^[fg]\s*\(\s*x\s*\)$/,"y"),ri=eq.slice(ei+1).trim();
    if(!le||!ri||ri.indexOf("=")>=0||!/\by\b/.test(le+" "+ri))return null;
    var lado=function(yv){var yy="("+yv+")";return LP.add(LP.poly(le.replace(/\by\b/g,yy),vv),LP.poly(ri.replace(/\by\b/g,yy),vv),-1)};
@@ -1063,7 +1169,7 @@ function graficoFuncao(q){
    if(LP.grau(B)>0||Math.abs(B0)<1e-12||dif.some(function(z){return Math.abs(z)>1e-9}))return ERRO;
    P=A0.map(function(z){return -z/B0+0});
   }else{
-   if(!/gr[aá]fico|plot|fun[cç][aã]o/.test(t))return null;
+   if(!/gr[aá]fico|plot|curva|par[aá]bola|esbo[cç]|represent|visualiz|fun[cç][aã]o/.test(t))return null;
    P=LP.poly(eq,vv);
   }
  }catch(e){return e==="nl"?ERRO:null}
@@ -1138,7 +1244,7 @@ function graficoFuncao(q){
   info.push("Raiz: x = "+F(roots[0]));
  }else info.push("Função constante: y = "+F(c0));
  info.push("Corta o eixo y em (0; "+F(c0)+")");
- return {svg:o,titulo:"y = "+tit,info:info,e:""};
+ return {svg:o,titulo:"y = "+tit,info:info,e:"",c:[c0,c1,c2]};
  }catch(err){return null}
 }
 /* Equacoes do 1.o e 2.o grau com uma incognita: 2x+3=11, x²-5x+6=0, x^2=9, (x+1)^2=4, 3(x-1)=x+5 */
