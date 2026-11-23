@@ -15,10 +15,11 @@ var LEX={
  retorno:"devolve devolver devolvendo retorna retornar retornando calcula calcular calcule faz",
  entrada:"recebe receber recebendo usa com para",
  ligar:"igual valendo vale com como de valor",
- vazias:"um uma uns umas dois duas o a os as de do da dos das em no na que e por favor me chamada chamado chamadas chamados nome ao pelo pela",
+ vazias:"entre um uma uns umas dois duas o a os as de do da dos das em no na que e por favor me chamada chamado chamadas chamados nome ao pelo pela",
  tipoNome:"variavel numero valor",
  binarios:{mais:"+",soma:"+",somar:"+",menos:"-",subtrai:"-",subtrair:"-",vezes:"*",multiplicado:"*",multiplica:"*",multiplicar:"*",produto:"*",dividido:"/",divide:"/",dividir:"/","+":"+","-":"-","*":"*","/":"/"},
  unarios:{dobro:["*",2],triplo:["*",3],quadruplo:["*",4],metade:["/",2],quadrado:["*","eu"]},
+ escolha:{maior:">",menor:"<",maximo:">",minimo:"<"},
  nomesOp:{"+":"somar","-":"subtrair","*":"multiplicar","/":"dividir"},
  booleanos:{verdadeiro:true,"true":true,falso:false,"false":false}
 };
@@ -43,7 +44,7 @@ function eVazia(w){return ePal(w)&&S.vazias[w.n]}
 function eLexico(w){
  if(!ePal(w))return false;
  var n=w.n;
- return !!(S.acoes[n]||S.variavel[n]||S.funcao[n]||S.linguagem[n]||S.retorno[n]||S.entrada[n]||S.ligar[n]||S.vazias[n]||S.tipoNome[n]||LEX.binarios[n]!==undefined||LEX.unarios[n]||LEX.booleanos[n]!==undefined);
+ return !!(S.acoes[n]||S.variavel[n]||S.funcao[n]||S.linguagem[n]||S.retorno[n]||S.entrada[n]||S.ligar[n]||S.vazias[n]||S.tipoNome[n]||LEX.binarios[n]!==undefined||LEX.unarios[n]||LEX.escolha[n]||LEX.booleanos[n]!==undefined);
 }
 function eNome(w){return ePal(w)&&!eLexico(w)}
 var INFIX={mais:1,menos:1,vezes:1,multiplicado:1,dividido:1,"+":1,"-":1,"*":1,"/":1};
@@ -80,6 +81,15 @@ function erroNome(n){
 function expressao(ws,operandoPorOmissao){
  var itens=[],ops=[],i,w;
  for(i=0;i<ws.length;i++){
+  if(ePal(ws[i])&&LEX.escolha[ws[i].n]){
+   var cmp=LEX.escolha[ws[i].n],vs=[];
+   for(var q=0;q<ws.length;q++){
+    if(ws[q].k==="num")vs.push({num:parseFloat(ws[q].t.replace(",","."))});
+    else if(q!==i&&eNomeCtx(ws,q))vs.push({nome:ws[q].t});
+   }
+   if(vs.length!==2)return{erro:"Por agora comparo dois valores de cada vez. Diz-me, por exemplo, «o "+ws[i].t+" entre a e b»."};
+   return{itens:vs,ops:[],escolha:cmp,palavraEscolha:ws[i].n};
+  }
   w=ws[i];
   if(ePal(w)&&LEX.unarios[w.n]){
    var u=LEX.unarios[w.n],alvo=null;
@@ -143,6 +153,7 @@ function interpretarVariaveis(ws){
   else{
    var ex=expressao(p);
    if(ex.erro)return{erro:ex.erro.replace(/\.$/,"")+" (em «"+nome.t+"»)."};
+   if(ex.escolha)return{erro:"Escolher o "+ex.palavraEscolha+" precisa de um if; pede-me uma função, por exemplo «cria uma função que devolve o "+ex.palavraEscolha+" entre a e b»."};
    if(ex.itens.length!==2||ex.ops.length!==1)return{erro:"Para «"+nome.t+"» preciso de um valor ou de uma conta com dois valores."};
    for(var q=0;q<ex.itens.length;q++){var nn=ex.itens[q].nome;if(nn!==undefined){var e2=erroNome(nn);if(e2)return{erro:e2}}}
    var x=ex.itens[0],y=ex.itens[1],tx=x.nome!==undefined?tipos[x.nome]:"number";
@@ -169,7 +180,7 @@ function interpretarFuncao(ws){
  if(!nome){
   for(var m=0;m<cabeca.length;m++){
    if(eVazia(cabeca[m]))continue;
-   if(eNome(cabeca[m])||(ePal(cabeca[m])&&(LEX.binarios[cabeca[m].n]!==undefined||LEX.unarios[cabeca[m].n])&&r>=0))nome=cabeca[m].t;
+   if(eNome(cabeca[m])||(ePal(cabeca[m])&&(LEX.binarios[cabeca[m].n]!==undefined||LEX.unarios[cabeca[m].n]||LEX.escolha[cabeca[m].n])&&r>=0))nome=cabeca[m].t;
    break;
   }
  }
@@ -186,9 +197,9 @@ function interpretarFuncao(ws){
  if(!params.length){params=nomesDe(ex.itens)}
  if(!params.length)return{erro:"Percebi a conta, mas não sei com que variáveis a função trabalha. Diz-me os nomes, por exemplo «que recebe a e b»."};
  var inventouNome=false;
- if(!nome){nome=ex.unario||(ex.ops.length?LEX.nomesOp[ex.ops[0]]:"calcular");inventouNome=true}
+ if(!nome){nome=ex.palavraEscolha||ex.unario||(ex.ops.length?LEX.nomesOp[ex.ops[0]]:"calcular");inventouNome=true}
  var ea=nomesDe(ex.itens).map(erroNome).filter(Boolean)[0];if(ea)return{erro:ea};
- return{tipo:"funcao",funcao:{nome:nome,params:params,itens:ex.itens,ops:ex.ops,unario:ex.unario||null,nomeInventado:inventouNome,inventados:inventados}};
+ return{tipo:"funcao",funcao:{nome:nome,params:params,itens:ex.itens,ops:ex.ops,unario:ex.unario||null,escolha:ex.escolha||null,palavraEscolha:ex.palavraEscolha||null,nomeInventado:inventouNome,inventados:inventados}};
 }
 
 /* compatibilidade com as chamadas antigas */
@@ -217,14 +228,15 @@ function gerarFuncao(f){
  var C=window.LumeCodigo;
  if(!C)return{erro:"O gerador de código não está carregado."};
  var no=function(o){return o.nome!==undefined?C.ident(o.nome):C.literal(o.num)};
- var e=no(f.itens[0]);
- for(var i=1;i<f.itens.length;i++)e=C.binaria(e,f.ops[i-1],no(f.itens[i]));
+ var e=no(f.itens[0]),passos;
+ if(f.escolha){passos=[C.se(C.comparacao(no(f.itens[0]),f.escolha,no(f.itens[1])),[C.retorno(no(f.itens[0]))]),C.retorno(no(f.itens[1]))]}
+ else{for(var i=1;i<f.itens.length;i++)e=C.binaria(e,f.ops[i-1],no(f.itens[i]));passos=[C.retorno(e)]}
  var tabela=C.criarTabela(),texto,programa;
  var op=f.ops.length?f.ops[0]:null,nomeOp={"+":"soma","-":"subtração","*":"multiplicação","/":"divisão"};
- var etapas=["Intenção: criar uma função"+(f.unario?" que calcula o "+f.unario:op?" com uma "+nomeOp[op]:"")+". Parâmetros: "+f.params.join(", ")+"."+(f.inventados&&f.inventados.length?" Não deste nome à variável, por isso chamei-lhe «"+f.inventados[0]+"».":"")+(f.nomeInventado?" Não deste nome à função, por isso chamei-lhe «"+f.nome+"».":" Os nomes que deste ficam exatamente como escreveste.")];
+ var etapas=["Intenção: criar uma função"+(f.escolha?" que escolhe o "+f.palavraEscolha+" de dois valores, com um if":f.unario?" que calcula o "+f.unario:op?" com uma "+nomeOp[op]:"")+". Parâmetros: "+f.params.join(", ")+"."+(f.inventados&&f.inventados.length?" Não deste nome à variável, por isso chamei-lhe «"+f.inventados[0]+"».":"")+(f.nomeInventado?" Não deste nome à função, por isso chamei-lhe «"+f.nome+"».":" Os nomes que deste ficam exatamente como escreveste.")];
  try{
   C.registarUtilizador(tabela,f.nome);
-  programa=[C.funcao(f.nome,f.params.map(function(n){return C.parametro(n,"number")}),"number",[C.retorno(e)])];
+  programa=[C.funcao(f.nome,f.params.map(function(n){return C.parametro(n,"number")}),"number",passos)];
   etapas.push("Montei a função letra a letra pelas regras: function, nome, parâmetros com tipo, tipo de retorno, chaveta, return e fecho.");
   texto=C.gerar(programa,tabela).replace(/\n$/,"");
   var sem=f.params.filter(function(n){return texto.indexOf(n+": number")<0});
