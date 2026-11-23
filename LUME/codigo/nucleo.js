@@ -6,7 +6,7 @@
 "use strict";
 var LEX = (typeof window !== "undefined" && window.LumeCodigoLexico) || require("./lexico.js");
 function conj(t){var o={};t.split(" ").forEach(function(w){o[w]=1});return o}
-var S={acoes:conj(LEX.acoes),variavel:conj(LEX.variavel),funcao:conj(LEX.funcao),linguagem:conj(LEX.linguagem),retorno:conj(LEX.retorno),entrada:conj(LEX.entrada),ligar:conj(LEX.ligar),vazias:conj(LEX.vazias),tipoNome:conj(LEX.tipoNome),condicao:conj(LEX.condicao)};
+var S={acoes:conj(LEX.acoes),variavel:conj(LEX.variavel),funcao:conj(LEX.funcao),linguagem:conj(LEX.linguagem),retorno:conj(LEX.retorno),entrada:conj(LEX.entrada),ligar:conj(LEX.ligar),vazias:conj(LEX.vazias),tipoNome:conj(LEX.tipoNome),condicao:conj(LEX.condicao),colecao:conj(LEX.colecao)};
 var NOME_RE=/^[A-Za-z_$][A-Za-z0-9_$]*$/,ACENTO_RE=/[À-ÿ]/;
 
 function sa(t){return String(t||"").normalize("NFD").replace(/[̀-ͯ]/g,"")}
@@ -26,7 +26,7 @@ function eVazia(w){return ePal(w)&&S.vazias[w.n]}
 function eLexico(w){
  if(!ePal(w))return false;
  var n=w.n;
- return !!(S.acoes[n]||S.variavel[n]||S.funcao[n]||S.linguagem[n]||S.retorno[n]||S.entrada[n]||S.ligar[n]||S.vazias[n]||S.tipoNome[n]||LEX.binarios[n]!==undefined||LEX.unarios[n]||LEX.escolha[n]||LEX.comparar[n]!==undefined||LEX.propriedades[n]||S.condicao[n]||LEX.booleanos[n]!==undefined);
+ return !!(S.acoes[n]||S.variavel[n]||S.funcao[n]||S.linguagem[n]||S.retorno[n]||S.entrada[n]||S.ligar[n]||S.vazias[n]||S.tipoNome[n]||LEX.binarios[n]!==undefined||LEX.unarios[n]||LEX.escolha[n]||LEX.comparar[n]!==undefined||LEX.propriedades[n]||S.condicao[n]||S.colecao[n]||LEX.agregados[n]||LEX.booleanos[n]!==undefined);
 }
 function eNome(w){return ePal(w)&&!eLexico(w)}
 var INFIX={mais:1,menos:1,vezes:1,multiplicado:1,dividido:1,"+":1,"-":1,"*":1,"/":1};
