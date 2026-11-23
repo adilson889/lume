@@ -485,3 +485,6 @@ Lume - historico de versoes
 
 0.5.59
 - assetlinks.json criado em .well-known (package app.vercel.chat_lume.twa): liga o site a app Android (TWA) para abrir sem barra de endereco.
+
+0.5.60
+- Blocos de codigo no chat ocupam a largura toda do ecra, sem margens laterais nem cantos arredondados.
