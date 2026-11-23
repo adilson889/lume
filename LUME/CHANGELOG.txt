@@ -476,3 +476,6 @@ Lume - historico de versoes
 
 0.5.56
 - Desenhos maiores e adaptaveis ao ecra: largura 100% (ate 340 px) em vez de 220 px fixos.
+
+0.5.57
+- Interpretador XLang fixado ao commit 634d392 (com a correcao dos desenhos): os desenhos por pecas e composicao voltam a aparecer.

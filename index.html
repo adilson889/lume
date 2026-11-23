@@ -948,7 +948,7 @@ function prepararXlangSql(src){
 }
 /* HTMLx-lang: corre os blocos <script type="text/xlang"> devolvidos pelo motor dentro do balão */
 /* Commit do HTMLx-lang usado pelo chat. Fixo para a CDN nao servir um xlang-modules.json antigo; mudar quando houver modulos novos. */
-const XLANG_COMMIT="fa5dbc4a93c92ecf7c56591b357a12560414884a";
+const XLANG_COMMIT="634d392ca09964ca5038ff84b49675b155e0a27d";
 /* O interpretador declara "class XLangInterpreter" no topo do script: isso fica no ambito global mas nao em window. */
 function xlangClasse(){try{return window.XLangInterpreter||(typeof XLangInterpreter!=="undefined"?XLangInterpreter:null)}catch(_){return null}}
 let _xlangPromessa=null;
