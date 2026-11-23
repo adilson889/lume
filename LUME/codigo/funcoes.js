@@ -26,6 +26,15 @@ function interpretarFuncao(ws){
  if(nome){var en=erroNome(nome);if(en)return{erro:en}}
  for(var g=0;g<params.length;g++){var ep=erroNome(params[g]);if(ep)return{erro:ep.replace("O nome","O parâmetro")}}
  if(!cauda.length)return{erro:"Percebi que queres uma função, mas não percebi o que ela deve devolver. Diz-me, por exemplo, «que devolve n vezes 2»."};
+ for(var h=0;h<PT.resultados.length;h++){
+  var hr=PT.resultados[h].ler(cauda);
+  if(!hr)continue;
+  if(hr.erro)return{erro:hr.erro};
+  var pn=params.length?params:hr.nomes,inv=!nome;
+  if(!pn.length)return{erro:"Percebi a condição, mas não sei com que variáveis a função trabalha. Diz-me os nomes, por exemplo «que recebe n»."};
+  for(var u=0;u<pn.length;u++){var eu=erroNome(pn[u]);if(eu)return{erro:eu}}
+  return{tipo:"funcao",funcao:{nome:nome||hr.nomeSugerido,params:pn,montar:hr.montar,retorno:hr.retorno,descricao:hr.descricao,nomeInventado:inv,inventados:[]}};
+ }
  var ex=expressao(cauda,params[0]);
  if(ex.erro)return{erro:ex.erro};
  var inventados=[];
@@ -42,15 +51,16 @@ function gerarFuncao(f){
  var C=codigo();
  if(!C)return{erro:"O gerador de código não está carregado."};
  var no=function(o){return o.nome!==undefined?C.ident(o.nome):C.literal(o.num)};
- var e=no(f.itens[0]),passos;
- if(f.escolha){passos=[C.se(C.comparacao(no(f.itens[0]),f.escolha,no(f.itens[1])),[C.retorno(no(f.itens[0]))]),C.retorno(no(f.itens[1]))]}
- else{for(var i=1;i<f.itens.length;i++)e=C.binaria(e,f.ops[i-1],no(f.itens[i]));passos=[C.retorno(e)]}
+ var e,passos,tipoRet="number";
+ if(f.montar){var mm=f.montar(C,no);passos=mm;tipoRet=f.retorno}
+ else if(f.escolha){e=no(f.itens[0]);passos=[C.se(C.comparacao(no(f.itens[0]),f.escolha,no(f.itens[1])),[C.retorno(no(f.itens[0]))]),C.retorno(no(f.itens[1]))]}
+ else{e=no(f.itens[0]);for(var i=1;i<f.itens.length;i++)e=C.binaria(e,f.ops[i-1],no(f.itens[i]));passos=[C.retorno(e)]}
  var tabela=C.criarTabela(),texto,programa;
- var op=f.ops.length?f.ops[0]:null,nomeOp={"+":"soma","-":"subtração","*":"multiplicação","/":"divisão"};
- var etapas=["Intenção: criar uma função"+(f.escolha?" que escolhe o "+f.palavraEscolha+" de dois valores, com um if":f.unario?" que calcula o "+f.unario:op?" com uma "+nomeOp[op]:"")+". Parâmetros: "+f.params.join(", ")+"."+(f.inventados&&f.inventados.length?" Não deste nome à variável, por isso chamei-lhe «"+f.inventados[0]+"».":"")+(f.nomeInventado?" Não deste nome à função, por isso chamei-lhe «"+f.nome+"».":" Os nomes que deste ficam exatamente como escreveste.")];
+ var op=f.ops&&f.ops.length?f.ops[0]:null,nomeOp={"+":"soma","-":"subtração","*":"multiplicação","/":"divisão"};
+ var etapas=["Intenção: criar uma função"+(f.montar?" "+f.descricao:f.escolha?" que escolhe o "+f.palavraEscolha+" de dois valores, com um if":f.unario?" que calcula o "+f.unario:op?" com uma "+nomeOp[op]:"")+". Parâmetros: "+f.params.join(", ")+"."+(f.inventados&&f.inventados.length?" Não deste nome à variável, por isso chamei-lhe «"+f.inventados[0]+"».":"")+(f.nomeInventado?" Não deste nome à função, por isso chamei-lhe «"+f.nome+"».":" Os nomes que deste ficam exatamente como escreveste.")];
  try{
   C.registarUtilizador(tabela,f.nome);
-  programa=[C.funcao(f.nome,f.params.map(function(n){return C.parametro(n,"number")}),"number",passos)];
+  programa=[C.funcao(f.nome,f.params.map(function(n){return C.parametro(n,"number")}),tipoRet,passos)];
   etapas.push("Montei a função letra a letra pelas regras: function, nome, parâmetros com tipo, tipo de retorno, chaveta, return e fecho.");
   texto=C.gerar(programa,tabela).replace(/\n$/,"");
   var sem=f.params.filter(function(n){return texto.indexOf(n+": number")<0});
