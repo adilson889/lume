@@ -11,7 +11,7 @@
     const LARGURA_MAXIMA = 80;
     const INDENTACAO = 2;
     const TIPOS = ['number', 'string', 'boolean'];
-    const OPERADORES = { number: ['+', '-', '*', '/'], string: ['+'], boolean: [] };
+    const OPERADORES = { number: ['+', '-', '*', '/', '%'], string: ['+'], boolean: [] };
     const COMPARADORES = { number: ['<', '>', '<=', '>=', '===', '!=='], string: ['===', '!=='], boolean: ['===', '!=='] };
     const PALAVRAS_RESERVADAS = new Set([
         'break', 'case', 'catch', 'class', 'const', 'continue', 'debugger', 'default',
