@@ -488,3 +488,7 @@ Lume - historico de versoes
 
 0.5.60
 - Blocos de codigo no chat ocupam a largura toda do ecra, sem margens laterais nem cantos arredondados.
+
+0.5.61
+- O desenho da casa passa a vir da lib xlang-desenhos (HTMLx-lang, modules/xlang-desenhos.js), carregada do CDN so quando alguem pede a casa: sao menos 36 KB no arranque (libdesenho.txt passa de 43 KB para 6 KB). O SVG e gerado por codigo (desenhoCasa) e passa pelo sanitizeHtml com todos os 580 elementos intactos (testado com o interpretador real em jsdom).
+- Interpretador XLang fixado ao commit 62ecaa9, o primeiro com o modulo "desenhos" no xlang-modules.json.
