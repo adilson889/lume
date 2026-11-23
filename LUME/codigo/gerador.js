@@ -1,4 +1,4 @@
-// gerador.js - Gerador de código TypeScript, letra a letra, a partir de uma árvore de nós (v0.2).
+// gerador.js - Gerador de código TypeScript, letra a letra, a partir de uma árvore de nós (v0.3).
 // Gera TypeScript letra a letra a partir de uma árvore de nós, sem templates prontos.
 // Camadas: nós -> verificador -> emissor (regras de sintaxe em dados) -> texto.
 // As variáveis do utilizador entram com o nome exato e são verificadas antes de mostrar.
@@ -10,7 +10,9 @@
     // ===== CONSTANTES =====
     const LARGURA_MAXIMA = 80;
     const INDENTACAO = 2;
-    const TIPOS = ['number', 'string', 'boolean'];
+    const TIPOS_BASE = ['number', 'string', 'boolean'];
+    const TIPOS = TIPOS_BASE.concat(TIPOS_BASE.map(function(t) { return t + '[]'; }));
+    const OPS_ATRIBUICAO = { '+=': '+', '-=': '-', '*=': '*', '/=': '/' };
     const OPERADORES = { number: ['+', '-', '*', '/', '%'], string: ['+'], boolean: [] };
     const COMPARADORES = { number: ['<', '>', '<=', '>=', '===', '!=='], string: ['===', '!=='], boolean: ['===', '!=='] };
     const PALAVRAS_RESERVADAS = new Set([
@@ -37,6 +39,11 @@
         Retorno: ['return', ESP, '@expr', ';', FIM],
         Binaria: ['@esq', ESP, '@op', ESP, '@dir'],
         Comparacao: ['@esq', ESP, '@op', ESP, '@dir'],
+        Lista: ['[', '@itens', ']'],
+        Membro: ['@obj', '.', '@prop'],
+        Atribuicao: ['@nome', ESP, '@op', ESP, '@expr', ';', FIM],
+        Para: ['for', ESP, '(', 'const', ESP, '@item', ESP, 'of', ESP, '@lista', ')', ESP, '{', FIM,
+            INDENTA, '@corpo', DESINDENTA, '}', FIM],
         Se: ['if', ESP, '(', '@cond', ')', ESP, '{', FIM, INDENTA, '@entao', DESINDENTA, '}', FIM],
         SeSenao: ['if', ESP, '(', '@cond', ')', ESP, '{', FIM, INDENTA, '@entao', DESINDENTA, '}', ESP,
             'else', ESP, '{', FIM, INDENTA, '@senao', DESINDENTA, '}', FIM],
@@ -52,6 +59,10 @@
     function binaria(esq, op, dir) { return { forma: 'Binaria', esq, op, dir }; }
     function comparacao(esq, op, dir) { return { forma: 'Comparacao', esq, op, dir }; }
     function se(cond, entao, senao) { return { forma: 'Se', cond, entao, senao: senao || [] }; }
+    function lista(itens) { return { forma: 'Lista', itens }; }
+    function membro(obj, prop) { return { forma: 'Membro', obj, prop }; }
+    function atribuicao(nome, op, expr) { return { forma: 'Atribuicao', nome, op, expr }; }
+    function para(item, listaExpr, corpo) { return { forma: 'Para', item, lista: listaExpr, corpo }; }
     function parametro(nome, tipo) { return { forma: 'Parametro', nome, tipo }; }
 
     // ===== TABELA DE SÍMBOLOS =====
@@ -105,11 +116,30 @@
                     problemas.push('Não se pode combinar ' + esq + ' com ' + dir + ' em "' + no.op + '".');
                     return null;
                 }
-                if (!OPERADORES[esq].includes(no.op)) {
+                if (!(OPERADORES[esq] || []).includes(no.op)) {
                     problemas.push('O operador "' + no.op + '" não vale para ' + esq + '.');
                     return null;
                 }
                 return esq;
+            }
+            case 'Lista': {
+                if (!no.itens.length) { problemas.push('Uma lista vazia precisa de um tipo; por agora uso listas com valores.'); return null; }
+                const tipos = no.itens.map(function(i) { return tipoDaExpressao(i, escopo, usados, problemas); });
+                if (tipos.some(function(t) { return !t; })) return null;
+                if (tipos.some(function(t) { return t !== tipos[0] || t.endsWith('[]'); })) {
+                    problemas.push('Os valores de uma lista têm de ser todos do mesmo tipo (number, string ou boolean).');
+                    return null;
+                }
+                return tipos[0] + '[]';
+            }
+            case 'Membro': {
+                const t = tipoDaExpressao(no.obj, escopo, usados, problemas);
+                if (!t) return null;
+                if (!t.endsWith('[]') || no.prop !== 'length') {
+                    problemas.push('Só sei ler o tamanho de uma lista (.length).');
+                    return null;
+                }
+                return 'number';
             }
             case 'Comparacao': {
                 const esq = tipoDaExpressao(no.esq, escopo, usados, problemas);
@@ -119,7 +149,7 @@
                     problemas.push('Não se pode comparar ' + esq + ' com ' + dir + ' em "' + no.op + '".');
                     return null;
                 }
-                if (!COMPARADORES[esq].includes(no.op)) {
+                if (!(COMPARADORES[esq] || []).includes(no.op)) {
                     problemas.push('O comparador "' + no.op + '" não vale para ' + esq + '.');
                     return null;
                 }
@@ -152,11 +182,12 @@
         if (!TIPOS.includes(no.retorno)) problemas.push('Tipo desconhecido: ' + no.retorno + '.');
         const ultimo = no.corpo[no.corpo.length - 1];
         if (!ultimo || ultimo.forma !== 'Retorno') problemas.push('A função "' + no.nome + '" tem de acabar com return.');
-        verificarCorpo(no.corpo, local, no, usados, problemas);
+        verificarCorpo(no.corpo, local, no, usados, problemas, new Set());
     }
 
-    // Verifica uma lista de passos (corpo da função ou de um if).
-    function verificarCorpo(corpo, local, fn, usados, problemas) {
+    // Verifica uma lista de passos (corpo da função, de um if ou de um ciclo).
+    // mut: nomes declarados com let (os únicos que se podem alterar).
+    function verificarCorpo(corpo, local, fn, usados, problemas, mut) {
         corpo.forEach(function(passo, i) {
             if (i < corpo.length - 1 && passo.forma === 'Retorno') {
                 problemas.push('Há código depois do return na função "' + fn.nome + '".');
@@ -166,6 +197,34 @@
                 if (tipo && tipo !== fn.retorno) {
                     problemas.push('A função "' + fn.nome + '" devolve ' + fn.retorno + ' mas o return é ' + tipo + '.');
                 }
+            } else if (passo.forma === 'Declaracao') {
+                const problemaNome = nomeValido(passo.nome);
+                if (problemaNome) problemas.push(problemaNome);
+                if (local.has(passo.nome)) problemas.push('"' + passo.nome + '" já foi declarada na função "' + fn.nome + '".');
+                verificarDeclaracao(passo, local, usados, problemas);
+                if (passo.palavra === 'let') mut.add(passo.nome);
+            } else if (passo.forma === 'Atribuicao') {
+                if (!OPS_ATRIBUICAO[passo.op]) problemas.push('Operador de atribuição desconhecido: ' + passo.op + '.');
+                if (!local.has(passo.nome)) problemas.push('"' + passo.nome + '" é usada antes de ser declarada.');
+                else if (!mut.has(passo.nome)) problemas.push('"' + passo.nome + '" é const e não pode ser alterada.');
+                const alvo = local.get(passo.nome);
+                const tipo = tipoDaExpressao(passo.expr, local, usados, problemas);
+                if (alvo && tipo) {
+                    if (alvo !== tipo) problemas.push('"' + passo.nome + '" é ' + alvo + ' mas o valor é ' + tipo + '.');
+                    else if (OPS_ATRIBUICAO[passo.op] && !(OPERADORES[alvo] || []).includes(OPS_ATRIBUICAO[passo.op])) {
+                        problemas.push('O operador "' + passo.op + '" não vale para ' + alvo + '.');
+                    }
+                }
+            } else if (passo.forma === 'Para') {
+                const tl = tipoDaExpressao(passo.lista, local, usados, problemas);
+                const interno = new Map(local);
+                const problemaItem = nomeValido(passo.item);
+                if (problemaItem) problemas.push(problemaItem);
+                if (local.has(passo.item)) problemas.push('"' + passo.item + '" já foi declarada na função "' + fn.nome + '".');
+                if (tl && !tl.endsWith('[]')) problemas.push('O for só percorre listas, mas isto é ' + tl + '.');
+                else if (tl) interno.set(passo.item, tl.slice(0, -2));
+                if (!passo.corpo.length) problemas.push('O for da função "' + fn.nome + '" está vazio.');
+                verificarCorpo(passo.corpo, interno, fn, usados, problemas, new Set(mut));
             } else if (passo.forma === 'Se') {
                 const t = tipoDaExpressao(passo.cond, local, usados, problemas);
                 if (t && t !== 'boolean') problemas.push('A condição do if tem de ser boolean, mas é ' + t + '.');
@@ -175,7 +234,7 @@
                     if (ramo[ramo.length - 1].forma !== 'Retorno') {
                         problemas.push('Dentro do if, o último passo tem de ser return.');
                     }
-                    verificarCorpo(ramo, local, fn, usados, problemas);
+                    verificarCorpo(ramo, local, fn, usados, problemas, mut);
                 });
             } else {
                 problemas.push('Instrução não suportada na função "' + fn.nome + '": ' + passo.forma + '.');
@@ -267,11 +326,17 @@
 
     function preencher(encaixe, no, em) {
         switch (encaixe) {
-            case 'palavra': case 'nome': case 'tipo': case 'op': case 'retorno':
+            case 'palavra': case 'nome': case 'tipo': case 'op': case 'retorno': case 'item': case 'prop':
                 em.texto(no[encaixe]);
                 break;
-            case 'valor': case 'expr': case 'esq': case 'dir': case 'cond':
+            case 'valor': case 'expr': case 'esq': case 'dir': case 'cond': case 'lista': case 'obj':
                 emitirExpressao(no[encaixe], em);
+                break;
+            case 'itens':
+                no.itens.forEach(function(it, i) {
+                    if (i > 0) { em.texto(','); em.espaco(); }
+                    emitirExpressao(it, em);
+                });
                 break;
             case 'params':
                 no.params.forEach(function(p, i) {
@@ -323,7 +388,7 @@
     const API = {
         criarTabela: criarTabela, registarUtilizador: registarUtilizador,
         declaracao: declaracao, funcao: funcao, retorno: retorno, parametro: parametro,
-        literal: literal, ident: ident, binaria: binaria, comparacao: comparacao, se: se,
+        literal: literal, ident: ident, binaria: binaria, comparacao: comparacao, se: se, lista: lista, membro: membro, atribuicao: atribuicao, para: para,
         verificar: verificar, emitirLetras: emitirLetras, gerar: gerar,
         deLinhas: null
     };
