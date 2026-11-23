@@ -6,14 +6,14 @@
 "use strict";
 var LEX = (typeof window !== "undefined" && window.LumeCodigoLexico) || require("./lexico.js");
 function conj(t){var o={};t.split(" ").forEach(function(w){o[w]=1});return o}
-var S={acoes:conj(LEX.acoes),variavel:conj(LEX.variavel),funcao:conj(LEX.funcao),linguagem:conj(LEX.linguagem),retorno:conj(LEX.retorno),entrada:conj(LEX.entrada),ligar:conj(LEX.ligar),vazias:conj(LEX.vazias),tipoNome:conj(LEX.tipoNome)};
+var S={acoes:conj(LEX.acoes),variavel:conj(LEX.variavel),funcao:conj(LEX.funcao),linguagem:conj(LEX.linguagem),retorno:conj(LEX.retorno),entrada:conj(LEX.entrada),ligar:conj(LEX.ligar),vazias:conj(LEX.vazias),tipoNome:conj(LEX.tipoNome),condicao:conj(LEX.condicao)};
 var NOME_RE=/^[A-Za-z_$][A-Za-z0-9_$]*$/,ACENTO_RE=/[À-ÿ]/;
 
 function sa(t){return String(t||"").normalize("NFD").replace(/[̀-ͯ]/g,"")}
 
 /* ===== 1) PALAVRAS ===== */
 function palavras(q){
- var re=/"[^"]*"|'[^']*'|«[^»]*»|“[^”]*”|\d+(?:[.,]\d+)?|[A-Za-zÀ-ÿ_$][A-Za-z0-9À-ÿ_$]*|[=+\-*\/;,:]/g,m,o=[];
+ var re=/"[^"]*"|'[^']*'|«[^»]*»|“[^”]*”|\d+(?:[.,]\d+)?|[A-Za-zÀ-ÿ_$][A-Za-z0-9À-ÿ_$]*|[<>!]=?=?|={1,3}|[+\-*\/;,:]/g,m,o=[];
  while((m=re.exec(q))){
   var t=m[0],k;
   if(/^["'«“]/.test(t))k="txt";else if(/^\d/.test(t))k="num";else if(/^[A-Za-zÀ-ÿ_$]/.test(t))k="pal";else k="sim";
@@ -26,7 +26,7 @@ function eVazia(w){return ePal(w)&&S.vazias[w.n]}
 function eLexico(w){
  if(!ePal(w))return false;
  var n=w.n;
- return !!(S.acoes[n]||S.variavel[n]||S.funcao[n]||S.linguagem[n]||S.retorno[n]||S.entrada[n]||S.ligar[n]||S.vazias[n]||S.tipoNome[n]||LEX.binarios[n]!==undefined||LEX.unarios[n]||LEX.escolha[n]||LEX.booleanos[n]!==undefined);
+ return !!(S.acoes[n]||S.variavel[n]||S.funcao[n]||S.linguagem[n]||S.retorno[n]||S.entrada[n]||S.ligar[n]||S.vazias[n]||S.tipoNome[n]||LEX.binarios[n]!==undefined||LEX.unarios[n]||LEX.escolha[n]||LEX.comparar[n]!==undefined||LEX.propriedades[n]||S.condicao[n]||LEX.booleanos[n]!==undefined);
 }
 function eNome(w){return ePal(w)&&!eLexico(w)}
 var INFIX={mais:1,menos:1,vezes:1,multiplicado:1,dividido:1,"+":1,"-":1,"*":1,"/":1};
@@ -37,6 +37,8 @@ function eNomeCtx(ws,i){
  if(!ePal(w)||!(w.n==="a"||w.n==="o"))return false;
  var nx=ws[i+1],pv=ws[i-1];
  if(!nx)return true;
+ if(pv&&ePal(pv)&&pv.n==="se")return true;
+ if(ePal(nx)&&(nx.n==="for"||nx.n==="seja"||nx.n==="esta"||nx.n==="fica"))return true;
  if(nx.k==="sim"&&(nx.t===","||nx.t===";"))return true;
  if(ePal(nx)&&nx.n==="e")return true;
  if(INFIX[nx.n])return true;
@@ -129,7 +131,7 @@ function responder(q){
  return r;
 }
 
-var PT={LEX:LEX,S:S,sa:sa,conj:conj,palavras:palavras,ePal:ePal,eVazia:eVazia,eLexico:eLexico,eNome:eNome,eNomeCtx:eNomeCtx,valorLit:valorLit,opDe:opDe,erroNome:erroNome,expressao:expressao,nomesDe:nomesDe,registar:registar,interpretar:interpretar,responder:responder,intencoes:intencoes};
+var PT={LEX:LEX,S:S,sa:sa,conj:conj,palavras:palavras,ePal:ePal,eVazia:eVazia,eLexico:eLexico,eNome:eNome,eNomeCtx:eNomeCtx,valorLit:valorLit,opDe:opDe,erroNome:erroNome,expressao:expressao,nomesDe:nomesDe,registar:registar,resultados:[],registarResultado:function(h){PT.resultados.push(h)},interpretar:interpretar,responder:responder,intencoes:intencoes};
 if (typeof window !== "undefined") window.LumeCodigoPT = PT;
 if (typeof module !== "undefined" && module.exports) module.exports = PT;
 })();
