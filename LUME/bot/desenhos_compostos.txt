@@ -120,7 +120,7 @@
 <else>
     <if condition="total == 1">
         <print>Aqui está o teu desenho de {unicon}:</print>
-        <print><svg viewBox="0 0 100 100" width="220" height="220"><rect x="0" y="0" width="100" height="100" fill="#fbfbf4"/><g data-raw="{pecas_svg[unicop]}"></g></svg></print>
+        <print><svg viewBox="0 0 100 100" width="100%" height="auto" style="max-width:340px"><rect x="0" y="0" width="100" height="100" fill="#fbfbf4"/><g data-raw="{pecas_svg[unicop]}"></g></svg></print>
     </if>
     <if condition="total == 0 && !includes(m, 'gráfico') && !includes(m, 'grafico')">
         <print>Consigo combinar vários componentes numa cena. Experimenta pedir uma casa com duas árvores, sol, nuvens e flores.</print>

@@ -31,7 +31,7 @@
         <set name="pts" value="pts + round((50 + raio * cos(a)) * 100) / 100 + ',' + round((50 + raio * sin(a)) * 100) / 100 + ' '"></set>
     </for>
     <print>Aqui está a tua estrela de {pontas} pontas:</print>
-    <print><svg viewBox="0 0 100 100" width="220" height="220"><polygon points="{pts}" fill="gold" stroke="orange" stroke-width="2" stroke-linejoin="round"></polygon></svg></print>
+    <print><svg viewBox="0 0 100 100" width="100%" height="auto" style="max-width:340px"><polygon points="{pts}" fill="gold" stroke="orange" stroke-width="2" stroke-linejoin="round"></polygon></svg></print>
 </if>
 
 <!-- CASA -->
@@ -47,25 +47,25 @@
         <set name="d" value="d + 'M' + round((50 + 32 * cos(a)) * 100) / 100 + ' ' + round((50 + 32 * sin(a)) * 100) / 100 + 'L' + round((50 + 46 * cos(a)) * 100) / 100 + ' ' + round((50 + 46 * sin(a)) * 100) / 100"></set>
     </for>
     <print>Aqui está o sol:</print>
-    <print><svg viewBox="0 0 100 100" width="220" height="220"><circle cx="50" cy="50" r="24" fill="gold"></circle><path d="{d}" stroke="orange" stroke-width="4" stroke-linecap="round" fill="none"></path></svg></print>
+    <print><svg viewBox="0 0 100 100" width="100%" height="auto" style="max-width:340px"><circle cx="50" cy="50" r="24" fill="gold"></circle><path d="{d}" stroke="orange" stroke-width="4" stroke-linecap="round" fill="none"></path></svg></print>
 </elseif>
 
 <!-- GATO -->
 <elseif condition="includes(m, 'gato')">
     <print>Aqui está o teu gato:</print>
-    <print><svg viewBox="0 0 100 100" width="220" height="220"><rect x="0" y="85" width="100" height="15" fill="#7cb342"></rect><ellipse cx="50" cy="80" rx="20" ry="12" fill="#f39c12"></ellipse><circle cx="50" cy="60" r="14" fill="#f39c12"></circle><polygon points="38,52 44,38 50,52" fill="#f39c12"></polygon><polygon points="62,52 56,38 50,52" fill="#f39c12"></polygon><circle cx="45" cy="58" r="2" fill="#333"></circle><circle cx="55" cy="58" r="2" fill="#333"></circle><path d="M45,65 Q50,68 55,65" stroke="#333" stroke-width="1.5" fill="none"></path><path d="M30,80 Q15,70 20,60" stroke="#f39c12" stroke-width="4" stroke-linecap="round" fill="none"></path></svg></print>
+    <print><svg viewBox="0 0 100 100" width="100%" height="auto" style="max-width:340px"><rect x="0" y="85" width="100" height="15" fill="#7cb342"></rect><ellipse cx="50" cy="80" rx="20" ry="12" fill="#f39c12"></ellipse><circle cx="50" cy="60" r="14" fill="#f39c12"></circle><polygon points="38,52 44,38 50,52" fill="#f39c12"></polygon><polygon points="62,52 56,38 50,52" fill="#f39c12"></polygon><circle cx="45" cy="58" r="2" fill="#333"></circle><circle cx="55" cy="58" r="2" fill="#333"></circle><path d="M45,65 Q50,68 55,65" stroke="#333" stroke-width="1.5" fill="none"></path><path d="M30,80 Q15,70 20,60" stroke="#f39c12" stroke-width="4" stroke-linecap="round" fill="none"></path></svg></print>
 </elseif>
 
 <!-- CÃO -->
 <elseif condition="includes(m, 'cão') || includes(m, 'cao')">
     <print>Aqui está o teu cão:</print>
-    <print><svg viewBox="0 0 100 100" width="220" height="220"><rect x="0" y="85" width="100" height="15" fill="#7cb342"></rect><rect x="35" y="65" width="30" height="18" rx="5" fill="#8d6e3f"></rect><circle cx="65" cy="68" r="10" fill="#8d6e3f"></circle><polygon points="60,60 66,50 70,60" fill="#5d4037"></polygon><rect x="38" y="83" width="6" height="10" fill="#5d4037"></rect><rect x="56" y="83" width="6" height="10" fill="#5d4037"></rect><circle cx="68" cy="66" r="2" fill="#333"></circle></svg></print>
+    <print><svg viewBox="0 0 100 100" width="100%" height="auto" style="max-width:340px"><rect x="0" y="85" width="100" height="15" fill="#7cb342"></rect><rect x="35" y="65" width="30" height="18" rx="5" fill="#8d6e3f"></rect><circle cx="65" cy="68" r="10" fill="#8d6e3f"></circle><polygon points="60,60 66,50 70,60" fill="#5d4037"></polygon><rect x="38" y="83" width="6" height="10" fill="#5d4037"></rect><rect x="56" y="83" width="6" height="10" fill="#5d4037"></rect><circle cx="68" cy="66" r="2" fill="#333"></circle></svg></print>
 </elseif>
 
 <!-- CARRO -->
 <elseif condition="includes(m, 'carro')">
     <print>Aqui está o teu carro:</print>
-    <print><svg viewBox="0 0 100 100" width="220" height="220"><rect x="0" y="85" width="100" height="15" fill="#7cb342"></rect><rect x="20" y="60" width="60" height="20" rx="5" fill="#e74c3c"></rect><rect x="30" y="45" width="40" height="20" rx="5" fill="#c0392b"></rect><rect x="35" y="48" width="12" height="12" fill="#bde3ff"></rect><rect x="53" y="48" width="12" height="12" fill="#bde3ff"></rect><circle cx="35" cy="80" r="8" fill="#333"></circle><circle cx="65" cy="80" r="8" fill="#333"></circle></svg></print>
+    <print><svg viewBox="0 0 100 100" width="100%" height="auto" style="max-width:340px"><rect x="0" y="85" width="100" height="15" fill="#7cb342"></rect><rect x="20" y="60" width="60" height="20" rx="5" fill="#e74c3c"></rect><rect x="30" y="45" width="40" height="20" rx="5" fill="#c0392b"></rect><rect x="35" y="48" width="12" height="12" fill="#bde3ff"></rect><rect x="53" y="48" width="12" height="12" fill="#bde3ff"></rect><circle cx="35" cy="80" r="8" fill="#333"></circle><circle cx="65" cy="80" r="8" fill="#333"></circle></svg></print>
 </elseif>
 
 <!-- GRÁFICOS -->
@@ -76,7 +76,7 @@
             <set name="pts" value="pts + round((100 + x * 14.3) * 100) / 100 + ',' + round((100 - sin(x) * 70) * 100) / 100 + ' '"></set>
         </for>
         <print>Gráfico de y = sen(x):</print>
-        <print><svg viewBox="0 0 200 200" width="260" height="260"><rect x="0" y="0" width="200" height="200" fill="#fbfbf4" stroke="#c9ceb8"></rect><line x1="0" y1="100" x2="200" y2="100" stroke="#999" stroke-width="1"></line><line x1="100" y1="0" x2="100" y2="200" stroke="#999" stroke-width="1"></line><polyline points="{pts}" fill="none" stroke="#c0392b" stroke-width="2.5" stroke-linejoin="round"></polyline></svg></print>
+        <print><svg viewBox="0 0 200 200" width="100%" height="auto" style="max-width:340px"><rect x="0" y="0" width="200" height="200" fill="#fbfbf4" stroke="#c9ceb8"></rect><line x1="0" y1="100" x2="200" y2="100" stroke="#999" stroke-width="1"></line><line x1="100" y1="0" x2="100" y2="200" stroke="#999" stroke-width="1"></line><polyline points="{pts}" fill="none" stroke="#c0392b" stroke-width="2.5" stroke-linejoin="round"></polyline></svg></print>
     </if>
     <else>
         <print>Só desenho gráficos de funções do 1.º e 2.º grau, como <b>y = 2x+1</b> ou <b>y = x²-4x+3</b>, e do <b>seno</b>.</print>

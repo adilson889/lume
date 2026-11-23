@@ -31,7 +31,7 @@
         <set name="pts" value="pts + round((50 + raio * cos(a)) * 100) / 100 + ',' + round((50 + raio * sin(a)) * 100) / 100 + ' '"></set>
     </for>
     <print>Aqui está a tua estrela de {pontas} pontas:</print>
-    <print><svg viewBox="0 0 100 100" width="220" height="220"><polygon points="{pts}" fill="gold" stroke="orange" stroke-width="2" stroke-linejoin="round"></polygon></svg></print>
+    <print><svg viewBox="0 0 100 100" width="100%" height="auto" style="max-width:340px"><polygon points="{pts}" fill="gold" stroke="orange" stroke-width="2" stroke-linejoin="round"></polygon></svg></print>
 </if>
 
 <!-- GRÁFICOS -->
@@ -55,7 +55,7 @@
             <set name="pts" value="pts + round((100 + x * 14.3) * 100) / 100 + ',' + round((100 - sin(x) * 70) * 100) / 100 + ' '"></set>
         </for>
         <print>Gráfico de y = sen(x):</print>
-        <print><svg viewBox="0 0 200 200" width="260" height="260"><rect x="0" y="0" width="200" height="200" fill="#fbfbf4" stroke="#c9ceb8"></rect><line x1="0" y1="100" x2="200" y2="100" stroke="#999" stroke-width="1"></line><line x1="100" y1="0" x2="100" y2="200" stroke="#999" stroke-width="1"></line><polyline points="{pts}" fill="none" stroke="#c0392b" stroke-width="2.5" stroke-linejoin="round"></polyline></svg></print>
+        <print><svg viewBox="0 0 200 200" width="100%" height="auto" style="max-width:340px"><rect x="0" y="0" width="200" height="200" fill="#fbfbf4" stroke="#c9ceb8"></rect><line x1="0" y1="100" x2="200" y2="100" stroke="#999" stroke-width="1"></line><line x1="100" y1="0" x2="100" y2="200" stroke="#999" stroke-width="1"></line><polyline points="{pts}" fill="none" stroke="#c0392b" stroke-width="2.5" stroke-linejoin="round"></polyline></svg></print>
     </elseif>
     <else>
         <print>Só desenho gráficos de funções do 1.º e 2.º grau, como <b>y = 2x+1</b> ou <b>y = x²-4x+3</b>, e do <b>seno</b>.</print>

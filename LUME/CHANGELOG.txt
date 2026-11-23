@@ -473,3 +473,6 @@ Lume - historico de versoes
 
 0.5.55
 - Cache das bibliotecas do CDN renovada (libs-2): o telemovel deixa de usar o interpretador XLang antigo e os desenhos voltam a aparecer.
+
+0.5.56
+- Desenhos maiores e adaptaveis ao ecra: largura 100% (ate 340 px) em vez de 220 px fixos.
