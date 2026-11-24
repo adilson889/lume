@@ -626,5 +626,68 @@ function responder(T,txt,ctx){
  }
  return null;
 }
-window.LumeFisica={analisar:analisar,oferta:oferta,solucao:solucao,responder:responder,testes:testes,corpo:corpo};
+/* ===== problemas em etapas (plano com atrito + rampa), por energia e testados pela cinematica ===== */
+function cenario(q){
+ var t=nz(String(q||"")).toLowerCase().replace(/\u00b0/g," graus ").replace(/(\d),(\d)/g,"$1.$2");
+ if(t.length>900||!/\b(rampa|plano inclinado)\b/.test(t))return null;
+ function num(re){var m=re.exec(t);return m?parseFloat(m[1]):null}
+ var G=9.8,
+  m=num(/(\d+(?:\.\d+)?)\s*kg/),
+  v0=num(/(\d+(?:\.\d+)?)\s*m\s*\/\s*s/),
+  ang=num(/(\d+(?:\.\d+)?)\s*(?:graus|grau)\b/),
+  mu=num(/(?:coeficiente de atrito[^=\d]{0,25}|\bmu\s*)=?\s*(\d+(?:\.\d+)?)/),
+  d=num(/(?:anda|percorre|desliza|desloca-?se|avanca|caminha)\s+(\d+(?:\.\d+)?)\s*m\b(?!\s*\/)/);
+ if(d==null)d=num(/(\d+(?:\.\d+)?)\s*m\b(?!\s*\/)(?=[^.]{0,30}(?:com atrito|de atrito))/);
+ if(v0==null||ang==null||ang<=0||ang>=90)return null;
+ var temAtr=/com atrito/.test(t.split(/rampa|plano inclinado/)[0]),mu1=temAtr&&mu!=null?mu:0,
+  mu2=/rampa[^.]{0,30}com atrito/.test(t)&&mu!=null&&!temAtr?mu:0;
+ if(temAtr&&(mu==null||d==null))return null;
+ var th=ang*Math.PI/180,sn=Math.sin(th),cs=Math.cos(th),
+  F=function(x){return fmtNum(x)},
+  v1sq=v0*v0-2*mu1*G*(d||0);
+ var L=[],E=[];
+ var dados="**Primeiro passo: os dados.**\n\n$$"+(m!=null?"m = "+F(m)+"\\,\\mathrm{kg},\\quad ":"")+"v_0 = "+F(v0)+"\\,\\mathrm{m/s},\\quad g = 9{,}8\\,\\mathrm{m/s^2}"+(temAtr?",\\quad \\mu = "+F(mu)+",\\quad d = "+F(d)+"\\,\\mathrm{m}":"")+",\\quad \\theta = "+F(ang)+"^\\circ$$";
+ L.push(dados);
+ var v1=v0;
+ if(temAtr){
+  if(v1sq<=0){
+   var dp=v0*v0/(2*mu1*G);
+   L.push("**Depois: o atrito no plano.** O atrito faz perder energia:\n\n$$\\tfrac12 m v_0^2 = \\mu\\, m\\, g\\, d_{\\text{máx}} \\Rightarrow d_{\\text{máx}} = \\frac{v_0^2}{2\\mu g} = "+F(dp)+"\\,\\mathrm{m}$$\n\nComo $"+F(dp)+" < "+F(d)+"$, o corpo **para antes** de chegar à rampa: não há subida.");
+   return {texto:L.join("\n\n"),etapas:["Li o problema como um plano com atrito seguido de rampa e apliquei o teorema do trabalho e energia no plano; o corpo para antes da rampa."]};
+  }
+  v1=Math.sqrt(v1sq);
+  L.push("**Depois: o atrito no plano (trabalho e energia).** O trabalho do atrito é $W = -\\mu\\, m\\, g\\, d$, e igual à variação da energia cinética:\n\n$$\\tfrac12 m v^2 - \\tfrac12 m v_0^2 = -\\mu\\, m\\, g\\, d \\;\\Rightarrow\\; v = \\sqrt{v_0^2 - 2\\mu g d}$$\n\n$$v = \\sqrt{"+F(v0)+"^2 - 2\\times "+F(mu)+"\\times 9{,}8\\times "+F(d)+"} = \\sqrt{"+F(v1sq)+"} = "+F(v1)+"\\,\\mathrm{m/s}$$\n\nA massa corta-se, por isso não influencia.");
+ }
+ var a2=G*(sn+mu2*cs),s=v1*v1/(2*a2),h=s*sn;
+ L.push("**Por fim: a rampa"+(mu2?" (com atrito)":" sem atrito")+".** "+(mu2?"Na subida, o peso e o atrito travam o corpo: $\\tfrac12 m v^2 = m g h + \\mu\\, m\\, g \\cos\\theta\\,\\dfrac{h}{\\sin\\theta}$, logo $h = \\dfrac{v^2}{2g\\,(1+\\mu\\cot\\theta)}$.":"Só o peso realiza trabalho, por isso a energia mecânica conserva-se: $\\tfrac12 m v^2 = m g h$, logo $h = \\dfrac{v^2}{2g}$.")+"\n\n$$h = "+(mu2?"\\frac{"+F(v1)+"^2}{2\\times 9{,}8\\times (1+"+F(mu2)+"\\cot "+F(ang)+"^\\circ)}":"\\frac{"+F(v1)+"^2}{2\\times 9{,}8}")+" = "+F(h)+"\\,\\mathrm{m}$$\n\nO corpo percorre na rampa $s = h/\\sin\\theta = "+F(s)+"\\,\\mathrm{m}$.");
+ /* respostas pedidas */
+ var qs=[],ps=String(q).split(/(?:^|\n|\s)\*?([a-d])\)\*?/i);
+ if(ps.length>1)for(var i=1;i<ps.length;i+=2)qs.push(nz(ps[i+1]||"").toLowerCase());
+ var resp=[];
+ function a(txt){resp.push(txt)}
+ qs.forEach(function(x,i){
+  var l="**"+String.fromCharCode(97+i)+")** ";
+  if(/altura/.test(x))a(l+"A altura máxima é $h = "+F(h)+"\\,\\mathrm{m}$.");
+  else if(/distancia|quanto sobe|comprimento/.test(x)&&/rampa/.test(x))a(l+"Sobe $"+F(s)+"\\,\\mathrm{m}$ ao longo da rampa.");
+  else if(/trabalho|energia (dissipada|perdida)/.test(x)&&temAtr)a(l+"O trabalho do atrito é $W = -\\mu m g d = "+(m!=null?F(-mu1*m*G*d)+"\\,\\mathrm{J}$.":"-\\mu m g d$ (precisa da massa)."));
+  else if(/velocidade/.test(x))a(l+"A velocidade depois do plano é $v = "+F(v1)+"\\,\\mathrm{m/s}$.");
+  else if(/tempo/.test(x)){var t1=temAtr?(v0-v1)/(mu1*G):0,t2=v1/a2;a(l+"Tempo no plano $"+F(t1)+"\\,\\mathrm{s}$, na subida $"+F(t2)+"\\,\\mathrm{s}$; total $"+F(t1+t2)+"\\,\\mathrm{s}$.")}
+ });
+ if(!resp.length)a("**Resultado:** velocidade no fim do plano $v = "+F(v1)+"\\,\\mathrm{m/s}$ e altura máxima $h = "+F(h)+"\\,\\mathrm{m}$.");
+ /* testes por outro caminho: cinematica */
+ var ok=true,T1="",T2="";
+ if(temAtr){var a1=-mu1*G,vk=Math.sqrt(v0*v0+2*a1*d);ok=ok&&Math.abs(vk-v1)<1e-9*Math.max(1,v1);
+  T1="**Teste 1: cinemática no plano**\n\nA desaceleração do atrito é $a = -\\mu g = "+F(a1)+"\\,\\mathrm{m/s^2}$, e $v^2 = v_0^2 + 2ad$ dá $v = "+F(vk)+"\\,\\mathrm{m/s}$, igual ao valor por energia "+(Math.abs(vk-v1)<1e-9*Math.max(1,v1)?"✓":"✗")+"."}
+ var sk=v1*v1/(2*a2),hk=sk*sn,ok2=Math.abs(hk-h)<1e-9*Math.max(1,h);ok=ok&&ok2;
+ T2="**Teste "+(temAtr?"2":"1")+": cinemática na rampa**\n\nNa subida a desaceleração é $a = g(\\sin\\theta"+(mu2?"+\\mu\\cos\\theta":"")+") = "+F(a2)+"\\,\\mathrm{m/s^2}$. Para parar: $s = \\dfrac{v^2}{2a} = "+F(sk)+"\\,\\mathrm{m}$ e $h = s\\sin\\theta = "+F(hk)+"\\,\\mathrm{m}$, igual ao valor por energia "+(ok2?"✓":"✗")+".";
+ var T3="";
+ if(!mu2){var ec=0.5*v1*v1,ep=G*h;var ok3=Math.abs(ec-ep)<1e-9*Math.max(1,ec);ok=ok&&ok3;T3="\n\n**Teste "+(temAtr?"3":"2")+": energia por unidade de massa**\n\nEm cima, toda a energia cinética virou potencial: $\\tfrac12 v^2 = "+F(ec)+"\\,\\mathrm{J/kg}$ e $g h = "+F(ep)+"\\,\\mathrm{J/kg}$ "+(ok3?"✓":"✗")+"."}
+ var nT=temAtr?(mu2?2:3):(mu2?1:2);
+ var tex="**Sobre os testes**\n\n"+(T1?T1+"\n\n":"")+T2+T3+"\n\n"+(ok?(nT===1?"O teste dá":"Os "+nT+" testes dão")+" o mesmo resultado que o método da energia, por isso a resposta está **correta**.":"Os testes não coincidem, por isso revê os dados.");
+ var etapas=["Li o problema como um plano com atrito seguido de uma rampa e identifiquei dados e perguntas.","Resolvi pelo teorema do trabalho e energia (plano) e conservação da energia (rampa)."];
+ if(T1)etapas.push("Teste 1: cinemática no plano, com a=-μg e v²=v0²+2ad.");
+ etapas.push("Teste "+(temAtr?"2":"1")+": cinemática na rampa, com s=v²/2a e h=s·senθ.");
+ return {texto:L.join("\n\n")+"\n\n"+resp.join("\n\n")+"\n\n"+tex,etapas:etapas};
+}
+window.LumeFisica={analisar:analisar,cenario:cenario,oferta:oferta,solucao:solucao,responder:responder,testes:testes,corpo:corpo};
 })();

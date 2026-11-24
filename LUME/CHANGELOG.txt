@@ -492,3 +492,6 @@ Lume - historico de versoes
 0.5.61
 - O desenho da casa passa a vir da lib xlang-desenhos (HTMLx-lang, modules/xlang-desenhos.js), carregada do CDN so quando alguem pede a casa: sao menos 36 KB no arranque (libdesenho.txt passa de 43 KB para 6 KB). O SVG e gerado por codigo (desenhoCasa) e passa pelo sanitizeHtml com todos os 580 elementos intactos (testado com o interpretador real em jsdom).
 - Interpretador XLang fixado ao commit 62ecaa9, o primeiro com o modulo "desenhos" no xlang-modules.json.
+
+0.5.61
+- Fisica em etapas: problemas de plano com atrito seguido de rampa (com ou sem atrito) sao resolvidos por trabalho e energia, respondendo as alineas (velocidade, altura maxima, distancia na rampa, tempo, trabalho do atrito), com 2 ou 3 testes por outro caminho (cinematica e energia por unidade de massa). Se o corpo para antes da rampa, o Lume diz-o.

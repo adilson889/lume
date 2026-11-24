@@ -275,3 +275,6 @@ faz um grafico de 2x+1 | plotLinear\(2, 1\)
 organiza esses numeros numa tabela 4 4 5 7 9 e calcula a media | tabStats
 cria uma tabela para a turma\nNome completo   Idade\nAna 12 anos\nBruno 13 anos | tabTable
 tabuada do 7 em tabela | tabMultiplication\(7, 10\)
+Um corpo de 2 kg tem velocidade de 10 m/s numa superficie horizontal com atrito. Coeficiente de atrito = 0,2. Ele anda 5 m e depois sobe uma rampa de 30° sem atrito. a) velocidade depois de andar os 5 m b) altura maxima na rampa | 8\W*9666.*4\W*102
+Um carrinho a 6 m/s sobe uma rampa de 20 graus sem atrito. Que altura atinge? | 1\W*8367
+Um bloco de 3 kg desliza a 4 m/s num plano com atrito, coeficiente de atrito = 0,5. Anda 5 m e depois sobe uma rampa de 30 graus sem atrito. Qual a altura maxima? | para antes

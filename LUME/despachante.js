@@ -802,6 +802,10 @@ async function tentar(q){
   var cod=null;try{cod=window.LumeCodigoChat.responder(q)}catch(_){}
   if(cod){(cod.etapas||[]).forEach(function(e,i){raciocinio(e,i>=2?T_ETAPA_TESTE:undefined)});window.lumeOnReply({text:cod.texto});return true}
  }
+ if(typeof window.lumeOnReply==="function"&&window.LumeFisica&&window.LumeFisica.cenario&&_q0.length<=900){
+  var cen=null;try{cen=window.LumeFisica.cenario(_q0)}catch(_){}
+  if(cen){(cen.etapas||[]).forEach(function(e,i){raciocinio(e,i>=2?T_ETAPA_TESTE:undefined)});window.lumeOnReply({text:cen.texto});return true}
+ }
  if(typeof window.lumeOnReply==="function"&&window.LumeFisica&&q.length<=700){
   var fis=null;try{fis=window.LumeFisica.analisar(q)}catch(_){}
   if(fis){
