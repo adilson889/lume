@@ -502,6 +502,44 @@ button,a,[role=button],select,summary{touch-action:manipulation}
 #pwa-rede{position:fixed;left:50%;top:calc(var(--vvt,0px) + 64px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:35;max-width:calc(100% - 24px);padding:6px 14px;border-radius:16px;background:var(--text);color:var(--bg);font-size:13px;font-weight:600;text-align:center}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
 </style>
+<style id="lume-input-estilo-organico">
+#input-area{left:12px;right:12px;width:auto;box-sizing:border-box;padding:14px;border-radius:30px;background:var(--bg3)}
+#input-area .pv-pill{box-sizing:border-box;width:100%;max-width:720px;gap:12px;padding:12px 14px 14px;background:var(--card);border:1px solid var(--border);border-radius:40px;box-shadow:0 1px 3px rgba(30,35,15,.07)}
+#input-area .pv-pill:focus-within,#input-area .pv-pill.expandido{border:1px solid var(--border);border-radius:40px}
+#input-area .pv-pill.expandido{padding:12px 14px 14px}
+#input-area .pv-pill #chat-input,#input-area .pv-pill.expandido #chat-input{box-sizing:border-box;width:100%;min-height:42px;max-height:132px;margin:0;padding:3px 12px 8px;border:0;background:transparent;font-size:18px;line-height:1.4}
+#input-area .pv-pill #chat-input::placeholder{color:var(--muted);opacity:.9}
+#input-area .pv-linha-botoes{width:100%;min-width:0;display:flex;align-items:center;flex-wrap:nowrap;gap:6px}
+#input-area .pv-linha-botoes .pv-espaco{flex:1;min-width:0}
+#input-area .pv-linha-botoes>button{flex-shrink:0;height:44px;border-radius:24px}
+#input-area .pv-linha-botoes>button:first-child,#input-area .pv-linha-botoes>button[aria-label="Mensagem de voz"]{width:44px;height:44px;border-radius:50%;background:var(--bg3)}
+#input-area .pv-linha-botoes>button:first-child svg,#input-area .pv-linha-botoes>button[aria-label="Mensagem de voz"] svg{width:23px;height:23px}
+#input-area .pv-linha-botoes>#btn-pensar{height:44px;padding:0 14px 0 12px;border:1.5px solid transparent;border-radius:24px;background:var(--bg3);color:var(--r);font-size:15px}
+#input-area .pv-linha-botoes>#btn-pensar[aria-pressed="true"]{border:1.5px solid var(--r);box-shadow:none}
+#input-area .pv-linha-botoes>#btn-modelo{height:44px;max-width:clamp(112px,34vw,190px);padding:0 10px 0 12px;border-radius:24px;background:var(--bg3);color:var(--r)}
+#input-area .pv-linha-botoes>#btn-modelo .bm-nome{max-width:100%}
+#input-area .pv-linha-botoes>#btn-enviar-chat{width:48px;height:48px;border-radius:50%;background:var(--r);opacity:1;transform:none;pointer-events:auto}
+#input-area .pv-linha-botoes>#btn-enviar-chat svg{width:25px;height:25px}
+#input-area .pv-linha-botoes>#btn-enviar-chat svg path{stroke:var(--on)}
+#input-area .pv-pill.expandido #btn-voz-modo{display:none}
+@media(max-width:390px){#input-area{left:8px;right:8px;padding:10px}#input-area .pv-pill,#input-area .pv-pill.expandido{padding:10px 10px 12px}#input-area .pv-linha-botoes{gap:4px}#input-area .pv-linha-botoes>#btn-pensar{padding:0 10px;font-size:14px}#input-area .pv-linha-botoes>#btn-modelo{max-width:clamp(100px,30vw,130px);padding:0 8px}}
+
+/* O input antigo tinha uma linha inferior. O novo painel não usa sublinhado. */
+#input-area .pv-pill,
+#input-area .pv-pill.expandido,
+#input-area .pv-pill.com-anexo{
+ border:1px solid var(--border);
+ border-bottom:1px solid var(--border);
+ border-radius:40px;
+}
+#input-area .pv-pill #chat-input,
+#input-area .pv-pill.expandido #chat-input,
+#input-area .pv-pill.com-anexo #chat-input{
+ border:0!important;
+ border-bottom:0!important;
+ box-shadow:none;
+}
+</style>
 </head>
 <body>
 <noscript><p style="padding:24px;font:16px system-ui,sans-serif">O Lume precisa de JavaScript para funcionar. Ativa o JavaScript no navegador e recarrega a página.</p></noscript>
@@ -1471,8 +1509,7 @@ function embrulharSvgEmFicheiro(alvo,titulo){
  var sv=Array.prototype.slice.call(alvo.querySelectorAll("svg")).filter(function(x){return !x.closest(".lume-arquivo")});
  if(!sv.length)return false;
  var corpo="";sv.forEach(function(x){corpo+=x.outerHTML});
- var pagina='<!--lume:formatar--><!doctype html><html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+escaparHtml(titulo)+'</title><style>html,body{height:100%;margin:0}body{display:flex;align-items:center;justify-content:center;background:#fff}svg{max-width:96vw;max-height:96vh;height:auto}</style></head><body>'+corpo+'
-</body></html>';
+ var pagina='<!--lume:formatar--><!doctype html><html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+escaparHtml(titulo)+'</title><style>html,body{height:100%;margin:0}body{display:flex;align-items:center;justify-content:center;background:#fff}svg{max-width:96vw;max-height:96vh;height:auto}</style></head><body>'+corpo+'</body></html>';
  var card=document.createElement("div");card.className="lume-app";card.setAttribute("data-lume-app",encodeURIComponent(pagina));
  sv[0].parentNode.insertBefore(card,sv[0]);
  sv.forEach(function(x){x.remove()});
@@ -1661,29 +1698,7 @@ function paraSvg(){var esc2=document.documentElement.classList.contains("tema-es
  T.split("\n").forEach(function(l){if(!l.trim()){ls.push("");return}var cur="";l.split(/\s+/).forEach(function(w){if((cur+" "+w).trim().length>52&&cur){ls.push(cur);cur=w}else cur=(cur+" "+w).trim()});ls.push(cur)});
  var h=ls.length*26+64,svg='<svg xmlns="http://www.w3.org/2000/svg" width="720" height="'+h+'" viewBox="0 0 720 '+h+'"><rect width="720" height="'+h+'" rx="20" fill="'+bg+'"/><text font-family="Georgia,serif" font-size="17" fill="'+fg+'" xml:space="preserve">';
  ls.forEach(function(l,i){svg+='<tspan x="32" y="'+(46+i*26)+'">'+esc(l)+'</tspan>'});return svg+"</text></svg>"}
-function paraHtml(){return'<!doctype html><html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Resposta</title><style>body{font-family:Georgia,serif;max-width:720px;margin:24px auto;padding:0 16px;line-height:1.6}pre{background:#f3f3f3;padding:12px;border-radius:12px;overflow-x:auto}</style><style id="lume-input-estilo-organico">
-#input-area{left:12px;right:12px;width:auto;box-sizing:border-box;padding:14px;border-radius:30px;background:var(--bg3)}
-#input-area .pv-pill{box-sizing:border-box;width:100%;max-width:720px;gap:12px;padding:12px 14px 14px;background:var(--card);border:1px solid var(--border);border-radius:40px;box-shadow:0 1px 3px rgba(30,35,15,.07)}
-#input-area .pv-pill:focus-within,#input-area .pv-pill.expandido{border:1px solid var(--border);border-radius:40px}
-#input-area .pv-pill.expandido{padding:12px 14px 14px}
-#input-area .pv-pill #chat-input,#input-area .pv-pill.expandido #chat-input{box-sizing:border-box;width:100%;min-height:42px;max-height:132px;margin:0;padding:3px 12px 8px;border:0;background:transparent;font-size:18px;line-height:1.4}
-#input-area .pv-pill #chat-input::placeholder{color:var(--muted);opacity:.9}
-#input-area .pv-linha-botoes{width:100%;min-width:0;display:flex;align-items:center;flex-wrap:nowrap;gap:6px}
-#input-area .pv-linha-botoes .pv-espaco{flex:1;min-width:0}
-#input-area .pv-linha-botoes>button{flex-shrink:0;height:44px;border-radius:24px}
-#input-area .pv-linha-botoes>button:first-child,#input-area .pv-linha-botoes>button[aria-label="Mensagem de voz"]{width:44px;height:44px;border-radius:50%;background:var(--bg3)}
-#input-area .pv-linha-botoes>button:first-child svg,#input-area .pv-linha-botoes>button[aria-label="Mensagem de voz"] svg{width:23px;height:23px}
-#input-area .pv-linha-botoes>#btn-pensar{height:44px;padding:0 14px 0 12px;border:1.5px solid transparent;border-radius:24px;background:var(--bg3);color:var(--r);font-size:15px}
-#input-area .pv-linha-botoes>#btn-pensar[aria-pressed="true"]{border:1.5px solid var(--r);box-shadow:none}
-#input-area .pv-linha-botoes>#btn-modelo{height:44px;max-width:clamp(112px,34vw,190px);padding:0 10px 0 12px;border-radius:24px;background:var(--bg3);color:var(--r)}
-#input-area .pv-linha-botoes>#btn-modelo .bm-nome{max-width:100%}
-#input-area .pv-linha-botoes>#btn-enviar-chat{width:48px;height:48px;border-radius:50%;background:var(--r);opacity:1;transform:none;pointer-events:auto}
-#input-area .pv-linha-botoes>#btn-enviar-chat svg{width:25px;height:25px}
-#input-area .pv-linha-botoes>#btn-enviar-chat svg path{stroke:var(--on)}
-#input-area .pv-pill.expandido #btn-voz-modo{display:none}
-@media(max-width:390px){#input-area{left:8px;right:8px;padding:10px}#input-area .pv-pill,#input-area .pv-pill.expandido{padding:10px 10px 12px}#input-area .pv-linha-botoes{gap:4px}#input-area .pv-linha-botoes>#btn-pensar{padding:0 10px;font-size:14px}#input-area .pv-linha-botoes>#btn-modelo{max-width:clamp(100px,30vw,130px);padding:0 8px}}
-</style>
-</head><body>'+limpo().innerHTML+'</body></html>'}
+function paraHtml(){return'<!doctype html><html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Resposta</title><style>body{font-family:Georgia,serif;max-width:720px;margin:24px auto;padding:0 16px;line-height:1.6}pre{background:#f3f3f3;padding:12px;border-radius:12px;overflow-x:auto}</style></head><body>'+limpo().innerHTML+'</body></html>'}
 var SVG_PLAY='<svg viewBox="0 0 24 24" fill="none"><path d="M7 4.5v15l12-7.5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>';
 function lg(c){var k=[].slice.call(c.classList).find(function(x){return x.indexOf("language-")===0});return k?k.slice(9).toLowerCase():""}
 function fonteDom(c){var fs=[];try{fs=JSON.parse(M.dataset.fontes||"[]")}catch(e){}
@@ -1871,10 +1886,10 @@ enviar=function(){
 .msg.usuario .anexo-card:last-child{margin-bottom:0}
 .msg.usuario .anexo-texto{white-space:pre-wrap;word-break:break-word}
 /* input sublinhado: sem caixa, linha verde com brilho */
-#input-area .pv-pill{background:transparent;border:none;border-bottom:2px solid var(--r);border-radius:0;padding:2px 2px 6px;box-shadow:none;transition:border-color .2s}
+
 #input-area .pv-pill:focus-within{border-color:var(--r)}
-#input-area .pv-pill.expandido,#input-area .pv-pill.com-anexo{padding:8px 2px 4px 4px;border-bottom:none;box-shadow:none}
-#input-area .pv-pill.expandido #chat-input,#input-area .pv-pill.com-anexo #chat-input{border-bottom:2px solid var(--r);padding:2px 4px 8px;margin-bottom:6px}
+
+
 #input-area .pv-linha-botoes>button{border-radius:12px}
 #input-area .pv-linha-botoes>button:first-child,#input-area .pv-linha-botoes>button[aria-label="Mensagem de voz"]:not(.gravando){background:transparent}
 #input-area .pv-linha-botoes>button:first-child:active,#input-area .pv-linha-botoes>button[aria-label="Mensagem de voz"]:not(.gravando):active,#btn-voz-modo:active{background:rgba(69,90,11,.14);background:color-mix(in srgb,var(--r) 14%,transparent)}
