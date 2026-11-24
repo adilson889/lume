@@ -289,6 +289,46 @@ button:active{transform:scale(.94)}
 #btn-fundo{position:absolute;right:16px;top:-52px;width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--bg);color:var(--text);display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.16);opacity:0;transform:translateY(8px) scale(.9);pointer-events:none;transition:opacity .2s,transform .2s}#btn-fundo.show{opacity:1;transform:none;pointer-events:auto}#btn-fundo:active{background:var(--bg3)}#btn-fundo svg{width:20px;height:20px}.tema-escuro #btn-fundo{border-color:#353929;box-shadow:0 4px 14px rgba(0,0,0,.5)}
 .msg-acao.falando{color:var(--text);background:var(--bg3)}.msg.usuario{cursor:pointer}
 #btn-enviar-chat{width:0;min-width:0;margin-left:-6px;overflow:hidden;opacity:0;transform:translateX(26px) scale(.8);pointer-events:none;transition:width .3s cubic-bezier(.32,.72,0,1),margin-left .3s cubic-bezier(.32,.72,0,1),opacity .22s,transform .3s cubic-bezier(.32,.72,0,1)}#btn-enviar-chat.visivel{width:36px;margin-left:0;opacity:1;transform:none;pointer-events:auto}
+
+/* CORRECAO DEFINITIVA: no compacto, os filhos da linha participam
+   directamente no flex da pill para o + ficar antes do textarea. */
+#input-area .pv-pill:not(.expandido) .pv-linha-botoes{
+ display:contents!important;
+}
+#input-area .pv-pill:not(.expandido) #chat-input{
+ order:1!important;
+ flex:1 1 0!important;
+ width:0!important;
+ min-width:0!important;
+}
+#input-area .pv-pill:not(.expandido) .pv-linha-botoes>button:first-child{
+ display:flex!important;
+ order:0!important;
+ flex:0 0 36px!important;
+ width:36px!important;
+ min-width:36px!important;
+ height:36px!important;
+}
+#input-area .pv-pill:not(.expandido) .pv-linha-botoes>button[aria-label="Mensagem de voz"]{
+ display:flex!important;
+ order:2!important;
+ flex:0 0 36px!important;
+}
+#input-area .pv-pill:not(.expandido) .pv-linha-botoes>#btn-voz-modo{
+ order:3!important;
+ flex:0 0 36px!important;
+}
+#input-area .pv-pill:not(.expandido) .pv-linha-botoes>#btn-pensar,
+#input-area .pv-pill:not(.expandido) .pv-linha-botoes>#btn-modelo,
+#input-area .pv-pill:not(.expandido) .pv-linha-botoes>.pv-espaco,
+#input-area .pv-pill:not(.expandido) .pv-linha-botoes>#btn-enviar-chat{
+ display:none!important;
+}
+/* Ao expandir, a linha de controlos volta a ser uma linha independente. */
+#input-area .pv-pill.expandido .pv-linha-botoes{
+ display:flex!important;
+}
+
 </style>
 <style>
 #statusbar{background:transparent;border:none;height:0;padding:0;pointer-events:none}
