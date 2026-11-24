@@ -495,3 +495,6 @@ Lume - historico de versoes
 
 0.5.61
 - Fisica em etapas: problemas de plano com atrito seguido de rampa (com ou sem atrito) sao resolvidos por trabalho e energia, respondendo as alineas (velocidade, altura maxima, distancia na rampa, tempo, trabalho do atrito), com 2 ou 3 testes por outro caminho (cinematica e energia por unidade de massa). Se o corpo para antes da rampa, o Lume diz-o.
+
+0.5.62
+- Fisica: g passa a ser lido do enunciado (g = 10, considere g = 10, adote...), tambem nos problemas com rampa; sem g indicado usa 9,8 e avisa. Distingue aceleracao (a) de aceleracao da gravidade (g): "Qual a aceleracao da gravidade?" calcula g = P/m. "Passa de 0 a 20 m/s" ja nao e confundido com conversao de unidades; "cai de 20 m" conta como altura; "atrito de coeficiente 0,1" e lido.

@@ -278,3 +278,8 @@ tabuada do 7 em tabela | tabMultiplication\(7, 10\)
 Um corpo de 2 kg tem velocidade de 10 m/s numa superficie horizontal com atrito. Coeficiente de atrito = 0,2. Ele anda 5 m e depois sobe uma rampa de 30° sem atrito. a) velocidade depois de andar os 5 m b) altura maxima na rampa | 8\W*9666.*4\W*102
 Um carrinho a 6 m/s sobe uma rampa de 20 graus sem atrito. Que altura atinge? | 1\W*8367
 Um bloco de 3 kg desliza a 4 m/s num plano com atrito, coeficiente de atrito = 0,5. Anda 5 m e depois sobe uma rampa de 30 graus sem atrito. Qual a altura maxima? | para antes
+Um corpo de 2 kg tem velocidade de 10 m/s numa superficie horizontal com atrito. Coeficiente de atrito = 0,2. Ele anda 5 m e depois sobe uma rampa de 30 graus sem atrito. a) velocidade depois dos 5 m b) altura maxima, use g = 10 m/s2 | 9443
+resolve: Um carro passa de 0 a 20 m/s em 5 s. Qual é a aceleração? | 4
+resolve: Um corpo cai de 20 m. Considere g = 10 m/s². Qual a velocidade ao chegar ao chão? | 20
+resolve: Um corpo de 10 kg pesa 98 N. Qual a aceleração da gravidade? | 9\W*8
+resolve: Um corpo de 5 kg, considere g = 10 m/s². Qual o peso? | 50

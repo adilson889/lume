@@ -91,7 +91,7 @@ gq("g","g","g","a","aceleração da gravidade",V(0,1,-2),"m/s^2",["aceleracao da
 gq("F","F","F","a","força",FF,"N",["forca resultante","forca elastica","forca aplicada","forca de tracao","intensidade da forca","forca","tracao"],["F","Fr"]);
 gq("Fa","F_{at}","Fat","a","força de atrito",FF,"N",["forca de atrito"],["Fat"]);
 gq("Fn","N","N","a","força normal",FF,"N",["forca normal","reacao normal","normal"],["N"]);
-gq("Pp","P","P","o","peso",FF,"N",["forca peso","peso"],["P"]);
+gq("Pp","P","P","o","peso",FF,"N",["forca peso","peso"],["P"],{cx:["pesa","pesam"]});
 gq("Emp","E","E","o","empuxo",FF,"N",["empuxo","impulsao"],["E"]);
 gq("mu","\\mu","μ","o","coeficiente de atrito",Z,"",["coeficiente de atrito"],["μ","mu"],{auto:false});
 gq("k","k","k","a","constante elástica",V(1,0,-2),"N/m",["constante elastica","constante da mola","constante de elasticidade"],["k"]);
@@ -175,9 +175,9 @@ man({id:"torricelli",area:"Cinemática",nome:"Equação de Torricelli",w:["torri
   v0:{t:"\\sqrt{"+sp("v",2)+" - 2 \\cdot "+sp("a",1)+" \\cdot "+sp("d",1)+"}",f:function(x){return Math.sqrt(x.v*x.v-2*x.a*x.d)}},
   a:{t:"\\frac{"+sp("v",2)+" - "+sp("v0",2)+"}{2 \\cdot "+sp("d",1)+"}",f:function(x){return (x.v*x.v-x.v0*x.v0)/(2*x.d)}},
   d:{t:"\\frac{"+sp("v",2)+" - "+sp("v0",2)+"}{2 \\cdot "+sp("a",1)+"}",f:function(x){return (x.v*x.v-x.v0*x.v0)/(2*x.a)}}}});
-mono("queda_v","Cinemática","Queda livre (velocidade)",["queda livre","cai","largado","abandonado","solto"],[["v",1]],C(1,1),[["g",1],["t",1]]);
-mono("queda_h","Cinemática","Queda livre (altura)",["queda livre","cai","largado","abandonado","solto"],[["h",1]],C(1,2),[["g",1],["t",2]]);
-mono("queda_vh","Cinemática","Queda livre (velocidade e altura)",["queda livre","cai","largado","abandonado","solto","chao"],[["v",2]],C(2,1),[["g",1],["h",1]]);
+mono("queda_v","Cinemática","Queda livre (velocidade)",["queda livre","cai","largado","abandonado","solto"],[["v",1]],C(1,1),[["g",1],["t",1]],{h:["d"]});
+mono("queda_h","Cinemática","Queda livre (altura)",["queda livre","cai","largado","abandonado","solto"],[["h",1]],C(1,2),[["g",1],["t",2]],{h:["d"]});
+mono("queda_vh","Cinemática","Queda livre (velocidade e altura)",["queda livre","cai","largado","abandonado","solto","chao"],[["v",2]],C(2,1),[["g",1],["h",1]],{h:["d"]});
 mono("mcu_v","Movimento circular","Velocidade no movimento circular",["circular","circunferencia","roda"],[["v",1]],C(1,1),[["w",1],["r",1]]);
 mono("mcu_w","Movimento circular","Velocidade angular",["circular","circunferencia","roda","rotacao"],[["w",1]],{n:"2\\pi",d:"1",v:2*Math.PI},[["f",1]]);
 mono("mcu_ac","Movimento circular","Aceleração centrípeta",["centripeta","circular","curva"],[["a",1]],C(1,1),[["v",2],["r",-1]]);
@@ -306,7 +306,7 @@ function montar(s0,sl){
   (A[k]=A[k]||[]).push(en);ordem.push(en);
  });
  if(A.v&&A.v.length>=2&&!A.v0){A.v0=[A.v[0]];A.v0[0].k="v0";A.v=[A.v[1]];ordem.forEach(function(e){if(e===A.v0[0])e.k="v0"})}
- var mu=/(?:coeficiente de atrito(?: cinetico| estatico| dinamico)?(?:\s+(?:de|e|=|vale|igual a|:))?\s*|(?:^|[^a-z])(?:mu|\u03bc)\s*=\s*)(\d+(?:[.,]\d+)?)(?!\s*[a-z%])/.exec(sl);
+ var mu=/(?:coeficiente de atrito(?: cinetico| estatico| dinamico)?(?:\s+(?:de|e|=|vale|igual a|:))?\s*|atrito(?: cinetico| estatico| dinamico)?\s+de\s+coeficiente\s*(?:de|=|e)?\s*|atrito(?: cinetico| estatico| dinamico)?\s*(?:=|de|vale|igual a)\s*|(?:^|[^a-z])(?:mu|\u03bc)\s*=\s*)(\d+(?:[.,]\d+)?)(?!\s*[a-z%])/.exec(sl);
  if(mu&&!A.mu){var en2={k:"mu",v:parseFloat(mu[1].replace(",",".")),ov:parseFloat(mu[1].replace(",",".")),raw:"",un:{f:1,d:Z,off:0},src:"dado"};A.mu=[en2];ordem.push(en2)}
  function impl(k,nota,raw){if(!A[k]){var e={k:k,v:0,ov:0,raw:raw,un:{f:1,d:Q[k].dim,off:0},src:"dado",impl:nota};A[k]=[e];ordem.push(e)}}
  if(/repouso/.test(sl)&&!/(ate|chegar|chega|fica|ficar|volta|voltar)[^.]{0,24}repouso/.test(sl))impl("v0","parte do repouso","m/s");
@@ -343,7 +343,7 @@ function obter(f,spec,A,ctx){
  for(var j=0;j<al.length;j++){var e=A[al[j]];if(e&&e[0])return e[0]}
  var q=Q[k];
  if(q.cte!=null)return {k:k,v:q.cte,src:"cte"};
- if(k==="g")return {k:"g",v:9.8,src:"cte"};
+ if(k==="g")return ctx.alvoG?null:{k:"g",v:9.8,src:"cte"};
  if(k==="c"&&ctx.agua)return {k:"c",v:4186,src:"cte"};
  if(k==="rho"&&ctx.agua)return {k:"rho",v:1000,src:"cte"};
  return null;
@@ -405,13 +405,14 @@ function analisar(q){
  if(s0.length<14)return null;
  s0=palavrasUnidades(s0);
  var sl=s0.toLowerCase();
- if(/\b(convert\w*|transform\w*|passa\b)/.test(sl))return null;
+ if(/\b(convert\w*|transform\w*)/.test(sl)||/\bpassa\s+(?:de\s+)?[\d.,]+\s*[a-z\u00b0\/\u00b2\u00b3^*\-]*\s+para\b/.test(sl))return null;
  var L=montar(s0,sl),A=L.A,nm=L.ordem.filter(function(e){return !e.impl}).length;
  if(nm<1)return null;
  var ctx={sl:sl,agua:/\bagua\b/.test(sl)};
  var ks=alvosDe(sl,A);
  if(ks===null)return null;
  if(!ks.length)return null;
+ ctx.alvoG=ks.indexOf("g")>=0;
  var alvos=[],nao=[],regQ=s0.slice(Math.max(0,regiaoPergunta(sl)));
  ks.forEach(function(K){
   var r=resolver(K,A,ctx,2,[]);
@@ -631,7 +632,7 @@ function cenario(q){
  var t=nz(String(q||"")).toLowerCase().replace(/\u00b0/g," graus ").replace(/(\d),(\d)/g,"$1.$2");
  if(t.length>900||!/\b(rampa|plano inclinado)\b/.test(t))return null;
  function num(re){var m=re.exec(t);return m?parseFloat(m[1]):null}
- var G=9.8,
+ var G=num(/\bg\s*(?:=|\u2248|~|como|igual a)\s*(\d+(?:\.\d+)?)/)||num(/gravidade\s*(?:=|\u2248|~|de|como|igual a|vale)?\s*(\d+(?:\.\d+)?)\s*m/)||9.8,
   m=num(/(\d+(?:\.\d+)?)\s*kg/),
   v0=num(/(\d+(?:\.\d+)?)\s*m\s*\/\s*s/),
   ang=num(/(\d+(?:\.\d+)?)\s*(?:graus|grau)\b/),
@@ -646,8 +647,9 @@ function cenario(q){
   F=function(x){return fmtNum(x)},
   v1sq=v0*v0-2*mu1*G*(d||0);
  var L=[],E=[];
- var dados="**Primeiro passo: os dados.**\n\n$$"+(m!=null?"m = "+F(m)+"\\,\\mathrm{kg},\\quad ":"")+"v_0 = "+F(v0)+"\\,\\mathrm{m/s},\\quad g = 9{,}8\\,\\mathrm{m/s^2}"+(temAtr?",\\quad \\mu = "+F(mu)+",\\quad d = "+F(d)+"\\,\\mathrm{m}":"")+",\\quad \\theta = "+F(ang)+"^\\circ$$";
+ var dados="**Primeiro passo: os dados.**\n\n$$"+(m!=null?"m = "+F(m)+"\\,\\mathrm{kg},\\quad ":"")+"v_0 = "+F(v0)+"\\,\\mathrm{m/s},\\quad g = "+F(G)+"\\,\\mathrm{m/s^2}"+(temAtr?",\\quad \\mu = "+F(mu)+",\\quad d = "+F(d)+"\\,\\mathrm{m}":"")+",\\quad \\theta = "+F(ang)+"^\\circ$$";
  L.push(dados);
+ if(G===9.8&&!/\bg\s*(=|como|igual)/.test(t))L.push("Usei $g = 9{,}8\\,\\mathrm{m/s^2}$ (valor da Terra). Se o teu exercício usa $g = 10\\,\\mathrm{m/s^2}$, escreve-o no enunciado e eu uso esse.");
  var v1=v0;
  if(temAtr){
   if(v1sq<=0){
@@ -656,10 +658,10 @@ function cenario(q){
    return {texto:L.join("\n\n"),etapas:["Li o problema como um plano com atrito seguido de rampa e apliquei o teorema do trabalho e energia no plano; o corpo para antes da rampa."]};
   }
   v1=Math.sqrt(v1sq);
-  L.push("**Depois: o atrito no plano (trabalho e energia).** O trabalho do atrito é $W = -\\mu\\, m\\, g\\, d$, e igual à variação da energia cinética:\n\n$$\\tfrac12 m v^2 - \\tfrac12 m v_0^2 = -\\mu\\, m\\, g\\, d \\;\\Rightarrow\\; v = \\sqrt{v_0^2 - 2\\mu g d}$$\n\n$$v = \\sqrt{"+F(v0)+"^2 - 2\\times "+F(mu)+"\\times 9{,}8\\times "+F(d)+"} = \\sqrt{"+F(v1sq)+"} = "+F(v1)+"\\,\\mathrm{m/s}$$\n\nA massa corta-se, por isso não influencia.");
+  L.push("**Depois: o atrito no plano (trabalho e energia).** O trabalho do atrito é $W = -\\mu\\, m\\, g\\, d$, e igual à variação da energia cinética:\n\n$$\\tfrac12 m v^2 - \\tfrac12 m v_0^2 = -\\mu\\, m\\, g\\, d \\;\\Rightarrow\\; v = \\sqrt{v_0^2 - 2\\mu g d}$$\n\n$$v = \\sqrt{"+F(v0)+"^2 - 2\\times "+F(mu)+"\\times "+F(G)+"\\times "+F(d)+"} = \\sqrt{"+F(v1sq)+"} = "+F(v1)+"\\,\\mathrm{m/s}$$\n\nA massa corta-se, por isso não influencia.");
  }
  var a2=G*(sn+mu2*cs),s=v1*v1/(2*a2),h=s*sn;
- L.push("**Por fim: a rampa"+(mu2?" (com atrito)":" sem atrito")+".** "+(mu2?"Na subida, o peso e o atrito travam o corpo: $\\tfrac12 m v^2 = m g h + \\mu\\, m\\, g \\cos\\theta\\,\\dfrac{h}{\\sin\\theta}$, logo $h = \\dfrac{v^2}{2g\\,(1+\\mu\\cot\\theta)}$.":"Só o peso realiza trabalho, por isso a energia mecânica conserva-se: $\\tfrac12 m v^2 = m g h$, logo $h = \\dfrac{v^2}{2g}$.")+"\n\n$$h = "+(mu2?"\\frac{"+F(v1)+"^2}{2\\times 9{,}8\\times (1+"+F(mu2)+"\\cot "+F(ang)+"^\\circ)}":"\\frac{"+F(v1)+"^2}{2\\times 9{,}8}")+" = "+F(h)+"\\,\\mathrm{m}$$\n\nO corpo percorre na rampa $s = h/\\sin\\theta = "+F(s)+"\\,\\mathrm{m}$.");
+ L.push("**Por fim: a rampa"+(mu2?" (com atrito)":" sem atrito")+".** "+(mu2?"Na subida, o peso e o atrito travam o corpo: $\\tfrac12 m v^2 = m g h + \\mu\\, m\\, g \\cos\\theta\\,\\dfrac{h}{\\sin\\theta}$, logo $h = \\dfrac{v^2}{2g\\,(1+\\mu\\cot\\theta)}$.":"Só o peso realiza trabalho, por isso a energia mecânica conserva-se: $\\tfrac12 m v^2 = m g h$, logo $h = \\dfrac{v^2}{2g}$.")+"\n\n$$h = "+(mu2?"\\frac{"+F(v1)+"^2}{2\\times "+F(G)+"\\times (1+"+F(mu2)+"\\cot "+F(ang)+"^\\circ)}":"\\frac{"+F(v1)+"^2}{2\\times "+F(G)+"}")+" = "+F(h)+"\\,\\mathrm{m}$$\n\nO corpo percorre na rampa $s = h/\\sin\\theta = "+F(s)+"\\,\\mathrm{m}$.");
  /* respostas pedidas */
  var qs=[],ps=String(q).split(/(?:^|\n|\s)\*?([a-d])\)\*?/i);
  if(ps.length>1)for(var i=1;i<ps.length;i+=2)qs.push(nz(ps[i+1]||"").toLowerCase());
