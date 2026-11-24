@@ -2205,6 +2205,62 @@ el.addEventListener("touchcancel",fim,{passive:true});
  pointer-events:auto!important;
 }
 
+
+/* Compacto: grelha com colunas fixas; cada controlo ocupa a sua posição.
+   Pensar/Modelo não participam nesta linha e não empurram os ícones de voz. */
+#input-area .pv-pill:not(.expandido):not(.com-anexo){
+ display:grid!important;
+ grid-template-columns:36px minmax(0,1fr) 36px 36px!important;
+ grid-template-rows:40px!important;
+ grid-template-areas:"anexar texto ditado voz"!important;
+ align-items:center!important;
+ column-gap:5px!important;
+ row-gap:0!important;
+}
+#input-area .pv-pill:not(.expandido):not(.com-anexo) #chat-input{
+ grid-area:texto!important;
+ order:initial!important;
+ width:100%!important;
+ min-width:0!important;
+ min-height:40px!important;
+ max-height:40px!important;
+}
+#input-area .pv-pill:not(.expandido):not(.com-anexo) .pv-linha-botoes{
+ display:contents!important;
+}
+#input-area .pv-pill:not(.expandido):not(.com-anexo) .pv-linha-botoes>button:first-child{
+ grid-area:anexar!important;
+ display:flex!important;
+ width:36px!important;
+ min-width:36px!important;
+ height:36px!important;
+}
+#input-area .pv-pill:not(.expandido):not(.com-anexo) .pv-linha-botoes>button[aria-label="Mensagem de voz"]{
+ grid-area:ditado!important;
+ display:flex!important;
+ width:36px!important;
+ min-width:36px!important;
+ height:36px!important;
+}
+#input-area .pv-pill:not(.expandido):not(.com-anexo) .pv-linha-botoes>#btn-voz-modo{
+ grid-area:voz!important;
+ display:flex!important;
+ width:36px!important;
+ min-width:36px!important;
+ height:36px!important;
+}
+#input-area .pv-pill:not(.expandido):not(.com-anexo) .pv-linha-botoes>#btn-pensar,
+#input-area .pv-pill:not(.expandido):not(.com-anexo) .pv-linha-botoes>#btn-modelo,
+#input-area .pv-pill:not(.expandido):not(.com-anexo) .pv-linha-botoes>.pv-espaco,
+#input-area .pv-pill:not(.expandido):not(.com-anexo) .pv-linha-botoes>#btn-enviar-chat{
+ display:none!important;
+}
+#input-area .pv-pill.expandido{
+ display:flex!important;
+ flex-direction:column!important;
+}
+#input-area .pv-pill.expandido .pv-linha-botoes{display:flex!important}
+
 </style>
 <script>(function(){
 var IC_IMG=_ic('<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="1.5"/><path d="M21 15l-5-5L5 21"/>');
