@@ -427,7 +427,7 @@ function analisar(q){
  var last=alvos[0].passos[alvos[0].passos.length-1];
  var usados=[];alvos.forEach(function(a){a.passos.forEach(function(st){for(var s in st.vals)usados.push(st.vals[s])})});
  var nu=L.ordem.filter(function(e){return !e.impl&&usados.indexOf(e)<0});
- return {dados:L.ordem,A:A,ctes:ct,alvos:alvos,nao:nao,nu:nu,area:last.f.area,simples:alvos.length===1&&alvos[0].passos.length===1};
+ return {sl:sl,dados:L.ordem,A:A,ctes:ct,alvos:alvos,nao:nao,nu:nu,area:last.f.area,simples:alvos.length===1&&alvos[0].passos.length===1};
 }
 
 /* ===== apresentacao em LaTeX ===== */
@@ -727,6 +727,87 @@ function esbocoQueda(o){
  if(o.alvos&&o.alvos.length)s+=stx(120,y0+24,o.alvos.join(",  ")+"  = ?",{c:R,b:1});
  return svgEnv("0 0 250 215",s,"Esboço do enunciado: corpo em queda livre desde uma altura");
 }
+function eLab(p,k,simb,un){
+ var A=p.A||{},al=p.alvos.map(function(a){return a.K});
+ if(A[k]&&A[k][0])return simb+" = "+sx(k==="ang"?(A[k][0].ov!=null?A[k][0].ov:A[k][0].v):A[k][0].v)+(un?" "+un:"");
+ if(al.indexOf(k)>=0)return simb+" = ?";
+ return null;
+}
+function eFundo(){return '<rect x="0" y="0" width="1" height="1" fill="none"/>'}
+function esbocoRetilineo(p){
+ var B="#1f6feb",R="#d1481f",G="#2e8b57",s="",y0=120;
+ s+=sln(14,y0,346,y0,{w:2.5});for(var i=18;i<340;i+=10)s+=sln(i,y0+1,i-6,y0+7,{w:1,c:R});
+ function car(x,fa,c){var st=fa?' stroke-dasharray="4 3"':'';return '<rect x="'+x+'" y="'+(y0-26)+'" width="46" height="18" rx="3" fill="'+c+'" fill-opacity="'+(fa?0.08:0.28)+'" stroke="'+c+'" stroke-width="1.8"'+st+'/><circle cx="'+(x+11)+'" cy="'+(y0-6)+'" r="6" fill="none" stroke="'+c+'" stroke-width="1.6"/><circle cx="'+(x+35)+'" cy="'+(y0-6)+'" r="6" fill="none" stroke="'+c+'" stroke-width="1.6"/>'}
+ s+=car(40,false,B)+car(262,true,B);
+ var v0=eLab(p,"v0","v₀","m/s"),v=eLab(p,"v","v","m/s"),a=eLab(p,"a","a","m/s²"),t=eLab(p,"t","t","s"),d=eLab(p,"d","d","m");
+ if(v0){s+=sseta(90,y0-17,140,y0-17,B)+stx(115,y0-40,v0,{c:B,b:1})}
+ if(v){s+=sseta(312,y0-17,340,y0-17,B)+stx(300,y0-40,v,{c:B,b:1})}
+ if(d){var yd=y0+34;s+=sln(63,yd,285,yd,{w:1})+sln(63,yd-4,63,yd+4,{w:1})+sln(285,yd-4,285,yd+4,{w:1})+stx(174,yd+15,d)}
+ var top=[a,t].filter(Boolean).join("      ");if(top)s+=stx(180,40,top,{c:R,b:1,s:12});
+ return svgEnv("0 0 360 180",s,"Esboço do enunciado: corpo em movimento retilíneo com velocidades e distância");
+}
+function esbocoForcas(p){
+ var B="#1f6feb",R="#d1481f",G="#2e8b57",s="",sl=p.sl||"",inc=/inclinad|rampa/.test(sl),A=p.A||{};
+ var Fl=eLab(p,"F","F","N"),Fa=eLab(p,"Fa","Fₐ","N"),Fn=eLab(p,"Fn","N","N"),Pp=eLab(p,"Pp","P","N"),m=eLab(p,"m","m","kg"),mu=eLab(p,"mu","μ",""),a=eLab(p,"a","a","m/s²");
+ if(inc&&A.ang&&A.ang[0]){
+  var angG=A.ang[0].ov!=null?A.ang[0].ov:A.ang[0].v,th=angG*Math.PI/180,x0=30,y0=150,L=250,xe=x0+L*Math.cos(th),ye=y0-L*Math.sin(th);
+  if(ye<20){L=130/Math.sin(th);xe=x0+L*Math.cos(th);ye=y0-L*Math.sin(th)}
+  s+=sln(x0,y0,xe,y0,{w:1.5})+sln(x0,y0,xe,ye,{w:2.5})+sln(xe,ye,xe,y0,{w:1.5});
+  var u=Math.cos(th),w=-Math.sin(th),nx=Math.sin(th),ny=Math.cos(th)*-1*-1,t=0.55,cx=x0+(xe-x0)*t,cy=y0+(ye-y0)*t;
+  var bw=40,bh=26,bxc=cx+nx*-0,byc=cy;
+  var ox=cx-Math.sin(th)*bh/2*-1,oy=cy-Math.cos(th)*bh/2;
+  s+='<g transform="translate('+(cx-Math.sin(th)*bh/2).toFixed(1)+' '+(cy-Math.cos(th)*bh/2).toFixed(1)+') rotate('+(-th*180/Math.PI).toFixed(1)+')"><rect x="'+(-bw/2)+'" y="'+(-bh/2)+'" width="'+bw+'" height="'+bh+'" fill="'+B+'" fill-opacity="0.25" stroke="'+B+'" stroke-width="1.8"/></g>';
+  var gx=cx-Math.sin(th)*bh/2,gy=cy-Math.cos(th)*bh/2;
+  s+=sseta(gx,gy,gx,gy+55,R)+stx(gx+6,gy+58,Pp||"P",{c:R,b:1,a:"start"});
+  s+=sseta(gx,gy,gx-Math.sin(th)*50,gy-Math.cos(th)*50,G)+stx(gx-Math.sin(th)*50-6,gy-Math.cos(th)*50,Fn||"N",{c:G,b:1,a:"end"});
+  if(Fa||mu){s+=sseta(gx,gy,gx+Math.cos(th)*48,gy-Math.sin(th)*48,B)+stx(gx+Math.cos(th)*48+6,gy-Math.sin(th)*48-4,Fa||"Fₐ",{c:B,b:1,a:"start"})}
+  var r=34;s+='<path d="M '+(x0+r)+' '+y0+' A '+r+' '+r+' 0 0 0 '+(x0+r*Math.cos(th)).toFixed(1)+' '+(y0-r*Math.sin(th)).toFixed(1)+'" stroke="'+G+'" stroke-width="1.6"/>'+stx(x0+r+22,y0-6,"θ = "+sx(angG)+"°",{c:G,b:1,a:"start"});
+  var info=[m,mu,a].filter(Boolean).join("     ");if(info)s+=stx(20,16,info,{s:11,a:"start"});
+  return svgEnv("0 0 360 175",s,"Esboço do enunciado: corpo num plano inclinado com as forças");
+ }
+ var y0=130,cx=180;
+ s+=sln(40,y0,320,y0,{w:2.5});if(Fa||mu)for(var i=44;i<316;i+=10)s+=sln(i,y0+1,i-6,y0+8,{w:1,c:R});
+ s+='<rect x="'+(cx-34)+'" y="'+(y0-44)+'" width="68" height="44" fill="'+B+'" fill-opacity="0.25" stroke="'+B+'" stroke-width="1.8"/>'+stx(cx,y0-18,m||"m",{s:11});
+ if(Fl||/puxa|empurra|forca/.test(sl)){s+=sseta(cx+34,y0-22,cx+98,y0-22,B)+stx(cx+66,y0-30,Fl||"F",{c:B,b:1})}
+ if(Fa||mu){s+=sseta(cx-34,y0-10,cx-90,y0-10,R)+stx(cx-62,y0-18,Fa||"Fₐ",{c:R,b:1})}
+ s+=sseta(cx,y0-22,cx,y0+40,R)+stx(cx+6,y0+40,Pp||"P",{c:R,b:1,a:"start"});
+ if(Fn||/normal|apoio/.test(sl)||Fa||mu)s+=sseta(cx,y0-44,cx,y0-96,G)+stx(cx+6,y0-92,Fn||"N",{c:G,b:1,a:"start"});
+ var info=[mu,a].filter(Boolean).join("     ");if(info)s+=stx(cx,18,info,{c:R,b:1,s:12});
+ return svgEnv("0 0 360 185",s,"Esboço do enunciado: corpo com as forças aplicadas");
+}
+function esbocoHidro(p){
+ var B="#1f6feb",R="#d1481f",G="#2e8b57",s="",sl=p.sl||"";
+ var rho=eLab(p,"rho","ρ","kg/m³")||(/\bagua\b/.test(sl)?"ρ = 1000 kg/m³ (água)":null),h=eLab(p,"h","h","m")||eLab(p,"d","h","m"),pr=eLab(p,"pres","p","Pa"),g=eLab(p,"g","g","m/s²"),Em=eLab(p,"Emp","E","N"),Vv=eLab(p,"Vol","V","m³"),Pp=eLab(p,"Pp","P","N");
+ if(/vasos comunicantes|tubo em u|tubo u\b/.test(sl)){
+  s+='<path d="M 110 30 L 110 140 Q 110 160 130 160 L 150 160 Q 170 160 170 140 L 170 30 M 210 30 L 210 140 Q 210 160 230 160 L 250 160 Q 270 160 270 140 L 270 30 M 170 140 L 210 140" stroke="currentColor" stroke-width="2.5"/>'.replace("M 170 140 L 210 140","");
+  s+='<path d="M 110 80 L 110 140 Q 110 160 130 160 L 250 160 Q 270 160 270 140 L 270 55 L 210 55" fill="'+B+'" fill-opacity="0.25" stroke="none"/>';
+  s+=sln(110,80,170,80,{c:B,w:2})+sln(210,55,270,55,{c:B,w:2})+sln(170,160,210,160,{w:1,d:"2 3"});
+  s+=sln(88,80,88,160,{w:1})+sln(84,80,92,80,{w:1})+sln(84,160,92,160,{w:1})+stx(82,124,"h₁",{a:"end"});
+  s+=sln(292,55,292,160,{w:1})+sln(288,55,296,55,{w:1})+sln(288,160,296,160,{w:1})+stx(300,112,"h₂",{a:"start"});
+  var inf=[rho,h,pr].filter(Boolean).join("     ");s+=stx(190,18,inf||"vasos comunicantes",{c:R,b:1,s:11});
+  return svgEnv("0 0 360 180",s,"Esboço do enunciado: vasos comunicantes com os níveis do líquido");
+ }
+ s+='<path d="M 110 30 L 110 150 L 250 150 L 250 30" stroke="currentColor" stroke-width="2.5"/><rect x="111" y="64" width="138" height="85" fill="'+B+'" fill-opacity="0.22"/>'+sln(111,64,249,64,{c:B,w:2});
+ if(/empuxo|flutu|submers|arquimedes|impuls/.test(sl)||Em){
+  s+='<rect x="158" y="86" width="44" height="34" fill="'+G+'" fill-opacity="0.3" stroke="'+G+'" stroke-width="1.8"/>'+sseta(180,86,180,40,B)+stx(186,50,Em||"E",{c:B,b:1,a:"start"})+sseta(180,120,180,152,R)+stx(186,146,Pp||"P",{c:R,b:1,a:"start"});
+  var inf=[rho,Vv].filter(Boolean).join("     ");if(inf)s+=stx(180,18,inf,{c:R,b:1,s:11});
+  return svgEnv("0 0 360 175",s,"Esboço do enunciado: corpo mergulhado num líquido com o empuxo e o peso");
+ }
+ s+=sln(86,64,86,150,{w:1})+sln(82,64,90,64,{w:1})+sln(82,150,90,150,{w:1})+stx(80,110,h||"h",{a:"end"})+'<circle cx="180" cy="148" r="3" fill="'+R+'"/>'+sseta(180,70,180,140,R)+stx(190,108,pr||"p = ?",{c:R,b:1,a:"start"});
+ var inf=[rho,g].filter(Boolean).join("     ");if(inf)s+=stx(180,18,inf,{c:R,b:1,s:11});
+ return svgEnv("0 0 360 175",s,"Esboço do enunciado: pressão no fundo de um líquido a uma profundidade h");
+}
+function esbocoGenerico(p){
+ var R="#d1481f",s="",A=p.A||{},linhas=[];
+ (p.dados||[]).forEach(function(e){if(e.impl||!Q[e.k])return;linhas.push(Q[e.k].p+" = "+sx(e.v)+(Q[e.k].u?" "+Q[e.k].u:""))});
+ linhas=linhas.slice(0,6);
+ var al=p.alvos.map(function(a){return Q[a.K].p+" = ?"});
+ var H=40+linhas.length*17+al.length*17;
+ s+='<rect x="30" y="10" width="300" height="'+(H-4)+'" rx="8" stroke="currentColor" stroke-width="1.6" fill="currentColor" fill-opacity="0.04"/>'+stx(48,32,"Dados",{a:"start",b:1,s:12});
+ linhas.forEach(function(l,i){s+=stx(60,52+i*17,l,{a:"start"})});
+ al.forEach(function(l,i){s+=stx(60,52+linhas.length*17+i*17,l,{a:"start",c:R,b:1})});
+ return svgEnv("0 0 360 "+(H+14),s,"Esboço do enunciado: dados conhecidos e incógnitas");
+}
 function esboco(p){
  try{
   var K=p.alvos.map(function(a){return a.K}),f=p.alvos[0].passos[p.alvos[0].passos.length-1].f,A=p.A||{};
@@ -734,6 +815,10 @@ function esboco(p){
    var h=A.h&&A.h[0]?A.h[0].v:(A.d&&A.d[0]?A.d[0].v:null),g=A.g&&A.g[0]?A.g[0].v:null,nm={t:"t",v:"v",h:"h"};
    return {html:esbocoQueda({h:h,g:g,v0:A.v0&&A.v0[0]?A.v0[0].v:0,alvos:K.filter(function(k){return nm[k]}).map(function(k){return nm[k]})})};
   }
+  if(f&&/^(mru|mruv_v|mruv_d|torricelli)$/.test(f.id))return {html:esbocoRetilineo(p)};
+  if(f&&/^(newton|newton_atrito|atrito|peso)$/.test(f.id))return {html:esbocoForcas(p)};
+  if(f&&/^(pres|hidro|empuxo)$/.test(f.id))return {html:esbocoHidro(p)};
+  return {html:esbocoGenerico(p)};
  }catch(e){}
  return null;
 }

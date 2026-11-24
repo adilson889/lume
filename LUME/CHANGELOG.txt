@@ -501,3 +501,6 @@ Lume - historico de versoes
 
 0.5.63
 - Fisica: antes de resolver, o Lume desenha um esboco do enunciado (SVG): plano com atrito, bloco com v0, distancia, rampa com angulo e incognitas (v1, h); e queda livre com altura, g e incognitas.
+
+0.5.64
+- Esbocos de Fisica para qualquer problema reconhecido: movimento retilineo (carro, v0, v, a, t, d), forcas num bloco (horizontal e plano inclinado com P, N, F e atrito), hidrostatica (pressao, empuxo e vasos comunicantes) e, para os restantes temas, um quadro com os dados e as incognitas.
