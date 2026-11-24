@@ -517,3 +517,7 @@ Lume - historico de versoes
 0.5.66
 - Botao "Pensar" no campo de escrita (aparece quando comecas a escrever): liga e desliga o painel de Atividade. Desligado, o Lume responde logo, sem o painel de etapas nem as pausas entre elas, e a resposta deixa de trazer "Ver raciocinios do Lume". A escolha fica guardada no dispositivo.
 - sw.js: nova VERSAO para os dispositivos receberem o botao.
+
+0.5.67
+- Seletor de modelos (so interface): chip do modelo ao lado do botao Pensar (icone, nome e seta) e folha "Modelos" com Lume, Lume Mat, Lume Codigo, Lume Desenho, Lume Emprego e Lume Rapido. A escolha fica guardada no dispositivo. Ainda nao carrega .sql diferentes: isso fica para o passo seguinte.
+- sw.js: nova VERSAO para os dispositivos receberem o seletor.
