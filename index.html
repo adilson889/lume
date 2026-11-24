@@ -408,6 +408,11 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:64px;backgrou
 #input-area .pv-pill.expandido .pv-espaco{display:block;flex:1}
 #input-area .pv-pill.expandido #chat-input{order:0;flex:none;width:100%;padding:2px 4px 8px;min-height:34px;max-height:132px}
 #input-area .pv-pill.expandido .pv-linha-botoes>button:not(:first-child){order:0}
+#input-area .pv-linha-botoes>#btn-pensar{display:none;align-items:center;gap:6px;width:auto;padding:0 14px 0 12px;border:0;border-radius:20px;background:var(--bg3);color:var(--muted);font:600 15px/1 -apple-system,Roboto,"Segoe UI",sans-serif;cursor:pointer}
+#input-area .pv-linha-botoes>#btn-pensar svg{width:20px;height:20px;flex:none}
+#input-area .pv-pill.expandido .pv-linha-botoes>#btn-pensar{display:inline-flex}
+#input-area .pv-linha-botoes>#btn-pensar[aria-pressed="true"]{color:var(--r);box-shadow:inset 0 0 0 1.5px var(--r)}
+.sem-pensar #digitando .espera-resumo{display:none}
 /* saudacao sem icones e sugestoes por baixo */
 #chat:not(:has(.msg.usuario)) .msg-acoes,#chat:not(:has(.msg.usuario)) .msg-pedido{display:none}
 #sugestoes.so-chips #sug-avatar,#sugestoes.so-chips #sug-titulo,#sugestoes.so-chips #sug-texto{display:none}
@@ -505,6 +510,7 @@ button,a,[role=button],select,summary{touch-action:manipulation}
 <button class=pv-botao-redondo onclick=anexarFicheiro() aria-label=Anexar>
 <svg viewBox="0 0 24 24" fill=none><path d="M12 5v14M5 12h14" stroke=#8A8A8A stroke-width=2 stroke-linecap=round /></svg>
 </button>
+<button id=btn-pensar class=pv-botao-pensar onclick=alternarPensar() aria-label="Pensar" aria-pressed=true><svg viewBox="0 0 24 24" fill=none><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.1 1 1.8V16h5v-.3c0-.7.4-1.3 1-1.8A6 6 0 0 0 12 3z" stroke=currentColor stroke-width=1.8 stroke-linecap=round stroke-linejoin=round /></svg><span>Pensar</span></button>
 <span class=pv-espaco></span>
 <button class=pv-botao-redondo onclick=mensagemVoz() aria-label="Mensagem de voz">
 <svg viewBox="0 0 24 24" fill=none><path d="M12 3a3 3 0 0 1 3 3v5a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z" stroke=#8A8A8A stroke-width=2 /><path d="M6 11a6 6 0 0 0 12 0M12 17v3" stroke=#8A8A8A stroke-width=2 stroke-linecap=round /></svg>
@@ -1252,6 +1258,11 @@ function criarLinhaEtapa(texto,ativa,dur){
  else{const t=document.createElement("span");t.className="espera-tempo";t.textContent=fmtDur(dur);conteudo.appendChild(t);linha.dataset.dur=String(Number(dur)||0)}
  linha.appendChild(ic);linha.appendChild(conteudo);return linha;
 }
+/* ===== Botao "Pensar": liga/desliga o painel de Atividade e as pausas entre etapas ===== */
+function pensarLigado(){try{return localStorage.getItem("lume_pensar")!=="0"}catch(e){return true}}
+function aplicarPensar(){var on=pensarLigado();document.documentElement.classList.toggle("sem-pensar",!on);var b=document.getElementById("btn-pensar");if(b)b.setAttribute("aria-pressed",String(on))}
+function alternarPensar(){var on=!pensarLigado();try{localStorage.setItem("lume_pensar",on?"1":"0")}catch(e){}aplicarPensar();mostrarToast(on?"Pensar ligado":"Pensar desligado: respostas mais rápidas")}
+aplicarPensar();
 function criarResumo(){
  const r=document.createElement("button");r.type="button";r.className="espera-resumo";r.setAttribute("aria-expanded","true");
  r.innerHTML='<span class="espera-icone">'+iconeEtapaEspera("pensar")+'</span><span class="espera-titulo">Atividade</span><svg class="espera-resumo-seta" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -1265,7 +1276,7 @@ function adicionarDigitando(){
  e.setAttribute("role","status");e.setAttribute("aria-live","polite");
  const resumo=criarResumo();ligarResumo(e,resumo);
  const lista=document.createElement("div");lista.className="espera-etapas";
- const l=criarLinhaEtapa("A pensar",true);l.dataset.ini=String(performance.now());lista.appendChild(l);
+ const l=criarLinhaEtapa(pensarLigado()?"A pensar":"A responder",true);l.dataset.ini=String(performance.now());lista.appendChild(l);
  e.appendChild(resumo);e.appendChild(lista);e.dataset.etapaAtual="A pensar";chatEl.appendChild(e);rolarParaFim();
 }
 function fecharEtapaAtual(box){
@@ -1292,6 +1303,7 @@ function bombearFila(){
  })();
 }
 function atualizarEtapaEspera(texto,ms){
+ if(!pensarLigado())return;
  const box=document.getElementById("digitando");if(!box)return;
  const novo=String(texto||"").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim()||"A processar...";
  const ultimo=FILA_ETAPAS.length?FILA_ETAPAS[FILA_ETAPAS.length-1]:box.dataset.etapaAtual;
@@ -1300,13 +1312,14 @@ function atualizarEtapaEspera(texto,ms){
  FILA_ETAPAS.push(novo);bombearFila();
 }
 window.lumeAtualizarEtapa=atualizarEtapaEspera;
-window.lumeEsperarEtapas=function(){return new Promise(function(res){
+window.lumeEsperarEtapas=function(){if(!pensarLigado()){FILA_ETAPAS.length=0;return Promise.resolve()}return new Promise(function(res){
  if(!_filaOcupada&&!FILA_ETAPAS.length)return res();
  const extra=FILA_ETAPAS.reduce(function(s,x){return s+(_DUR_ETAPAS[x]||0)},_durAtual);
  const t=setTimeout(res,9000+extra);_filaEsperas.push(function(){clearTimeout(t);res()});
 })};
 function esconderDigitando(){
  const e=document.getElementById("digitando");if(!e)return;
+ if(!pensarLigado()){FILA_ETAPAS.length=0;window.atividadeParaMsg=null;e.remove();return}
  while(FILA_ETAPAS.length)etapaMostrar(e,FILA_ETAPAS.shift());
  fecharEtapaAtual(e);
  const ls=Array.from(e.querySelectorAll(".espera-etapas .espera-topo"));

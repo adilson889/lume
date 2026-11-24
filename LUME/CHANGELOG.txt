@@ -513,3 +513,7 @@ Lume - historico de versoes
 - Corrigido: "subtrai b de a" gerava b - a (agora a - b); "a > b" e "a=1, b=2" falhavam por "a" ser tambem artigo; "verdadeira/falsa" nao eram percebidos; "multiplicar a por b" falhava.
 - sw.js: os 7 ficheiros de LUME/codigo/ passam ao cache offline (antes, sem rede, o Lume deixava de responder a pedidos de codigo).
 - Treino: o treino carrega o gerador de codigo e tem 14 casos novos.
+
+0.5.66
+- Botao "Pensar" no campo de escrita (aparece quando comecas a escrever): liga e desliga o painel de Atividade. Desligado, o Lume responde logo, sem o painel de etapas nem as pausas entre elas, e a resposta deixa de trazer "Ver raciocinios do Lume". A escolha fica guardada no dispositivo.
+- sw.js: nova VERSAO para os dispositivos receberem o botao.
