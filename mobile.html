@@ -764,6 +764,10 @@ input,textarea,[contenteditable="true"],
 
 #input-area .pv-pill:not(.expandido) .pv-linha-botoes>button:first-child{display:none!important}
 #input-area .pv-pill.expandido .pv-linha-botoes>button:first-child{display:flex!important}
+/* Modelo: o chip encolhe e, em ecras estreitos, o Pensar fica so com o icone, para o microfone e o enviar nunca sairem da caixa */
+#input-area .pv-linha-botoes>#btn-modelo{flex:0 1 auto;min-width:76px;max-width:190px}
+@media(max-width:430px){#input-area .pv-linha-botoes{gap:3px}#input-area .pv-linha-botoes>#btn-pensar{font-size:0;gap:0;padding:0;width:44px;justify-content:center}#input-area .pv-linha-botoes>#btn-modelo{gap:4px;padding:0 6px 0 10px}#input-area .pv-linha-botoes>#btn-modelo .bm-seta{width:16px;height:16px}}
+@media(max-width:340px){#input-area .pv-linha-botoes>#btn-modelo{min-width:64px;padding:0 8px}#input-area .pv-linha-botoes>#btn-modelo .bm-seta{display:none}}
 </style>
 </head>
 <body>
