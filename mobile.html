@@ -1467,7 +1467,120 @@ function embrulharSvgEmFicheiro(alvo,titulo){
  var sv=Array.prototype.slice.call(alvo.querySelectorAll("svg")).filter(function(x){return !x.closest(".lume-arquivo")});
  if(!sv.length)return false;
  var corpo="";sv.forEach(function(x){corpo+=x.outerHTML});
- var pagina='<!--lume:formatar--><!doctype html><html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+escaparHtml(titulo)+'</title><style>html,body{height:100%;margin:0}body{display:flex;align-items:center;justify-content:center;background:#fff}svg{max-width:96vw;max-height:96vh;height:auto}</style></head><body>'+corpo+'</body></html>';
+ var pagina='<!--lume:formatar--><!doctype html><html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+escaparHtml(titulo)+'</title><style>html,body{height:100%;margin:0}body{display:flex;align-items:center;justify-content:center;background:#fff}svg{max-width:96vw;max-height:96vh;height:auto}</style></head><body>'+corpo+'
+<style id="lume-input-estilo-organico">
+/* Campo de escrita: painel arredondado, como no novo conceito visual. */
+#input-area{
+ left:12px;
+ right:12px;
+ width:auto;
+ box-sizing:border-box;
+ padding:14px;
+ border-radius:30px;
+ background:var(--bg3);
+}
+#input-area .pv-pill{
+ box-sizing:border-box;
+ width:100%;
+ max-width:720px;
+ gap:12px;
+ padding:12px 14px 14px;
+ background:var(--card);
+ border:1px solid var(--border);
+ border-radius:40px;
+ box-shadow:0 1px 3px rgba(30,35,15,.07);
+}
+#input-area .pv-pill:focus-within{
+ border:1px solid var(--border);
+}
+#input-area .pv-pill.expandido{
+ padding:12px 14px 14px;
+ border:1px solid var(--border);
+ border-radius:40px;
+}
+#input-area .pv-pill #chat-input,
+#input-area .pv-pill.expandido #chat-input{
+ box-sizing:border-box;
+ width:100%;
+ min-height:42px;
+ max-height:132px;
+ margin:0;
+ padding:3px 12px 8px;
+ border:0;
+ background:transparent;
+ font-size:18px;
+ line-height:1.4;
+}
+#input-area .pv-pill #chat-input::placeholder{color:var(--muted);opacity:.9}
+#input-area .pv-linha-botoes{
+ width:100%;
+ min-width:0;
+ display:flex;
+ align-items:center;
+ flex-wrap:nowrap;
+ gap:6px;
+}
+#input-area .pv-linha-botoes .pv-espaco{flex:1;min-width:0}
+#input-area .pv-linha-botoes>button{
+ flex-shrink:0;
+ height:44px;
+ border-radius:24px;
+}
+#input-area .pv-linha-botoes>button:first-child,
+#input-area .pv-linha-botoes>button[aria-label="Mensagem de voz"]{
+ width:44px;
+ height:44px;
+ border-radius:50%;
+ background:var(--bg3);
+}
+#input-area .pv-linha-botoes>button:first-child svg,
+#input-area .pv-linha-botoes>button[aria-label="Mensagem de voz"] svg{
+ width:23px;height:23px;
+}
+#input-area .pv-linha-botoes>#btn-pensar{
+ height:44px;
+ padding:0 14px 0 12px;
+ border:1.5px solid transparent;
+ border-radius:24px;
+ background:var(--bg3);
+ color:var(--r);
+ font-size:15px;
+}
+#input-area .pv-linha-botoes>#btn-pensar[aria-pressed="true"]{
+ border:1.5px solid var(--r);
+ box-shadow:none;
+}
+#input-area .pv-linha-botoes>#btn-modelo{
+ height:44px;
+ max-width:clamp(112px,34vw,190px);
+ padding:0 10px 0 12px;
+ border-radius:24px;
+ background:var(--bg3);
+ color:var(--r);
+}
+#input-area .pv-linha-botoes>#btn-modelo .bm-nome{max-width:100%}
+#input-area .pv-linha-botoes>#btn-enviar-chat{
+ width:48px;
+ height:48px;
+ border-radius:50%;
+ background:var(--r);
+}
+#input-area .pv-linha-botoes>#btn-enviar-chat svg{width:25px;height:25px}
+#input-area .pv-linha-botoes>#btn-enviar-chat svg path{stroke:var(--on)}
+/* O modo de voz continua disponível quando o campo está recolhido;
+   no estado de escrita fica apenas o microfone, como na referência. */
+#input-area .pv-pill.expandido #btn-voz-modo{display:none}
+@media(max-width:390px){
+ #input-area{left:8px;right:8px;padding:10px}
+ #input-area .pv-pill{padding:10px 10px 12px}
+ #input-area .pv-pill.expandido{padding:10px 10px 12px}
+ #input-area .pv-linha-botoes{gap:4px}
+ #input-area .pv-linha-botoes>#btn-pensar{padding:0 10px;font-size:14px}
+ #input-area .pv-linha-botoes>#btn-modelo{max-width:clamp(100px,30vw,130px);padding:0 8px}
+}
+</style>
+
+</body></html>';
  var card=document.createElement("div");card.className="lume-app";card.setAttribute("data-lume-app",encodeURIComponent(pagina));
  sv[0].parentNode.insertBefore(card,sv[0]);
  sv.forEach(function(x){x.remove()});
