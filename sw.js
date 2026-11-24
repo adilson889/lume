@@ -11,7 +11,7 @@
    antigas de uma vez, mudar VERSAO. Os ficheiros do bot sao descobertos sozinhos em LUME/bot/arquivos.json. */
 "use strict";
 
-var VERSAO = "0.5.64";
+var VERSAO = "0.5.65";
 var P = "lume-";
 var C_SHELL = P + "shell-" + VERSAO;
 var C_DADOS = P + "dados-" + VERSAO;
@@ -30,6 +30,13 @@ var NUCLEO = [
   "LUME/despachante.js",
   "LUME/fisica.js",
   "LUME/codigo.js",
+  "LUME/codigo/gerador.js",
+  "LUME/codigo/lexico.js",
+  "LUME/codigo/nucleo.js",
+  "LUME/codigo/variaveis.js",
+  "LUME/codigo/funcoes.js",
+  "LUME/codigo/condicoes.js",
+  "LUME/codigo/listas.js",
   "LUME/vendor/xlang-codigo.js",
   "LUME/math.js",
   "LUME/vendor/katex/katex.min.js",

@@ -30,10 +30,19 @@ function interpretarFuncao(ws){
   var hr=PT.resultados[h].ler(cauda);
   if(!hr)continue;
   if(hr.erro)return{erro:hr.erro};
-  var pn=params.length?params:hr.nomes,inv=!nome;
+  var pn=params.length?params:hr.nomes,inv=!nome,inventadosC=[],montar=hr.montar;
+  if(hr.implicito){
+   var cand=params.length?params:hr.nomes;
+   if(cand.length>1)return{erro:"A condição não diz de que variável fala e a função tem mais do que uma. Diz-me, por exemplo, «se "+cand[0]+" for maior que 10»."};
+   var subj=cand[0]||"n";
+   if(!cand.length)inventadosC=[subj];
+   pn=[subj];
+   var m0=hr.montar,SJ=hr.sujeito;
+   montar=function(C,no,pr){return m0(C,function(o){return o.nome===SJ?C.ident(subj):no(o)},pr)};
+  }
   if(!pn.length)return{erro:"Percebi a condição, mas não sei com que variáveis a função trabalha. Diz-me os nomes, por exemplo «que recebe n»."};
   for(var u=0;u<pn.length;u++){var eu=erroNome(pn[u]);if(eu)return{erro:eu}}
-  return{tipo:"funcao",funcao:{nome:nome||hr.nomeSugerido,params:pn,montar:hr.montar,retorno:hr.retorno,tipoParam:hr.tipoParam||"number",descricao:hr.descricao,nomeInventado:inv,inventados:[]}};
+  return{tipo:"funcao",funcao:{nome:nome||hr.nomeSugerido,params:pn,montar:montar,retorno:hr.retorno,tipoParam:hr.tipoParam||"number",descricao:hr.descricao,nomeInventado:inv,inventados:inventadosC}};
  }
  var ex=expressao(cauda,params[0]);
  if(ex.erro)return{erro:ex.erro};
@@ -42,9 +51,9 @@ function interpretarFuncao(ws){
  if(!params.length){params=nomesDe(ex.itens)}
  if(!params.length)return{erro:"Percebi a conta, mas não sei com que variáveis a função trabalha. Diz-me os nomes, por exemplo «que recebe a e b»."};
  var inventouNome=false;
- if(!nome){nome=ex.palavraEscolha||ex.unario||(ex.ops.length?LEX.nomesOp[ex.ops[0]]:"calcular");inventouNome=true}
+ if(!nome){nome=ex.palavraEscolha||ex.unario||(ex.media?"media":(ex.ops.length?LEX.nomesOp[ex.ops[0]]:"calcular"));inventouNome=true}
  var ea=nomesDe(ex.itens).map(erroNome).filter(Boolean)[0];if(ea)return{erro:ea};
- return{tipo:"funcao",funcao:{nome:nome,params:params,itens:ex.itens,ops:ex.ops,unario:ex.unario||null,escolha:ex.escolha||null,palavraEscolha:ex.palavraEscolha||null,nomeInventado:inventouNome,inventados:inventados}};
+ return{tipo:"funcao",funcao:{nome:nome,params:params,itens:ex.itens,ops:ex.ops,media:!!ex.media,unario:ex.unario||null,escolha:ex.escolha||null,palavraEscolha:ex.palavraEscolha||null,nomeInventado:inventouNome,inventados:inventados}};
 }
 
 function gerarFuncao(f){
@@ -54,6 +63,7 @@ function gerarFuncao(f){
  var e,passos,tipoRet="number";
  if(f.montar){passos=f.montar(C,no,f.params);tipoRet=f.retorno}
  else if(f.escolha){e=no(f.itens[0]);passos=[C.se(C.comparacao(no(f.itens[0]),f.escolha,no(f.itens[1])),[C.retorno(no(f.itens[0]))]),C.retorno(no(f.itens[1]))]}
+ else if(f.media){e=no(f.itens[0]);for(var im=1;im<f.itens.length;im++)e=C.binaria(e,"+",no(f.itens[im]));passos=[C.retorno(C.binaria(C.grupo(e),"/",C.literal(f.itens.length)))]}
  else{e=no(f.itens[0]);for(var i=1;i<f.itens.length;i++)e=C.binaria(e,f.ops[i-1],no(f.itens[i]));passos=[C.retorno(e)]}
  var tabela=C.criarTabela(),texto,programa;
  var op=f.ops&&f.ops.length?f.ops[0]:null,nomeOp={"+":"soma","-":"subtração","*":"multiplicação","/":"divisão"};

@@ -39,6 +39,8 @@
         Retorno: ['return', ESP, '@expr', ';', FIM],
         Binaria: ['@esq', ESP, '@op', ESP, '@dir'],
         Comparacao: ['@esq', ESP, '@op', ESP, '@dir'],
+        Logica: ['@esq', ESP, '@op', ESP, '@dir'],
+        Grupo: ['(', '@expr', ')'],
         Lista: ['[', '@itens', ']'],
         Membro: ['@obj', '.', '@prop'],
         Atribuicao: ['@nome', ESP, '@op', ESP, '@expr', ';', FIM],
@@ -58,6 +60,8 @@
     function ident(nome) { return { forma: 'Ident', nome }; }
     function binaria(esq, op, dir) { return { forma: 'Binaria', esq, op, dir }; }
     function comparacao(esq, op, dir) { return { forma: 'Comparacao', esq, op, dir }; }
+    function logica(esq, op, dir) { return { forma: 'Logica', esq, op, dir }; }
+    function grupo(expr) { return { forma: 'Grupo', expr }; }
     function se(cond, entao, senao) { return { forma: 'Se', cond, entao, senao: senao || [] }; }
     function lista(itens) { return { forma: 'Lista', itens }; }
     function membro(obj, prop) { return { forma: 'Membro', obj, prop }; }
@@ -151,6 +155,22 @@
                 }
                 if (!(COMPARADORES[esq] || []).includes(no.op)) {
                     problemas.push('O comparador "' + no.op + '" não vale para ' + esq + '.');
+                    return null;
+                }
+                return 'boolean';
+            }
+            case 'Grupo':
+                return tipoDaExpressao(no.expr, escopo, usados, problemas);
+            case 'Logica': {
+                const esq = tipoDaExpressao(no.esq, escopo, usados, problemas);
+                const dir = tipoDaExpressao(no.dir, escopo, usados, problemas);
+                if (!esq || !dir) return null;
+                if (esq !== 'boolean' || dir !== 'boolean') {
+                    problemas.push('O operador "' + no.op + '" junta duas condições (verdadeiro ou falso), não ' + esq + ' com ' + dir + '.');
+                    return null;
+                }
+                if (no.op !== '&&' && no.op !== '||') {
+                    problemas.push('O operador lógico "' + no.op + '" não existe.');
                     return null;
                 }
                 return 'boolean';
@@ -388,7 +408,7 @@
     const API = {
         criarTabela: criarTabela, registarUtilizador: registarUtilizador,
         declaracao: declaracao, funcao: funcao, retorno: retorno, parametro: parametro,
-        literal: literal, ident: ident, binaria: binaria, comparacao: comparacao, se: se, lista: lista, membro: membro, atribuicao: atribuicao, para: para,
+        literal: literal, ident: ident, binaria: binaria, comparacao: comparacao, logica: logica, grupo: grupo, se: se, lista: lista, membro: membro, atribuicao: atribuicao, para: para,
         verificar: verificar, emitirLetras: emitirLetras, gerar: gerar,
         deLinhas: null
     };

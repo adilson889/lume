@@ -283,3 +283,18 @@ resolve: Um carro passa de 0 a 20 m/s em 5 s. Qual é a aceleração? | 4
 resolve: Um corpo cai de 20 m. Considere g = 10 m/s². Qual a velocidade ao chegar ao chão? | 20
 resolve: Um corpo de 10 kg pesa 98 N. Qual a aceleração da gravidade? | 9\W*8
 resolve: Um corpo de 5 kg, considere g = 10 m/s². Qual o peso? | 50
+# --- codigo: frases naturais, condicoes (0.5.65) ---
+cria uma função que recebe um número e diz se é positivo | function ehpositivo\(n: number\): boolean.*return n > 0
+cria uma função que diz se um número está entre 1 e 10 | return n >= 1 && n <= 10
+cria uma função que verifica se n é múltiplo de 3 | return n % 3 === 0
+cria uma função chamada verificarIdade que recebe idade e retorna 'adulto' caso idade seja maior que 17, caso contrário retorna 'menor' | if \(idade > 17\).*return 'adulto'.*return 'menor'
+faz uma função que recebe a nota e devolve 'aprovado' se for maior que 10, se não 'reprovado' | function decidir\(nota: number\): string.*if \(nota > 10\)
+cria uma função que devolve 'grande' se n for superior a 100 senão 'pequeno' | if \(n > 100\)
+cria uma função que devolve 'maior' se a > b senão 'menor' | if \(a > b\)
+cria uma função que subtrai b de a | return a - b
+cria uma função que devolve o resto da divisão de a por b | return a % b
+cria uma função que calcula a média de a e b | return \(a \+ b\) / 2
+cria uma função que soma dois números | function somar\(a: number, b: number\)
+cria uma função para multiplicar a por b | return a \* b
+cria variáveis a=1, b=2 | const a: number = 1.*const b: number = 2
+cria uma variável ativa verdadeira | const ativa: boolean = true

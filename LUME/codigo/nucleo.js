@@ -11,9 +11,28 @@ var NOME_RE=/^[A-Za-z_$][A-Za-z0-9_$]*$/,ACENTO_RE=/[À-ÿ]/;
 
 function sa(t){return String(t||"").normalize("NFD").replace(/[̀-ͯ]/g,"")}
 
+/* ===== 0) PARAFRASES: formas diferentes de dizer o mesmo, antes de partir em palavras ===== */
+var PARAF=(LEX.parafrases||[]).map(function(r){return [new RegExp(r[0],"gi"),r[1]]});
+function reescreverSeg(seg){
+ PARAF.forEach(function(r){
+  var plain=sa(seg);
+  if(plain.length!==seg.length)seg=plain;
+  var res="",ult=0;
+  r[0].lastIndex=0;
+  plain.replace(r[0],function(){
+   var a=arguments,off=a[a.length-2],mt=a[0];
+   res+=seg.slice(ult,off)+r[1].replace(/\$(\d)/g,function(_,d){return a[+d]||""});
+   ult=off+mt.length;return mt;
+  });
+  seg=res+seg.slice(ult);
+ });
+ return seg;
+}
+function reescrever(q){return String(q||"").split(/("[^"]*"|'[^']*'|«[^»]*»|“[^”]*”)/).map(function(p,i){return i%2?p:reescreverSeg(p)}).join("")}
+
 /* ===== 1) PALAVRAS ===== */
 function palavras(q){
- var re=/"[^"]*"|'[^']*'|«[^»]*»|“[^”]*”|\d+(?:[.,]\d+)?|[A-Za-zÀ-ÿ_$][A-Za-z0-9À-ÿ_$]*|[<>!]=?=?|={1,3}|[+\-*\/;,:]/g,m,o=[];
+ var re=/"[^"]*"|'[^']*'|«[^»]*»|“[^”]*”|\d+(?:[.,]\d+)?|[A-Za-zÀ-ÿ_$][A-Za-z0-9À-ÿ_$]*|[<>!]=?=?|={1,3}|[+\-*\/;,:%]/g,m,o=[];
  while((m=re.exec(q))){
   var t=m[0],k;
   if(/^["'«“]/.test(t))k="txt";else if(/^\d/.test(t))k="num";else if(/^[A-Za-zÀ-ÿ_$]/.test(t))k="pal";else k="sim";
@@ -29,7 +48,7 @@ function eLexico(w){
  return !!(S.acoes[n]||S.variavel[n]||S.funcao[n]||S.linguagem[n]||S.retorno[n]||S.entrada[n]||S.ligar[n]||S.vazias[n]||S.tipoNome[n]||LEX.binarios[n]!==undefined||LEX.unarios[n]||LEX.escolha[n]||LEX.comparar[n]!==undefined||LEX.propriedades[n]||S.condicao[n]||S.colecao[n]||LEX.agregados[n]||LEX.booleanos[n]!==undefined);
 }
 function eNome(w){return ePal(w)&&!eLexico(w)}
-var INFIX={mais:1,menos:1,vezes:1,multiplicado:1,dividido:1,"+":1,"-":1,"*":1,"/":1};
+var INFIX={mais:1,menos:1,vezes:1,multiplicado:1,dividido:1,"+":1,"-":1,"*":1,"/":1,"%":1};
 /* "a" e "o" tambem podem ser nomes de variaveis (a mais b): conta como nome se estiver ao lado de um operador, de "e" ou do fim */
 function eNomeCtx(ws,i){
  var w=ws[i];
@@ -40,6 +59,9 @@ function eNomeCtx(ws,i){
  if(pv&&ePal(pv)&&pv.n==="se")return true;
  if(ePal(nx)&&(nx.n==="for"||nx.n==="seja"||nx.n==="esta"||nx.n==="fica"))return true;
  if(nx.k==="sim"&&(nx.t===","||nx.t===";"))return true;
+ if(nx.k==="sim"&&/^[<>!=]/.test(nx.t))return true;
+ if(ePal(nx)&&nx.n==="por"&&pv&&ePal(pv)&&(LEX.binarios[pv.n]!==undefined||pv.n==="resto"))return true;
+ if(pv&&pv.k==="sim"&&/^[<>!=]/.test(pv.t))return true;
  if(ePal(nx)&&nx.n==="e")return true;
  if(INFIX[nx.n])return true;
  if(pv&&INFIX[pv.n])return true;
@@ -75,6 +97,12 @@ function expressao(ws,operandoPorOmissao){
    return{itens:vs,ops:[],escolha:cmp,palavraEscolha:ws[i].n};
   }
   w=ws[i];
+  if(ePal(w)&&w.n==="media"){
+   var mv=[];
+   for(var mq=i+1;mq<ws.length;mq++){if(ws[mq].k==="num")mv.push({num:parseFloat(ws[mq].t.replace(",","."))});else if(eNomeCtx(ws,mq))mv.push({nome:ws[mq].t})}
+   if(mv.length<2)return{erro:"Para a média preciso de pelo menos dois valores, por exemplo «a média de a e b»."};
+   return{itens:mv,ops:[],media:true};
+  }
   if(ePal(w)&&LEX.unarios[w.n]){
    var u=LEX.unarios[w.n],alvo=null;
    for(var j=i+1;j<ws.length;j++){if(eNomeCtx(ws,j)){alvo=ws[j].t;break}if(ws[j].k==="num"){alvo=null;break}}
@@ -104,11 +132,11 @@ var intencoes=[];
 function registar(i){i.conjunto=conj(i.chaves);intencoes.push(i)}
 
 function interpretar(q){
- var ws=palavras(String(q||"").trim().replace(/[.!?]+$/,""));
+ var ws=palavras(reescrever(String(q||"").trim().replace(/[.!?]+$/,"")));
  ws=ws.filter(function(w,i){return !(ePal(w)&&(w.n==="typescript"||w.n==="ts")&&i>0&&ws[i-1]&&(ws[i-1].n==="em"||ws[i-1].n==="com"))&&!(ePal(w)&&w.n==="em"&&ws[i+1]&&(ws[i+1].n==="typescript"||ws[i+1].n==="ts"))});
  var a=-1;
  for(var i=0;i<Math.min(ws.length,3);i++)if(ePal(ws[i])&&S.acoes[ws[i].n]){a=i;break}
- if(a<0)return null;
+ if(a<0){var okI=false;for(var q0=0;q0<Math.min(ws.length,2);q0++)if(ePal(ws[q0])&&(S.funcao[ws[q0].n]||S.variavel[ws[q0].n]||(S.colecao&&S.colecao[ws[q0].n]))){okI=true;break}if(!okI)return null;a=-1}
  var j,k,esc=null,pos=-1;
  for(j=a+1;j<ws.length&&!esc;j++){
   if(!ePal(ws[j]))continue;
@@ -131,7 +159,7 @@ function responder(q){
  return r;
 }
 
-var PT={LEX:LEX,S:S,sa:sa,conj:conj,palavras:palavras,ePal:ePal,eVazia:eVazia,eLexico:eLexico,eNome:eNome,eNomeCtx:eNomeCtx,valorLit:valorLit,opDe:opDe,erroNome:erroNome,expressao:expressao,nomesDe:nomesDe,registar:registar,resultados:[],registarResultado:function(h){PT.resultados.push(h)},interpretar:interpretar,responder:responder,intencoes:intencoes};
+var PT={reescrever:reescrever,LEX:LEX,S:S,sa:sa,conj:conj,palavras:palavras,ePal:ePal,eVazia:eVazia,eLexico:eLexico,eNome:eNome,eNomeCtx:eNomeCtx,valorLit:valorLit,opDe:opDe,erroNome:erroNome,expressao:expressao,nomesDe:nomesDe,registar:registar,resultados:[],registarResultado:function(h){PT.resultados.push(h)},interpretar:interpretar,responder:responder,intencoes:intencoes};
 if (typeof window !== "undefined") window.LumeCodigoPT = PT;
 if (typeof module !== "undefined" && module.exports) module.exports = PT;
 })();

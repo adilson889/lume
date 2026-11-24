@@ -14,7 +14,7 @@ function interpretarVariaveis(ws){
  var linhas=[],tipos={};
  for(var s=0;s<seg.length;s++){
   var p=seg[s].filter(function(w){return !(ePal(w)&&(S.variavel[w.n]||S.linguagem[w.n]))});
-  while(p.length&&((eVazia(p[0])&&!(p[0].n==="nome"&&p[1]&&(S.ligar[p[1].n]||p[1].k==="sim")))||(ePal(p[0])&&p[0].n==="com")))p.shift();
+  while(p.length&&((eVazia(p[0])&&!(p[0].n==="nome"&&p[1]&&(S.ligar[p[1].n]||p[1].k==="sim"))&&!(p[1]&&p[1].k==="sim"&&(p[1].t==="="||p[1].t===":")))||(ePal(p[0])&&p[0].n==="com"&&!(p[1]&&p[1].k==="sim"&&(p[1].t==="="||p[1].t===":")))))p.shift();
   var nome=p.shift();
   if(!nome||!ePal(nome))return{erro:"Não percebi qual é o nome da variável em «"+seg[s].map(function(x){return x.t}).join(" ")+"»."};
   var en=erroNome(nome.t);if(en)return{erro:en};

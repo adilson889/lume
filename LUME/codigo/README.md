@@ -13,9 +13,15 @@ Camada que lê um pedido escrito em português ("cria uma função que calcula o
 | `variaveis.js` | Intenção: declarar variáveis e constantes |
 | `funcoes.js` | Intenção: criar funções (contas, dobro, metade, maior/menor com if) |
 | `listas.js` | Listas e ciclos: "cria uma lista notas com 10, 12 e 15"; funções que somam, multiplicam, tiram a média ou contam os elementos de uma lista (com for) |
-| `condicoes.js` | Resultado de funções com condição: "verdadeiro se a for maior que b", "'positivo' se n for maior que 0 senão 'negativo'", "se n é par" |
+| `condicoes.js` | Resultado de funções com condição: "verdadeiro se a for maior que b", "'positivo' se n for maior que 0 senão 'negativo'", "se n é par", "entre 1 e 10", "múltiplo de 3", sujeito implícito |
 
 Ordem de carregamento: gerador, léxico, núcleo, intenções e resultados (a lista está em `../codigo.js`).
+
+## Formas diferentes de dizer o mesmo (paráfrases)
+
+Os utilizadores não escrevem todos da mesma maneira, por isso a frase passa primeiro por uma tabela de reescritas em `lexico.js` (`parafrases`, dados e não código): «caso contrário», «se não», «senão» e «else» viram `senao`; «superior a», «acima de» e «mais que» viram «maior que»; «pelo menos» e «no mínimo» viram «maior ou igual a»; «positivo» e «negativo» viram «maior/menor que 0»; «subtrai b de a» vira «a menos b»; «resto da divisão de a por b» vira `a % b`; «dois números» viram `a` e `b`. As reescritas não mexem no que está entre aspas e ignoram maiúsculas e acentos. Para o Lume perceber uma forma nova, acrescenta uma linha `[padrão sem acentos, substituição]` à tabela.
+
+Nas condições o sujeito pode ficar implícito («devolve 'aprovado' se for maior que 10»: usa-se o único parâmetro) e há «entre A e B», «múltiplo de X», «divisível por X», «par» e «ímpar».
 
 ## Juntar uma capacidade nova
 
