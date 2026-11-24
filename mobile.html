@@ -2090,6 +2090,39 @@ el.addEventListener("touchcancel",fim,{passive:true});
 .msg-acao.ativo svg path[d]{fill:var(--r)}
 .vb-peq{color:var(--r)}
 .vb-peq svg path[d^="M21 11.5"]{fill:var(--bolha)}
+
+/* Correcao de posicionamento: todos os controlos permanecem dentro da pill. */
+#input-area .pv-pill .pv-linha-botoes{
+ display:flex!important;
+ position:relative!important;
+ min-width:0!important;
+}
+#input-area .pv-pill:not(.expandido) .pv-linha-botoes>button:first-child{
+ display:flex!important;
+ width:36px!important;
+ min-width:36px!important;
+ height:36px!important;
+}
+#input-area .pv-pill:not(.expandido) .pv-linha-botoes .pv-espaco{display:none!important}
+#input-area .pv-pill .pv-linha-botoes>#btn-voz-modo,
+#input-area .pv-pill .pv-linha-botoes>#btn-enviar-chat{
+ position:static!important;
+ inset:auto!important;
+ flex:0 0 auto!important;
+}
+#input-area .pv-pill.expandido .pv-linha-botoes>#btn-voz-modo:not(.some){display:flex!important}
+#input-area .pv-pill.expandido .pv-linha-botoes>#btn-voz-modo.some{display:none!important}
+#input-area .pv-pill.expandido .pv-linha-botoes>#btn-enviar-chat.visivel{
+ display:flex!important;
+ width:44px!important;
+ min-width:44px!important;
+ height:44px!important;
+ margin:0!important;
+ opacity:1!important;
+ transform:none!important;
+ pointer-events:auto!important;
+}
+
 </style>
 <script>(function(){
 var IC_IMG=_ic('<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="1.5"/><path d="M21 15l-5-5L5 21"/>');
