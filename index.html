@@ -346,6 +346,48 @@ button:active{transform:scale(.94)}
  display:flex!important;
 }
 
+
+/* Compacto: a linha deixa de ser um contentor; os seus botoes
+   passam a ocupar a mesma linha flex da pill, antes/depois do textarea. */
+#input-area .pv-pill:not(.expandido) .pv-linha-botoes{
+ display:contents!important;
+}
+#input-area .pv-pill:not(.expandido) #chat-input{
+ order:1!important;
+ flex:1 1 0!important;
+ width:0!important;
+ min-width:0!important;
+}
+#input-area .pv-pill:not(.expandido) .pv-linha-botoes>button:first-child{
+ display:flex!important;
+ order:0!important;
+ flex:0 0 36px!important;
+ width:36px!important;
+ min-width:36px!important;
+ height:36px!important;
+}
+#input-area .pv-pill:not(.expandido) .pv-linha-botoes>button[aria-label="Mensagem de voz"]{
+ display:flex!important;
+ order:2!important;
+ flex:0 0 36px!important;
+ width:36px!important;
+ min-width:36px!important;
+ height:36px!important;
+}
+#input-area .pv-pill:not(.expandido) .pv-linha-botoes>#btn-voz-modo{
+ order:3!important;
+ flex:0 0 36px!important;
+ width:36px!important;
+ min-width:36px!important;
+}
+#input-area .pv-pill:not(.expandido) .pv-linha-botoes>#btn-pensar,
+#input-area .pv-pill:not(.expandido) .pv-linha-botoes>#btn-modelo,
+#input-area .pv-pill:not(.expandido) .pv-linha-botoes>.pv-espaco,
+#input-area .pv-pill:not(.expandido) .pv-linha-botoes>#btn-enviar-chat{
+ display:none!important;
+}
+#input-area .pv-pill.expandido .pv-linha-botoes{display:flex!important}
+
 </style>
 <style>
 #statusbar{background:transparent;border:none;height:0;padding:0;pointer-events:none}
