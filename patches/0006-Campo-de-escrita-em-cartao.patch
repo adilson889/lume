@@ -1,0 +1,93 @@
+From a91ef83ebfb83a697a2e0b0227a51024d15f8cc2 Mon Sep 17 00:00:00 2001
+From: adilson889 <adilson889@users.noreply.github.com>
+Date: Tue, 24 Nov 2026 22:35:29 +0100
+Subject: [PATCH] Campo de escrita em cartao arredondado e chip do modelo
+ ajustado a ecras estreitos
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_013mpj8CHR2KQ5eHquWJURHh
+---
+ LUME/CHANGELOG.txt |  1 +
+ index.html         | 12 ++++++------
+ mobile.html        | 12 ++++++------
+ 3 files changed, 13 insertions(+), 12 deletions(-)
+
+diff --git a/LUME/CHANGELOG.txt b/LUME/CHANGELOG.txt
+index 8b598fc..c014bfc 100644
+--- a/LUME/CHANGELOG.txt
++++ b/LUME/CHANGELOG.txt
+@@ -521,3 +521,4 @@ Lume - historico de versoes
+ 0.5.67
+ - Seletor de modelos (so interface, em index.html e mobile.html): chip do modelo ao lado do botao Pensar (icone, nome e seta) e folha "Modelos" com Lume, Lume Mat, Lume Codigo, Lume Desenho, Lume Emprego e Lume Rapido. A escolha fica guardada no dispositivo. Ainda nao carrega .sql diferentes: isso fica para o passo seguinte.
+ - sw.js: nova VERSAO para os dispositivos receberem o seletor.
++- Campo de escrita em cartao: caixa arredondada com fundo e borda fina (aberta e fechada), no lugar do sublinhado verde, em index.html e mobile.html. O chip do modelo encolhe em ecras estreitos (abaixo de 380 px perde a seta) para nunca sair do cartao.
+diff --git a/index.html b/index.html
+index a03d9d2..b15b489 100644
+--- a/index.html
++++ b/index.html
+@@ -414,11 +414,14 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:64px;backgrou
+ #input-area .pv-linha-botoes>#btn-pensar[aria-pressed="true"]{color:var(--r);box-shadow:inset 0 0 0 1.5px var(--r)}
+ .sem-pensar #digitando .espera-resumo{display:none}
+ /* chip do modelo (junto ao Pensar) */
+-#input-area .pv-linha-botoes>#btn-modelo{display:none;align-items:center;gap:6px;width:auto;min-width:0;max-width:170px;padding:0 10px 0 12px;border:0;border-radius:20px;background:var(--bg3);color:var(--r);font:600 15px/1 -apple-system,Roboto,"Segoe UI",sans-serif;cursor:pointer}
++#input-area .pv-linha-botoes>#btn-modelo{display:none;align-items:center;gap:6px;width:auto;min-width:84px;max-width:150px;flex:0 1 auto;padding:0 6px 0 10px;border:0;border-radius:20px;background:var(--bg3);color:var(--r);font:600 15px/1 -apple-system,Roboto,"Segoe UI",sans-serif;cursor:pointer}
+ #input-area .pv-linha-botoes>#btn-modelo svg{width:20px;height:20px;flex:none}
+ #input-area .pv-linha-botoes>#btn-modelo .bm-nome{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+ #input-area .pv-linha-botoes>#btn-modelo .bm-seta{width:18px;height:18px;opacity:.7}
+ #input-area .pv-pill.expandido .pv-linha-botoes>#btn-modelo{display:inline-flex}
++#input-area .pv-pill.expandido .pv-linha-botoes{gap:4px}
++#input-area .pv-pill.expandido .pv-linha-botoes>#btn-pensar{padding:0 12px 0 10px;gap:5px}
++@media(max-width:380px){#input-area .pv-linha-botoes>#btn-modelo{min-width:0;padding:0 10px}#input-area .pv-linha-botoes>#btn-modelo .bm-seta{display:none}#input-area .pv-pill.expandido .pv-linha-botoes>#btn-pensar{padding:0 10px 0 8px}}
+ #folha-modelos-fundo{position:fixed;inset:0;z-index:2500;background:rgba(0,0,0,.38);opacity:0;pointer-events:none;transition:opacity .2s}
+ #folha-modelos-fundo.aberta{opacity:1;pointer-events:auto}
+ #folha-modelos{position:fixed;left:0;right:0;bottom:0;z-index:2501;max-height:82vh;overflow:auto;box-sizing:border-box;padding:10px 16px calc(18px + env(safe-area-inset-bottom));background:var(--bg2);color:var(--text);border:1px solid var(--border);border-bottom:0;border-radius:28px 28px 0 0;transform:translateY(105%);transition:transform .26s cubic-bezier(.2,.8,.2,1);font-family:-apple-system,Roboto,"Segoe UI",sans-serif}
+@@ -1847,11 +1850,8 @@ enviar=function(){
+ .msg.usuario .anexo-card{background:var(--bg);margin:0 0 8px auto}
+ .msg.usuario .anexo-card:last-child{margin-bottom:0}
+ .msg.usuario .anexo-texto{white-space:pre-wrap;word-break:break-word}
+-/* input sublinhado: sem caixa, linha verde com brilho */
+-#input-area .pv-pill{background:transparent;border:none;border-bottom:2px solid var(--r);border-radius:0;padding:2px 2px 6px;box-shadow:none;transition:border-color .2s}
+-#input-area .pv-pill:focus-within{border-color:var(--r)}
+-#input-area .pv-pill.expandido,#input-area .pv-pill.com-anexo{padding:8px 2px 4px 4px;border-bottom:none;box-shadow:none}
+-#input-area .pv-pill.expandido #chat-input,#input-area .pv-pill.com-anexo #chat-input{border-bottom:2px solid var(--r);padding:2px 4px 8px;margin-bottom:6px}
++/* input em cartao: caixa arredondada com fundo e borda (a cor e a sombra do foco vem de .pv-pill:focus-within) */
++#input-area .pv-pill.expandido #chat-input,#input-area .pv-pill.com-anexo #chat-input{border-bottom:none;margin-bottom:0}
+ #input-area .pv-linha-botoes>button{border-radius:12px}
+ #input-area .pv-linha-botoes>button:first-child,#input-area .pv-linha-botoes>button[aria-label="Mensagem de voz"]:not(.gravando){background:transparent}
+ #input-area .pv-linha-botoes>button:first-child:active,#input-area .pv-linha-botoes>button[aria-label="Mensagem de voz"]:not(.gravando):active,#btn-voz-modo:active{background:rgba(69,90,11,.14);background:color-mix(in srgb,var(--r) 14%,transparent)}
+diff --git a/mobile.html b/mobile.html
+index d4b5639..86b5298 100644
+--- a/mobile.html
++++ b/mobile.html
+@@ -397,11 +397,14 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:64px;backgrou
+ #input-area .pv-linha-botoes>#btn-pensar[aria-pressed="true"]{color:var(--r);box-shadow:inset 0 0 0 1.5px var(--r)}
+ .sem-pensar #digitando .espera-resumo{display:none}
+ /* chip do modelo (junto ao Pensar) */
+-#input-area .pv-linha-botoes>#btn-modelo{display:none;align-items:center;gap:6px;width:auto;min-width:0;max-width:170px;padding:0 10px 0 12px;border:0;border-radius:20px;background:var(--bg3);color:var(--r);font:600 15px/1 -apple-system,Roboto,"Segoe UI",sans-serif;cursor:pointer}
++#input-area .pv-linha-botoes>#btn-modelo{display:none;align-items:center;gap:6px;width:auto;min-width:84px;max-width:150px;flex:0 1 auto;padding:0 6px 0 10px;border:0;border-radius:20px;background:var(--bg3);color:var(--r);font:600 15px/1 -apple-system,Roboto,"Segoe UI",sans-serif;cursor:pointer}
+ #input-area .pv-linha-botoes>#btn-modelo svg{width:20px;height:20px;flex:none}
+ #input-area .pv-linha-botoes>#btn-modelo .bm-nome{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+ #input-area .pv-linha-botoes>#btn-modelo .bm-seta{width:18px;height:18px;opacity:.7}
+ #input-area .pv-pill.expandido .pv-linha-botoes>#btn-modelo{display:inline-flex}
++#input-area .pv-pill.expandido .pv-linha-botoes{gap:4px}
++#input-area .pv-pill.expandido .pv-linha-botoes>#btn-pensar{padding:0 12px 0 10px;gap:5px}
++@media(max-width:380px){#input-area .pv-linha-botoes>#btn-modelo{min-width:0;padding:0 10px}#input-area .pv-linha-botoes>#btn-modelo .bm-seta{display:none}#input-area .pv-pill.expandido .pv-linha-botoes>#btn-pensar{padding:0 10px 0 8px}}
+ #folha-modelos-fundo{position:fixed;inset:0;z-index:2500;background:rgba(0,0,0,.38);opacity:0;pointer-events:none;transition:opacity .2s}
+ #folha-modelos-fundo.aberta{opacity:1;pointer-events:auto}
+ #folha-modelos{position:fixed;left:0;right:0;bottom:0;z-index:2501;max-height:82vh;overflow:auto;box-sizing:border-box;padding:10px 16px calc(18px + env(safe-area-inset-bottom));background:var(--bg2);color:var(--text);border:1px solid var(--border);border-bottom:0;border-radius:28px 28px 0 0;transform:translateY(105%);transition:transform .26s cubic-bezier(.2,.8,.2,1);font-family:-apple-system,Roboto,"Segoe UI",sans-serif}
+@@ -1872,11 +1875,8 @@ el.addEventListener("touchcancel",fim,{passive:true});
+ .msg.usuario .anexo-card{background:var(--bg);margin:0 0 8px auto}
+ .msg.usuario .anexo-card:last-child{margin-bottom:0}
+ .msg.usuario .anexo-texto{white-space:pre-wrap;word-break:break-word}
+-/* input sublinhado: sem caixa, linha verde com brilho */
+-#input-area .pv-pill{background:transparent;border:none;border-bottom:2px solid var(--r);border-radius:0;padding:2px 2px 6px;box-shadow:none;transition:border-color .2s}
+-#input-area .pv-pill:focus-within{border-color:var(--r)}
+-#input-area .pv-pill.expandido,#input-area .pv-pill.com-anexo{padding:8px 2px 4px 4px;border-bottom:none;box-shadow:none}
+-#input-area .pv-pill.expandido #chat-input,#input-area .pv-pill.com-anexo #chat-input{border-bottom:2px solid var(--r);padding:2px 4px 8px;margin-bottom:6px}
++/* input em cartao: caixa arredondada com fundo e borda (a cor e a sombra do foco vem de .pv-pill:focus-within) */
++#input-area .pv-pill.expandido #chat-input,#input-area .pv-pill.com-anexo #chat-input{border-bottom:none;margin-bottom:0}
+ #input-area .pv-linha-botoes>button{border-radius:12px}
+ #input-area .pv-linha-botoes>button:first-child,#input-area .pv-linha-botoes>button[aria-label="Mensagem de voz"]:not(.gravando){background:transparent}
+ #input-area .pv-linha-botoes>button:first-child:active,#input-area .pv-linha-botoes>button[aria-label="Mensagem de voz"]:not(.gravando):active,#btn-voz-modo:active{background:rgba(69,90,11,.14);background:color-mix(in srgb,var(--r) 14%,transparent)}
+-- 
+2.43.0
