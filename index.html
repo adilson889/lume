@@ -539,6 +539,31 @@ button,a,[role=button],select,summary{touch-action:manipulation}
  border-bottom:0!important;
  box-shadow:none;
 }
+
+/* Ajuste do estado inicial: texto centrado e sem faixa de fundo por baixo do painel. */
+#input-area{
+ background:transparent!important;
+ box-shadow:none!important;
+}
+#input-area .pv-pill{
+ display:flex;
+ flex-direction:column;
+ align-items:stretch;
+}
+#input-area .pv-pill #chat-input{
+ order:0;
+ flex:none;
+ text-align:center;
+}
+#input-area .pv-pill #chat-input::placeholder{
+ text-align:center;
+}
+#input-area .pv-pill .pv-linha-botoes{
+ order:1;
+}
+#input-area .pv-pill.expandido #chat-input{
+ text-align:left;
+}
 </style>
 </head>
 <body>
