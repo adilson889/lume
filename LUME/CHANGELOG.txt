@@ -498,3 +498,6 @@ Lume - historico de versoes
 
 0.5.62
 - Fisica: g passa a ser lido do enunciado (g = 10, considere g = 10, adote...), tambem nos problemas com rampa; sem g indicado usa 9,8 e avisa. Distingue aceleracao (a) de aceleracao da gravidade (g): "Qual a aceleracao da gravidade?" calcula g = P/m. "Passa de 0 a 20 m/s" ja nao e confundido com conversao de unidades; "cai de 20 m" conta como altura; "atrito de coeficiente 0,1" e lido.
+
+0.5.63
+- Fisica: antes de resolver, o Lume desenha um esboco do enunciado (SVG): plano com atrito, bloco com v0, distancia, rampa com angulo e incognitas (v1, h); e queda livre com altura, g e incognitas.

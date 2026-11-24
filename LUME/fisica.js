@@ -689,7 +689,53 @@ function cenario(q){
  var etapas=["Li o problema como um plano com atrito seguido de uma rampa e identifiquei dados e perguntas.","Resolvi pelo teorema do trabalho e energia (plano) e conservação da energia (rampa)."];
  if(T1)etapas.push("Teste 1: cinemática no plano, com a=-μg e v²=v0²+2ad.");
  etapas.push("Teste "+(temAtr?"2":"1")+": cinemática na rampa, com s=v²/2a e h=s·senθ.");
- return {texto:L.join("\n\n")+"\n\n"+resp.join("\n\n")+"\n\n"+tex,etapas:etapas};
+ return {texto:L.join("\n\n")+"\n\n"+resp.join("\n\n")+"\n\n"+tex,etapas:etapas,esboco:esbocoPlanoRampa({m:m,v0:v0,ang:ang,mu:temAtr?mu:null,mu2:mu2,d:d})};
 }
-window.LumeFisica={analisar:analisar,cenario:cenario,oferta:oferta,solucao:solucao,responder:responder,testes:testes,corpo:corpo};
+/* ===== esbocos do enunciado (SVG direto no chat) ===== */
+function sx(n){return String(Number(Number(n).toPrecision(4))).replace(".",",")}
+function sesc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+function stx(x,y,t,o){o=o||{};return '<text x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" font-size="'+(o.s||11)+'" fill="'+(o.c||"currentColor")+'" text-anchor="'+(o.a||"middle")+'"'+(o.b?' font-weight="bold"':'')+'>'+sesc(t)+'</text>'}
+function sln(x1,y1,x2,y2,o){o=o||{};return '<line x1="'+x1.toFixed(1)+'" y1="'+y1.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'" stroke="'+(o.c||"currentColor")+'" stroke-width="'+(o.w||1.5)+'"'+(o.d?' stroke-dasharray="'+o.d+'"':'')+'/>'}
+function sseta(x1,y1,x2,y2,c){
+ var a=Math.atan2(y2-y1,x2-x1),L=7,w=3.2,bx=x2-L*Math.cos(a),by=y2-L*Math.sin(a);
+ return sln(x1,y1,bx,by,{c:c,w:2})+'<polygon points="'+x2.toFixed(1)+','+y2.toFixed(1)+' '+(bx+w*Math.sin(a)).toFixed(1)+','+(by-w*Math.cos(a)).toFixed(1)+' '+(bx-w*Math.sin(a)).toFixed(1)+','+(by+w*Math.cos(a)).toFixed(1)+'" fill="'+(c||"currentColor")+'"/>';
+}
+function svgEnv(vb,corpo,desc){return '<svg viewBox="'+vb+'" style="width:100%;max-width:460px;height:auto;display:block" role="img" aria-label="'+sesc(desc)+'" fill="none">'+corpo+'</svg>'}
+function esbocoPlanoRampa(o){
+ var y0=150,xp=24,xr=200,th=o.ang*Math.PI/180,Lr=Math.min(140,115/Math.sin(th)),tx=xr+Lr*Math.cos(th),ty=y0-Lr*Math.sin(th),B="#1f6feb",R="#d1481f",G="#2e8b57",s="";
+ s+=sln(xp,y0,xr,y0,{w:2.5})+sln(xr,y0,tx,ty,{w:2.5})+sln(tx,ty,tx,y0,{d:"4 3",w:1,c:G})+sln(xr,y0,tx+10,y0,{w:1,d:"2 3"});
+ for(var i=xp+6;i<xr-4;i+=9)s+=sln(i,y0+1,i-6,y0+8,{w:1,c:R});
+ s+=stx((xp+xr)/2+14,y0+22,o.mu!=null?"atrito  μ = "+sx(o.mu):"plano",{c:R,s:11});
+ s+='<rect x="'+(xp+16)+'" y="'+(y0-22)+'" width="30" height="22" rx="2" fill="'+B+'" fill-opacity="0.25" stroke="'+B+'" stroke-width="1.8"/>';
+ s+=stx(xp+31,y0-7,o.m!=null?sx(o.m)+" kg":"m",{s:10});
+ s+=sseta(xp+50,y0-11,xp+92,y0-11,B)+stx(xp+72,y0-30,"v₀ = "+sx(o.v0)+" m/s",{c:B,b:1});
+ if(o.d!=null){var yd=y0+36;s+=sln(xp+46,yd,xr,yd,{w:1})+sln(xp+46,yd-4,xp+46,yd+4,{w:1})+sln(xr,yd-4,xr,yd+4,{w:1})+stx((xp+46+xr)/2,yd+14,"d = "+sx(o.d)+" m")}
+ var r=30;s+='<path d="M '+(xr+r)+' '+y0+' A '+r+' '+r+' 0 0 0 '+(xr+r*Math.cos(th)).toFixed(1)+' '+(y0-r*Math.sin(th)).toFixed(1)+'" stroke="'+G+'" stroke-width="1.6"/>';
+ s+=stx(xr+r+22,y0-6,"θ = "+sx(o.ang)+"°",{c:G,b:1,a:"start",s:11});
+ s+=stx(xr-34,y0-34,"v₁ = ?",{c:R,b:1})+sseta(xr-52,y0-24,xr-6,y0-24,R);
+ s+=stx(tx+8,(ty+y0)/2,"h = ?",{c:R,b:1,a:"start"});
+ s+=stx((xr+tx)/2-12,(y0+ty)/2-14,o.mu2?"rampa com atrito":"rampa sem atrito",{s:10,a:"end"});
+ return svgEnv("0 0 360 205",s,"Esboço do enunciado: corpo com velocidade inicial num plano com atrito, seguido de uma rampa de "+sx(o.ang)+" graus");
+}
+function esbocoQueda(o){
+ var s="",B="#1f6feb",R="#d1481f",y0=185,yb=38;
+ s+=sln(40,y0,200,y0,{w:2.5});for(var i=44;i<196;i+=10)s+=sln(i,y0+1,i-6,y0+8,{w:1,c:R});
+ s+='<circle cx="120" cy="'+yb+'" r="10" fill="'+B+'" fill-opacity="0.3" stroke="'+B+'" stroke-width="1.8"/>';
+ s+=sseta(120,yb+14,120,y0-14,B)+stx(132,(yb+y0)/2,"g"+(o.g!=null?" = "+sx(o.g)+" m/s²":""),{c:B,b:1,a:"start"});
+ s+=sln(70,yb,70,y0,{w:1})+sln(64,yb,76,yb,{w:1})+sln(64,y0,76,y0,{w:1})+stx(66,(yb+y0)/2,o.h!=null?"h = "+sx(o.h)+" m":"h",{a:"end"});
+ s+=stx(120,yb-16,"v₀ = "+sx(o.v0||0)+" m/s",{b:1});
+ if(o.alvos&&o.alvos.length)s+=stx(120,y0+24,o.alvos.join(",  ")+"  = ?",{c:R,b:1});
+ return svgEnv("0 0 250 215",s,"Esboço do enunciado: corpo em queda livre desde uma altura");
+}
+function esboco(p){
+ try{
+  var K=p.alvos.map(function(a){return a.K}),f=p.alvos[0].passos[p.alvos[0].passos.length-1].f,A=p.A||{};
+  if(f&&/^queda/.test(f.id)){
+   var h=A.h&&A.h[0]?A.h[0].v:(A.d&&A.d[0]?A.d[0].v:null),g=A.g&&A.g[0]?A.g[0].v:null,nm={t:"t",v:"v",h:"h"};
+   return {html:esbocoQueda({h:h,g:g,v0:A.v0&&A.v0[0]?A.v0[0].v:0,alvos:K.filter(function(k){return nm[k]}).map(function(k){return nm[k]})})};
+  }
+ }catch(e){}
+ return null;
+}
+window.LumeFisica={analisar:analisar,cenario:cenario,esboco:esboco,oferta:oferta,solucao:solucao,responder:responder,testes:testes,corpo:corpo};
 })();

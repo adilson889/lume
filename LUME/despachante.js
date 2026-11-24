@@ -804,11 +804,13 @@ async function tentar(q){
  }
  if(typeof window.lumeOnReply==="function"&&window.LumeFisica&&window.LumeFisica.cenario&&_q0.length<=900){
   var cen=null;try{cen=window.LumeFisica.cenario(_q0)}catch(_){}
-  if(cen){(cen.etapas||[]).forEach(function(e,i){raciocinio(e,i>=2?T_ETAPA_TESTE:undefined)});window.lumeOnReply({text:cen.texto});return true}
+  if(cen){if(cen.esboco){raciocinio("Primeiro desenhei um esboço do enunciado, como se faz em Física, antes de resolver.");window.lumeOnReply({html:cen.esboco})}(cen.etapas||[]).forEach(function(e,i){raciocinio(e,i>=2?T_ETAPA_TESTE:undefined)});window.lumeOnReply({text:cen.texto});return true}
  }
  if(typeof window.lumeOnReply==="function"&&window.LumeFisica&&q.length<=700){
   var fis=null;try{fis=window.LumeFisica.analisar(q)}catch(_){}
   if(fis){
+   var esb=window.LumeFisica.esboco?window.LumeFisica.esboco(fis):null;
+   if(esb){raciocinio("Desenhei primeiro um esboço do enunciado, como se faz em Física.");window.lumeOnReply({html:esb.html})}
    if(/^(resolve|resolva|resolver)\b/.test(norm(q))){
     raciocinio("Li o exercício de Física, identifiquei os dados e o que se pede, e resolvi sozinho, com os mesmos passos e sem perguntas.");
     var sf=window.LumeFisica.solucao(fis);sf.etapas.forEach(function(e){raciocinio(e,T_ETAPA_TESTE)});
