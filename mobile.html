@@ -1162,6 +1162,15 @@ const r=ancora.getBoundingClientRect(),w=menu.offsetWidth,h=menu.offsetHeight,vw
 let left=Math.min(Math.max(12,r.right-w),vw-w-12),top=r.bottom+6;
 if(top+h>vh-12)top=Math.max(12,r.top-h-6);
 menu.style.left=left+'px';menu.style.top=top+'px'}
+function pedirCodigoModelos(){
+abrirModal('Código de acesso','','<button class="primario" onclick="confirmarCodigoModelos()"><span class="modal-icone">'+IC_CHECK+'</span>Confirmar</button><button onclick="fecharModal()"><span class="modal-icone">'+IC_X+'</span>Cancelar</button>');
+const corpo=document.getElementById('modal-corpo'),inp=document.createElement('input');
+inp.id='modal-codigo';inp.className='modal-input';inp.type='password';inp.maxLength=40;inp.setAttribute('autocomplete','off');
+inp.addEventListener('keydown',function(e){if(e.key==='Enter')confirmarCodigoModelos()});
+corpo.appendChild(inp);setTimeout(function(){inp.focus()},60)}
+async function confirmarCodigoModelos(){
+const inp=document.getElementById('modal-codigo'),v=inp?inp.value.trim():'';if(!v)return;
+if(await hashPainel(v)===LIB_HASH){try{localStorage.setItem("lume_lib",LIB_HASH)}catch(e){}fecharModal();aplicarModelo();mostrarToast("Modelos desbloqueados")}else{inp.value='';mostrarToast("Código inválido")}}
 function pedirRenomear(id){
 const conv=lerConversas().find(function(c){return c.id===id});if(!conv)return;
 abrirModal('Renomear conversa','','<button class="primario" onclick="confirmarRenomear(\''+id+'\')"><span class="modal-icone">'+IC_CHECK+'</span>Guardar</button><button onclick="fecharModal()"><span class="modal-icone">'+IC_X+'</span>Cancelar</button>');
@@ -1586,7 +1595,7 @@ function abrirFolhaModelos(){
  var atual=modeloAtual(),g=document.createElement("div");g.id="folha-modelos-fundo";g.addEventListener("click",fecharFolhaModelos);
  var f=document.createElement("div");f.id="folha-modelos";f.setAttribute("role","dialog");f.setAttribute("aria-label","Modelos");
  f.innerHTML='<div class="fm-pega"></div><div class="fm-titulo">Modelos</div>';
- (function(){var t=f.querySelector(".fm-titulo"),tm=0;function ini(){clearTimeout(tm);tm=setTimeout(async function(){var c=prompt("Código");if(!c)return;if(await hashPainel(c.trim())===LIB_HASH){try{localStorage.setItem("lume_lib",LIB_HASH)}catch(e){}fecharFolhaModelos();mostrarToast("Modelos desbloqueados")}else mostrarToast("Código inválido")},900)}function fim(){clearTimeout(tm)}t.addEventListener("touchstart",ini,{passive:true});t.addEventListener("touchend",fim);t.addEventListener("touchmove",fim,{passive:true});t.addEventListener("mousedown",ini);t.addEventListener("mouseup",fim);t.addEventListener("mouseleave",fim)})();
+ (function(){var t=f.querySelector(".fm-titulo"),tm=0;function ini(){clearTimeout(tm);tm=setTimeout(function(){fecharFolhaModelos();pedirCodigoModelos()},900)}function fim(){clearTimeout(tm)}t.addEventListener("touchstart",ini,{passive:true});t.addEventListener("touchend",fim);t.addEventListener("touchmove",fim,{passive:true});t.addEventListener("mousedown",ini);t.addEventListener("mouseup",fim);t.addEventListener("mouseleave",fim)})();
  MODELOS.forEach(function(m){
   var b=document.createElement("button");b.type="button";b.className="fm-item"+(m.id===atual?" sel":"");b.setAttribute("aria-pressed",String(m.id===atual));
   b.innerHTML='<span class="fm-ic">'+svgModelo(m)+'</span><span><span class="fm-nome"></span><span class="fm-desc"></span></span>';

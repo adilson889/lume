@@ -548,3 +548,6 @@ Lume - historico de versoes
 
 0.5.72
 - MVP: so o Lume Flash esta disponivel; Lume e Lume X aparecem "Indisponivel de momento". Desbloqueio escondido: premir longo no titulo "Modelos" e introduzir o codigo (guardado so como hash).
+
+0.5.73
+- Codigo de desbloqueio dos modelos usa o modal do app (campo de palavra-passe) em vez do alerta do navegador.
