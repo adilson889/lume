@@ -557,3 +557,6 @@ Lume - historico de versoes
 
 0.5.75
 - mobile.html: bloco de codigo igual ao index (largura total, sem cantos arredondados).
+
+0.5.76
+- Lume X: revisao critica no fim das resolucoes de Fisica (o que verificou e o que critica no enunciado/resultado: dados em falta ou nao usados, valores impossiveis).

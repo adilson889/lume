@@ -556,9 +556,24 @@ function testes(p){
   return {ok:ok,etapas:et,antes:antes,depois:"**Sobre os testes**\n\n"+t1+t2+fim};
  }catch(e){return null}
 }
+/* Lume X: autocritica do enunciado e do resultado */
+function revisaoX(p){
+ var al=[],NN={m:1,t:1,r:1,Per:1,Vol:1,A:1,k:1,rho:1,c:1,f:1,Fa:1,Fn:1};
+ function nm(k){return Q[k]?Q[k].nome:k}
+ if(p.nao&&p.nao.length)al.push("não consegui calcular "+p.nao.map(nm).join(", ")+": faltam dados no enunciado");
+ if(p.nu&&p.nu.length){var u=p.nu.map(function(e){return Q[e.k]?nm(e.k):null}).filter(Boolean);if(u.length)al.push("dados que não usei: "+u.join(", ")+" (sobram no enunciado ou falta uma relação)")}
+ p.alvos.forEach(function(a){var v=a.v,n=nm(a.K);
+  if(!isFinite(v))al.push(n+" deu um valor indefinido");
+  else if(NN[a.K]&&v<0)al.push(n+" deu negativo ("+v+"): isso não faz sentido físico, confere os dados");
+  else if((a.K==="v"||a.K==="v0")&&Math.abs(v)>2.998e8)al.push("a "+n+" passa a velocidade da luz: resultado impossível");
+  else if(a.K==="mu"&&v>1.5)al.push("coeficiente de atrito muito alto ("+v+"): confere os dados");
+  else if(a.K==="Tk"&&v<0)al.push("temperatura abaixo do zero absoluto")});
+ return "**Revisão do Lume X**\n\n- **Verifiquei:** substituí os valores, conferi as unidades e testei o resultado.\n- **Crítica ao meu trabalho:** "+(al.length?al.join("; ")+".":"não encontrei problemas no enunciado nem no resultado.")
+}
 function solucao(p){
- var t=testes(p),c=corpo(p);
- return {texto:t?t.antes+c+"\n\n"+t.depois:c,etapas:t?t.etapas:[]};
+ var t=testes(p),c=corpo(p),x="";
+ try{if(window.lumeModeloAtual&&window.lumeModeloAtual()==="x")x="\n\n"+revisaoX(p)}catch(e){}
+ return {texto:(t?t.antes+c+"\n\n"+t.depois:c)+x,etapas:t?t.etapas:[]};
 }
 
 /* ===== sondagem e passo a passo ===== */
