@@ -554,3 +554,6 @@ Lume - historico de versoes
 
 0.5.74
 - Lume Flash tambem mostra graficos, tabelas e esbocos de Fisica (so o visual + resultado, sem passos nem testes).
+
+0.5.75
+- mobile.html: bloco de codigo igual ao index (largura total, sem cantos arredondados).
