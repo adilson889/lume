@@ -22,10 +22,25 @@ jobs:
           curl -fL --retry 3 -o $D/onnx/model_quantized.onnx "$B/onnx/model_quantized.onnx?download=true"
           ls -l $D $D/onnx
           test $(stat -c %s $D/onnx/model_quantized.onnx) -gt 10000000
+      - name: Descarregar o transformers.js e o runtime WASM (npm)
+        run: |
+          D=LUME/ia/transformers
+          mkdir -p $D /tmp/pk && cd /tmp/pk
+          npm pack @huggingface/transformers >/dev/null
+          mkdir tf && tar -xzf huggingface-transformers-*.tgz -C tf
+          ORT=$(node -p "require('./tf/package/package.json').dependencies['onnxruntime-web']")
+          echo "onnxruntime-web: $ORT"
+          npm pack "onnxruntime-web@$(echo $ORT | sed 's/^[^0-9]*//')" >/dev/null
+          mkdir ort && tar -xzf onnxruntime-web-*.tgz -C ort
+          cd - >/dev/null
+          cp /tmp/pk/tf/package/dist/transformers.min.js $D/ 2>/dev/null || cp /tmp/pk/tf/package/dist/transformers.js $D/
+          cp /tmp/pk/ort/package/dist/ort-wasm-simd-threaded*.wasm /tmp/pk/ort/package/dist/ort-wasm-simd-threaded*.mjs $D/ 2>/dev/null || true
+          node -p "require('/tmp/pk/tf/package/package.json').version" > $D/VERSAO.txt
+          ls -l $D
       - name: Guardar no repo
         run: |
           git config user.name "github-actions"
           git config user.email "actions@users.noreply.github.com"
-          git add LUME/ia/minilm
-          git diff --cached --quiet && echo "Sem alteracoes" || git commit -m "Adiciona modelo MiniLM (embeddings)"
+          git add LUME/ia/minilm LUME/ia/transformers
+          git diff --cached --quiet && echo "Sem alteracoes" || git commit -m "Adiciona MiniLM e transformers.js (embeddings)"
           git push
