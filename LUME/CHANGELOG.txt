@@ -551,3 +551,6 @@ Lume - historico de versoes
 
 0.5.73
 - Codigo de desbloqueio dos modelos usa o modal do app (campo de palavra-passe) em vez do alerta do navegador.
+
+0.5.74
+- Lume Flash tambem mostra graficos, tabelas e esbocos de Fisica (so o visual + resultado, sem passos nem testes).

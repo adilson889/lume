@@ -798,7 +798,7 @@ async function tentar(q){
  var _q0=q,NV=nivelModelo(),FL=NV==="flash",raciocinio=FL?function(){}:_racOrig;
  q=coloquial(q);
  if(!FL&&typeof window.lumeOnReply==="function"&&window.lumeTutorAtivo()){var rt=tutorResponder(q);if(rt){if(rt.etapas&&rt.etapas.length)rt.etapas.forEach(function(e){raciocinio(e,T_ETAPA_TESTE)});else if(rt.rac)raciocinio(rt.rac);window.lumeOnReply({text:rt.texto});if(rt.g)window.lumeOnReply({html:rt.g});return true}}
- var _vis=null;if(!FL)try{_vis=pedidoVisual(_q0)}catch(_){}
+ var _vis=null;try{_vis=pedidoVisual(_q0)}catch(_){}
  if(_vis&&typeof window.lumeOnReply==="function"){raciocinio(_vis.rac);_vis.html.forEach(function(h){window.lumeOnReply({html:h})});return true}
  var DL=window.LumeDialogo;
  if(DL&&typeof window.lumeOnReply==="function"){
@@ -814,14 +814,14 @@ async function tentar(q){
  }
  if(typeof window.lumeOnReply==="function"&&window.LumeFisica&&window.LumeFisica.cenario&&_q0.length<=900){
   var cen=null;try{cen=window.LumeFisica.cenario(_q0)}catch(_){}
-  if(cen&&FL){window.lumeOnReply({text:cen.resumo||soResultado(cen.texto)});return true}
+  if(cen&&FL){if(cen.esboco)window.lumeOnReply({html:cen.esboco});window.lumeOnReply({text:cen.resumo||soResultado(cen.texto)});return true}
   if(cen){if(cen.esboco){raciocinio("Primeiro desenhei um esboço do enunciado, como se faz em Física, antes de resolver.");window.lumeOnReply({html:cen.esboco})}(cen.etapas||[]).forEach(function(e,i){raciocinio(e,i>=2?T_ETAPA_TESTE:undefined)});window.lumeOnReply({text:cen.texto});return true}
  }
  if(typeof window.lumeOnReply==="function"&&window.LumeFisica&&q.length<=700){
   var fis=null;try{fis=window.LumeFisica.analisar(q)}catch(_){}
   if(fis){
-   var esb=(!FL&&window.LumeFisica.esboco)?window.LumeFisica.esboco(fis):null;
-   if(FL){var sfl=window.LumeFisica.solucao(fis);window.lumeOnReply({text:soResultado(sfl.texto)});return true}
+   var esb=window.LumeFisica.esboco?window.LumeFisica.esboco(fis):null;
+   if(FL){var sfl=window.LumeFisica.solucao(fis);if(esb)window.lumeOnReply({html:esb.html});window.lumeOnReply({text:soResultado(sfl.texto)});return true}
    if(esb){raciocinio("Desenhei primeiro um esboço do enunciado, como se faz em Física.");window.lumeOnReply({html:esb.html})}
    if(/^(resolve|resolva|resolver)\b/.test(norm(q))){
     raciocinio("Li o exercício de Física, identifiquei os dados e o que se pede, e resolvi sozinho, com os mesmos passos e sem perguntas.");
