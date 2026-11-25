@@ -545,3 +545,6 @@ Lume - historico de versoes
 
 0.5.71
 - Niveis de modelo no despachante: o Lume Flash responde so com o resultado (sem raciocinio, sem testes, sem esboco, sem tabela/grafico, sem tutor); Lume e X mantem tudo. Funciona em contas, equacoes, estatistica e fisica (inclui rampa com atrito).
+
+0.5.72
+- MVP: so o Lume Flash esta disponivel; Lume e Lume X aparecem "Indisponivel de momento". Desbloqueio escondido: premir longo no titulo "Modelos" e introduzir o codigo (guardado so como hash).
