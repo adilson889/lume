@@ -38,8 +38,6 @@
   "sobre.txt",
   "sugestoes.txt",
   "situacoes.txt",
-  "modelos/mat.sql",
-  "modelos/codigo.sql",
-  "modelos/desenho.sql",
-  "modelos/rapido.sql"
+  "modelos/flash.sql",
+  "modelos/x.sql"
 ]

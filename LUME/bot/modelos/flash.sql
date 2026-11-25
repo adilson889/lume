@@ -1,4 +1,4 @@
--- Lume Rapido: respostas curtas, sem pesquisa na web e sem pausas de espera.
+-- Lume Flash: respostas curtas, sem pesquisa na web e sem pausas de espera.
 -- (Sem CONNECT SEARCH WIKI e sem WAITING.)
 CREATE BOT "Lume"
 

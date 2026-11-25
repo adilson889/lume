@@ -535,3 +535,10 @@ Lume - historico de versoes
 - Removido da folha "Modelos" o texto "Cada modelo carrega o seu proprio .sql".
 - Em index.html e mobile.html. sw.js: VERSAO 0.5.69.
 - Nota: o despachante de capacidades (despachante.js) continua a correr antes do .sql em todos os modelos.
+
+0.5.70
+- Modelos renomeados por nivel: Lume Flash (simples e rapido), Lume (normal) e Lume X (avancado).
+- Saem da lista Lume Mat, Lume Codigo e Lume Desenho (o despachante ja trata esses pedidos em qualquer modelo).
+- Novos ficheiros LUME/bot/modelos/flash.sql (antigo rapido.sql) e x.sql; removidos mat.sql, codigo.sql e desenho.sql.
+- Quem tinha "Lume Rapido" guardado passa para "Lume Flash"; os outros ids antigos voltam ao Lume.
+- Em index.html e mobile.html. sw.js: VERSAO 0.5.70.

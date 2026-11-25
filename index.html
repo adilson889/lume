@@ -1561,14 +1561,12 @@ function criarLinhaEtapa(texto,ativa,dur){
 }
 /* ===== Modelos: cada modelo carrega o seu proprio .sql (LUME/bot/modelos/<id>.sql; o "lume" usa main.sql) ===== */
 var MODELOS=[
- {id:"lume",nome:"Lume",desc:"Geral: conversa, ajuda, o dia a dia",ic:'<path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-3 2v-6a7.5 7.5 0 1 1 17-3.5Z"/>'},
- {id:"mat",nome:"Lume Mat",desc:"Contas, equações, gráficos e passos em KaTeX",ic:'<text x="3" y="17" font-size="16" font-style="italic" font-family="Georgia,serif" fill="currentColor" stroke="none">ƒ</text><path d="m14 11 6 6M20 11l-6 6"/>'},
- {id:"codigo",nome:"Lume Código",desc:"Gera e explica código a partir de frases",ic:'<path d="m8 8-4 4 4 4m8-8 4 4-4 4m-2-11-4 14"/>'},
- {id:"desenho",nome:"Lume Desenho",desc:"Desenhos em SVG e composições",ic:'<path d="m4 16 9-9 4 4-9 9H4zM12 8l4 4M14 6l2-2 4 4-2 2"/>'},
- {id:"rapido",nome:"Lume Rápido",desc:"Respostas curtas, sem pesquisa na web",ic:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>'}
+ {id:"flash",nome:"Lume Flash",desc:"Simples e rápido: respostas diretas",ic:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>'},
+ {id:"lume",nome:"Lume",desc:"Normal: equilibrado para o dia a dia",ic:'<path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-3 2v-6a7.5 7.5 0 1 1 17-3.5Z"/>'},
+ {id:"x",nome:"Lume X",desc:"Avançado: pensa mais a fundo",ic:'<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/>'}
 ];
 function svgModelo(m){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+m.ic+'</svg>'}
-function modeloAtual(){var id="lume";try{id=localStorage.getItem("lume_modelo")||"lume"}catch(e){}return MODELOS.some(function(m){return m.id===id})?id:"lume"}
+function modeloAtual(){var id="lume";try{id=localStorage.getItem("lume_modelo")||"lume"}catch(e){}if(id==="rapido")id="flash";return MODELOS.some(function(m){return m.id===id})?id:"lume"}
 window.lumeModeloAtual=modeloAtual;
 function aplicarModelo(){
  var id=modeloAtual(),m=MODELOS.filter(function(x){return x.id===id})[0],b=document.getElementById("btn-modelo");
