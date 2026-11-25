@@ -1,0 +1,31 @@
+name: Baixar modelo MiniLM
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  baixar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Descarregar ficheiros do Hugging Face
+        run: |
+          B=https://huggingface.co/Xenova/all-MiniLM-L6-v2/resolve/main
+          D=LUME/ia/minilm
+          mkdir -p $D/onnx
+          for f in config.json tokenizer.json tokenizer_config.json; do
+            curl -fL --retry 3 -o $D/$f "$B/$f?download=true"
+          done
+          curl -fL --retry 3 -o $D/onnx/model_quantized.onnx "$B/onnx/model_quantized.onnx?download=true"
+          ls -l $D $D/onnx
+          test $(stat -c %s $D/onnx/model_quantized.onnx) -gt 10000000
+      - name: Guardar no repo
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@users.noreply.github.com"
+          git add LUME/ia/minilm
+          git diff --cached --quiet && echo "Sem alteracoes" || git commit -m "Adiciona modelo MiniLM (embeddings)"
+          git push
