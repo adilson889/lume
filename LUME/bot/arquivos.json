@@ -37,5 +37,9 @@
   "memoria.txt",
   "sobre.txt",
   "sugestoes.txt",
-  "situacoes.txt"
+  "situacoes.txt",
+  "modelos/mat.sql",
+  "modelos/codigo.sql",
+  "modelos/desenho.sql",
+  "modelos/rapido.sql"
 ]

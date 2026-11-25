@@ -489,7 +489,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:64px;backgrou
 #folha-modelos{position:fixed;left:0;right:0;bottom:0;z-index:2501;max-height:82vh;overflow:auto;box-sizing:border-box;padding:10px 16px calc(18px + env(safe-area-inset-bottom));background:var(--bg2);color:var(--text);border:1px solid var(--border);border-bottom:0;border-radius:28px 28px 0 0;transform:translateY(105%);transition:transform .26s cubic-bezier(.2,.8,.2,1);font-family:-apple-system,Roboto,"Segoe UI",sans-serif}
 #folha-modelos.aberta{transform:none}
 #folha-modelos .fm-pega{width:44px;height:4px;border-radius:2px;background:var(--border);margin:0 auto 18px}
-#folha-modelos .fm-titulo{font-size:24px;font-weight:700;line-height:1.2}
+#folha-modelos .fm-titulo{font-size:24px;font-weight:700;line-height:1.2;margin-bottom:12px}
 #folha-modelos .fm-sub{font-size:15px;color:var(--muted);margin:6px 0 12px;padding-bottom:12px;border-bottom:1px solid var(--border)}
 #folha-modelos .fm-item{display:flex;align-items:center;gap:16px;width:100%;box-sizing:border-box;padding:10px 8px;border:0;border-bottom:1px solid var(--border);border-radius:0;background:transparent;color:inherit;text-align:left;font:inherit;cursor:pointer}
 #folha-modelos .fm-item:last-child{border-bottom:0}
@@ -1583,7 +1583,7 @@ function abrirFolhaModelos(){
  if(document.getElementById("folha-modelos"))return;
  var atual=modeloAtual(),g=document.createElement("div");g.id="folha-modelos-fundo";g.addEventListener("click",fecharFolhaModelos);
  var f=document.createElement("div");f.id="folha-modelos";f.setAttribute("role","dialog");f.setAttribute("aria-label","Modelos");
- f.innerHTML='<div class="fm-pega"></div><div class="fm-titulo">Modelos</div><div class="fm-sub">Cada modelo carrega o seu próprio .sql.</div>';
+ f.innerHTML='<div class="fm-pega"></div><div class="fm-titulo">Modelos</div>';
  MODELOS.forEach(function(m){
   var b=document.createElement("button");b.type="button";b.className="fm-item"+(m.id===atual?" sel":"");b.setAttribute("aria-pressed",String(m.id===atual));
   b.innerHTML='<span class="fm-ic">'+svgModelo(m)+'</span><span><span class="fm-nome"></span><span class="fm-desc"></span></span>';
@@ -1597,13 +1597,40 @@ function abrirFolhaModelos(){
  requestAnimationFrame(function(){requestAnimationFrame(function(){g.classList.add("aberta");f.classList.add("aberta")})});
 }
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&document.getElementById("folha-modelos"))fecharFolhaModelos()});
-function trocarModelo(id){
- var m=MODELOS.filter(function(x){return x.id===id})[0];
+/* Repo: separa os modelos/*.sql dos ficheiros do bot e arranca com o .sql do modelo guardado (sem tocar na funcao minificada) */
+(function(){
+ var orig=correrBotComDados;
+ correrBotComDados=async function(e){
+  try{
+   var A=e&&e.arquivos;
+   if(A&&!window.lumeRepo&&Object.keys(A).some(function(n){return /^modelos\/.+\.sql$/.test(n)})){
+    var sqls={lume:e.sql},limpo={};
+    Object.keys(A).forEach(function(n){var m=n.match(/^modelos\/(.+)\.sql$/);if(m)sqls[m[1]]=A[n];else limpo[n]=A[n]});
+    window.lumeRepo={arquivos:limpo,sqls:sqls};
+    e=Object.assign({},e,{sql:sqls[modeloAtual()]||sqls.lume,arquivos:limpo});
+   }
+  }catch(_){}
+  return orig.call(this,e);
+ };
+})();
+async function trocarModelo(id){
+ var m=MODELOS.filter(function(x){return x.id===id})[0],antes=modeloAtual();
  fecharFolhaModelos();
- if(!m||id===modeloAtual())return;
+ if(!m||id===antes)return;
+ var R=window.lumeRepo;
+ if(!R||!R.sqls||!R.sqls[id]){mostrarToast("Este modelo ainda não está disponível. Tenta de novo daqui a pouco.");return}
  try{localStorage.setItem("lume_modelo",id)}catch(e){}
  aplicarModelo();
- mostrarToast(m.nome+" selecionado");
+ btnEnviar.disabled=true;
+ try{
+  await correrBotComDados({nome:"Lume",sql:R.sqls[id],arquivos:Object.assign({},R.arquivos)});
+  mostrarToast(m.nome+" ativo");
+ }catch(e){
+  try{localStorage.setItem("lume_modelo",antes)}catch(_){}
+  aplicarModelo();
+  mostrarToast("Não foi possível trocar de modelo");
+  try{await correrBotComDados({nome:"Lume",sql:R.sqls[antes]||R.sqls.lume,arquivos:Object.assign({},R.arquivos)})}catch(_){}
+ }finally{btnEnviar.disabled=false}
 }
 /* ===== Botao "Pensar": liga/desliga o painel de Atividade e as pausas entre etapas ===== */
 function pensarLigado(){try{return localStorage.getItem("lume_pensar")!=="0"}catch(e){return true}}
