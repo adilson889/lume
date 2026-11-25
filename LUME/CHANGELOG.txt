@@ -572,3 +572,6 @@ Lume - historico de versoes
 
 0.5.80
 - Lume Flash: pesquisa na Wikipedia ligada (SEARCH) com resposta resumida: primeira frase (definicao) + a frase mais relevante para a pergunta, maximo ~340 caracteres, com fonte.
+
+0.5.81
+- Pesquisa Wikipedia: perguntas "quem e / o que e..." ja nao sao bloqueadas; resultados com o titulo igual ao tema vem primeiro (livro -> Livro); resumo sem parenteses nem frases partidas. Chip "Pensou por Ns" ja nao parte em duas linhas.
