@@ -566,3 +566,6 @@ Lume - historico de versoes
 
 0.5.78
 - Atividade/pensamento de todos os modelos em novo estilo: cabecalho "Pensando para Ns" com icone de pontos, etapas em cinzento com icones, tudo expandido no ecra; depois da resposta desaparece tudo (sem "Ver raciocinios"). Substitui o estilo terminal.
+
+0.5.79
+- Depois da resposta volta o chip "Pensou por Ns" que abre a folha "Pensamentos" com todas as etapas.

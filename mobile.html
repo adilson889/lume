@@ -786,6 +786,21 @@ input,textarea,[contenteditable="true"],
 .msg.digitando .espera-tempo,.msg.digitando .espera-pontos{display:none}
 .msg.digitando .espera-topo.espera-atual .espera-titulo{color:var(--text)}
 </style>
+<style id="lume-pens-css">
+.msg-acoes .msg-atividade{display:flex;align-items:center;gap:8px;flex:1;min-width:0;border:0;background:transparent;color:var(--muted);font:inherit;font-size:15px;text-align:left;padding:8px 6px 8px 0;cursor:pointer}
+.msg-atividade svg{width:20px;height:20px;flex:none}
+.msg-atividade .ma-seta{width:16px;height:16px;opacity:.7}
+#folha-pens-fundo{position:fixed;inset:0;z-index:2500;background:rgba(0,0,0,.38);opacity:0;pointer-events:none;transition:opacity .2s}
+#folha-pens-fundo.aberta{opacity:1;pointer-events:auto}
+#folha-pens{position:fixed;left:0;right:0;bottom:0;z-index:2501;height:82vh;overflow:auto;box-sizing:border-box;padding:10px 20px calc(18px + env(safe-area-inset-bottom));background:var(--bg2);color:var(--text);border-radius:28px 28px 0 0;transform:translateY(105%);transition:transform .26s cubic-bezier(.2,.8,.2,1)}
+#folha-pens.aberta{transform:none}
+#folha-pens .fp-pega{width:44px;height:4px;border-radius:2px;background:var(--border);margin:0 auto 18px}
+#folha-pens .fp-titulo{font-size:20px;font-weight:700;text-align:center;margin-bottom:16px}
+#folha-pens .fp-linha{display:flex;align-items:flex-start;gap:14px;padding:10px 0;color:var(--muted);font-size:16px;line-height:1.4}
+#folha-pens .fp-linha svg{width:22px;height:22px;flex:none;margin-top:1px}
+#folha-pens .fp-linha span{flex:1;min-width:0}
+#folha-pens .fp-t{flex:none!important;font-size:13px;opacity:.6;margin-top:2px}
+</style>
 </head>
 <body>
 <div id=tela-carregando>
@@ -1733,14 +1748,25 @@ function esconderDigitando(){
  window.atividadeParaMsg=ls.map(l=>({t:l.querySelector(".espera-titulo").textContent,d:Math.round((Number(l.dataset.dur)||0)*10)/10}));
  e.remove();
 }
-function anexarAtividade(a){return;try{
+function fecharPensamentos(){const f=document.getElementById("folha-pens"),g=document.getElementById("folha-pens-fundo");if(f)f.classList.remove("aberta");if(g)g.classList.remove("aberta");setTimeout(function(){if(f)f.remove();if(g)g.remove()},300)}
+function abrirPensamentos(atv){
+ if(document.getElementById("folha-pens"))return;
+ const g=document.createElement("div");g.id="folha-pens-fundo";g.addEventListener("click",fecharPensamentos);
+ const f=document.createElement("div");f.id="folha-pens";f.setAttribute("role","dialog");f.setAttribute("aria-label","Pensamentos");
+ f.innerHTML='<div class="fp-pega"></div><div class="fp-titulo">Pensamentos</div>';
+ atv.forEach(function(x){const l=document.createElement("div");l.className="fp-linha";l.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+iconeEtapaEspera(tipoEtapaEspera(x.t))+'</svg>';const s=document.createElement("span");s.textContent=String(x.t||"");const d=document.createElement("span");d.className="fp-t";d.textContent=fmtDur(x.d);l.appendChild(s);l.appendChild(d);f.appendChild(l)});
+ document.body.appendChild(g);document.body.appendChild(f);
+ requestAnimationFrame(function(){requestAnimationFrame(function(){g.classList.add("aberta");f.classList.add("aberta")})});
+}
+document.addEventListener("keydown",function(e){if(e.key==="Escape")fecharPensamentos()});
+function anexarAtividade(a){try{
  const atv=window.atividadeParaMsg;if(!Array.isArray(atv)||!atv.length)return;
  let tot=0;atv.forEach(x=>{tot+=Number(x.d)||0});
- const chip=document.createElement("button");chip.type="button";chip.className="msg-atividade";chip.setAttribute("aria-expanded","false");chip.textContent="Ver raciocínios do Lume";
- const lista=document.createElement("div");lista.className="msg-atividade-lista";lista.hidden=true;
- atv.forEach(x=>{const l=document.createElement("div");l.className="msg-atividade-linha";const t=document.createElement("span");t.textContent=String(x.t||"");const d=document.createElement("span");d.textContent=fmtDur(x.d);l.appendChild(t);l.appendChild(d);lista.appendChild(l)});
- chip.addEventListener("click",function(){lista.hidden=!lista.hidden;chip.setAttribute("aria-expanded",String(!lista.hidden))});
- a.appendChild(chip);a.appendChild(lista);
+ const chip=document.createElement("button");chip.type="button";chip.className="msg-atividade";
+ chip.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+iconeEtapaEspera("pensar")+'</svg><span></span><svg class="ma-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
+ chip.querySelector("span").textContent="Pensou por "+Math.max(1,Math.round(tot))+"s";
+ chip.addEventListener("click",function(){abrirPensamentos(atv)});
+ a.appendChild(chip);
 }catch(e){}}
 function ajustarAltura(){window.atualizarBotaoEnviar&&atualizarBotaoEnviar(),window.atualizarExpandido&&atualizarExpandido(),inputEl.style.height="auto",inputEl.style.height=Math.min(inputEl.scrollHeight,132)+"px",rolarParaFim()}/* Mensagens noutro idioma: o utilizador ve o que escreveu, o bot recebe em portugues. */
 async function paraPortugues(t){
