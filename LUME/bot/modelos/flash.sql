@@ -1,6 +1,7 @@
--- Lume Flash: respostas curtas, sem pesquisa na web e sem pausas de espera.
--- (Sem CONNECT SEARCH WIKI e sem WAITING.)
+-- Lume Flash: respostas curtas, pesquisa na Wikipedia (resumida) e sem pausas de espera.
 CREATE BOT "Lume"
+
+CONNECT SEARCH WIKI
 
 CREATE TABLE Context() PREVENT DEFAULT
 
@@ -13,6 +14,7 @@ ON MESSAGE {
 
     OTHERWISE {
         THINK(aprendido.txt) OR
+        SEARCH message INTO aprendido.txt OR
         REPLY (respostas.txt, 7)
     }
 

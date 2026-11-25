@@ -569,3 +569,6 @@ Lume - historico de versoes
 
 0.5.79
 - Depois da resposta volta o chip "Pensou por Ns" que abre a folha "Pensamentos" com todas as etapas.
+
+0.5.80
+- Lume Flash: pesquisa na Wikipedia ligada (SEARCH) com resposta resumida: primeira frase (definicao) + a frase mais relevante para a pergunta, maximo ~340 caracteres, com fonte.
