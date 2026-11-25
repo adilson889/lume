@@ -794,8 +794,25 @@ function soResultado(t){
  var f=ps.filter(function(x){return /^\*\*[a-d]\)/.test(x)});
  return f.length?f.join("\n\n"):ps[ps.length-1];
 }
+/* Lume X: nao concorda por agradar; corrige afirmacoes erradas */
+function afirmacaoErrada(q){
+ var t=norm(q).replace(/[?!.]+$/,"").replace(/\b(certo|nao e|nao)$/,"").replace(/^(sabes que|sabias que|e verdade que|e verdade|confirma)\s+/,"").trim();
+ var m=/^(\d+(?:[.,]\d+)?)\s*([+\-*x\/])\s*(\d+(?:[.,]\d+)?)\s*=\s*(\d+(?:[.,]\d+)?)$/.exec(t);
+ if(m){var A=parseFloat(m[1].replace(",",".")),B=parseFloat(m[3].replace(",",".")),R=parseFloat(m[4].replace(",",".")),o=m[2],v=o==="+"?A+B:o==="-"?A-B:o==="/"?(B?A/B:NaN):A*B;
+  if(isFinite(v)){v=Math.round(v*1e9)/1e9;var f=function(n){return String(n).replace(".",",")};return Math.abs(v-R)<1e-9?"Correto: "+f(A)+" "+(o==="x"?"×":o)+" "+f(B)+" = "+f(R)+".":"Não está certo. "+f(A)+" "+(o==="x"?"×":o==="/"?"÷":o)+" "+f(B)+" = **"+f(v)+"**, não "+f(R)+"."}}
+ var L=[[/\b(peso e (a )?mesma coisa que (a )?massa|massa e peso (sao )?(a )?mesma coisa|peso e massa sao (a )?mesma coisa)/,"Não concordo. **Massa** (kg) é a quantidade de matéria e não muda; **peso** (N) é a força da gravidade, $P = m\\cdot g$, e varia com o local."],
+ [/\b(corpos?|objetos?) (mais )?pesados? caem (mais )?(rapido|depressa)/,"Não, no vazio todos os corpos caem com a mesma aceleração $g$. Só a resistência do ar faz diferença."],
+ [/\b(sem forca nao ha movimento|para (haver|existir) movimento (e preciso|precisa) de forca)/,"Falso. Pela 1.ª lei de Newton, sem força resultante o corpo mantém o movimento retilíneo uniforme. A força muda o movimento, não o mantém."],
+ [/\bvelocidade e aceleracao (sao )?(a )?mesma coisa\b/,"Não. Velocidade é quanto a posição varia no tempo ($v=\\Delta x/\\Delta t$); aceleração é quanto a velocidade varia ($a=\\Delta v/\\Delta t$)."],
+ [/\bcalor e temperatura (sao )?(a )?mesma coisa\b/,"Não. **Temperatura** mede a agitação média das partículas; **calor** é energia em trânsito entre corpos a temperaturas diferentes."]];
+ for(var i=0;i<L.length;i++)if(L[i][0].test(t))return L[i][1];
+ return null;
+}
 async function tentar(q){
  var _q0=q,NV=nivelModelo(),FL=NV==="flash",raciocinio=FL?function(){}:_racOrig;
+ if(NV==="x"){var _nx=0;raciocinio=function(t,ms){_nx++;return _racOrig("["+_nx+"] "+t,ms)};
+  try{if(typeof window.lumeOnReply==="function"&&q.length<=160){var _er=afirmacaoErrada(q);if(_er){raciocinio("Li uma afirmação e vou verificá-la antes de responder, sem concordar só por concordar.");raciocinio("Conferi a conta ou o conceito e a minha verificação "+(/^Correto/.test(_er)?"confirma":"contradiz")+" o que disseste.");window.lumeOnReply({text:_er});return true}}}catch(_){}
+  raciocinio("Vou interpretar o pedido, procurar premissas falsas e só depois resolver.")}
  q=coloquial(q);
  if(!FL&&typeof window.lumeOnReply==="function"&&window.lumeTutorAtivo()){var rt=tutorResponder(q);if(rt){if(rt.etapas&&rt.etapas.length)rt.etapas.forEach(function(e){raciocinio(e,T_ETAPA_TESTE)});else if(rt.rac)raciocinio(rt.rac);window.lumeOnReply({text:rt.texto});if(rt.g)window.lumeOnReply({html:rt.g});return true}}
  var _vis=null;try{_vis=pedidoVisual(_q0)}catch(_){}
