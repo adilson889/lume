@@ -563,3 +563,6 @@ Lume - historico de versoes
 
 0.5.77
 - Lume X: corrige afirmacoes erradas (contas e conceitos de Fisica) em vez de concordar; pensamento numerado e mais robusto; atividade em estilo terminal (monoespaco, translucido) quando o X esta ativo.
+
+0.5.78
+- Atividade/pensamento de todos os modelos em novo estilo: cabecalho "Pensando para Ns" com icone de pontos, etapas em cinzento com icones, tudo expandido no ecra; depois da resposta desaparece tudo (sem "Ver raciocinios"). Substitui o estilo terminal.

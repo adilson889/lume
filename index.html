@@ -783,17 +783,21 @@ button,a,[role=button],select,summary{touch-action:manipulation}
 @media(max-width:430px){#input-area .pv-linha-botoes{gap:3px}#input-area .pv-linha-botoes>#btn-pensar{font-size:0;gap:0;padding:0;width:44px;justify-content:center}#input-area .pv-linha-botoes>#btn-modelo{gap:4px;padding:0 6px 0 10px}#input-area .pv-linha-botoes>#btn-modelo .bm-seta{width:16px;height:16px}}
 @media(max-width:340px){#input-area .pv-linha-botoes>#btn-modelo{min-width:64px;padding:0 8px}#input-area .pv-linha-botoes>#btn-modelo .bm-seta{display:none}}
 </style>
-<style id="lume-x-css">
-html[data-modelo="x"] .msg.digitando{width:100%;max-width:100%;box-sizing:border-box;padding:10px 12px;border-left:2px solid #3fb950;border-radius:0 10px 10px 0;background:rgba(13,17,23,.78);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;color:#c9d1d9;opacity:.92}
-html[data-modelo="x"] .msg.digitando .espera-icone{display:none}
-html[data-modelo="x"] .msg.digitando .espera-titulo,html[data-modelo="x"] .msg.digitando .espera-tempo{font-family:inherit;font-size:inherit;color:inherit}
-html[data-modelo="x"] .msg.digitando .espera-topo{opacity:.62}
-html[data-modelo="x"] .msg.digitando .espera-topo.espera-atual{opacity:1}
-html[data-modelo="x"] .msg.digitando .espera-topo .espera-titulo::before{content:"\2713 ";color:#3fb950}
-html[data-modelo="x"] .msg.digitando .espera-topo.espera-atual .espera-titulo::before{content:"> ";color:#58a6ff}
-html[data-modelo="x"] .msg.digitando .espera-resumo{opacity:.55;font-family:inherit;font-size:11.5px;text-transform:lowercase;letter-spacing:.3px}
-html[data-modelo="x"] .msg-atividade-lista{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;background:rgba(13,17,23,.78);color:#c9d1d9;opacity:.8;border-left:2px solid #3fb950;border-radius:0 8px 8px 0}
-html[data-modelo="x"] .msg-atividade-linha span:first-child::before{content:"$ ";color:#3fb950}
+<style id="lume-pensar-css">
+.msg.digitando{width:100%;max-width:100%;box-sizing:border-box;padding:2px 0;margin:6px 0 10px}
+.msg.digitando .espera-resumo{display:flex!important;gap:12px;padding:6px 0;color:var(--muted)}
+.msg.digitando .espera-resumo .espera-icone{color:var(--muted);opacity:.75}
+.msg.digitando .espera-resumo .espera-titulo{font-size:17px;font-weight:400;color:var(--muted)}
+.msg.digitando .espera-resumo-seta{width:18px;height:18px;opacity:.7;transform:rotate(-90deg)!important;transition:transform .2s}
+.msg.digitando:not(.recolhida) .espera-resumo-seta{transform:rotate(0)!important}
+.msg.digitando.recolhida .espera-etapas{display:none}
+.msg.digitando .espera-etapas{gap:14px;margin-top:10px;min-width:0}
+.msg.digitando .espera-topo{align-items:flex-start;gap:12px}
+.msg.digitando .espera-topo:not(.espera-atual){opacity:1}
+.msg.digitando .espera-icone{color:var(--muted);opacity:.85;margin-top:2px}
+.msg.digitando .espera-titulo{font-size:16px;font-weight:400;line-height:1.35;color:var(--muted)}
+.msg.digitando .espera-tempo,.msg.digitando .espera-pontos{display:none}
+.msg.digitando .espera-topo.espera-atual .espera-titulo{color:var(--text)}
 </style>
 </head>
 <body>
@@ -1668,11 +1672,11 @@ function alternarPensar(){var on=!pensarLigado();try{localStorage.setItem("lume_
 aplicarPensar();aplicarModelo();
 function criarResumo(){
  const r=document.createElement("button");r.type="button";r.className="espera-resumo";r.setAttribute("aria-expanded","true");
- r.innerHTML='<span class="espera-icone">'+iconeEtapaEspera("pensar")+'</span><span class="espera-titulo">Atividade</span><svg class="espera-resumo-seta" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+ r.innerHTML='<span class="espera-icone"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="5" r="1.6" opacity=".35"/><circle cx="12" cy="5" r="1.6" opacity=".55"/><circle cx="19" cy="5" r="1.6" opacity=".35"/><circle cx="5" cy="12" r="1.6" opacity=".55"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6" opacity=".55"/><circle cx="5" cy="19" r="1.6" opacity=".35"/><circle cx="12" cy="19" r="1.6" opacity=".55"/><circle cx="19" cy="19" r="1.6" opacity=".35"/></svg></span><span class="espera-titulo">Pensando</span><svg class="espera-resumo-seta" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m7 10 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
  return r;
 }
 function ligarResumo(e,r){r.addEventListener("click",function(){const rec=e.classList.toggle("recolhida");r.setAttribute("aria-expanded",String(!rec))})}
-function definirResumo(r,n,tot){r.querySelector(".espera-titulo").textContent="Atividade · "+n+(n===1?" etapa":" etapas")+" · "+fmtDur(tot)}
+function definirResumo(r,n,tot){}
 function adicionarDigitando(){
  window.atividadeParaMsg=null;FILA_ETAPAS.length=0;
  const e=document.createElement("div");e.className="msg digitando";e.id="digitando";
@@ -1681,6 +1685,7 @@ function adicionarDigitando(){
  const lista=document.createElement("div");lista.className="espera-etapas";
  const l=criarLinhaEtapa(pensarLigado()?"A pensar":"A responder",true);l.dataset.ini=String(performance.now());lista.appendChild(l);
  e.appendChild(resumo);e.appendChild(lista);e.dataset.etapaAtual="A pensar";chatEl.appendChild(e);rolarParaFim();
+ {const t0=performance.now(),tt=resumo.querySelector(".espera-titulo");const iv=setInterval(function(){if(document.getElementById("digitando")!==e){clearInterval(iv);return}tt.textContent="Pensando para "+Math.max(1,Math.round((performance.now()-t0)/1000))+"s"},1000)}
 }
 function fecharEtapaAtual(box){
  const lista=box.querySelector(".espera-etapas");const a=lista&&lista.lastElementChild;
@@ -1731,7 +1736,7 @@ function esconderDigitando(){
  window.atividadeParaMsg=ls.map(l=>({t:l.querySelector(".espera-titulo").textContent,d:Math.round((Number(l.dataset.dur)||0)*10)/10}));
  e.remove();
 }
-function anexarAtividade(a){try{
+function anexarAtividade(a){return;try{
  const atv=window.atividadeParaMsg;if(!Array.isArray(atv)||!atv.length)return;
  let tot=0;atv.forEach(x=>{tot+=Number(x.d)||0});
  const chip=document.createElement("button");chip.type="button";chip.className="msg-atividade";chip.setAttribute("aria-expanded","false");chip.textContent="Ver raciocínios do Lume";
