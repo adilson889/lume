@@ -542,3 +542,6 @@ Lume - historico de versoes
 - Novos ficheiros LUME/bot/modelos/flash.sql (antigo rapido.sql) e x.sql; removidos mat.sql, codigo.sql e desenho.sql.
 - Quem tinha "Lume Rapido" guardado passa para "Lume Flash"; os outros ids antigos voltam ao Lume.
 - Em index.html e mobile.html. sw.js: VERSAO 0.5.70.
+
+0.5.71
+- Niveis de modelo no despachante: o Lume Flash responde so com o resultado (sem raciocinio, sem testes, sem esboco, sem tabela/grafico, sem tutor); Lume e X mantem tudo. Funciona em contas, equacoes, estatistica e fisica (inclui rampa com atrito).

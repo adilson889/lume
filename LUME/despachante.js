@@ -784,11 +784,21 @@ function pedidoVisual(q0){
  }
  return null;
 }
+/* Nivel do modelo (Flash, Lume, X): o despachante respeita-o. Flash: so o resultado, sem raciocinio,
+   sem testes, sem esbocos, sem tabelas/graficos e sem tutor. */
+var _racOrig=raciocinio;
+function nivelModelo(){try{return window.lumeModeloAtual?window.lumeModeloAtual():"lume"}catch(e){return "lume"}}
+function soResultado(t){
+ var ps=String(t||"").split(/\n\n+/),r=ps.filter(function(x){return /^\*\*Resultado/.test(x)});
+ if(r.length)return r.join("\n\n");
+ var f=ps.filter(function(x){return /^\*\*[a-d]\)/.test(x)});
+ return f.length?f.join("\n\n"):ps[ps.length-1];
+}
 async function tentar(q){
- var _q0=q;
+ var _q0=q,NV=nivelModelo(),FL=NV==="flash",raciocinio=FL?function(){}:_racOrig;
  q=coloquial(q);
- if(typeof window.lumeOnReply==="function"&&window.lumeTutorAtivo()){var rt=tutorResponder(q);if(rt){if(rt.etapas&&rt.etapas.length)rt.etapas.forEach(function(e){raciocinio(e,T_ETAPA_TESTE)});else if(rt.rac)raciocinio(rt.rac);window.lumeOnReply({text:rt.texto});if(rt.g)window.lumeOnReply({html:rt.g});return true}}
- var _vis=null;try{_vis=pedidoVisual(_q0)}catch(_){}
+ if(!FL&&typeof window.lumeOnReply==="function"&&window.lumeTutorAtivo()){var rt=tutorResponder(q);if(rt){if(rt.etapas&&rt.etapas.length)rt.etapas.forEach(function(e){raciocinio(e,T_ETAPA_TESTE)});else if(rt.rac)raciocinio(rt.rac);window.lumeOnReply({text:rt.texto});if(rt.g)window.lumeOnReply({html:rt.g});return true}}
+ var _vis=null;if(!FL)try{_vis=pedidoVisual(_q0)}catch(_){}
  if(_vis&&typeof window.lumeOnReply==="function"){raciocinio(_vis.rac);_vis.html.forEach(function(h){window.lumeOnReply({html:h})});return true}
  var DL=window.LumeDialogo;
  if(DL&&typeof window.lumeOnReply==="function"){
@@ -804,12 +814,14 @@ async function tentar(q){
  }
  if(typeof window.lumeOnReply==="function"&&window.LumeFisica&&window.LumeFisica.cenario&&_q0.length<=900){
   var cen=null;try{cen=window.LumeFisica.cenario(_q0)}catch(_){}
+  if(cen&&FL){window.lumeOnReply({text:cen.resumo||soResultado(cen.texto)});return true}
   if(cen){if(cen.esboco){raciocinio("Primeiro desenhei um esboço do enunciado, como se faz em Física, antes de resolver.");window.lumeOnReply({html:cen.esboco})}(cen.etapas||[]).forEach(function(e,i){raciocinio(e,i>=2?T_ETAPA_TESTE:undefined)});window.lumeOnReply({text:cen.texto});return true}
  }
  if(typeof window.lumeOnReply==="function"&&window.LumeFisica&&q.length<=700){
   var fis=null;try{fis=window.LumeFisica.analisar(q)}catch(_){}
   if(fis){
-   var esb=window.LumeFisica.esboco?window.LumeFisica.esboco(fis):null;
+   var esb=(!FL&&window.LumeFisica.esboco)?window.LumeFisica.esboco(fis):null;
+   if(FL){var sfl=window.LumeFisica.solucao(fis);window.lumeOnReply({text:soResultado(sfl.texto)});return true}
    if(esb){raciocinio("Desenhei primeiro um esboço do enunciado, como se faz em Física.");window.lumeOnReply({html:esb.html})}
    if(/^(resolve|resolva|resolver)\b/.test(norm(q))){
     raciocinio("Li o exercício de Física, identifiquei os dados e o que se pede, e resolvi sozinho, com os mesmos passos e sem perguntas.");
@@ -820,8 +832,9 @@ async function tentar(q){
    raciocinio(of.rac);window.lumeOnReply({text:"",html:of.html});return true;
   }
  }
- if(typeof window.lumeOnReply==="function"&&q.length<=140){var fmx=null;try{fmx=funcaoMatematica(q)}catch(_){}if(fmx&&fmx.q){if(/^(resolve|resolva|resolver|calcula|calcule|calcular|determine|encontre|quais|qual|quanto|raizes|raiz)\b/.test(norm(q))){raciocinio("Pediste a resolução; resolvi sozinho, com os mesmos passos e sem perguntas.");window.lumeOnReply({text:tSolucaoDe(fmx.q)});window.lumeOnReply({html:tGraf(fmx.q)});return true}var ti=tutorIniciar(fmx);raciocinio(ti.rac);window.lumeOnReply({text:ti.texto,html:ti.html});return true}
-  if(fmx&&((fmx.p&&fmx.p.length)||fmx.e)){raciocinio("Li o pedido como uma conta e fiz os passos em JavaScript; o chat formata a resposta.");window.lumeOnReply({text:comTestes(fmx,textoConta(fmx))});if(_estNums&&!fmx.e)window.lumeOnReply({html:tTab(_estNums)});return true}var rj=fmx&&!fmx.e?respostaSimples(fmx):null;if(rj){raciocinio("Fiz a conta em JavaScript e escrevi o resultado em LaTeX.");window.lumeOnReply({text:comTestes(fmx,rj)});if(_estNums&&!fmx.e)window.lumeOnReply({html:tTab(_estNums)});return true}}
+ if(typeof window.lumeOnReply==="function"&&q.length<=140){var fmx=null;try{fmx=funcaoMatematica(q)}catch(_){}if(fmx&&fmx.q){if(FL){window.lumeOnReply({text:soResultado(tSolucaoDe(fmx.q))});return true}if(/^(resolve|resolva|resolver|calcula|calcule|calcular|determine|encontre|quais|qual|quanto|raizes|raiz)\b/.test(norm(q))){raciocinio("Pediste a resolução; resolvi sozinho, com os mesmos passos e sem perguntas.");window.lumeOnReply({text:tSolucaoDe(fmx.q)});window.lumeOnReply({html:tGraf(fmx.q)});return true}var ti=tutorIniciar(fmx);raciocinio(ti.rac);window.lumeOnReply({text:ti.texto,html:ti.html});return true}
+  if(FL&&fmx&&!fmx.e&&fmx.p&&fmx.p.length){window.lumeOnReply({text:soResultado(textoConta(fmx))});return true}
+  if(fmx&&((fmx.p&&fmx.p.length)||fmx.e)){raciocinio("Li o pedido como uma conta e fiz os passos em JavaScript; o chat formata a resposta.");window.lumeOnReply({text:comTestes(fmx,textoConta(fmx))});if(_estNums&&!fmx.e)window.lumeOnReply({html:tTab(_estNums)});return true}var rj=fmx&&!fmx.e?respostaSimples(fmx):null;if(rj&&FL){window.lumeOnReply({text:rj});return true}if(rj){raciocinio("Fiz a conta em JavaScript e escrevi o resultado em LaTeX.");window.lumeOnReply({text:comTestes(fmx,rj)});if(_estNums&&!fmx.e)window.lumeOnReply({html:tTab(_estNums)});return true}}
  if(typeof window.lumeOnReply==="function"){var cdet=detectarConversa(q);var conversa=gerarConversa(q);if(conversa){raciocinio(descreverConversa(cdet||{}));window.lumeOnReply({text:conversa});return true;}}
  var caps=lerCapacidades();if(!caps.length||typeof window.lumeOnReply!=="function")return false;
  var t=norm(q),m=medidores(q,t);

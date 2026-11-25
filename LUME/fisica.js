@@ -689,7 +689,7 @@ function cenario(q){
  var etapas=["Li o problema como um plano com atrito seguido de uma rampa e identifiquei dados e perguntas.","Resolvi pelo teorema do trabalho e energia (plano) e conservação da energia (rampa)."];
  if(T1)etapas.push("Teste 1: cinemática no plano, com a=-μg e v²=v0²+2ad.");
  etapas.push("Teste "+(temAtr?"2":"1")+": cinemática na rampa, com s=v²/2a e h=s·senθ.");
- return {texto:L.join("\n\n")+"\n\n"+resp.join("\n\n")+"\n\n"+tex,etapas:etapas,esboco:esbocoPlanoRampa({m:m,v0:v0,ang:ang,mu:temAtr?mu:null,mu2:mu2,d:d})};
+ return {texto:L.join("\n\n")+"\n\n"+resp.join("\n\n")+"\n\n"+tex,etapas:etapas,resumo:resp.join("\n\n"),esboco:esbocoPlanoRampa({m:m,v0:v0,ang:ang,mu:temAtr?mu:null,mu2:mu2,d:d})};
 }
 /* ===== esbocos do enunciado (SVG direto no chat) ===== */
 function sx(n){return String(Number(Number(n).toPrecision(4))).replace(".",",")}
