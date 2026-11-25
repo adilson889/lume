@@ -24,6 +24,14 @@ LUME/ia/minilm/
   onnx/model_quantized.onnx
 ```
 
+Biblioteca e runtime (descarregados pelo mesmo workflow, `LUME/ia/baixar-minilm.yml`):
+```
+LUME/ia/transformers/
+  transformers.min.js
+  ort-wasm-simd-threaded*.wasm / .mjs
+  VERSAO.txt
+```
+
 ## Regras de carregamento
 1. Nunca carregar no arranque do site.
 2. So no Lume X (o Flash e o Lume ficam sem isto).
