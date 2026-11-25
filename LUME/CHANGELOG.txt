@@ -521,3 +521,9 @@ Lume - historico de versoes
 0.5.67
 - Seletor de modelos (so interface, em index.html e mobile.html): chip do modelo ao lado do botao Pensar (icone, nome e seta) e folha "Modelos" com Lume, Lume Mat, Lume Codigo, Lume Desenho, Lume Emprego e Lume Rapido. A escolha fica guardada no dispositivo. Ainda nao carrega .sql diferentes: isso fica para o passo seguinte.
 - sw.js: nova VERSAO para os dispositivos receberem o seletor.
+
+0.5.68
+- Input (opcao A): o botao Pensar saiu da linha de baixo e passou a interruptor no fim da folha "Modelos". Quando esta ligado, o chip do modelo mostra um pontinho verde. A linha fica so com +, chip do modelo, microfone e enviar, por isso o enviar ja nao sai da caixa.
+- Chip do modelo mais fino (36 px, texto 14 px) e com mais largura para o nome.
+- Removido o "Lume Emprego" da lista de modelos (se estava escolhido, volta ao Lume).
+- Em index.html e mobile.html. sw.js: VERSAO 0.5.68.

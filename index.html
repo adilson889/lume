@@ -811,7 +811,7 @@ button,a,[role=button],select,summary{touch-action:manipulation}
 <svg viewBox="0 0 24 24" fill=none><path d="M12 5v14M5 12h14" stroke=#8A8A8A stroke-width=2 stroke-linecap=round /></svg>
 </button>
 <button id=btn-pensar class=pv-botao-pensar onclick=alternarPensar() aria-label="Pensar" aria-pressed=true><svg viewBox="0 0 24 24" fill=none><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.1 1 1.8V16h5v-.3c0-.7.4-1.3 1-1.8A6 6 0 0 0 12 3z" stroke=currentColor stroke-width=1.8 stroke-linecap=round stroke-linejoin=round /></svg><span>Pensar</span></button>
-<button id=btn-modelo class=pv-botao-modelo onclick="window.abrirFolhaModelos&&abrirFolhaModelos()" aria-label="Escolher modelo" aria-haspopup=dialog><span class=bm-ic></span><span class=bm-nome>Lume</span><svg class=bm-seta viewBox="0 0 24 24" fill=none><path d="m7 10 5 5 5-5" stroke=currentColor stroke-width=2 stroke-linecap=round stroke-linejoin=round /></svg></button>
+<button id=btn-modelo class=pv-botao-modelo onclick="window.abrirFolhaModelos&&abrirFolhaModelos()" aria-label="Escolher modelo" aria-haspopup=dialog><span class=bm-ic></span><span class=bm-nome>Lume</span><span class=bm-pt></span><svg class=bm-seta viewBox="0 0 24 24" fill=none><path d="m7 10 5 5 5-5" stroke=currentColor stroke-width=2 stroke-linecap=round stroke-linejoin=round /></svg></button>
 <span class=pv-espaco></span>
 <button class=pv-botao-redondo onclick=mensagemVoz() aria-label="Mensagem de voz">
 <svg viewBox="0 0 24 24" fill=none><path d="M12 3a3 3 0 0 1 3 3v5a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z" stroke=#8A8A8A stroke-width=2 /><path d="M6 11a6 6 0 0 0 12 0M12 17v3" stroke=#8A8A8A stroke-width=2 stroke-linecap=round /></svg>
@@ -1565,7 +1565,6 @@ var MODELOS=[
  {id:"mat",nome:"Lume Mat",desc:"Contas, equações, gráficos e passos em KaTeX",ic:'<text x="3" y="17" font-size="16" font-style="italic" font-family="Georgia,serif" fill="currentColor" stroke="none">ƒ</text><path d="m14 11 6 6M20 11l-6 6"/>'},
  {id:"codigo",nome:"Lume Código",desc:"Gera e explica código a partir de frases",ic:'<path d="m8 8-4 4 4 4m8-8 4 4-4 4m-2-11-4 14"/>'},
  {id:"desenho",nome:"Lume Desenho",desc:"Desenhos em SVG e composições",ic:'<path d="m4 16 9-9 4 4-9 9H4zM12 8l4 4M14 6l2-2 4 4-2 2"/>'},
- {id:"emprego",nome:"Lume Emprego",desc:"Currículo e formulários passo a passo",ic:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/>'},
  {id:"rapido",nome:"Lume Rápido",desc:"Respostas curtas, sem pesquisa na web",ic:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>'}
 ];
 function svgModelo(m){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+m.ic+'</svg>'}
@@ -1574,8 +1573,10 @@ window.lumeModeloAtual=modeloAtual;
 function aplicarModelo(){
  var id=modeloAtual(),m=MODELOS.filter(function(x){return x.id===id})[0],b=document.getElementById("btn-modelo");
  document.documentElement.dataset.modelo=id;
+ atualizarPensarUI();
  if(b){b.querySelector(".bm-ic").innerHTML=svgModelo(m);b.querySelector(".bm-nome").textContent=m.nome;b.setAttribute("aria-label","Modelo: "+m.nome+". Tocar para escolher")}
 }
+function atualizarPensarUI(){var on=pensarLigado();var d=document.querySelector("#btn-modelo .bm-pt");if(d)d.classList.toggle("on",on);var s=document.querySelector("#folha-modelos .fm-pensar");if(s)s.setAttribute("aria-checked",String(on))}
 function fecharFolhaModelos(){
  var f=document.getElementById("folha-modelos"),g=document.getElementById("folha-modelos-fundo");
  if(f)f.classList.remove("aberta");if(g)g.classList.remove("aberta");
@@ -1592,6 +1593,9 @@ function abrirFolhaModelos(){
   b.querySelector(".fm-nome").textContent=m.nome;b.querySelector(".fm-desc").textContent=m.desc;
   b.addEventListener("click",function(){trocarModelo(m.id)});f.appendChild(b);
  });
+ var p=document.createElement("button");p.type="button";p.className="fm-item fm-pensar";p.setAttribute("role","switch");p.setAttribute("aria-checked",String(pensarLigado()));
+ p.innerHTML='<span class="fm-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.1 1 1.8V16h5v-.3c0-.7.4-1.3 1-1.8A6 6 0 0 0 12 3z"/></svg></span><span><span class="fm-nome">Pensar</span><span class="fm-desc">Mostra as etapas enquanto responde</span></span><span class="fm-tg"></span>';
+ p.addEventListener("click",function(){alternarPensar()});f.appendChild(p);
  document.body.appendChild(g);document.body.appendChild(f);
  requestAnimationFrame(function(){requestAnimationFrame(function(){g.classList.add("aberta");f.classList.add("aberta")})});
 }
@@ -1606,7 +1610,7 @@ function trocarModelo(id){
 }
 /* ===== Botao "Pensar": liga/desliga o painel de Atividade e as pausas entre etapas ===== */
 function pensarLigado(){try{return localStorage.getItem("lume_pensar")!=="0"}catch(e){return true}}
-function aplicarPensar(){var on=pensarLigado();document.documentElement.classList.toggle("sem-pensar",!on);var b=document.getElementById("btn-pensar");if(b)b.setAttribute("aria-pressed",String(on))}
+function aplicarPensar(){var on=pensarLigado();document.documentElement.classList.toggle("sem-pensar",!on);var b=document.getElementById("btn-pensar");if(b)b.setAttribute("aria-pressed",String(on));if(typeof atualizarPensarUI==="function")atualizarPensarUI()}
 function alternarPensar(){var on=!pensarLigado();try{localStorage.setItem("lume_pensar",on?"1":"0")}catch(e){}aplicarPensar();mostrarToast(on?"Pensar ligado":"Pensar desligado: respostas mais rápidas")}
 aplicarPensar();aplicarModelo();
 function criarResumo(){
@@ -2461,5 +2465,20 @@ if(D.readyState==="loading")D.addEventListener("DOMContentLoaded",rede);else red
 })();
 })();
 </script>
+<style id="lume-input-opcao-a">
+/* Opcao A: o Pensar sai da linha e vira interruptor na folha Modelos; chip do modelo mais fino */
+#input-area #btn-pensar,#input-area .pv-pill.expandido #btn-pensar{display:none!important}
+#input-area .pv-pill.expandido .pv-linha-botoes{gap:6px!important}
+#input-area .pv-pill.expandido .pv-linha-botoes>#btn-modelo{height:36px!important;min-height:0!important;padding:0 8px 0 10px!important;gap:5px!important;font-size:14px!important;border-radius:20px!important;min-width:0!important;flex:0 1 auto!important}
+#input-area .pv-pill.expandido .pv-linha-botoes>#btn-modelo svg{width:18px!important;height:18px!important}
+#input-area .pv-pill.expandido .pv-linha-botoes>#btn-modelo .bm-seta{width:16px!important;height:16px!important}
+#input-area .pv-pill.expandido .pv-linha-botoes>#btn-modelo{max-width:min(190px,calc(100vw - 170px))!important}
+#btn-modelo .bm-pt{display:none;flex:none;width:7px;height:7px;border-radius:50%;background:var(--r);margin-left:-1px}
+#btn-modelo .bm-pt.on{display:block}
+#folha-modelos .fm-tg{margin-left:auto;flex:none;width:46px;height:28px;border-radius:14px;background:var(--border);position:relative;transition:background .2s}
+#folha-modelos .fm-tg:after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .2s}
+#folha-modelos .fm-pensar[aria-checked="true"] .fm-tg{background:var(--r)}
+#folha-modelos .fm-pensar[aria-checked="true"] .fm-tg:after{transform:translateX(18px)}
+</style>
 </body>
 </html>
