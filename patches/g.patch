@@ -1,0 +1,325 @@
+From 454f5e04ad4a6e648bc54fe0092ecb03ca698bee Mon Sep 17 00:00:00 2001
+From: adilson889 <adilson889@users.noreply.github.com>
+Date: Wed, 25 Nov 2026 12:48:10 +0100
+Subject: [PATCH] Modelos por nivel: Lume Flash, Lume e Lume X
+
+Saem Mat, Codigo e Desenho da lista; rapido.sql passa a flash.sql; novo x.sql.
+Quem tinha Lume Rapido guardado passa para Flash.
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_013mpj8CHR2KQ5eHquWJURHh
+---
+ LUME/CHANGELOG.txt                         |  7 ++
+ LUME/bot/arquivos.json                     |  6 +-
+ LUME/bot/modelos/codigo.sql                | 25 -------
+ LUME/bot/modelos/desenho.sql               | 33 ---------
+ LUME/bot/modelos/{rapido.sql => flash.sql} |  2 +-
+ LUME/bot/modelos/mat.sql                   | 25 -------
+ LUME/bot/modelos/x.sql                     | 85 ++++++++++++++++++++++
+ index.html                                 | 10 +--
+ mobile.html                                | 10 +--
+ sw.js                                      |  2 +-
+ 10 files changed, 104 insertions(+), 101 deletions(-)
+ delete mode 100644 LUME/bot/modelos/codigo.sql
+ delete mode 100644 LUME/bot/modelos/desenho.sql
+ rename LUME/bot/modelos/{rapido.sql => flash.sql} (83%)
+ delete mode 100644 LUME/bot/modelos/mat.sql
+ create mode 100644 LUME/bot/modelos/x.sql
+
+diff --git a/LUME/CHANGELOG.txt b/LUME/CHANGELOG.txt
+index 0e04e13..dc18f22 100644
+--- a/LUME/CHANGELOG.txt
++++ b/LUME/CHANGELOG.txt
+@@ -535,3 +535,10 @@ Lume - historico de versoes
+ - Removido da folha "Modelos" o texto "Cada modelo carrega o seu proprio .sql".
+ - Em index.html e mobile.html. sw.js: VERSAO 0.5.69.
+ - Nota: o despachante de capacidades (despachante.js) continua a correr antes do .sql em todos os modelos.
++
++0.5.70
++- Modelos renomeados por nivel: Lume Flash (simples e rapido), Lume (normal) e Lume X (avancado).
++- Saem da lista Lume Mat, Lume Codigo e Lume Desenho (o despachante ja trata esses pedidos em qualquer modelo).
++- Novos ficheiros LUME/bot/modelos/flash.sql (antigo rapido.sql) e x.sql; removidos mat.sql, codigo.sql e desenho.sql.
++- Quem tinha "Lume Rapido" guardado passa para "Lume Flash"; os outros ids antigos voltam ao Lume.
++- Em index.html e mobile.html. sw.js: VERSAO 0.5.70.
+diff --git a/LUME/bot/arquivos.json b/LUME/bot/arquivos.json
+index ce9f365..1a9b8ec 100644
+--- a/LUME/bot/arquivos.json
++++ b/LUME/bot/arquivos.json
+@@ -38,8 +38,6 @@
+   "sobre.txt",
+   "sugestoes.txt",
+   "situacoes.txt",
+-  "modelos/mat.sql",
+-  "modelos/codigo.sql",
+-  "modelos/desenho.sql",
+-  "modelos/rapido.sql"
++  "modelos/flash.sql",
++  "modelos/x.sql"
+ ]
+diff --git a/LUME/bot/modelos/codigo.sql b/LUME/bot/modelos/codigo.sql
+deleted file mode 100644
+index 3c47e3c..0000000
+--- a/LUME/bot/modelos/codigo.sql
++++ /dev/null
+@@ -1,25 +0,0 @@
+--- Lume Codigo: gera e explica codigo a partir de frases.
+--- O gerador de codigo (gerar_codigo.txt) corre antes, pelo despachante; aqui ficam as paginas e a loja.
+-CREATE BOT "Lume"
+-
+-CREATE TABLE Context() PREVENT DEFAULT
+-
+-ON MESSAGE {
+-    INSERT INTO Context()
+-
+-    WHEN CONTAINS KEYWORDS(palavras_loja.txt) {
+-        WAITING("A montar a loja")
+-        REPLY (templates.txt, 1)
+-    }
+-
+-    OTHERWISE {
+-        THINK(aprendido.txt) WAITING("A pensar...", 3) OR
+-        REPLY "Estou no modo Lume Código: descreve o que queres em frases (por exemplo, «cria uma função que soma dois números») e eu gero e explico o código. Para outros assuntos, muda de modelo."
+-    }
+-
+-    UPDATE Context
+-        SET reply = lastMsg
+-        WHERE id = LAST_INSERT_ID()
+-}
+-
+-RUN BOT
+diff --git a/LUME/bot/modelos/desenho.sql b/LUME/bot/modelos/desenho.sql
+deleted file mode 100644
+index 3f130e6..0000000
+--- a/LUME/bot/modelos/desenho.sql
++++ /dev/null
+@@ -1,33 +0,0 @@
+--- Lume Desenho: desenhos em SVG e composicoes.
+-CREATE BOT "Lume"
+-
+-CREATE TABLE Context() PREVENT DEFAULT
+-
+-ON MESSAGE {
+-    INSERT INTO Context()
+-
+-    WHEN CONTAINS KEYWORDS(pedidos_desenhos_compostos.txt) {
+-        WAITING("A juntar os desenhos num só SVG...", 2)
+-        REPLY (desenhos_compostos.txt, 1)
+-    }
+-
+-    WHEN CONTAINS "svg" {
+-        WAITING("A desenhar...")
+-        REPLY (libdesenho.txt, 1)
+-    }
+-
+-    WHEN CONTAINS KEYWORDS(palavras_desenho.txt) {
+-        WAITING("A desenhar", 2)
+-        REPLY (desenhos.txt, 1)
+-    }
+-
+-    OTHERWISE {
+-        REPLY "Estou no modo Lume Desenho: pede uma coisa de cada vez, por exemplo «desenha uma casa» ou «desenha uma casa e duas árvores». Para outros assuntos, muda de modelo."
+-    }
+-
+-    UPDATE Context
+-        SET reply = lastMsg
+-        WHERE id = LAST_INSERT_ID()
+-}
+-
+-RUN BOT
+diff --git a/LUME/bot/modelos/rapido.sql b/LUME/bot/modelos/flash.sql
+similarity index 83%
+rename from LUME/bot/modelos/rapido.sql
+rename to LUME/bot/modelos/flash.sql
+index be6495f..bd7ac4b 100644
+--- a/LUME/bot/modelos/rapido.sql
++++ b/LUME/bot/modelos/flash.sql
+@@ -1,4 +1,4 @@
+--- Lume Rapido: respostas curtas, sem pesquisa na web e sem pausas de espera.
++-- Lume Flash: respostas curtas, sem pesquisa na web e sem pausas de espera.
+ -- (Sem CONNECT SEARCH WIKI e sem WAITING.)
+ CREATE BOT "Lume"
+ 
+diff --git a/LUME/bot/modelos/mat.sql b/LUME/bot/modelos/mat.sql
+deleted file mode 100644
+index a201a36..0000000
+--- a/LUME/bot/modelos/mat.sql
++++ /dev/null
+@@ -1,25 +0,0 @@
+--- Lume Mat: contas, equacoes, graficos e passos em KaTeX.
+--- Sem pesquisa na web; o que nao for matematica cai na resposta de reserva.
+-CREATE BOT "Lume"
+-
+-CREATE TABLE Context() PREVENT DEFAULT
+-
+-ON MESSAGE {
+-    INSERT INTO Context()
+-
+-    WHEN CONTAINS KEYWORDS (calculo.txt) {
+-        WAITING("A executar o cálculo...")
+-        REPLY (rescalculo.txt, 1)
+-    }
+-
+-    OTHERWISE {
+-        THINK(aprendido.txt) WAITING("A pensar...", 3) OR
+-        REPLY "Estou no modo Lume Mat: trato de contas, equações, gráficos e passos. Para outros assuntos, muda de modelo no botão ao lado do campo de escrita."
+-    }
+-
+-    UPDATE Context
+-        SET reply = lastMsg
+-        WHERE id = LAST_INSERT_ID()
+-}
+-
+-RUN BOT
+diff --git a/LUME/bot/modelos/x.sql b/LUME/bot/modelos/x.sql
+new file mode 100644
+index 0000000..2e7c209
+--- /dev/null
++++ b/LUME/bot/modelos/x.sql
+@@ -0,0 +1,85 @@
++
++
++-- Lume X: o avancado. Todas as capacidades do Lume (pesquisa, calculo, desenho, codigo),
++-- com uma pausa maior a pensar a fundo antes de responder. Ponto de partida para evoluir.
++CREATE BOT "Lume"
++
++CREATE TABLE Context() PREVENT DEFAULT
++
++CONNECT SEARCH WIKI
++
++
++ON MESSAGE {
++    INSERT INTO Context()
++
++    -- Conversa natural tratada pelo gerador de intenções do despachante.js.
++    -- Saudações, estado, agradecimentos, despedidas e ajuda são compostos dinamicamente.
++
++-- COMPOSIÇÃO DE VÁRIOS DESENHOS NUM ÚNICO SVG
++WHEN CONTAINS KEYWORDS(pedidos_desenhos_compostos.txt) {
++    WAITING("A juntar os desenhos num só SVG...", 2)
++    REPLY (desenhos_compostos.txt, 1)
++}
++
++-- DESPACHANTE DE CAPACIDADES
++-- Primeiro verifica se o pedido combina mais de uma capacidade.
++WHEN CONTAINS KEYWORDS(pedidos_combinados.txt) {
++    WAITING("A combinar as minhas capacidades...", 2)
++    REPLY (combinacoes.txt, 1)
++}
++
++--XLANG CÁLCULOS 
++
++WHEN CONTAINS KEYWORDS (calculo.txt) {
++ WAITING("A executar o cálculo...")
++    REPLY (rescalculo.txt, 1)
++}
++
++--TESTELIBDESENHO
++
++WHEN CONTAINS "svg" {
++    WAITING("A desenhar...")
++    REPLY (libdesenho.txt, 1)
++
++}
++
++WHEN CONTAINS KEYWORDS(palavras_loja.txt) {
++ WAITING("A montar a loja")
++    REPLY (templates.txt, 1)
++}
++
++WHEN CONTAINS "pagina teste" {
++ WAITING("A montar a página")
++    REPLY (rescalculo.txt, 4)
++}
++
++WHEN CONTAINS KEYWORDS(palavras_desenho.txt) {
++ WAITING("A desenhar", 2)
++    REPLY (desenhos.txt, 1)
++}
++
++WHEN CONTAINS KEYWORDS(palavras_frases.txt) {
++ WAITING("A inventar uma frase", 1)
++    REPLY (frases.txt, 1)
++}
++
++
++    -- 6. Tudo o resto: se um passo falha, o seguinte atua.
++    --    a) (desligado) base de programacao: conhecimento_programacao.txt
++    --    b) o que o Lume ja aprendeu (resposta direta)
++    --    c) duvida no aprendido: mostra opcoes para escolher
++    --    d) (desligado) pesquisa na web: SEARCH message INTO aprendido.txt
++    --    f) nada encontrado: resposta de reserva
++    OTHERWISE {
++        THINK(aprendido.txt) WAITING("A pensar a fundo...", 4) OR
++        ASK(aprendido.txt) AND REPLY "Escolha a possível resposta:" OR
++        REPLY (respostas.txt, 7)
++    }
++
++UPDATE Context
++    SET reply = lastMsg
++    WHERE id = LAST_INSERT_ID()
++}
++
++RUN BOT
++
+diff --git a/index.html b/index.html
+index dc160ff..50485ce 100644
+--- a/index.html
++++ b/index.html
+@@ -1561,14 +1561,12 @@ function criarLinhaEtapa(texto,ativa,dur){
+ }
+ /* ===== Modelos: cada modelo carrega o seu proprio .sql (LUME/bot/modelos/<id>.sql; o "lume" usa main.sql) ===== */
+ var MODELOS=[
+- {id:"lume",nome:"Lume",desc:"Geral: conversa, ajuda, o dia a dia",ic:'<path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-3 2v-6a7.5 7.5 0 1 1 17-3.5Z"/>'},
+- {id:"mat",nome:"Lume Mat",desc:"Contas, equações, gráficos e passos em KaTeX",ic:'<text x="3" y="17" font-size="16" font-style="italic" font-family="Georgia,serif" fill="currentColor" stroke="none">ƒ</text><path d="m14 11 6 6M20 11l-6 6"/>'},
+- {id:"codigo",nome:"Lume Código",desc:"Gera e explica código a partir de frases",ic:'<path d="m8 8-4 4 4 4m8-8 4 4-4 4m-2-11-4 14"/>'},
+- {id:"desenho",nome:"Lume Desenho",desc:"Desenhos em SVG e composições",ic:'<path d="m4 16 9-9 4 4-9 9H4zM12 8l4 4M14 6l2-2 4 4-2 2"/>'},
+- {id:"rapido",nome:"Lume Rápido",desc:"Respostas curtas, sem pesquisa na web",ic:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>'}
++ {id:"flash",nome:"Lume Flash",desc:"Simples e rápido: respostas diretas",ic:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>'},
++ {id:"lume",nome:"Lume",desc:"Normal: equilibrado para o dia a dia",ic:'<path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-3 2v-6a7.5 7.5 0 1 1 17-3.5Z"/>'},
++ {id:"x",nome:"Lume X",desc:"Avançado: pensa mais a fundo",ic:'<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/>'}
+ ];
+ function svgModelo(m){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+m.ic+'</svg>'}
+-function modeloAtual(){var id="lume";try{id=localStorage.getItem("lume_modelo")||"lume"}catch(e){}return MODELOS.some(function(m){return m.id===id})?id:"lume"}
++function modeloAtual(){var id="lume";try{id=localStorage.getItem("lume_modelo")||"lume"}catch(e){}if(id==="rapido")id="flash";return MODELOS.some(function(m){return m.id===id})?id:"lume"}
+ window.lumeModeloAtual=modeloAtual;
+ function aplicarModelo(){
+  var id=modeloAtual(),m=MODELOS.filter(function(x){return x.id===id})[0],b=document.getElementById("btn-modelo");
+diff --git a/mobile.html b/mobile.html
+index 836dfab..1c44f91 100644
+--- a/mobile.html
++++ b/mobile.html
+@@ -1558,14 +1558,12 @@ function criarLinhaEtapa(texto,ativa,dur){
+ }
+ /* ===== Modelos: cada modelo carrega o seu proprio .sql (LUME/bot/modelos/<id>.sql; o "lume" usa main.sql) ===== */
+ var MODELOS=[
+- {id:"lume",nome:"Lume",desc:"Geral: conversa, ajuda, o dia a dia",ic:'<path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-3 2v-6a7.5 7.5 0 1 1 17-3.5Z"/>'},
+- {id:"mat",nome:"Lume Mat",desc:"Contas, equações, gráficos e passos em KaTeX",ic:'<text x="3" y="17" font-size="16" font-style="italic" font-family="Georgia,serif" fill="currentColor" stroke="none">ƒ</text><path d="m14 11 6 6M20 11l-6 6"/>'},
+- {id:"codigo",nome:"Lume Código",desc:"Gera e explica código a partir de frases",ic:'<path d="m8 8-4 4 4 4m8-8 4 4-4 4m-2-11-4 14"/>'},
+- {id:"desenho",nome:"Lume Desenho",desc:"Desenhos em SVG e composições",ic:'<path d="m4 16 9-9 4 4-9 9H4zM12 8l4 4M14 6l2-2 4 4-2 2"/>'},
+- {id:"rapido",nome:"Lume Rápido",desc:"Respostas curtas, sem pesquisa na web",ic:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>'}
++ {id:"flash",nome:"Lume Flash",desc:"Simples e rápido: respostas diretas",ic:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>'},
++ {id:"lume",nome:"Lume",desc:"Normal: equilibrado para o dia a dia",ic:'<path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-3 2v-6a7.5 7.5 0 1 1 17-3.5Z"/>'},
++ {id:"x",nome:"Lume X",desc:"Avançado: pensa mais a fundo",ic:'<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/>'}
+ ];
+ function svgModelo(m){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+m.ic+'</svg>'}
+-function modeloAtual(){var id="lume";try{id=localStorage.getItem("lume_modelo")||"lume"}catch(e){}return MODELOS.some(function(m){return m.id===id})?id:"lume"}
++function modeloAtual(){var id="lume";try{id=localStorage.getItem("lume_modelo")||"lume"}catch(e){}if(id==="rapido")id="flash";return MODELOS.some(function(m){return m.id===id})?id:"lume"}
+ window.lumeModeloAtual=modeloAtual;
+ function aplicarModelo(){
+  var id=modeloAtual(),m=MODELOS.filter(function(x){return x.id===id})[0],b=document.getElementById("btn-modelo");
+diff --git a/sw.js b/sw.js
+index 2395a27..e4d5142 100644
+--- a/sw.js
++++ b/sw.js
+@@ -11,7 +11,7 @@
+    antigas de uma vez, mudar VERSAO. Os ficheiros do bot sao descobertos sozinhos em LUME/bot/arquivos.json. */
+ "use strict";
+ 
+-var VERSAO = "0.5.69";
++var VERSAO = "0.5.70";
+ var P = "lume-";
+ var C_SHELL = P + "shell-" + VERSAO;
+ var C_DADOS = P + "dados-" + VERSAO;
+-- 
+2.43.0
+
