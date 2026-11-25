@@ -1,0 +1,387 @@
+From 04e2c10115098329db5866bdab7634f0e2876cdf Mon Sep 17 00:00:00 2001
+From: adilson889 <adilson889@users.noreply.github.com>
+Date: Wed, 25 Nov 2026 12:13:23 +0100
+Subject: [PATCH] Cada modelo carrega o seu proprio .sql e troca em runtime;
+ folha sem o texto do .sql
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_013mpj8CHR2KQ5eHquWJURHh
+---
+ LUME/CHANGELOG.txt           |  8 ++++++++
+ LUME/bot/arquivos.json       |  8 ++++++--
+ LUME/bot/modelos/codigo.sql  | 25 +++++++++++++++++++++++++
+ LUME/bot/modelos/desenho.sql | 33 +++++++++++++++++++++++++++++++++
+ LUME/bot/modelos/mat.sql     | 25 +++++++++++++++++++++++++
+ LUME/bot/modelos/rapido.sql  | 24 ++++++++++++++++++++++++
+ index.html                   | 25 ++++++++++++++++++-------
+ mobile.html                  | 25 ++++++++++++++++++-------
+ sw.js                        |  2 +-
+ 9 files changed, 158 insertions(+), 17 deletions(-)
+ create mode 100644 LUME/bot/modelos/codigo.sql
+ create mode 100644 LUME/bot/modelos/desenho.sql
+ create mode 100644 LUME/bot/modelos/mat.sql
+ create mode 100644 LUME/bot/modelos/rapido.sql
+
+diff --git a/LUME/CHANGELOG.txt b/LUME/CHANGELOG.txt
+index 7e7081b..0e04e13 100644
+--- a/LUME/CHANGELOG.txt
++++ b/LUME/CHANGELOG.txt
+@@ -527,3 +527,11 @@ Lume - historico de versoes
+ - Chip do modelo mais fino (36 px, texto 14 px) e com mais largura para o nome.
+ - Removido o "Lume Emprego" da lista de modelos (se estava escolhido, volta ao Lume).
+ - Em index.html e mobile.html. sw.js: VERSAO 0.5.68.
++
++0.5.69
++- Cada modelo carrega o seu proprio .sql: o Lume usa main.sql e os outros usam LUME/bot/modelos/<id>.sql (mat, codigo, desenho, rapido), todos listados em arquivos.json. O modelo escolhido e o que arranca com a app.
++- Ao trocar de modelo, o bot reinicia com o novo .sql sem apagar a conversa nem recarregar a pagina. Se a troca falhar, volta ao modelo anterior.
++- Lume Rapido: sem pesquisa na web e sem pausas de espera no .sql.
++- Removido da folha "Modelos" o texto "Cada modelo carrega o seu proprio .sql".
++- Em index.html e mobile.html. sw.js: VERSAO 0.5.69.
++- Nota: o despachante de capacidades (despachante.js) continua a correr antes do .sql em todos os modelos.
+diff --git a/LUME/bot/arquivos.json b/LUME/bot/arquivos.json
+index bc331fb..ce9f365 100644
+--- a/LUME/bot/arquivos.json
++++ b/LUME/bot/arquivos.json
+@@ -37,5 +37,9 @@
+   "memoria.txt",
+   "sobre.txt",
+   "sugestoes.txt",
+-  "situacoes.txt"
+-]
+\ No newline at end of file
++  "situacoes.txt",
++  "modelos/mat.sql",
++  "modelos/codigo.sql",
++  "modelos/desenho.sql",
++  "modelos/rapido.sql"
++]
+diff --git a/LUME/bot/modelos/codigo.sql b/LUME/bot/modelos/codigo.sql
+new file mode 100644
+index 0000000..3c47e3c
+--- /dev/null
++++ b/LUME/bot/modelos/codigo.sql
+@@ -0,0 +1,25 @@
++-- Lume Codigo: gera e explica codigo a partir de frases.
++-- O gerador de codigo (gerar_codigo.txt) corre antes, pelo despachante; aqui ficam as paginas e a loja.
++CREATE BOT "Lume"
++
++CREATE TABLE Context() PREVENT DEFAULT
++
++ON MESSAGE {
++    INSERT INTO Context()
++
++    WHEN CONTAINS KEYWORDS(palavras_loja.txt) {
++        WAITING("A montar a loja")
++        REPLY (templates.txt, 1)
++    }
++
++    OTHERWISE {
++        THINK(aprendido.txt) WAITING("A pensar...", 3) OR
++        REPLY "Estou no modo Lume Código: descreve o que queres em frases (por exemplo, «cria uma função que soma dois números») e eu gero e explico o código. Para outros assuntos, muda de modelo."
++    }
++
++    UPDATE Context
++        SET reply = lastMsg
++        WHERE id = LAST_INSERT_ID()
++}
++
++RUN BOT
+diff --git a/LUME/bot/modelos/desenho.sql b/LUME/bot/modelos/desenho.sql
+new file mode 100644
+index 0000000..3f130e6
+--- /dev/null
++++ b/LUME/bot/modelos/desenho.sql
+@@ -0,0 +1,33 @@
++-- Lume Desenho: desenhos em SVG e composicoes.
++CREATE BOT "Lume"
++
++CREATE TABLE Context() PREVENT DEFAULT
++
++ON MESSAGE {
++    INSERT INTO Context()
++
++    WHEN CONTAINS KEYWORDS(pedidos_desenhos_compostos.txt) {
++        WAITING("A juntar os desenhos num só SVG...", 2)
++        REPLY (desenhos_compostos.txt, 1)
++    }
++
++    WHEN CONTAINS "svg" {
++        WAITING("A desenhar...")
++        REPLY (libdesenho.txt, 1)
++    }
++
++    WHEN CONTAINS KEYWORDS(palavras_desenho.txt) {
++        WAITING("A desenhar", 2)
++        REPLY (desenhos.txt, 1)
++    }
++
++    OTHERWISE {
++        REPLY "Estou no modo Lume Desenho: pede uma coisa de cada vez, por exemplo «desenha uma casa» ou «desenha uma casa e duas árvores». Para outros assuntos, muda de modelo."
++    }
++
++    UPDATE Context
++        SET reply = lastMsg
++        WHERE id = LAST_INSERT_ID()
++}
++
++RUN BOT
+diff --git a/LUME/bot/modelos/mat.sql b/LUME/bot/modelos/mat.sql
+new file mode 100644
+index 0000000..a201a36
+--- /dev/null
++++ b/LUME/bot/modelos/mat.sql
+@@ -0,0 +1,25 @@
++-- Lume Mat: contas, equacoes, graficos e passos em KaTeX.
++-- Sem pesquisa na web; o que nao for matematica cai na resposta de reserva.
++CREATE BOT "Lume"
++
++CREATE TABLE Context() PREVENT DEFAULT
++
++ON MESSAGE {
++    INSERT INTO Context()
++
++    WHEN CONTAINS KEYWORDS (calculo.txt) {
++        WAITING("A executar o cálculo...")
++        REPLY (rescalculo.txt, 1)
++    }
++
++    OTHERWISE {
++        THINK(aprendido.txt) WAITING("A pensar...", 3) OR
++        REPLY "Estou no modo Lume Mat: trato de contas, equações, gráficos e passos. Para outros assuntos, muda de modelo no botão ao lado do campo de escrita."
++    }
++
++    UPDATE Context
++        SET reply = lastMsg
++        WHERE id = LAST_INSERT_ID()
++}
++
++RUN BOT
+diff --git a/LUME/bot/modelos/rapido.sql b/LUME/bot/modelos/rapido.sql
+new file mode 100644
+index 0000000..be6495f
+--- /dev/null
++++ b/LUME/bot/modelos/rapido.sql
+@@ -0,0 +1,24 @@
++-- Lume Rapido: respostas curtas, sem pesquisa na web e sem pausas de espera.
++-- (Sem CONNECT SEARCH WIKI e sem WAITING.)
++CREATE BOT "Lume"
++
++CREATE TABLE Context() PREVENT DEFAULT
++
++ON MESSAGE {
++    INSERT INTO Context()
++
++    WHEN CONTAINS KEYWORDS (calculo.txt) {
++        REPLY (rescalculo.txt, 1)
++    }
++
++    OTHERWISE {
++        THINK(aprendido.txt) OR
++        REPLY (respostas.txt, 7)
++    }
++
++    UPDATE Context
++        SET reply = lastMsg
++        WHERE id = LAST_INSERT_ID()
++}
++
++RUN BOT
+diff --git a/index.html b/index.html
+index e129c2f..938431b 100644
+--- a/index.html
++++ b/index.html
+@@ -506,7 +506,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:64px;backgrou
+ #folha-modelos{position:fixed;left:0;right:0;bottom:0;z-index:2501;max-height:82vh;overflow:auto;box-sizing:border-box;padding:10px 16px calc(18px + env(safe-area-inset-bottom));background:var(--bg2);color:var(--text);border:1px solid var(--border);border-bottom:0;border-radius:28px 28px 0 0;transform:translateY(105%);transition:transform .26s cubic-bezier(.2,.8,.2,1);font-family:-apple-system,Roboto,"Segoe UI",sans-serif}
+ #folha-modelos.aberta{transform:none}
+ #folha-modelos .fm-pega{width:44px;height:4px;border-radius:2px;background:var(--border);margin:0 auto 18px}
+-#folha-modelos .fm-titulo{font-size:24px;font-weight:700;line-height:1.2}
++#folha-modelos .fm-titulo{font-size:24px;font-weight:700;line-height:1.2;margin-bottom:12px}
+ #folha-modelos .fm-sub{font-size:15px;color:var(--muted);margin:6px 0 12px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+ #folha-modelos .fm-item{display:flex;align-items:center;gap:16px;width:100%;box-sizing:border-box;padding:10px 8px;border:0;border-bottom:1px solid var(--border);border-radius:0;background:transparent;color:inherit;text-align:left;font:inherit;cursor:pointer}
+ #folha-modelos .fm-item:last-child{border-bottom:0}
+@@ -1115,7 +1115,7 @@ async function soltarRespostas(){
+  await(window.lumeEsperarEtapas&&window.lumeEsperarEtapas());esconderDigitando();contar("enviadas");
+  var fs=fontesMsg.slice();window.fontesParaMsg=fs.length?fs:null;var el=adicionarMensagem(m.text,"sistema",!0,m.html);window.ultimaMsgSistema=el||null;window.fontesParaMsg=null;window.atividadeParaMsg=null;if(fs.length&&el)el.dataset.fontes=JSON.stringify(fs);if(el&&window.traducaoAuto)window.traducaoAuto(el);
+ }
+-async function correrBotComDados(e){window.arquivosBot=e.arquivos||{};prepararIntencao(e.arquivos);await carregarMotorBotQL();definirNomeBot(e.nome||"Bot"),aplicarInfoBot(e),assinaturaBotAtual=assinaturaDados(e),botPausado=!1,textoCarregando.textContent="A iniciar o bot...";const ra=restaurarAprendido(e);registarAprendido(ra["aprendido.txt"]);{const mm=String((e.arquivos||{})["respostas.txt"]||"").match(/^7-\s*(.+)$/m);if(mm)TEXTO_NAO_SEI=mm[1].trim()}const t=new 
+BotQL.MemoryFileSystem(ra),a=BotQL.BotQLInterpreter.fromSource(prepararXlangSql(e.sql),{fileSystem:t,basePath:"",onSearch:pesquisarWeb,onFileWrite:guardarAprendido(e)});a.onReply=({text:e,html:t})=>{try{"string"==typeof e&&window.LumeDialogo&&window.LumeDialogo.registar(e)}catch(_){}if("string"==typeof e&&0===e.indexOf(MARCA_XLANG)){t=e.slice(MARCA_XLANG.length);e=""}else if("string"==typeof e&&/^<!doctype html|^<html[\s>]/i.test(e.trim())){t=prepararApp(e.trim());e=""}else if("string"==typeof 
+e&&/^<program[\s>]/i.test(e.trim())){t='<script type="text/xlang">'+e.trim()+"<\/script>";e=""}if(foraDoTemaAtual&&!(window.lumeTutorAtivo&&window.lumeTutorAtivo())&&t&&t.indexOf("data-botql-ask")>=0&&!sondagemDoAprendido(t)){e=TEXTO_NAO_SEI;t=void 0;foraDoTemaAtual=!1}marcarFonteAprendida(e);if(grupoRespostas){(e||t)&&grupoRespostas.push({text:fmtResposta(limparResposta(e||"")),html:t});return}esconderDigitando(),(e||t)&&contar("enviadas"),(e||t)&&adicionarMensagem(fmtResposta(limparResposta(e|
+|"")),"sistema",!0,t)},a.onForward=({target:e})=>{esconderDigitando(),adicionarMensagem("[encaminhado para "+e+"]","sistema",!1)},a.onSend=({target:e})=>{esconderDigitando(),adicionarMensagem("[enviado para "+e+"]","sistema",!1)},a.onThinking=({text:e})=>{mostrarTextoEspera(e)},window.lumeOnReply=a.onReply,await a.start(),botInstancia=a,esconderTelaCarregando()}async function iniciarModoId(){try{textoCarregando.textContent="A carregar o bot...";const e=await 
+fetch(URL_API_BOTQL+"/api/botql/"+encodeURIComponent(ID_BOT));if(404===e.status)throw new Error("este link já não existe — o bot pode ter sido removido");if(!e.ok)throw new Error("não foi possível carregar este bot agora (erro "+e.status+")");const t=await e.json();if(!t.sucesso)throw new Error(t.erro||"resposta inesperada da API");if(t.pausado)return esconderTelaCarregando(),definirNomeBot(t.nome||"Bot"),aplicarInfoBot(t),botPausado=!0,assinaturaBotAtual=assinaturaDados(t),adicionarMensagem("Es
+te bot está pausado no momento. Quem o criou pode reativá-lo mais tarde.","sistema",!1),contarVisitaUnica(),iniciarEnvioStats(),void iniciarVerificacaoPeriodica();await correrBotComDados(t),contarVisitaUnica(),iniciarEnvioStats(),iniciarVerificacaoPeriodica()}catch(e){esconderTelaCarregando(),adicionarMensagem("Não foi possível carregar este bot: "+(e.message||String(e)),"sistema",!1)}}async function iniciarModoBotCodificado(){try{if("undefined"==typeof DecompressionStream)throw new Error("este 
+navegador não suporta descompressão nativa — atualiza o navegador e tenta novamente");textoCarregando.textContent="A carregar o motor do bot...";const e=base64UrlParaBytes(DADOS_BOT_CODIFICADOS),t=await descomprimir(e),a=JSON.parse(t);await correrBotComDados(a)}catch(e){esconderTelaCarregando(),adicionarMensagem("Não foi possível iniciar este bot: "+(e.message||String(e)),"sistema",!1)}}async function iniciarModoRepo(){try{textoCarregando.textContent="A carregar o bot...";const 
+base="LUME/bot/",CK="lume_bot_offline";let arquivos={};try{const r=await fetch(base+"arquivos.json",{cache:"no-store"});if(!r.ok)throw new Error("não encontrei "+base+"arquivos.json (erro "+r.status+")");const lista=await r.json();await Promise.all(lista.map((async n=>{const x=await fetch(base+n,{cache:"no-store"});if(!x.ok)throw new Error("não consegui ler "+base+n+" (erro "+x.status+")");arquivos[n]=await x.text()})));if(!arquivos["main.sql"])throw new Error("falta o main.sql em 
+"+base);try{localStorage.setItem(CK,JSON.stringify(arquivos))}catch(_){}}catch(err){let g=null;try{g=JSON.parse(localStorage.getItem(CK)||"null")}catch(_){}if(!g||!g["main.sql"])throw err;arquivos=g;window.lumeOffline=!0}const sql=arquivos["main.sql"];delete arquivos["main.sql"];"aprendido.txt"in arquivos||(arquivos["aprendido.txt"]="");try{const ap=await buscarJSON(URL_API_BOTQL+"/api/lume/aprendido",6e3),m=ap&&ap.aprovados||{};Object.keys(m).forEach(p=>{const lst=m[p].map(function(x){return 
+x&&typeof x==="object"?x:{texto:String(x||"")}}),ex=lst.map(function(x){return x.texto}).join("\n\n");if(!ex)return;registarAprendido(ex);registarMetaServidor(lst);const b=String(arquivos[p]||"").replace(/\s+$/,"");arquivos[p]=b?b+"\n\n"+ex:ex})}catch(e){}await correrBotComDados({nome:"Lume",sql:sql,arquivos:arquivos})}catch(e){esconderTelaCarregando(),adicionarMensagem("Não foi possível carregar o bot: "+(e.message||String(e)),"sistema",!1)}}function 
+adicionarMensagemInicialSemLink(){adicionarMensagem("Este link não tem nenhum bot associado.","sistema",!1)}!MODO_CLIENTE&&URL_SERVIDOR&&(document.querySelectorAll(".titulo, #sidebar-cabecalho").forEach((e=>{e.textContent.includes("Lume")&&(e.textContent="Bot")})),fetch(URL_SERVIDOR+"/estado").then((e=>e.json())).then((e=>{e.bot&&definirNomeBot(e.bot)})).catch((()=>{}))),ID_BOT?iniciarModoId():DADOS_BOT_CODIFICADOS?iniciarModoBotCodificado():URL_SERVIDOR?esconderTelaCarregando():iniciarModoRepo(
+);const SVG_CHECK='<svg viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',SVG_X='<svg viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#7A6A5E" stroke-width="2" stroke-linecap="round"/></svg>',SVG_LIXEIRA='<svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3m-8 0v13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V7" stroke="currentColor" 
+stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v6M14 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',SVG_COPIAR='<svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10" stroke="currentColor" stroke-width="2"/></svg>',SVG_LIKE='<svg viewBox="0 0 24 24" fill="none"><path d="M7 10v11H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3zm0 0l4.5-8a2 2 0 
+0 1 3.6 1.2L14 9h5a2 2 0 0 1 2 2.4l-1.6 8A2 2 0 0 1 17.5 21H7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',SVG_DISLIKE='<svg viewBox="0 0 24 24" fill="none"><path d="M17 14V3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3zm0 0l-4.5 8a2 2 0 0 1-3.6-1.2L10 15H5a2 2 0 0 1-2-2.4l1.6-8A2 2 0 0 1 6.5 3H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';const SVG_BANDEIRA='<svg viewBox="0 0 24 24" 
+fill="none"><path d="M5 21V4M5 4h11l-2 4 2 4H5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',SVG_TRADUZIR='<svg viewBox="0 0 24 24" fill="none"><path d="M4 5h9M8.5 3v2M6 5c.5 3 2.5 6 6 8M12 5c-.5 3-3 6-7 8M12 21l4.5-10 4.5 10M13.5 17.5h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',SVG_INFO='<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" 
+stroke-width="1.8"/><path d="M12 11v5M12 8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',SVG_MAIS='<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="19" r="1.6" fill="currentColor"/></svg>';const SVG_REPETIR='<svg viewBox="0 0 24 24" fill="none"><path d="M20 11a8 8 0 0 0-14.5-4.5L4 8M4 4v4h4M4 13a8 8 0 0 0 14.5 4.5L20 16M20 20v-4h-4" stroke="currentColor" 
+stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',SVG_PARTILHAR='<svg viewBox="0 0 24 24" fill="none"><path d="M12 15V3M8 7l4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',SVG_VOZ='<svg viewBox="0 0 24 24" fill="none"><path d="M4 9v6h4l5 4V5L8 9H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" 
+stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',SVG_PARAR='<svg viewBox="0 0 24 24" fill="none"><rect x="6.5" y="6.5" width="11" height="11" rx="2" fill="currentColor"/></svg>',BOTOES_EXTRA='<button class="msg-acao" data-acao="voz" aria-label="Ler em voz alta">'+SVG_VOZ+'</button><button class="msg-acao" data-acao="info" aria-label="Conteúdo aprendido">'+SVG_INFO+'</button><button class="msg-acao" data-acao="mais" aria-label="Mais opções">'+SVG_MAIS+'</button>';function 
+abrirModal(e,t,a){document.getElementById("modal-cabecalho").textContent=e,document.getElementById("modal-corpo").textContent=t,document.getElementById("modal-rodape").innerHTML=a,document.getElementById("modal-overlay").classList.add("show")}function fecharModal(){document.getElementById("modal-overlay").classList.remove("show")}function modalAviso(e,t){abrirModal(e,t,'<button class="primario" onclick="fecharModal()"><span class="modal-icone">'+SVG_CHECK+"</span>OK</button>")}let 
+proximoIdMensagem=0;const produtosSelecionados=new Set;function rolarParaFim(){requestAnimationFrame((()=>{requestAnimationFrame((()=>{chatEl.scrollTop=chatEl.scrollHeight}))}))}
++async function correrBotComDados(e){window.arquivosBot=e.arquivos||{};prepararIntencao(e.arquivos);await carregarMotorBotQL();definirNomeBot(e.nome||"Bot"),aplicarInfoBot(e),assinaturaBotAtual=assinaturaDados(e),botPausado=!1,textoCarregando.textContent="A iniciar o bot...";const ra=restaurarAprendido(e);registarAprendido(ra["aprendido.txt"]);{const mm=String((e.arquivos||{})["respostas.txt"]||"").match(/^7-\s*(.+)$/m);if(mm)TEXTO_NAO_SEI=mm[1].trim()}const t=new 
+BotQL.MemoryFileSystem(ra),a=BotQL.BotQLInterpreter.fromSource(prepararXlangSql(e.sql),{fileSystem:t,basePath:"",onSearch:pesquisarWeb,onFileWrite:guardarAprendido(e)});a.onReply=({text:e,html:t})=>{try{"string"==typeof e&&window.LumeDialogo&&window.LumeDialogo.registar(e)}catch(_){}if("string"==typeof e&&0===e.indexOf(MARCA_XLANG)){t=e.slice(MARCA_XLANG.length);e=""}else if("string"==typeof e&&/^<!doctype html|^<html[\s>]/i.test(e.trim())){t=prepararApp(e.trim());e=""}else if("string"==typeof 
+e&&/^<program[\s>]/i.test(e.trim())){t='<script type="text/xlang">'+e.trim()+"<\/script>";e=""}if(foraDoTemaAtual&&!(window.lumeTutorAtivo&&window.lumeTutorAtivo())&&t&&t.indexOf("data-botql-ask")>=0&&!sondagemDoAprendido(t)){e=TEXTO_NAO_SEI;t=void 0;foraDoTemaAtual=!1}marcarFonteAprendida(e);if(grupoRespostas){(e||t)&&grupoRespostas.push({text:fmtResposta(limparResposta(e||"")),html:t});return}esconderDigitando(),(e||t)&&contar("enviadas"),(e||t)&&adicionarMensagem(fmtResposta(limparResposta(e|
+|"")),"sistema",!0,t)},a.onForward=({target:e})=>{esconderDigitando(),adicionarMensagem("[encaminhado para "+e+"]","sistema",!1)},a.onSend=({target:e})=>{esconderDigitando(),adicionarMensagem("[enviado para "+e+"]","sistema",!1)},a.onThinking=({text:e})=>{mostrarTextoEspera(e)},window.lumeOnReply=a.onReply,await a.start(),botInstancia=a,esconderTelaCarregando()}async function iniciarModoId(){try{textoCarregando.textContent="A carregar o bot...";const e=await 
+fetch(URL_API_BOTQL+"/api/botql/"+encodeURIComponent(ID_BOT));if(404===e.status)throw new Error("este link já não existe — o bot pode ter sido removido");if(!e.ok)throw new Error("não foi possível carregar este bot agora (erro "+e.status+")");const t=await e.json();if(!t.sucesso)throw new Error(t.erro||"resposta inesperada da API");if(t.pausado)return esconderTelaCarregando(),definirNomeBot(t.nome||"Bot"),aplicarInfoBot(t),botPausado=!0,assinaturaBotAtual=assinaturaDados(t),adicionarMensagem("Es
+te bot está pausado no momento. Quem o criou pode reativá-lo mais tarde.","sistema",!1),contarVisitaUnica(),iniciarEnvioStats(),void iniciarVerificacaoPeriodica();await correrBotComDados(t),contarVisitaUnica(),iniciarEnvioStats(),iniciarVerificacaoPeriodica()}catch(e){esconderTelaCarregando(),adicionarMensagem("Não foi possível carregar este bot: "+(e.message||String(e)),"sistema",!1)}}async function iniciarModoBotCodificado(){try{if("undefined"==typeof DecompressionStream)throw new Error("este 
+navegador não suporta descompressão nativa — atualiza o navegador e tenta novamente");textoCarregando.textContent="A carregar o motor do bot...";const e=base64UrlParaBytes(DADOS_BOT_CODIFICADOS),t=await descomprimir(e),a=JSON.parse(t);await correrBotComDados(a)}catch(e){esconderTelaCarregando(),adicionarMensagem("Não foi possível iniciar este bot: "+(e.message||String(e)),"sistema",!1)}}async function iniciarModoRepo(){try{textoCarregando.textContent="A carregar o bot...";const 
+base="LUME/bot/",CK="lume_bot_offline";let arquivos={};try{const r=await fetch(base+"arquivos.json",{cache:"no-store"});if(!r.ok)throw new Error("não encontrei "+base+"arquivos.json (erro "+r.status+")");const lista=await r.json();await Promise.all(lista.map((async n=>{const x=await fetch(base+n,{cache:"no-store"});if(!x.ok)throw new Error("não consegui ler "+base+n+" (erro "+x.status+")");arquivos[n]=await x.text()})));if(!arquivos["main.sql"])throw new Error("falta o main.sql em 
+"+base);try{localStorage.setItem(CK,JSON.stringify(arquivos))}catch(_){}}catch(err){let g=null;try{g=JSON.parse(localStorage.getItem(CK)||"null")}catch(_){}if(!g||!g["main.sql"])throw err;arquivos=g;window.lumeOffline=!0}const sqls={lume:arquivos["main.sql"]};delete arquivos["main.sql"];Object.keys(arquivos).forEach(n=>{if(/^modelos\/.+\.sql$/.test(n)){sqls[n.replace(/^modelos\/|\.sql$/g,"")]=arquivos[n];delete arquivos[n]}});window.lumeRepo={arquivos:arquivos,sqls:sqls};const 
+mid=window.lumeModeloAtual?window.lumeModeloAtual():"lume",sql=sqls[mid]||sqls.lume;"aprendido.txt"in arquivos||(arquivos["aprendido.txt"]="");try{const ap=await buscarJSON(URL_API_BOTQL+"/api/lume/aprendido",6e3),m=ap&&ap.aprovados||{};Object.keys(m).forEach(p=>{const lst=m[p].map(function(x){return x&&typeof x==="object"?x:{texto:String(x||"")}}),ex=lst.map(function(x){return x.texto}).join("\n\n");if(!ex)return;registarAprendido(ex);registarMetaServidor(lst);const 
+b=String(arquivos[p]||"").replace(/\s+$/,"");arquivos[p]=b?b+"\n\n"+ex:ex})}catch(e){}await correrBotComDados({nome:"Lume",sql:sql,arquivos:arquivos})}catch(e){esconderTelaCarregando(),adicionarMensagem("Não foi possível carregar o bot: "+(e.message||String(e)),"sistema",!1)}}function adicionarMensagemInicialSemLink(){adicionarMensagem("Este link não tem nenhum bot associado.","sistema",!1)}!MODO_CLIENTE&&URL_SERVIDOR&&(document.querySelectorAll(".titulo, 
+#sidebar-cabecalho").forEach((e=>{e.textContent.includes("Lume")&&(e.textContent="Bot")})),fetch(URL_SERVIDOR+"/estado").then((e=>e.json())).then((e=>{e.bot&&definirNomeBot(e.bot)})).catch((()=>{}))),ID_BOT?iniciarModoId():DADOS_BOT_CODIFICADOS?iniciarModoBotCodificado():URL_SERVIDOR?esconderTelaCarregando():iniciarModoRepo();const SVG_CHECK='<svg viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" 
+stroke-linejoin="round"/></svg>',SVG_X='<svg viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#7A6A5E" stroke-width="2" stroke-linecap="round"/></svg>',SVG_LIXEIRA='<svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3m-8 0v13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v6M14 11v6" stroke="currentColor" stroke-width="2" 
+stroke-linecap="round"/></svg>',SVG_COPIAR='<svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10" stroke="currentColor" stroke-width="2"/></svg>',SVG_LIKE='<svg viewBox="0 0 24 24" fill="none"><path d="M7 10v11H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3zm0 0l4.5-8a2 2 0 0 1 3.6 1.2L14 9h5a2 2 0 0 1 2 2.4l-1.6 8A2 2 0 0 1 17.5 21H7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" 
+stroke-linejoin="round"/></svg>',SVG_DISLIKE='<svg viewBox="0 0 24 24" fill="none"><path d="M17 14V3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3zm0 0l-4.5 8a2 2 0 0 1-3.6-1.2L10 15H5a2 2 0 0 1-2-2.4l1.6-8A2 2 0 0 1 6.5 3H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';const SVG_BANDEIRA='<svg viewBox="0 0 24 24" fill="none"><path d="M5 21V4M5 4h11l-2 4 2 4H5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" 
+stroke-linejoin="round"/></svg>',SVG_TRADUZIR='<svg viewBox="0 0 24 24" fill="none"><path d="M4 5h9M8.5 3v2M6 5c.5 3 2.5 6 6 8M12 5c-.5 3-3 6-7 8M12 21l4.5-10 4.5 10M13.5 17.5h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',SVG_INFO='<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v5M12 8h.01" stroke="currentColor" stroke-width="2" 
+stroke-linecap="round"/></svg>',SVG_MAIS='<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="19" r="1.6" fill="currentColor"/></svg>';const SVG_REPETIR='<svg viewBox="0 0 24 24" fill="none"><path d="M20 11a8 8 0 0 0-14.5-4.5L4 8M4 4v4h4M4 13a8 8 0 0 0 14.5 4.5L20 16M20 20v-4h-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" 
+stroke-linejoin="round"/></svg>',SVG_PARTILHAR='<svg viewBox="0 0 24 24" fill="none"><path d="M12 15V3M8 7l4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',SVG_VOZ='<svg viewBox="0 0 24 24" fill="none"><path d="M4 9v6h4l5 4V5L8 9H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" stroke="currentColor" stroke-width="1.8" 
+stroke-linecap="round"/></svg>',SVG_PARAR='<svg viewBox="0 0 24 24" fill="none"><rect x="6.5" y="6.5" width="11" height="11" rx="2" fill="currentColor"/></svg>',BOTOES_EXTRA='<button class="msg-acao" data-acao="voz" aria-label="Ler em voz alta">'+SVG_VOZ+'</button><button class="msg-acao" data-acao="info" aria-label="Conteúdo aprendido">'+SVG_INFO+'</button><button class="msg-acao" data-acao="mais" aria-label="Mais opções">'+SVG_MAIS+'</button>';function 
+abrirModal(e,t,a){document.getElementById("modal-cabecalho").textContent=e,document.getElementById("modal-corpo").textContent=t,document.getElementById("modal-rodape").innerHTML=a,document.getElementById("modal-overlay").classList.add("show")}function fecharModal(){document.getElementById("modal-overlay").classList.remove("show")}function modalAviso(e,t){abrirModal(e,t,'<button class="primario" onclick="fecharModal()"><span class="modal-icone">'+SVG_CHECK+"</span>OK</button>")}let 
+proximoIdMensagem=0;const produtosSelecionados=new Set;function rolarParaFim(){requestAnimationFrame((()=>{requestAnimationFrame((()=>{chatEl.scrollTop=chatEl.scrollHeight}))}))}
+ // ===== HISTÓRICO DE CONVERSAS =====
+ const CHAVE_CONVERSAS='botql_chat_conversas_'+(ID_BOT||'local');
+ const CHAVE_ATIVA='botql_chat_conversa_ativa_'+(ID_BOT||'local');
+@@ -1586,7 +1586,7 @@ function abrirFolhaModelos(){
+  if(document.getElementById("folha-modelos"))return;
+  var atual=modeloAtual(),g=document.createElement("div");g.id="folha-modelos-fundo";g.addEventListener("click",fecharFolhaModelos);
+  var f=document.createElement("div");f.id="folha-modelos";f.setAttribute("role","dialog");f.setAttribute("aria-label","Modelos");
+- f.innerHTML='<div class="fm-pega"></div><div class="fm-titulo">Modelos</div><div class="fm-sub">Cada modelo carrega o seu próprio .sql.</div>';
++ f.innerHTML='<div class="fm-pega"></div><div class="fm-titulo">Modelos</div>';
+  MODELOS.forEach(function(m){
+   var b=document.createElement("button");b.type="button";b.className="fm-item"+(m.id===atual?" sel":"");b.setAttribute("aria-pressed",String(m.id===atual));
+   b.innerHTML='<span class="fm-ic">'+svgModelo(m)+'</span><span><span class="fm-nome"></span><span class="fm-desc"></span></span>';
+@@ -1600,13 +1600,24 @@ function abrirFolhaModelos(){
+  requestAnimationFrame(function(){requestAnimationFrame(function(){g.classList.add("aberta");f.classList.add("aberta")})});
+ }
+ document.addEventListener("keydown",function(e){if(e.key==="Escape"&&document.getElementById("folha-modelos"))fecharFolhaModelos()});
+-function trocarModelo(id){
+- var m=MODELOS.filter(function(x){return x.id===id})[0];
++async function trocarModelo(id){
++ var m=MODELOS.filter(function(x){return x.id===id})[0],antes=modeloAtual();
+  fecharFolhaModelos();
+- if(!m||id===modeloAtual())return;
++ if(!m||id===antes)return;
++ var R=window.lumeRepo;
++ if(!R||!R.sqls||!R.sqls[id]){mostrarToast("Este modelo ainda não está disponível. Tenta de novo daqui a pouco.");return}
+  try{localStorage.setItem("lume_modelo",id)}catch(e){}
+  aplicarModelo();
+- mostrarToast(m.nome+" selecionado");
++ btnEnviar.disabled=true;
++ try{
++  await correrBotComDados({nome:"Lume",sql:R.sqls[id],arquivos:Object.assign({},R.arquivos)});
++  mostrarToast(m.nome+" ativo");
++ }catch(e){
++  try{localStorage.setItem("lume_modelo",antes)}catch(_){}
++  aplicarModelo();
++  mostrarToast("Não foi possível trocar de modelo");
++  try{await correrBotComDados({nome:"Lume",sql:R.sqls[antes]||R.sqls.lume,arquivos:Object.assign({},R.arquivos)})}catch(_){}
++ }finally{btnEnviar.disabled=false}
+ }
+ /* ===== Botao "Pensar": liga/desliga o painel de Atividade e as pausas entre etapas ===== */
+ function pensarLigado(){try{return localStorage.getItem("lume_pensar")!=="0"}catch(e){return true}}
+diff --git a/mobile.html b/mobile.html
+index b32869f..bdc1005 100644
+--- a/mobile.html
++++ b/mobile.html
+@@ -489,7 +489,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:64px;backgrou
+ #folha-modelos{position:fixed;left:0;right:0;bottom:0;z-index:2501;max-height:82vh;overflow:auto;box-sizing:border-box;padding:10px 16px calc(18px + env(safe-area-inset-bottom));background:var(--bg2);color:var(--text);border:1px solid var(--border);border-bottom:0;border-radius:28px 28px 0 0;transform:translateY(105%);transition:transform .26s cubic-bezier(.2,.8,.2,1);font-family:-apple-system,Roboto,"Segoe UI",sans-serif}
+ #folha-modelos.aberta{transform:none}
+ #folha-modelos .fm-pega{width:44px;height:4px;border-radius:2px;background:var(--border);margin:0 auto 18px}
+-#folha-modelos .fm-titulo{font-size:24px;font-weight:700;line-height:1.2}
++#folha-modelos .fm-titulo{font-size:24px;font-weight:700;line-height:1.2;margin-bottom:12px}
+ #folha-modelos .fm-sub{font-size:15px;color:var(--muted);margin:6px 0 12px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+ #folha-modelos .fm-item{display:flex;align-items:center;gap:16px;width:100%;box-sizing:border-box;padding:10px 8px;border:0;border-bottom:1px solid var(--border);border-radius:0;background:transparent;color:inherit;text-align:left;font:inherit;cursor:pointer}
+ #folha-modelos .fm-item:last-child{border-bottom:0}
+@@ -1112,7 +1112,7 @@ if(!semNet)return;
+ var ant=_suprimirGuardar;_suprimirGuardar=true;
+ try{adicionarMensagem("SEM CONEXÃO. Verifica a ligação à internet e tenta de novo.","sistema",false)}finally{_suprimirGuardar=ant}
+ }
+-async function iniciarModoRepo(){try{textoCarregando.textContent="A carregar o bot...";const base="LUME/bot/",CK="lume_bot_offline";let arquivos={};try{const r=await fetch(base+"arquivos.json",{cache:"no-store"});if(!r.ok)throw new Error("não encontrei "+base+"arquivos.json (erro "+r.status+")");const lista=await r.json();await Promise.all(lista.map((async n=>{const x=await fetch(base+n,{cache:"no-store"});if(!x.ok)throw new Error("não consegui ler "+base+n+" (erro 
+"+x.status+")");arquivos[n]=await x.text()})));if(!arquivos["main.sql"])throw new Error("falta o main.sql em "+base);try{localStorage.setItem(CK,JSON.stringify(arquivos))}catch(_){}}catch(err){let g=null;try{g=JSON.parse(localStorage.getItem(CK)||"null")}catch(_){}if(!g||!g["main.sql"])throw err;arquivos=g;window.lumeOffline=!0}const sql=arquivos["main.sql"];delete arquivos["main.sql"];"aprendido.txt"in arquivos||(arquivos["aprendido.txt"]="");try{const ap=await 
+buscarJSON(URL_API_BOTQL+"/api/lume/aprendido",6e3),m=ap&&ap.aprovados||{};Object.keys(m).forEach(p=>{const lst=m[p].map(function(x){return x&&typeof x==="object"?x:{texto:String(x||"")}}),ex=lst.map(function(x){return x.texto}).join("\n\n");if(!ex)return;registarAprendido(ex);registarMetaServidor(lst);const b=String(arquivos[p]||"").replace(/\s+$/,"");arquivos[p]=b?b+"\n\n"+ex:ex})}catch(e){}await correrBotComDados({nome:"Lume",sql:sql,arquivos:arquivos})}catch(e){mostrarFalha(e)}}function 
+adicionarMensagemInicialSemLink(){adicionarMensagem("Este link não tem nenhum bot associado.","sistema",!1)}!MODO_CLIENTE&&URL_SERVIDOR&&(document.querySelectorAll(".titulo, #sidebar-cabecalho").forEach((e=>{e.textContent.includes("Lume")&&(e.textContent="Bot")})),fetch(URL_SERVIDOR+"/estado").then((e=>e.json())).then((e=>{e.bot&&definirNomeBot(e.bot)})).catch((()=>{}))),ID_BOT?iniciarModoId():DADOS_BOT_CODIFICADOS?iniciarModoBotCodificado():URL_SERVIDOR?esconderTelaCarregando():iniciarModoRepo(
+);const SVG_CHECK='<svg viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',SVG_X='<svg viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#7A6A5E" stroke-width="2" stroke-linecap="round"/></svg>',SVG_LIXEIRA='<svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3m-8 0v13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V7" stroke="currentColor" 
+stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v6M14 11v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',SVG_COPIAR='<svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10" stroke="currentColor" stroke-width="2"/></svg>',SVG_LIKE='<svg viewBox="0 0 24 24" fill="none"><path d="M7 10v11H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3zm0 0l4.5-8a2 2 0 
+0 1 3.6 1.2L14 9h5a2 2 0 0 1 2 2.4l-1.6 8A2 2 0 0 1 17.5 21H7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',SVG_DISLIKE='<svg viewBox="0 0 24 24" fill="none"><path d="M17 14V3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3zm0 0l-4.5 8a2 2 0 0 1-3.6-1.2L10 15H5a2 2 0 0 1-2-2.4l1.6-8A2 2 0 0 1 6.5 3H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';const SVG_BANDEIRA='<svg viewBox="0 0 24 24" 
+fill="none"><path d="M5 21V4M5 4h11l-2 4 2 4H5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',SVG_TRADUZIR='<svg viewBox="0 0 24 24" fill="none"><path d="M4 5h9M8.5 3v2M6 5c.5 3 2.5 6 6 8M12 5c-.5 3-3 6-7 8M12 21l4.5-10 4.5 10M13.5 17.5h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',SVG_INFO='<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" 
+stroke-width="1.8"/><path d="M12 11v5M12 8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',SVG_MAIS='<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="19" r="1.6" fill="currentColor"/></svg>';const SVG_REPETIR='<svg viewBox="0 0 24 24" fill="none"><path d="M20 11a8 8 0 0 0-14.5-4.5L4 8M4 4v4h4M4 13a8 8 0 0 0 14.5 4.5L20 16M20 20v-4h-4" stroke="currentColor" 
+stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',SVG_PARTILHAR='<svg viewBox="0 0 24 24" fill="none"><path d="M12 15V3M8 7l4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',SVG_VOZ='<svg viewBox="0 0 24 24" fill="none"><path d="M4 9v6h4l5 4V5L8 9H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" 
+stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',SVG_PARAR='<svg viewBox="0 0 24 24" fill="none"><rect x="6.5" y="6.5" width="11" height="11" rx="2" fill="currentColor"/></svg>',BOTOES_EXTRA='<button class="msg-acao" data-acao="voz" aria-label="Ler em voz alta">'+SVG_VOZ+'</button><button class="msg-acao" data-acao="info" aria-label="Conteúdo aprendido">'+SVG_INFO+'</button><button class="msg-acao" data-acao="mais" aria-label="Mais opções">'+SVG_MAIS+'</button>';function 
+abrirModal(e,t,a){document.getElementById("modal-cabecalho").textContent=e,document.getElementById("modal-corpo").textContent=t,document.getElementById("modal-rodape").innerHTML=a,document.getElementById("modal-overlay").classList.add("show")}function fecharModal(){document.getElementById("modal-overlay").classList.remove("show")}function modalAviso(e,t){abrirModal(e,t,'<button class="primario" onclick="fecharModal()"><span class="modal-icone">'+SVG_CHECK+"</span>OK</button>")}let 
+proximoIdMensagem=0;const produtosSelecionados=new Set;function rolarParaFim(){requestAnimationFrame((()=>{requestAnimationFrame((()=>{chatEl.scrollTop=chatEl.scrollHeight}))}))}
++async function iniciarModoRepo(){try{textoCarregando.textContent="A carregar o bot...";const base="LUME/bot/",CK="lume_bot_offline";let arquivos={};try{const r=await fetch(base+"arquivos.json",{cache:"no-store"});if(!r.ok)throw new Error("não encontrei "+base+"arquivos.json (erro "+r.status+")");const lista=await r.json();await Promise.all(lista.map((async n=>{const x=await fetch(base+n,{cache:"no-store"});if(!x.ok)throw new Error("não consegui ler "+base+n+" (erro 
+"+x.status+")");arquivos[n]=await x.text()})));if(!arquivos["main.sql"])throw new Error("falta o main.sql em "+base);try{localStorage.setItem(CK,JSON.stringify(arquivos))}catch(_){}}catch(err){let g=null;try{g=JSON.parse(localStorage.getItem(CK)||"null")}catch(_){}if(!g||!g["main.sql"])throw err;arquivos=g;window.lumeOffline=!0}const sqls={lume:arquivos["main.sql"]};delete arquivos["main.sql"];Object.keys(arquivos).forEach(n=>{if(/^modelos\/.+\.sql$/.test(n)){sqls[n.replace(/^modelos\/|\.sql$/g,
+"")]=arquivos[n];delete arquivos[n]}});window.lumeRepo={arquivos:arquivos,sqls:sqls};const mid=window.lumeModeloAtual?window.lumeModeloAtual():"lume",sql=sqls[mid]||sqls.lume;"aprendido.txt"in arquivos||(arquivos["aprendido.txt"]="");try{const ap=await buscarJSON(URL_API_BOTQL+"/api/lume/aprendido",6e3),m=ap&&ap.aprovados||{};Object.keys(m).forEach(p=>{const lst=m[p].map(function(x){return x&&typeof x==="object"?x:{texto:String(x||"")}}),ex=lst.map(function(x){return 
+x.texto}).join("\n\n");if(!ex)return;registarAprendido(ex);registarMetaServidor(lst);const b=String(arquivos[p]||"").replace(/\s+$/,"");arquivos[p]=b?b+"\n\n"+ex:ex})}catch(e){}await correrBotComDados({nome:"Lume",sql:sql,arquivos:arquivos})}catch(e){mostrarFalha(e)}}function adicionarMensagemInicialSemLink(){adicionarMensagem("Este link não tem nenhum bot associado.","sistema",!1)}!MODO_CLIENTE&&URL_SERVIDOR&&(document.querySelectorAll(".titulo, 
+#sidebar-cabecalho").forEach((e=>{e.textContent.includes("Lume")&&(e.textContent="Bot")})),fetch(URL_SERVIDOR+"/estado").then((e=>e.json())).then((e=>{e.bot&&definirNomeBot(e.bot)})).catch((()=>{}))),ID_BOT?iniciarModoId():DADOS_BOT_CODIFICADOS?iniciarModoBotCodificado():URL_SERVIDOR?esconderTelaCarregando():iniciarModoRepo();const SVG_CHECK='<svg viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" 
+stroke-linejoin="round"/></svg>',SVG_X='<svg viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#7A6A5E" stroke-width="2" stroke-linecap="round"/></svg>',SVG_LIXEIRA='<svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3m-8 0v13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11v6M14 11v6" stroke="currentColor" stroke-width="2" 
+stroke-linecap="round"/></svg>',SVG_COPIAR='<svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10" stroke="currentColor" stroke-width="2"/></svg>',SVG_LIKE='<svg viewBox="0 0 24 24" fill="none"><path d="M7 10v11H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h3zm0 0l4.5-8a2 2 0 0 1 3.6 1.2L14 9h5a2 2 0 0 1 2 2.4l-1.6 8A2 2 0 0 1 17.5 21H7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" 
+stroke-linejoin="round"/></svg>',SVG_DISLIKE='<svg viewBox="0 0 24 24" fill="none"><path d="M17 14V3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-3zm0 0l-4.5 8a2 2 0 0 1-3.6-1.2L10 15H5a2 2 0 0 1-2-2.4l1.6-8A2 2 0 0 1 6.5 3H17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';const SVG_BANDEIRA='<svg viewBox="0 0 24 24" fill="none"><path d="M5 21V4M5 4h11l-2 4 2 4H5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" 
+stroke-linejoin="round"/></svg>',SVG_TRADUZIR='<svg viewBox="0 0 24 24" fill="none"><path d="M4 5h9M8.5 3v2M6 5c.5 3 2.5 6 6 8M12 5c-.5 3-3 6-7 8M12 21l4.5-10 4.5 10M13.5 17.5h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',SVG_INFO='<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v5M12 8h.01" stroke="currentColor" stroke-width="2" 
+stroke-linecap="round"/></svg>',SVG_MAIS='<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="19" r="1.6" fill="currentColor"/></svg>';const SVG_REPETIR='<svg viewBox="0 0 24 24" fill="none"><path d="M20 11a8 8 0 0 0-14.5-4.5L4 8M4 4v4h4M4 13a8 8 0 0 0 14.5 4.5L20 16M20 20v-4h-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" 
+stroke-linejoin="round"/></svg>',SVG_PARTILHAR='<svg viewBox="0 0 24 24" fill="none"><path d="M12 15V3M8 7l4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',SVG_VOZ='<svg viewBox="0 0 24 24" fill="none"><path d="M4 9v6h4l5 4V5L8 9H4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" stroke="currentColor" stroke-width="1.8" 
+stroke-linecap="round"/></svg>',SVG_PARAR='<svg viewBox="0 0 24 24" fill="none"><rect x="6.5" y="6.5" width="11" height="11" rx="2" fill="currentColor"/></svg>',BOTOES_EXTRA='<button class="msg-acao" data-acao="voz" aria-label="Ler em voz alta">'+SVG_VOZ+'</button><button class="msg-acao" data-acao="info" aria-label="Conteúdo aprendido">'+SVG_INFO+'</button><button class="msg-acao" data-acao="mais" aria-label="Mais opções">'+SVG_MAIS+'</button>';function 
+abrirModal(e,t,a){document.getElementById("modal-cabecalho").textContent=e,document.getElementById("modal-corpo").textContent=t,document.getElementById("modal-rodape").innerHTML=a,document.getElementById("modal-overlay").classList.add("show")}function fecharModal(){document.getElementById("modal-overlay").classList.remove("show")}function modalAviso(e,t){abrirModal(e,t,'<button class="primario" onclick="fecharModal()"><span class="modal-icone">'+SVG_CHECK+"</span>OK</button>")}let 
+proximoIdMensagem=0;const produtosSelecionados=new Set;function rolarParaFim(){requestAnimationFrame((()=>{requestAnimationFrame((()=>{chatEl.scrollTop=chatEl.scrollHeight}))}))}
+ // ===== HISTÓRICO DE CONVERSAS =====
+ const CHAVE_CONVERSAS='botql_chat_conversas_'+(ID_BOT||'local');
+ const CHAVE_ATIVA='botql_chat_conversa_ativa_'+(ID_BOT||'local');
+@@ -1583,7 +1583,7 @@ function abrirFolhaModelos(){
+  if(document.getElementById("folha-modelos"))return;
+  var atual=modeloAtual(),g=document.createElement("div");g.id="folha-modelos-fundo";g.addEventListener("click",fecharFolhaModelos);
+  var f=document.createElement("div");f.id="folha-modelos";f.setAttribute("role","dialog");f.setAttribute("aria-label","Modelos");
+- f.innerHTML='<div class="fm-pega"></div><div class="fm-titulo">Modelos</div><div class="fm-sub">Cada modelo carrega o seu próprio .sql.</div>';
++ f.innerHTML='<div class="fm-pega"></div><div class="fm-titulo">Modelos</div>';
+  MODELOS.forEach(function(m){
+   var b=document.createElement("button");b.type="button";b.className="fm-item"+(m.id===atual?" sel":"");b.setAttribute("aria-pressed",String(m.id===atual));
+   b.innerHTML='<span class="fm-ic">'+svgModelo(m)+'</span><span><span class="fm-nome"></span><span class="fm-desc"></span></span>';
+@@ -1597,13 +1597,24 @@ function abrirFolhaModelos(){
+  requestAnimationFrame(function(){requestAnimationFrame(function(){g.classList.add("aberta");f.classList.add("aberta")})});
+ }
+ document.addEventListener("keydown",function(e){if(e.key==="Escape"&&document.getElementById("folha-modelos"))fecharFolhaModelos()});
+-function trocarModelo(id){
+- var m=MODELOS.filter(function(x){return x.id===id})[0];
++async function trocarModelo(id){
++ var m=MODELOS.filter(function(x){return x.id===id})[0],antes=modeloAtual();
+  fecharFolhaModelos();
+- if(!m||id===modeloAtual())return;
++ if(!m||id===antes)return;
++ var R=window.lumeRepo;
++ if(!R||!R.sqls||!R.sqls[id]){mostrarToast("Este modelo ainda não está disponível. Tenta de novo daqui a pouco.");return}
+  try{localStorage.setItem("lume_modelo",id)}catch(e){}
+  aplicarModelo();
+- mostrarToast(m.nome+" selecionado");
++ btnEnviar.disabled=true;
++ try{
++  await correrBotComDados({nome:"Lume",sql:R.sqls[id],arquivos:Object.assign({},R.arquivos)});
++  mostrarToast(m.nome+" ativo");
++ }catch(e){
++  try{localStorage.setItem("lume_modelo",antes)}catch(_){}
++  aplicarModelo();
++  mostrarToast("Não foi possível trocar de modelo");
++  try{await correrBotComDados({nome:"Lume",sql:R.sqls[antes]||R.sqls.lume,arquivos:Object.assign({},R.arquivos)})}catch(_){}
++ }finally{btnEnviar.disabled=false}
+ }
+ /* ===== Botao "Pensar": liga/desliga o painel de Atividade e as pausas entre etapas ===== */
+ function pensarLigado(){try{return localStorage.getItem("lume_pensar")!=="0"}catch(e){return true}}
+diff --git a/sw.js b/sw.js
+index bc22211..2395a27 100644
+--- a/sw.js
++++ b/sw.js
+@@ -11,7 +11,7 @@
+    antigas de uma vez, mudar VERSAO. Os ficheiros do bot sao descobertos sozinhos em LUME/bot/arquivos.json. */
+ "use strict";
+ 
+-var VERSAO = "0.5.68";
++var VERSAO = "0.5.69";
+ var P = "lume-";
+ var C_SHELL = P + "shell-" + VERSAO;
+ var C_DADOS = P + "dados-" + VERSAO;
+-- 
+2.43.0
