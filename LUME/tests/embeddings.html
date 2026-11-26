@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="pt"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Avaliar embeddings do Lume</title>
+<style>body{font:14px/1.45 system-ui,sans-serif;margin:16px;max-width:760px}pre{white-space:pre-wrap;background:#f2f2f2;padding:10px;border-radius:8px}</style>
+<h1>Avaliar embeddings</h1>
+<p>Mede se o modelo em <code>LUME/ia/minilm</code> escolhe o bloco certo de <code>conhecimento_programacao.txt</code> para perguntas com a pergunta ja traduzida para ingles (e o que o Lume X faz em producao: o MiniLM e um modelo de ingles). Abrir a partir do servidor do site (ex.: <code>/LUME/tests/embeddings.html</code>).</p>
+<button id="ir">Executar</button>
+<pre id="out">Ainda nao executado.</pre>
+<script src="../embeddings.js"></script>
+<script>
+/* pergunta -> inicios de titulo aceites (qualquer um conta como certo) */
+var PERGUNTAS = [
+ ["how do I repeat a block of code several times", ["Ciclo for", "Ciclo while", "Ciclo do while"]],
+ ["how do I store several values together", ["Array", "Objeto", "Matriz"]],
+ ["a function that calls itself", ["Recursão"]],
+ ["how does the program choose between two paths", ["Condicional", "Condição"]],
+ ["what is used to keep the history of code changes", ["Git", "Commit"]],
+ ["how do I change the color of a page", ["CSS"]],
+ ["what is an error in a program", ["Bug", "Erros de sintaxe"]],
+ ["convert text to number", ["Conversão de tipos"]],
+ ["a value that represents the absence of data", ["Valor nulo"]],
+ ["how do I read data from a database", ["SQL"]],
+ ["how is code translated for the computer", ["Compilador", "Compilação"]],
+ ["how do I declare a variable", ["Variável (", "Declaração"]],
+ ["what is a loop", ["Ciclo"]], ["what is recursion", ["Recursão"]], ["what is an API", ["API"]], ["explain what git is", ["Git"]],
+ ["what is a variable", ["Variável"]], ["what is a bug", ["Bug"]]
+];
+/* perguntas fora do tema ou que o bot ja resolve (desenho, loja, contas, conversa) */
+var FORA = ["chocolate cake recipe", "who won the football championship", "what is the capital of Angola", "I am hungry", "what time is it", "tell me about Benfica", "what is the weather like today", "draw a cat", "build an online store", "invent a sentence", "how much is 2+3", "hello how are you", "thank you very much", "solve the equation 2x+3=7", "tell me a joke"];
+document.getElementById("ir").onclick = async function () {
+  var o = document.getElementById("out"); o.textContent = "A carregar o modelo (so na 1.a vez)...";
+  var ok = await LumeEmb.iniciar(); if (!ok) { o.textContent = "Modelo indisponivel (ver consola)."; return }
+  var blocos = (await (await fetch("../bot/conhecimento_programacao.txt")).text()).split(/\n\s*\n/).map(function (x) { return x.trim() }).filter(function (x) { return x.length > 30 });
+  var chaves = blocos.map(function (x) { return x.slice(0, 220) }), L = [], t1 = 0, t3 = 0, dentro = [], fora = [];
+  for (var k = 0; k < PERGUNTAS.length; k++) {
+    var p = PERGUNTAS[k], m = await LumeEmb.melhor(p[0], chaves, 3);
+    var cert = function (i) { return p[1].some(function (t) { return blocos[i].indexOf(t) === 0 }) };
+    var a = cert(m[0].i), b = m.some(function (x) { return cert(x.i) });
+    if (a) t1++; if (b) t3++; dentro.push(m[0].score);
+    L.push((a ? "OK  " : b ? "top3" : "ERR ") + m[0].score.toFixed(2) + "  " + p[0] + "  ->  " + blocos[m[0].i].split(":")[0]);
+  }
+  for (var f = 0; f < FORA.length; f++) {
+    var r = (await LumeEmb.melhor(FORA[f], chaves, 1))[0]; fora.push(r.score);
+    L.push("FORA " + r.score.toFixed(2) + "  " + FORA[f] + "  ->  " + blocos[r.i].split(":")[0]);
+  }
+  var mn = Math.min.apply(null, dentro), mx = Math.max.apply(null, fora);
+  o.textContent = "Blocos: " + blocos.length + "\nTop-1 certo: " + t1 + "/" + PERGUNTAS.length + "   Top-3: " + t3 + "/" + PERGUNTAS.length +
+    "\nPontuacao das perguntas do tema: " + mn.toFixed(2) + " a " + Math.max.apply(null, dentro).toFixed(2) +
+    "\nPontuacao das perguntas fora do tema: " + Math.min.apply(null, fora).toFixed(2) + " a " + mx.toFixed(2) +
+    "\nLimiar em uso: " + LumeEmb.limiar + ". Fora do tema acima do limiar: " + fora.filter(function (x) { return x >= LumeEmb.limiar }).length + " de " + fora.length + " (ideal: 0). Do tema acima do limiar: " + dentro.filter(function (x) { return x >= LumeEmb.limiar }).length + " de " + dentro.length + " (as outras seguem para o bot, como antes)." + "\n\n" + L.join("\n");
+};
+</script>
+</html>

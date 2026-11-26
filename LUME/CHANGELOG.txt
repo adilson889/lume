@@ -575,3 +575,8 @@ Lume - historico de versoes
 
 0.5.81
 - Pesquisa Wikipedia: perguntas "quem e / o que e..." ja nao sao bloqueadas; resultados com o titulo igual ao tema vem primeiro (livro -> Livro); resumo sem parenteses nem frases partidas. Chip "Pensou por Ns" ja nao parte em duas linhas.
+
+0.5.82
+- Lume X: pesquisa por significado no conhecimento local (embeddings MiniLM, LUME/embeddings.js). Carrega o modelo so no Lume X, em segundo plano, na 1.a pergunta; depois responde com o bloco mais proximo (pergunta traduzida para ingles, limiar 0,45) ou segue para o bot. Flash e Lume nao carregam nada.
+- Pagina de avaliacao LUME/tests/embeddings.html e resultados em LUME/PESQUISA_SEMANTICA.md.
+- index.html e mobile.html carregam LUME/embeddings.js; sw.js (VERSAO 0.5.82) guarda o ficheiro em cache.
