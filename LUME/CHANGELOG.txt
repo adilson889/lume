@@ -587,3 +587,9 @@ Lume - historico de versoes
 
 0.5.84
 - Resumo da pesquisa: remove "pronuncia-se [..]" e notas entre parenteses retos.
+
+0.5.85
+- Lume Flash responde a perguntas de programacao pela pesquisa por palavras em portugues (LUME/pesquisa_palavras.js, BM25 com radicais; LUME/pesquisa_flash.js liga-a ao despachante). So no Flash: o X continua como estava (embeddings.js nao foi alterado). Nao descarrega modelos nem usa rede: le dois ficheiros de texto que ja estao no site.
+- Tres saidas: responde (nome exato de um topico ou pontuacao >= 10), propoe ate 3 opcoes para tocar (pontuacao entre 6 e 10 com uma palavra no titulo), ou fica calado e segue para a pesquisa na Wikipedia. Em 40 perguntas de programacao: 19 respostas certas, 0 erradas, opcoes em 9, calado em 12; em 16 fora de tema nao responde a nenhuma.
+- Testes: node LUME/tests/pesquisa_flash.js (sem modelos) e LUME/tests/avaliar_pesquisa.mjs (corre o MiniLM do repo em Node e compara metodos, so para validar o X). Perguntas em LUME/tests/perguntas_pesquisa.json.
+- PESQUISA_SEMANTICA.md: seccoes do Flash e dos resultados. sw.js: os dois ficheiros novos no cache offline.

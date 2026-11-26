@@ -1,0 +1,384 @@
+{
+ "_nota": "Perguntas para medir a pesquisa. in: pergunta em PT, traducao EN (a que o X envia ao MiniLM) e prefixos de titulo aceites. fora: nao devem ser respondidas.",
+ "in": [
+  {
+   "q": "como repetir um bloco de código várias vezes",
+   "en": "how do I repeat a block of code several times",
+   "ok": [
+    "Ciclo for",
+    "Ciclo while",
+    "Ciclo do while",
+    "Iteração"
+   ]
+  },
+  {
+   "q": "como guardo vários valores juntos",
+   "en": "how do I store several values together",
+   "ok": [
+    "Array",
+    "Objeto",
+    "Matriz",
+    "Lista",
+    "Conjunto",
+    "Mapa",
+    "Tupla"
+   ]
+  },
+  {
+   "q": "uma função que chama a si própria",
+   "en": "a function that calls itself",
+   "ok": [
+    "Recursão"
+   ]
+  },
+  {
+   "q": "como é que o programa escolhe entre dois caminhos",
+   "en": "how does the program choose between two paths",
+   "ok": [
+    "Condicional",
+    "Condição"
+   ]
+  },
+  {
+   "q": "para que serve o git",
+   "en": "what is git used for",
+   "ok": [
+    "Git"
+   ]
+  },
+  {
+   "q": "como mudo a cor de uma página",
+   "en": "how do I change the color of a page",
+   "ok": [
+    "CSS",
+    "Selector CSS"
+   ]
+  },
+  {
+   "q": "o que é um erro num programa",
+   "en": "what is an error in a program",
+   "ok": [
+    "Bug",
+    "Erros de sintaxe"
+   ]
+  },
+  {
+   "q": "converter texto em número",
+   "en": "convert text to number",
+   "ok": [
+    "Conversão de tipos",
+    "Coerção"
+   ]
+  },
+  {
+   "q": "um valor que representa a ausência de dados",
+   "en": "a value that represents the absence of data",
+   "ok": [
+    "Valor nulo"
+   ]
+  },
+  {
+   "q": "como leio dados de uma base de dados",
+   "en": "how do I read data from a database",
+   "ok": [
+    "SQL",
+    "Base de dados"
+   ]
+  },
+  {
+   "q": "como é que o código é traduzido para o computador",
+   "en": "how is code translated for the computer",
+   "ok": [
+    "Compilador"
+   ]
+  },
+  {
+   "q": "como declaro uma variável",
+   "en": "how do I declare a variable",
+   "ok": [
+    "Variável",
+    "Declaração"
+   ]
+  },
+  {
+   "q": "o que é um ciclo",
+   "en": "what is a loop",
+   "ok": [
+    "Ciclo"
+   ]
+  },
+  {
+   "q": "o que é recursão",
+   "en": "what is recursion",
+   "ok": [
+    "Recursão"
+   ]
+  },
+  {
+   "q": "o que é uma api",
+   "en": "what is an API",
+   "ok": [
+    "API"
+   ]
+  },
+  {
+   "q": "explica-me o que é o git",
+   "en": "explain what git is",
+   "ok": [
+    "Git"
+   ]
+  },
+  {
+   "q": "o que é uma variável",
+   "en": "what is a variable",
+   "ok": [
+    "Variável"
+   ]
+  },
+  {
+   "q": "o que é um bug",
+   "en": "what is a bug",
+   "ok": [
+    "Bug"
+   ]
+  },
+  {
+   "q": "não percebo o que é uma classe",
+   "en": "I do not understand what a class is",
+   "ok": [
+    "Classe"
+   ]
+  },
+  {
+   "q": "o que são promessas em javascript",
+   "en": "what are promises in javascript",
+   "ok": [
+    "Promise",
+    "Programação assíncrona",
+    "async"
+   ]
+  },
+  {
+   "q": "como funciona o async await",
+   "en": "how does async await work",
+   "ok": [
+    "async e await",
+    "Programação assíncrona"
+   ]
+  },
+  {
+   "q": "o que é um servidor",
+   "en": "what is a server",
+   "ok": [
+    "Servidor",
+    "Cliente-servidor"
+   ]
+  },
+  {
+   "q": "o que significa dns",
+   "en": "what does dns mean",
+   "ok": [
+    "DNS"
+   ]
+  },
+  {
+   "q": "como faço um site que se adapta ao telemóvel",
+   "en": "how do I make a website that adapts to the phone",
+   "ok": [
+    "Design responsivo",
+    "Media query"
+   ]
+  },
+  {
+   "q": "como trato erros no código",
+   "en": "how do I handle errors in code",
+   "ok": [
+    "Tratamento de erros",
+    "Excepção"
+   ]
+  },
+  {
+   "q": "qual a diferença entre frontend e backend",
+   "en": "what is the difference between frontend and backend",
+   "ok": [
+    "Frontend",
+    "Backend",
+    "Full stack"
+   ]
+  },
+  {
+   "q": "como ordeno uma lista de números",
+   "en": "how do I sort a list of numbers",
+   "ok": [
+    "Ordenação"
+   ]
+  },
+  {
+   "q": "como procuro um valor numa lista",
+   "en": "how do I search for a value in a list",
+   "ok": [
+    "Pesquisa linear",
+    "Pesquisa binária"
+   ]
+  },
+  {
+   "q": "o que é uma biblioteca de código",
+   "en": "what is a code library",
+   "ok": [
+    "Biblioteca",
+    "Framework"
+   ]
+  },
+  {
+   "q": "como funciona uma chave primária",
+   "en": "how does a primary key work",
+   "ok": [
+    "Chave primária"
+   ]
+  },
+  {
+   "q": "o que é herança em programação",
+   "en": "what is inheritance in programming",
+   "ok": [
+    "Herança",
+    "Programação orientada"
+   ]
+  },
+  {
+   "q": "o que é uma expressão regular",
+   "en": "what is a regular expression",
+   "ok": [
+    "Expressão regular"
+   ]
+  },
+  {
+   "q": "para que servem os operadores lógicos",
+   "en": "what are logical operators for",
+   "ok": [
+    "Operadores lógicos"
+   ]
+  },
+  {
+   "q": "como paro um ciclo a meio",
+   "en": "how do I stop a loop in the middle",
+   "ok": [
+    "break",
+    "continue",
+    "Ciclo infinito"
+   ]
+  },
+  {
+   "q": "o que é uma função anónima",
+   "en": "what is an anonymous function",
+   "ok": [
+    "Função anónima",
+    "Função de ordem superior"
+   ]
+  },
+  {
+   "q": "como funciona o flexbox",
+   "en": "how does flexbox work",
+   "ok": [
+    "Flexbox",
+    "CSS Grid"
+   ]
+  },
+  {
+   "q": "como converto json em objeto",
+   "en": "how do I convert json to an object",
+   "ok": [
+    "JSON.parse",
+    "JSON"
+   ]
+  },
+  {
+   "q": "o que é um endereço ip",
+   "en": "what is an ip address",
+   "ok": [
+    "Endereço IP"
+   ]
+  },
+  {
+   "q": "o que é encapsulamento",
+   "en": "what is encapsulation",
+   "ok": [
+    "Encapsulamento"
+   ]
+  },
+  {
+   "q": "como encontro e corrijo um erro no meu programa passo a passo",
+   "en": "how do I find and fix an error in my program step by step",
+   "ok": [
+    "Depuração",
+    "Bug",
+    "Breakpoint"
+   ]
+  }
+ ],
+ "fora": [
+  {
+   "q": "qual a receita de bolo de chocolate",
+   "en": "chocolate cake recipe"
+  },
+  {
+   "q": "quem ganhou o campeonato de futebol",
+   "en": "who won the football championship"
+  },
+  {
+   "q": "qual é a capital de angola",
+   "en": "what is the capital of Angola"
+  },
+  {
+   "q": "estou com fome",
+   "en": "I am hungry"
+  },
+  {
+   "q": "que horas são",
+   "en": "what time is it"
+  },
+  {
+   "q": "fala-me do benfica",
+   "en": "tell me about Benfica"
+  },
+  {
+   "q": "como está o tempo hoje",
+   "en": "what is the weather like today"
+  },
+  {
+   "q": "desenha um gato",
+   "en": "draw a cat"
+  },
+  {
+   "q": "quanto é quinze vezes três",
+   "en": "how much is fifteen times three"
+  },
+  {
+   "q": "oi tudo bem contigo",
+   "en": "hi how are you"
+  },
+  {
+   "q": "obrigado pela ajuda",
+   "en": "thanks for the help"
+  },
+  {
+   "q": "quero comprar um telemóvel novo",
+   "en": "I want to buy a new phone"
+  },
+  {
+   "q": "como se faz um bolo",
+   "en": "how do you make a cake"
+  },
+  {
+   "q": "qual o melhor filme do ano",
+   "en": "what is the best movie of the year"
+  },
+  {
+   "q": "conta-me uma piada",
+   "en": "tell me a joke"
+  },
+  {
+   "q": "quem foi o primeiro presidente de angola",
+   "en": "who was the first president of Angola"
+  }
+ ]
+}

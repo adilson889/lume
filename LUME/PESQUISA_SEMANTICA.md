@@ -73,3 +73,25 @@ Medido com `LUME/tests/embeddings.html` sobre os 256 blocos de `conhecimento_pro
 - Com `localModelPath` em URL (`http...`) o transformers.js nao encontra o tokenizer local; o modulo usa o caminho (`/LUME/ia/`).
 - Dos 4 runtimes WASM em `LUME/ia/transformers/` so se usa `ort-wasm-simd-threaded.wasm` (+ `.mjs`, ~14 MB). Os outros tres (`asyncify`, `jsep`, `jspi`, cerca de 72 MB) podem ser apagados do repo.
 - Primeira execucao: cerca de 9 s para vetorizar os 256 blocos; depois ficam em IndexedDB (cerca de 40 ms por pergunta).
+
+## Lume Flash: pesquisa por palavras (0.5.83)
+O Flash e o modelo leve: nao descarrega modelos nem usa rede. Responde a perguntas de programacao com
+`LUME/pesquisa_palavras.js` (BM25 com radicais portugueses, palavras do titulo valem 3x) sobre
+`bot/conhecimento_programacao.txt` e `bot/aprendido.txt`. `LUME/pesquisa_flash.js` liga isto ao despachante,
+so no Flash, depois do despachante e antes da pesquisa na Wikipedia. Tres saidas:
+- o nome exato de um topico ("o que e um ciclo for") ou uma pontuacao >= 10: responde;
+- pontuacao entre 6 e 10 e uma palavra da pergunta no titulo: propoe ate 3 opcoes para tocar;
+- senao: fica calado e segue como antes (Wikipedia).
+
+Medido com `node LUME/tests/pesquisa_flash.js` (40 perguntas de programacao e 16 fora de tema, em `tests/perguntas_pesquisa.json`):
+responde a 19 (19 certas, 0 erradas), propoe opcoes em 9 (a certa estava em 8), fica calado em 12, e nas 16 fora de tema nao responde a nenhuma.
+Ressalva: os limiares (10 e 6) foram escolhidos nestas mesmas perguntas. Com perguntas reais de utilizadores o resultado pode ser pior;
+acrescenta-as ao JSON e volta a correr o teste.
+
+## Resultados com o MiniLM e as palavras (so teste, nao ligado ao X)
+`LUME/tests/avaliar_pesquisa.mjs` corre o MiniLM do repo em Node e compara metodos (instrucoes no topo do ficheiro).
+Com validacao cruzada (limiar escolhido numa metade das 40 perguntas e medido na outra), sobre 40 perguntas:
+- X de hoje (MiniLM com a pergunta traduzida): certas 17, erradas 2, falsos 0 em 16;
+- palavras + MiniLM com a pergunta traduzida: certas 29, erradas 4, falsos 0;
+- palavras + MiniLM em portugues (sem rede): certas 27, erradas 7, falsos 0.
+Ganha em respostas certas mas erra mais. As traducoes usadas sao as minhas, nao as da Google: a prova real e com perguntas reais.
