@@ -1,0 +1,391 @@
+From 5a58c041fee42253da9c23af7d68c59d12309ab3 Mon Sep 17 00:00:00 2001
+From: adilson889 <adilson889@users.noreply.github.com>
+Date: Thu, 26 Nov 2026 01:10:22 +0100
+Subject: [PATCH] Lume X: pesquisa por significado (embeddings MiniLM) no
+ conhecimento local (0.5.82)
+
+LumeEmb carrega o modelo sob demanda so no Lume X; pergunta traduzida para
+ingles, limiar 0,45, titulo do bloco na resposta. Pagina de avaliacao e docs.
+
+Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_013mpj8CHR2KQ5eHquWJURHh
+---
+ LUME/CHANGELOG.txt         |   5 +
+ LUME/PESQUISA_SEMANTICA.md |  24 ++++-
+ LUME/VERSION               |   2 +-
+ LUME/embeddings.js         | 194 +++++++++++++++++++++++++++++++++++++
+ LUME/tests/embeddings.html |  53 ++++++++++
+ index.html                 |   2 +-
+ mobile.html                |   2 +-
+ sw.js                      |   3 +-
+ 8 files changed, 280 insertions(+), 5 deletions(-)
+ create mode 100644 LUME/embeddings.js
+ create mode 100644 LUME/tests/embeddings.html
+
+diff --git a/LUME/CHANGELOG.txt b/LUME/CHANGELOG.txt
+index e290d19..01fdfef 100644
+--- a/LUME/CHANGELOG.txt
++++ b/LUME/CHANGELOG.txt
+@@ -575,3 +575,8 @@ Lume - historico de versoes
+ 
+ 0.5.81
+ - Pesquisa Wikipedia: perguntas "quem e / o que e..." ja nao sao bloqueadas; resultados com o titulo igual ao tema vem primeiro (livro -> Livro); resumo sem parenteses nem frases partidas. Chip "Pensou por Ns" ja nao parte em duas linhas.
++
++0.5.82
++- Lume X: pesquisa por significado no conhecimento local (embeddings MiniLM, LUME/embeddings.js). Carrega o modelo so no Lume X, em segundo plano, na 1.a pergunta; depois responde com o bloco mais proximo (pergunta traduzida para ingles, limiar 0,45) ou segue para o bot. Flash e Lume nao carregam nada.
++- Pagina de avaliacao LUME/tests/embeddings.html e resultados em LUME/PESQUISA_SEMANTICA.md.
++- index.html e mobile.html carregam LUME/embeddings.js; sw.js (VERSAO 0.5.82) guarda o ficheiro em cache.
+diff --git a/LUME/PESQUISA_SEMANTICA.md b/LUME/PESQUISA_SEMANTICA.md
+index 6efff4d..2ef336c 100644
+--- a/LUME/PESQUISA_SEMANTICA.md
++++ b/LUME/PESQUISA_SEMANTICA.md
+@@ -1,6 +1,6 @@
+ # Pesquisa semantica (embeddings) no Lume
+ 
+-Estado: planeado. Ainda nao implementado.
++Estado: infraestrutura pronta (`LUME/embeddings.js`), mas NAO ligada ao Lume X: o modelo atual nao serve para portugues (ver Resultados).
+ 
+ ## Objetivo
+ Escolher respostas pelo significado, nao so por palavras iguais:
+@@ -51,3 +51,25 @@ LUME/ia/transformers/
+ - Peso total real: biblioteca + WASM + modelo, acima de 23 MB.
+ - RAM e tempo de arranque em telemoveis fracos.
+ - Traducao usa um endpoint nao oficial; manter fallback.
++
++## Resultados da avaliacao (all-MiniLM-L6-v2 quantizado)
++Medido com `LUME/tests/embeddings.html` sobre os 256 blocos de `conhecimento_programacao.txt`:
++- Pergunta em portugues contra blocos em portugues: top-1 certo em 1 de 12; faixas de pontuacao misturadas (tema 0,56-0,77, fora do tema 0,41-0,55). Inutilizavel.
++- Pergunta traduzida para ingles contra os mesmos blocos em portugues: top-1 certo em 7 de 12 (top-3: 9 de 12). Tema 0,27-0,66, fora do tema e pedidos do bot (desenhar, loja, contas, cumprimentos) 0,13-0,39. Os acertos fortes (o que e X) ficam acima de 0,52.
++- Escolher a frase certa dentro de um artigo da Wikipedia (pergunta em portugues): 2 em 7; pior que a heuristica por palavras de `resumirSnippet`. Nao ligado.
++
++## Estado: ligado so ao Lume X
++- `LUME/embeddings.js` embrulha `window.LumeDespachante.tentar`: corre depois do despachante, so se ele nao respondeu e so no Lume X.
++- Na 1.a pergunta do Lume X carrega o modelo em segundo plano e responde como ate agora. Da 2.a em diante: traduz a pergunta para ingles (`translate.googleapis.com`, o mesmo servico do chat, 3,5 s de limite), compara com os blocos e, se a melhor pontuacao for >= 0,45, responde com o bloco e o seu titulo ("Pelo que percebi, perguntas sobre **Titulo**"). Abaixo do limiar, ou se a traducao falhar, segue para o bot.
++- Flash e Lume nunca carregam o modelo.
++- Limite honesto: a esta pontuacao apanha sobretudo perguntas "o que e X"; as parafrases mais livres (0,27-0,44) ficam abaixo do limiar e seguem para o bot. Um bloco vizinho pode sair em vez do exato (ex.: "Commit" para o historico do codigo).
++
++## Proximo passo
++- Traduzir os blocos para ingles (ou usar `Xenova/multilingual-e5-small`, cerca de 115 MB, com os prefixos `query: ` e `passage: `) deve subir o top-1. Medir sempre com `LUME/tests/embeddings.html` antes de baixar o limiar.
++- Pesquisa na Wikipedia: so depois de passar na mesma medicao.
++
++## O que `embeddings.js` ja resolve (necessario para qualquer modelo)
++- O transformers.js 4.x, por defeito, vai buscar o runtime WASM a CDN (jsdelivr): sem rede nao arranca. O modulo aponta `wasmPaths` para `LUME/ia/transformers/ort-wasm-simd-threaded.{mjs,wasm}`.
++- Com `localModelPath` em URL (`http...`) o transformers.js nao encontra o tokenizer local; o modulo usa o caminho (`/LUME/ia/`).
++- Dos 4 runtimes WASM em `LUME/ia/transformers/` so se usa `ort-wasm-simd-threaded.wasm` (+ `.mjs`, ~14 MB). Os outros tres (`asyncify`, `jsep`, `jspi`, cerca de 72 MB) podem ser apagados do repo.
++- Primeira execucao: cerca de 9 s para vetorizar os 256 blocos; depois ficam em IndexedDB (cerca de 40 ms por pergunta).
+diff --git a/LUME/VERSION b/LUME/VERSION
+index 9d5eec0..a21601f 100644
+--- a/LUME/VERSION
++++ b/LUME/VERSION
+@@ -1 +1 @@
+-0.5.81
++0.5.82
+diff --git a/LUME/embeddings.js b/LUME/embeddings.js
+new file mode 100644
+index 0000000..52a754e
+--- /dev/null
++++ b/LUME/embeddings.js
+@@ -0,0 +1,194 @@
++/* Pesquisa semantica do Lume (so no Lume X). Ver LUME/PESQUISA_SEMANTICA.md.
++   Mede a semelhanca entre frases com o MiniLM (LUME/ia/minilm) via transformers.js (LUME/ia/transformers).
++   Nao gera texto. Regras:
++   - nao carrega nada no arranque: este ficheiro so define a API;
++   - o modelo (cerca de 23 MB + WASM) so descarrega quando o Lume X precisa e em segundo plano;
++   - se falhar ou ainda nao estiver pronto, quem chama continua como antes (palavras-chave). */
++(function () {
++  "use strict";
++  var BASE = new URL("./", document.currentScript ? document.currentScript.src : location.href).href; /* .../LUME/ */
++  /* O MiniLM e ingles: a pergunta e traduzida para ingles e comparada com os blocos em portugues.
++     Medido em LUME/tests/embeddings.html: acertos fortes >= 0,52; pedidos fora do tema ou que o bot ja resolve <= 0,39. */
++  var LIMIAR = 0.45;
++  var estado = "parado"; /* parado | a-carregar | pronto | falhou */
++  var promessa = null, extrator = null, trabalho = Promise.resolve();
++  var blocosLocais = null;
++
++  function aoMudar() { try { window.dispatchEvent(new CustomEvent("lume-emb", { detail: estado })) } catch (e) {} }
++
++  function carregar() {
++    if (promessa) return promessa;
++    estado = "a-carregar"; aoMudar();
++    promessa = (async function () {
++      var T = await import(BASE + "ia/transformers/transformers.min.js");
++      T.env.allowRemoteModels = false;
++      T.env.allowLocalModels = true;
++      /* caminho (nao URL http): com URL o transformers.js nao procura os ficheiros do tokenizer localmente */
++      T.env.localModelPath = new URL(BASE).pathname + "ia/";
++      T.env.useBrowserCache = true;
++      try {
++        var W = T.env.backends.onnx.wasm;
++        W.numThreads = 1; /* sem exigir cabecalhos COOP/COEP */
++        /* runtime local (por defeito iria a CDN e nao funcionaria offline) */
++        W.wasmPaths = { mjs: BASE + "ia/transformers/ort-wasm-simd-threaded.mjs", wasm: BASE + "ia/transformers/ort-wasm-simd-threaded.wasm" };
++      } catch (e) {}
++      extrator = await T.pipeline("feature-extraction", "minilm", { dtype: "q8" });
++      estado = "pronto"; aoMudar();
++      return true;
++    })().catch(function (e) {
++      estado = "falhou"; aoMudar();
++      try { console.warn("[LumeEmb] indisponivel:", e && e.message || e) } catch (_) {}
++      return false;
++    });
++    return promessa;
++  }
++
++  /* Fila: o WASM corre um pedido de cada vez. */
++  function emFila(fn) {
++    var r = trabalho.then(fn, fn);
++    trabalho = r.catch(function () {});
++    return r;
++  }
++
++  async function vetores(textos) {
++    var ok = await carregar();
++    if (!ok || !extrator) throw new Error("modelo indisponivel");
++    var out = [];
++    for (var i = 0; i < textos.length; i += 16) {
++      var lote = textos.slice(i, i + 16).map(function (t) { return String(t).slice(0, 600) });
++      var r = await emFila(function () { return extrator(lote, { pooling: "mean", normalize: true }) });
++      var d = r.dims[1], dados = r.data;
++      for (var j = 0; j < lote.length; j++) out.push(Float32Array.from(dados.subarray(j * d, (j + 1) * d)));
++    }
++    return out;
++  }
++
++  function cos(a, b) { var s = 0; for (var i = 0; i < a.length; i++) s += a[i] * b[i]; return s } /* ja normalizados */
++
++  /* hash simples (FNV-1a) para a chave de cache dos vetores */
++  function hash(t) { var h = 2166136261; for (var i = 0; i < t.length; i++) { h ^= t.charCodeAt(i); h = Math.imul(h, 16777619) } return (h >>> 0).toString(36) + "." + t.length }
++
++  /* IndexedDB: vetores dos blocos locais, chave = hash do bloco */
++  function bd() {
++    return new Promise(function (ok, no) {
++      try {
++        var r = indexedDB.open("lume-emb", 1);
++        r.onupgradeneeded = function () { r.result.createObjectStore("v") };
++        r.onsuccess = function () { ok(r.result) };
++        r.onerror = function () { no(r.error) };
++      } catch (e) { no(e) }
++    });
++  }
++  async function lerCache(chaves) {
++    try {
++      var db = await bd();
++      return await new Promise(function (ok) {
++        var tx = db.transaction("v"), st = tx.objectStore("v"), res = {}, n = chaves.length;
++        if (!n) return ok(res);
++        chaves.forEach(function (k) { var q = st.get(k); q.onsuccess = function () { if (q.result) res[k] = q.result; if (--n === 0) ok(res) }; q.onerror = function () { if (--n === 0) ok(res) } });
++      });
++    } catch (e) { return {} }
++  }
++  async function gravarCache(pares) {
++    try {
++      var db = await bd(), tx = db.transaction("v", "readwrite"), st = tx.objectStore("v");
++      pares.forEach(function (p) { st.put(p[1], p[0]) });
++    } catch (e) {}
++  }
++
++  /* Vetores de uma lista de textos, reaproveitando a cache. */
++  async function vetoresComCache(textos) {
++    var chaves = textos.map(hash), c = await lerCache(chaves), falta = [], idx = [];
++    chaves.forEach(function (k, i) { if (!c[k]) { falta.push(textos[i]); idx.push(i) } });
++    var novos = falta.length ? await vetores(falta) : [], gravar = [];
++    novos.forEach(function (v, j) { c[chaves[idx[j]]] = v; gravar.push([chaves[idx[j]], v]) });
++    if (gravar.length) gravarCache(gravar);
++    return chaves.map(function (k) { return c[k] });
++  }
++
++  /* melhor(pergunta, lista, n): as n frases mais proximas. Devolve [{i, texto, score}] por ordem decrescente. */
++  async function melhor(pergunta, lista, n) {
++    if (!lista || !lista.length) return [];
++    var q = (await vetores([pergunta]))[0], v = await vetoresComCache(lista);
++    return lista.map(function (t, i) { return { i: i, texto: t, score: cos(q, v[i]) } })
++      .sort(function (a, b) { return b.score - a.score }).slice(0, n || 1);
++  }
++
++  /* Conhecimento local: blocos separados por linha em branco. */
++  async function carregarBlocos() {
++    if (blocosLocais) return blocosLocais;
++    var b = [];
++    for (var f of ["bot/conhecimento_programacao.txt", "bot/aprendido.txt"]) {
++      try {
++        var r = await fetch(BASE + f); if (!r.ok) continue;
++        (await r.text()).split(/\n\s*\n/).forEach(function (t) { t = t.trim(); if (t.length > 30) b.push(t) });
++      } catch (e) {}
++    }
++    blocosLocais = b; return b;
++  }
++  /* Texto que representa o bloco no calculo: titulo e inicio (o resto pesa pouco e custa tempo). */
++  function chaveBloco(t) { return t.slice(0, 220) }
++
++  /* conhecimento(pergunta): melhor bloco local acima do limiar, ou null. Nunca lanca. */
++  async function conhecimento(pergunta) {
++    try {
++      if (estado !== "pronto") return null;
++      var blocos = await carregarBlocos(); if (!blocos.length) return null;
++      var r = await melhor(pergunta, blocos.map(chaveBloco), 1);
++      return r.length && r[0].score >= LIMIAR ? { texto: blocos[r[0].i], score: r[0].score } : null;
++    } catch (e) { return null }
++  }
++
++  /* Traducao PT -> EN da pergunta (mesmo servico que o chat ja usa). Falha ou demora -> null, e nao se responde por significado. */
++  var _trad = {};
++  async function paraIngles(q) {
++    if (_trad[q] !== undefined) return _trad[q];
++    var ctl = new AbortController(), tm = setTimeout(function () { ctl.abort() }, 3500), r = null;
++    try {
++      var x = await fetch("https://translate.googleapis.com/translate_a/single?client=gtx&sl=pt&tl=en&dt=t&q=" + encodeURIComponent(q), { signal: ctl.signal });
++      if (x.ok) { var j = await x.json(); r = j[0].map(function (a) { return a[0] || "" }).join("").trim() || null }
++    } catch (e) { r = null } finally { clearTimeout(tm) }
++    if (r) _trad[q] = r;
++    return r;
++  }
++
++  /* Resposta por significado, so no Lume X. Devolve true se respondeu. */
++  async function responderPorSentido(q) {
++    var nivel = window.lumeModeloAtual ? window.lumeModeloAtual() : "lume";
++    if (nivel !== "x" || typeof window.lumeOnReply !== "function") return false;
++    q = String(q || "").trim();
++    if (q.length < 8 || q.length > 160) return false;
++    if (estado === "parado") { carregar(); return false }     /* arranca em segundo plano; esta resposta segue como hoje */
++    if (estado !== "pronto") return false;
++    var en = await paraIngles(q); if (!en) return false;
++    if (window.lumeAtualizarEtapa) { try { window.lumeAtualizarEtapa("A procurar por significado no que sei...") } catch (e) {} }
++    var r = await conhecimento(en); if (!r) return false;
++    var i = r.texto.indexOf(":"), titulo = i > 0 ? r.texto.slice(0, i).trim() : "", corpo = i > 0 ? r.texto.slice(i + 1).trim() : r.texto;
++    window.lumeOnReply({ text: (titulo ? "Pelo que percebi, perguntas sobre **" + titulo + "**:\n\n" : "") + corpo });
++    return true;
++  }
++
++  /* Liga ao despachante sem mexer nas linhas minificadas: corre depois dele, so se ele nao respondeu. */
++  var D = window.LumeDespachante;
++  if (D && typeof D.tentar === "function" && !D._emb) {
++    var original = D.tentar; D._emb = true;
++    D.tentar = async function (q) {
++      var r = await original.apply(this, arguments);
++      if (r) return r;
++      try { return await responderPorSentido(q) } catch (e) { return false }
++    };
++  }
++
++  window.LumeEmb = {
++    estado: function () { return estado },
++    pronto: function () { return estado === "pronto" },
++    iniciar: carregar,            /* pede o carregamento em segundo plano */
++    vetor: async function (t) { return (await vetores([t]))[0] },
++    melhor: melhor,
++    conhecimento: conhecimento,
++    paraIngles: paraIngles,
++    responderPorSentido: responderPorSentido,
++    aquecer: async function () { try { var b = await carregarBlocos(); await vetoresComCache(b.map(chaveBloco)) } catch (e) {} },
++    limiar: LIMIAR
++  };
++})();
+diff --git a/LUME/tests/embeddings.html b/LUME/tests/embeddings.html
+new file mode 100644
+index 0000000..2766a7f
+--- /dev/null
++++ b/LUME/tests/embeddings.html
+@@ -0,0 +1,53 @@
++<!doctype html>
++<html lang="pt"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
++<title>Avaliar embeddings do Lume</title>
++<style>body{font:14px/1.45 system-ui,sans-serif;margin:16px;max-width:760px}pre{white-space:pre-wrap;background:#f2f2f2;padding:10px;border-radius:8px}</style>
++<h1>Avaliar embeddings</h1>
++<p>Mede se o modelo em <code>LUME/ia/minilm</code> escolhe o bloco certo de <code>conhecimento_programacao.txt</code> para perguntas com a pergunta ja traduzida para ingles (e o que o Lume X faz em producao: o MiniLM e um modelo de ingles). Abrir a partir do servidor do site (ex.: <code>/LUME/tests/embeddings.html</code>).</p>
++<button id="ir">Executar</button>
++<pre id="out">Ainda nao executado.</pre>
++<script src="../embeddings.js"></script>
++<script>
++/* pergunta -> inicios de titulo aceites (qualquer um conta como certo) */
++var PERGUNTAS = [
++ ["how do I repeat a block of code several times", ["Ciclo for", "Ciclo while", "Ciclo do while"]],
++ ["how do I store several values together", ["Array", "Objeto", "Matriz"]],
++ ["a function that calls itself", ["Recursão"]],
++ ["how does the program choose between two paths", ["Condicional", "Condição"]],
++ ["what is used to keep the history of code changes", ["Git", "Commit"]],
++ ["how do I change the color of a page", ["CSS"]],
++ ["what is an error in a program", ["Bug", "Erros de sintaxe"]],
++ ["convert text to number", ["Conversão de tipos"]],
++ ["a value that represents the absence of data", ["Valor nulo"]],
++ ["how do I read data from a database", ["SQL"]],
++ ["how is code translated for the computer", ["Compilador", "Compilação"]],
++ ["how do I declare a variable", ["Variável (", "Declaração"]],
++ ["what is a loop", ["Ciclo"]], ["what is recursion", ["Recursão"]], ["what is an API", ["API"]], ["explain what git is", ["Git"]],
++ ["what is a variable", ["Variável"]], ["what is a bug", ["Bug"]]
++];
++/* perguntas fora do tema ou que o bot ja resolve (desenho, loja, contas, conversa) */
++var FORA = ["chocolate cake recipe", "who won the football championship", "what is the capital of Angola", "I am hungry", "what time is it", "tell me about Benfica", "what is the weather like today", "draw a cat", "build an online store", "invent a sentence", "how much is 2+3", "hello how are you", "thank you very much", "solve the equation 2x+3=7", "tell me a joke"];
++document.getElementById("ir").onclick = async function () {
++  var o = document.getElementById("out"); o.textContent = "A carregar o modelo (so na 1.a vez)...";
++  var ok = await LumeEmb.iniciar(); if (!ok) { o.textContent = "Modelo indisponivel (ver consola)."; return }
++  var blocos = (await (await fetch("../bot/conhecimento_programacao.txt")).text()).split(/\n\s*\n/).map(function (x) { return x.trim() }).filter(function (x) { return x.length > 30 });
++  var chaves = blocos.map(function (x) { return x.slice(0, 220) }), L = [], t1 = 0, t3 = 0, dentro = [], fora = [];
++  for (var k = 0; k < PERGUNTAS.length; k++) {
++    var p = PERGUNTAS[k], m = await LumeEmb.melhor(p[0], chaves, 3);
++    var cert = function (i) { return p[1].some(function (t) { return blocos[i].indexOf(t) === 0 }) };
++    var a = cert(m[0].i), b = m.some(function (x) { return cert(x.i) });
++    if (a) t1++; if (b) t3++; dentro.push(m[0].score);
++    L.push((a ? "OK  " : b ? "top3" : "ERR ") + m[0].score.toFixed(2) + "  " + p[0] + "  ->  " + blocos[m[0].i].split(":")[0]);
++  }
++  for (var f = 0; f < FORA.length; f++) {
++    var r = (await LumeEmb.melhor(FORA[f], chaves, 1))[0]; fora.push(r.score);
++    L.push("FORA " + r.score.toFixed(2) + "  " + FORA[f] + "  ->  " + blocos[r.i].split(":")[0]);
++  }
++  var mn = Math.min.apply(null, dentro), mx = Math.max.apply(null, fora);
++  o.textContent = "Blocos: " + blocos.length + "\nTop-1 certo: " + t1 + "/" + PERGUNTAS.length + "   Top-3: " + t3 + "/" + PERGUNTAS.length +
++    "\nPontuacao das perguntas do tema: " + mn.toFixed(2) + " a " + Math.max.apply(null, dentro).toFixed(2) +
++    "\nPontuacao das perguntas fora do tema: " + Math.min.apply(null, fora).toFixed(2) + " a " + mx.toFixed(2) +
++    "\nLimiar em uso: " + LumeEmb.limiar + ". Fora do tema acima do limiar: " + fora.filter(function (x) { return x >= LumeEmb.limiar }).length + " de " + fora.length + " (ideal: 0). Do tema acima do limiar: " + dentro.filter(function (x) { return x >= LumeEmb.limiar }).length + " de " + dentro.length + " (as outras seguem para o bot, como antes)." + "\n\n" + L.join("\n");
++};
++</script>
++</html>
+diff --git a/index.html b/index.html
+index c214d1a..6b5cac9 100644
+--- a/index.html
++++ b/index.html
+@@ -2416,7 +2416,7 @@ window.anexarFicheiro=function(){
+ };
+ })()</script>
+ <script src="LUME/formatador.js"></script><script src="LUME/dialogo.js"></script>
+-<script src="LUME/fisica.js"></script><script src="LUME/vendor/xlang-codigo.js"></script><script src="LUME/codigo.js"></script><script src="LUME/despachante.js"></script>
++<script src="LUME/fisica.js"></script><script src="LUME/vendor/xlang-codigo.js"></script><script src="LUME/codigo.js"></script><script src="LUME/despachante.js"></script><script src="LUME/embeddings.js"></script>
+ <script src="LUME/editor/lume-editor.js"></script>
+ <!-- Definições carregadas de LUME/definicoes.html -->
+ <script id="lume-defs-loader">
+diff --git a/mobile.html b/mobile.html
+index 427215d..f4314c7 100644
+--- a/mobile.html
++++ b/mobile.html
+@@ -2442,7 +2442,7 @@ window.anexarFicheiro=function(){
+ };
+ })()</script>
+ <script src="LUME/formatador.js"></script><script src="LUME/dialogo.js"></script>
+-<script src="LUME/fisica.js"></script><script src="LUME/vendor/xlang-codigo.js"></script><script src="LUME/codigo.js"></script><script src="LUME/despachante.js"></script>
++<script src="LUME/fisica.js"></script><script src="LUME/vendor/xlang-codigo.js"></script><script src="LUME/codigo.js"></script><script src="LUME/despachante.js"></script><script src="LUME/embeddings.js"></script>
+ <script src="LUME/editor/lume-editor.js"></script>
+ <!-- Definições carregadas de LUME/definicoes.html -->
+ <script id="lume-defs-loader">
+diff --git a/sw.js b/sw.js
+index d7d90a8..2dedea7 100644
+--- a/sw.js
++++ b/sw.js
+@@ -11,7 +11,7 @@
+    antigas de uma vez, mudar VERSAO. Os ficheiros do bot sao descobertos sozinhos em LUME/bot/arquivos.json. */
+ "use strict";
+ 
+-var VERSAO = "0.5.81";
++var VERSAO = "0.5.82";
+ var P = "lume-";
+ var C_SHELL = P + "shell-" + VERSAO;
+ var C_DADOS = P + "dados-" + VERSAO;
+@@ -48,6 +48,7 @@ var NUCLEO = [
+ ];
+ var OPCIONAL = [
+   "LUME/definicoes.html",
++  "LUME/embeddings.js",
+   "LUME/VERSION",
+   "LUME/vendor/katex/fonts/KaTeX_AMS-Regular.woff2",
+   "LUME/vendor/katex/fonts/KaTeX_Caligraphic-Bold.woff2",
+-- 
+2.43.0
+
