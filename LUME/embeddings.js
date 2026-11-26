@@ -152,6 +152,21 @@
     return r;
   }
 
+  /* Tira o enquadramento da pergunta ("como faco para", "o que e", "explica-me"...) e deixa so o tema, antes de traduzir e comparar. */
+  function limparPergunta(q) {
+    var t = String(q || "").trim(), antes;
+    do {
+      antes = t;
+      t = t.replace(/^(ol[aá]|oi|ei|boas|bom dia|boa tarde|boa noite)[,!.\s]+/i, "")
+        .replace(/^(por favor|pf)[,\s]+/i, "")
+        .replace(/^(diz[- ]?me|diga[- ]?me|explica[- ]?me|explique[- ]?me|ensina[- ]?me|mostra[- ]?me|podes (dizer|explicar|ensinar)( me)?|pode (dizer|explicar)( me)?|sabes|sabe|gostava de saber|queria saber|quero saber|preciso de saber|preciso de ajuda com|ajuda[- ]?me (com|a))[,\s]+/i, "")
+        .replace(/^(o que (é|e|são|sao|significa|quer dizer)|que (é|e)|quem (é|e|foi)|como (faço|faco|fazer|se faz|posso|é que se|e que se)( para| a)?|para que serve|qual (é|e))\s+/i, "")
+        .replace(/^(um|uma|o|a|os|as)\s+/i, "");
+    } while (t !== antes);
+    t = t.replace(/[?!.]+$/, "").replace(/\s+(por favor|pf)$/i, "").trim();
+    return t.length >= 3 ? t : String(q || "").trim();
+  }
+
   /* Resposta por significado, so no Lume X. Devolve true se respondeu. */
   async function responderPorSentido(q) {
     var nivel = window.lumeModeloAtual ? window.lumeModeloAtual() : "lume";
@@ -160,7 +175,7 @@
     if (q.length < 8 || q.length > 160) return false;
     if (estado === "parado") { carregar(); return false }     /* arranca em segundo plano; esta resposta segue como hoje */
     if (estado !== "pronto") return false;
-    var en = await paraIngles(q); if (!en) return false;
+    var en = await paraIngles(limparPergunta(q)); if (!en) return false;
     if (window.lumeAtualizarEtapa) { try { window.lumeAtualizarEtapa("A procurar por significado no que sei...") } catch (e) {} }
     var r = await conhecimento(en); if (!r) return false;
     var i = r.texto.indexOf(":"), titulo = i > 0 ? r.texto.slice(0, i).trim() : "", corpo = i > 0 ? r.texto.slice(i + 1).trim() : r.texto;
@@ -187,6 +202,7 @@
     melhor: melhor,
     conhecimento: conhecimento,
     paraIngles: paraIngles,
+    limparPergunta: limparPergunta,
     responderPorSentido: responderPorSentido,
     aquecer: async function () { try { var b = await carregarBlocos(); await vetoresComCache(b.map(chaveBloco)) } catch (e) {} },
     limiar: LIMIAR
