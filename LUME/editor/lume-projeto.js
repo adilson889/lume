@@ -10,7 +10,7 @@
    Os modulos sao carregados de MODULOS_BASE; depois de enviares os modulos para o repositorio
    HTMLx-lang, muda MODULOS_COMMIT para o hash do commit que os contem (evita a cache do jsDelivr). */
 (function(){
-var MODULOS_COMMIT="main";
+var MODULOS_COMMIT="884532a3e7738731557e577fbaf3ab212ffa0d80";
 var MODULOS_BASE="https://cdn.jsdelivr.net/gh/adilson889/HTMLx-lang@"+MODULOS_COMMIT+"/modules/";
 var VARS=["--bg","--bg2","--bg3","--card","--text","--border","--muted","--r","--on"];
 

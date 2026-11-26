@@ -1300,7 +1300,7 @@ function prepararXlangSql(src){
 }
 /* HTMLx-lang: corre os blocos <script type="text/xlang"> devolvidos pelo motor dentro do balão */
 /* Commit do HTMLx-lang usado pelo chat. Fixo para a CDN nao servir um xlang-modules.json antigo; mudar quando houver modulos novos. */
-const XLANG_COMMIT="62ecaa9dd942ae78c504a57d8ef96e2d3cf05478";
+const XLANG_COMMIT="884532a3e7738731557e577fbaf3ab212ffa0d80";
 /* O interpretador declara "class XLangInterpreter" no topo do script: isso fica no ambito global mas nao em window. */
 function xlangClasse(){try{return window.XLangInterpreter||(typeof XLangInterpreter!=="undefined"?XLangInterpreter:null)}catch(_){return null}}
 let _xlangPromessa=null;
@@ -2420,6 +2420,7 @@ window.anexarFicheiro=function(){
 <script src="LUME/formatador.js"></script><script src="LUME/dialogo.js"></script>
 <script src="LUME/fisica.js"></script><script src="LUME/vendor/xlang-codigo.js"></script><script src="LUME/codigo.js"></script><script src="LUME/despachante.js"></script><script src="LUME/embeddings.js"></script>
 <script src="LUME/editor/lume-editor.js"></script>
+<script src="LUME/editor/lume-projeto.js"></script>
 <!-- Definições carregadas de LUME/definicoes.html -->
 <script id="lume-defs-loader">
 (function(){
