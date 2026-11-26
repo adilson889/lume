@@ -42,7 +42,7 @@ function snapshot(){
  var P=window.XLangProjeto;
  if(!P||!P.atual())return;
  var f;try{f=P.todos()}catch(e){return}
- enviar({lumeProjeto:true,projeto:P.atual(),ficheiros:f,aberto:P.aberto(),tema:tema()});
+ enviar({lumeProjeto:true,projeto:P.atual(),projetos:P.lista(),ficheiros:f,aberto:P.aberto(),tema:tema()});
 }
 function fechar(){
  if(desligar){desligar();desligar=null}
@@ -78,11 +78,48 @@ window.addEventListener("message",function(e){
   case"renomearFicheiro":if(typeof d.de==="string"&&typeof d.para==="string")tentar(function(){P.renomear(d.de,d.para)});break;
   case"apagarFicheiro":if(typeof d.caminho==="string")tentar(function(){P.apagarFicheiro(d.caminho)});break;
   case"desfazerFicheiro":if(typeof d.caminho==="string"&&tentar(function(){P.desfazer(d.caminho);return true}))toast("Versão anterior reposta");break;
+  case"escreverFicheiro":if(typeof d.caminho==="string"&&typeof d.texto==="string"&&tentar(function(){P.escrever(d.caminho,d.texto);return true}))toast("Criado");break;
+  case"abrirProjeto":if(typeof d.nome==="string")tentar(function(){P.abrir(d.nome)});break;
+  case"novoProjeto":if(typeof d.nome==="string"&&tentar(function(){P.criar(d.nome);P.abrir(d.nome);return true}))toast("Projeto criado");break;
+  case"pergunta":if(typeof d.texto==="string")perguntar(d.texto.slice(0,2000));break;
   case"executar":if(typeof d.caminho==="string"&&typeof d.texto==="string")executar(d.caminho,d.texto);break;
   case"copiar":if(typeof d.texto==="string"){if(typeof copiarTexto==="function")copiarTexto(d.texto);toast(String(d.msg||"Copiado"))}break;
   case"baixar":if(typeof d.conteudo==="string"){if(typeof window.baixarFicheiro==="function")window.baixarFicheiro(String(d.nome||"ficheiro.txt"),d.conteudo,String(d.mime||"text/plain"));else toast("Descarregar indisponível")}break;
  }
 });
+
+/* ---------- conversa: a pergunta feita no editor segue o caminho normal do chat; as respostas voltam ao editor ---------- */
+var vig=null,idResp=0;
+function textoDe(n){
+ var c=n.cloneNode(true);
+ c.querySelectorAll(".lume-proj,.lume-app,button,style,script").forEach(function(x){x.remove()});
+ c.querySelectorAll("p,div,li,pre,br,h1,h2,h3,h4,tr").forEach(function(x){x.appendChild(document.createTextNode("\n"))});
+ return(c.textContent||"").replace(/\n{3,}/g,"\n\n").trim();
+}
+function seguir(n){
+ var id=++idResp,t=null;
+ function mandar(){var tx=textoDe(n);if(tx)enviar({lumeResposta:true,id:id,texto:tx})}
+ var mo=new MutationObserver(function(){clearTimeout(t);t=setTimeout(mandar,200)});
+ mo.observe(n,{childList:true,subtree:true,characterData:true});
+ setTimeout(function(){mo.disconnect()},30000);
+ mandar();
+}
+function vigiar(){
+ var chat=document.getElementById("chat");if(!chat)return false;
+ if(vig)vig.disconnect();
+ vig=new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(function(n){
+  if(n.nodeType===1&&n.classList&&n.classList.contains("msg")&&n.classList.contains("sistema")&&!n.classList.contains("digitando"))seguir(n);
+ })})});
+ vig.observe(chat,{childList:true});
+ setTimeout(function(){if(vig){vig.disconnect();vig=null}},60000);
+ return true;
+}
+function perguntar(texto){
+ var inp=document.getElementById("chat-input");
+ if(!inp||typeof window.enviar!=="function"||!vigiar()){toast("O chat não está disponível");return}
+ inp.value=texto;
+ window.enviar();
+}
 
 /* ---------- executar XLang ---------- */
 var folha=null;
