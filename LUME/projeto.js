@@ -92,6 +92,38 @@ async function responder(q){
   }
   if(!caminho)return null;
   var s3=preciso();if(s3)return s3;
+  /* ---- linhas: acrescentar, inserir, apagar, substituir e mostrar ---- */
+  var ln=/\blinhas?\s+(\d+)(?:\s*(?:a|ate|-)\s*(\d+))?/.exec(n);
+  var cont=depoisDeDoisPontos(q),corpo=cont===null?null:cont.replace(/\n$/,"");
+  var linhasDe=function(){return PR.ler(caminho).replace(/\n$/,"").split("\n")};
+  var fimNum=function(){return linhasDe().length};
+  if(verbo("acrescenta|acrescentar|adiciona|adicionar|junta|juntar|insere|inserir|coloca|colocar|poe|pon")&&(corpo!==null)){
+   var fim=/\bno (fim|final)\b/.test(n),ini=/\bno (inicio|comeco|topo)\b/.test(n),dep;
+   if(fim)dep=fimNum();
+   else if(ini)dep=0;
+   else if(ln&&/\bdepois da linha\b/.test(n))dep=parseInt(ln[1],10);
+   else if(ln)dep=parseInt(ln[1],10)-1;
+   else return ok("Diz onde: «acrescenta no fim de "+caminho+": texto», «no início», «na linha 3» ou «depois da linha 3».");
+   var r1=editar("edInserir",caminho,dep,corpo);
+   return ok("Inseri o texto na linha "+r1+" de «"+caminho+"».",cartao(PR.atual(),PR.ficheiros().length),["Inseri só essas linhas, sem refazer o ficheiro."]);
+  }
+  if(ln&&verbo("apaga|apagar|remove|remover|tira|tirar|elimina|eliminar")){
+   var a1=parseInt(ln[1],10),b1=ln[2]?parseInt(ln[2],10):a1,ls=linhasDe();
+   if(a1<1||b1<a1||b1>ls.length)return ok("«"+caminho+"» tem "+ls.length+(ls.length===1?" linha.":" linhas."));
+   var apagadas=ls.splice(a1-1,b1-a1+1);PR.escrever(caminho,ls.join("\n")+"\n");
+   return ok("Apaguei "+(b1>a1?"as linhas "+a1+" a "+b1:"a linha "+a1)+" de «"+caminho+"».\n\n"+cerca(apagadas.join("\n")),cartao(PR.atual(),PR.ficheiros().length));
+  }
+  if(ln&&corpo!==null&&verbo("substitui|substituir|troca|trocar|muda|mudar|altera|alterar")&&!/\bpor\b/.test(n)){
+   var a2=parseInt(ln[1],10),b2=ln[2]?parseInt(ln[2],10):a2,l2=linhasDe();
+   if(a2<1||b2<a2||b2>l2.length)return ok("«"+caminho+"» tem "+l2.length+(l2.length===1?" linha.":" linhas."));
+   l2.splice.apply(l2,[a2-1,b2-a2+1].concat(corpo.split("\n")));PR.escrever(caminho,l2.join("\n")+"\n");
+   return ok("Substituí "+(b2>a2?"as linhas "+a2+" a "+b2:"a linha "+a2)+" de «"+caminho+"».",cartao(PR.atual(),PR.ficheiros().length));
+  }
+  if(ln&&verbo("mostra|mostrar|le|ler|ver|diz|exibe")){
+   var a3=parseInt(ln[1],10),b3=ln[2]?parseInt(ln[2],10):a3;
+   if(b3<a3)return ok("O intervalo de linhas está ao contrário.");
+   return ok("«"+caminho+"», linhas "+a3+(b3>a3?" a "+b3:"")+":\n\n"+cerca(editar("edLinhas",caminho,a3,b3)));
+  }
   if(verbo("troca|trocar|substitui|substituir")){
    var m=/(?:troca|trocar|substitui|substituir)\s+(?:["'`])?(.+?)(?:["'`])?\s+por\s+(?:["'`])?(.+?)(?:["'`])?\s+(?:em|no|do)\s+(?:ficheiro\s+|arquivo\s+)?/.exec(n);
    if(!m)return ok("Diz assim: «troca 'texto antigo' por 'texto novo' em "+caminho+"».");
