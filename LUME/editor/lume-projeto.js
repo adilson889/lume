@@ -55,7 +55,7 @@ function abrir(nome){
  return garantir().then(function(){
   var P=window.XLangProjeto;
   if(P.lista().indexOf(nome)<0)P.criar(nome);
-  P.abrir(nome);
+  if(P.atual()!==nome)P.abrir(nome);
   fechar();
   frame=document.createElement("iframe");
   frame.id="lume-proj-frame";frame.setAttribute("sandbox","allow-scripts");frame.src="LUME/editor/editor.html";
@@ -107,9 +107,28 @@ function executar(caminho,texto){
  }).catch(function(err){slot.textContent="Erro: "+(err&&err.message?err.message:err)});
 }
 
+/* ---------- cartao do projeto nas respostas do chat: <div class="lume-proj" data-proj="nome" data-n="3"> ---------- */
+function montarCartao(el){
+ if(el.dataset.pronto)return;el.dataset.pronto="1";
+ var nome=el.getAttribute("data-proj")||"",n=el.getAttribute("data-n")||"0";
+ el.style.cssText="display:flex;align-items:center;gap:10px;max-width:360px;padding:12px 14px;border:1px solid var(--border,#c9ceb8);border-radius:14px;background:var(--card,#fff);color:var(--text,#1d2410);cursor:pointer;-webkit-tap-highlight-color:transparent";
+ el.setAttribute("role","button");el.tabIndex=0;
+ var t=document.createElement("span");t.style.cssText="flex:1;min-width:0";
+ var a=document.createElement("span");a.style.cssText="display:block;font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap";a.textContent=nome;
+ var b=document.createElement("span");b.style.cssText="display:block;font-size:12px;color:var(--muted,#5c6b3a)";b.textContent="Projeto · "+n+(n==="1"?" ficheiro":" ficheiros")+" · toca para abrir";
+ t.appendChild(a);t.appendChild(b);el.appendChild(t);
+ function ir(){abrir(nome).catch(function(e){toast(String(e&&e.message||e))})}
+ el.addEventListener("click",ir);
+ el.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();ir()}});
+}
+function varrer(){document.querySelectorAll("div.lume-proj[data-proj]").forEach(montarCartao)}
+new MutationObserver(varrer).observe(document.body,{childList:true,subtree:true});
+varrer();
+
 window.lumeProjeto={
  abrir:abrir,
  fechar:fechar,
+ executar:executar,
  escrever:function(caminho,texto){return garantir().then(function(){return window.XLangProjeto.escrever(caminho,texto)})},
  ler:function(caminho){return garantir().then(function(){return window.XLangProjeto.ler(caminho)})},
  ficheiros:function(){return garantir().then(function(){return window.XLangProjeto.ficheiros()})},

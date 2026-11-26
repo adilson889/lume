@@ -825,6 +825,10 @@ async function tentar(q){
   var mm=DL.memorizar&&DL.memorizar(q);
   if(mm){var mr=String(mm.rot||"").toLowerCase();await esp(mm.novo?(mm.antes?"Disseste um novo valor para «"+mr+"»; vou atualizar a memória.":"Disseste «"+mr+"»; vou guardá-lo na memória."):"Disseste «"+mr+"», mas isso já estava guardado.");await esp(mm.novo?(mm.antes?"Troquei «"+mm.antes+"» por «"+mm.val+"».":"Guardei «"+mm.val+"» em «"+mr+"»."):"Não mudei nada na memória.")}
   DL.ver(q);var rd=DL.resolver(q);if(rd&&rd.resposta){window.lumeOnReply({text:rd.resposta});return true}}
+ if(typeof window.lumeOnReply==="function"&&window.LumeProjetoChat&&q.length<=4000){
+  var prj=null;try{prj=await window.LumeProjetoChat.responder(q)}catch(_){}
+  if(prj){(prj.etapas||[]).forEach(function(e){raciocinio(e)});window.lumeOnReply({text:prj.texto,html:prj.html||undefined});return true}
+ }
  if(typeof window.lumeOnReply==="function"&&window.LumeCodigoChat&&q.length<=400){
   var cod=null;try{cod=window.LumeCodigoChat.responder(q)}catch(_){}
   if(cod){(cod.etapas||[]).forEach(function(e,i){raciocinio(e,i>=2?T_ETAPA_TESTE:undefined)});window.lumeOnReply({text:cod.texto});return true}
