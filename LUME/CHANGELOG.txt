@@ -584,3 +584,6 @@ Lume - historico de versoes
 0.5.83
 - Pesquisa por significado (X): a pergunta e limpa do enquadramento ("como faco para", "o que e"...) antes de traduzir e comparar.
 - Pesquisa na Wikipedia: ignora paginas de desambiguacao; se nao houver resultado em portugues, procura na Wikipedia em ingles e traduz o resumo; perguntas de data (quando/nasceu) mantem datas e dao prioridade a frases com anos.
+
+0.5.84
+- Resumo da pesquisa: remove "pronuncia-se [..]" e notas entre parenteses retos.
