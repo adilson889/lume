@@ -27,6 +27,11 @@ button{font:inherit}
 .b.on{background:var(--r);color:var(--on)}
 .b[hidden]{display:none}
 .sep{flex:none;width:1px;height:22px;background:var(--border);margin:0 4px}
+.abas{display:none;gap:4px;padding:5px 8px;border-bottom:1px solid var(--border);background:var(--card);overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+.aba{flex:none;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:13px;padding:6px 12px;border-radius:999px;cursor:pointer}
+.aba.on{background:var(--r);border-color:var(--r);color:var(--on)}
+.aba i{display:none;width:6px;height:6px;margin-left:6px;border-radius:50%;background:currentColor;vertical-align:middle}
+.aba.mod i{display:inline-block}
 .corpo{flex:1;min-height:0;position:relative}
 .corpo>iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
 #ed{position:absolute;inset:0;display:none;background:var(--code-bg)}
@@ -60,6 +65,7 @@ button{font:inherit}
   <button class="b" id="bcod" aria-label="Editar código" title="Código"></button>
   <button class="b" id="bmais" aria-label="Mais opções" title="Mais"></button>
 </div>
+<div class="abas" id="abas"></div>
 <div class="corpo" id="corpo">
   <div id="ed">
     <div id="gut"><div id="nums">1</div></div>
@@ -91,6 +97,7 @@ var IC={
  chr:ic('<path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/>',14)
 };
 var $=function(i){return document.getElementById(i)};
+var proj=null,ficheiros={},origs={},ativo="";
 var h="",orig="",nome="app.html",fr=null,modo="site",aplicado="",lingua="html",temSite=true,guardavel=false;
 function enviar(m){parent.postMessage(m,"*")}
 /* Guarda da pre-visualizacao: sem isto, um link href="#" (ex.: "Saiba mais") navega a iframe para o proprio editor (o endereco-base do srcdoc e o do editor) e aparece um editor dentro do editor. Links "#id" fazem scroll; os outros e os formularios nao navegam. */
@@ -188,7 +195,7 @@ function atualizarNums(){
  for(var i=1;i<=n;i++)t+=i+(i<n?"\n":"");
  nums.textContent=t;$("elin").innerHTML=IC.lin+n;$("elng").innerHTML=IC.chr+ta.value.length;
 }
-function realcarPor(c){return lingua==="html"?realcar(c):lingua==="css"?hlCss(c):lingua==="js"?hlJs(c):esc(c)}
+function realcarPor(c){return(lingua==="html"||lingua==="xl")?realcar(c):lingua==="css"?hlCss(c):lingua==="js"?hlJs(c):esc(c)}
 function pintar(){hl.innerHTML=realcarPor(ta.value)+"\n";atualizarNums();marcar()}
 function sinc(){
  hl.style.transform="translate("+(-ta.scrollLeft)+"px,"+(-ta.scrollTop)+"px)";
@@ -214,6 +221,64 @@ function iniciarEditor(){
  });
 }
 
+/* ---------- projeto: varios ficheiros (dados no chat; aqui so se mostra e se pede) ---------- */
+function linguaDe(n){var m=/\.([A-Za-z0-9]+)$/.exec(n||"");m=m?m[1].toLowerCase():"";return/^(html|htm)$/.test(m)?"html":m==="css"?"css":/^(js|json|ts)$/.test(m)?"js":m==="xl"?"xl":"texto"}
+function guardarAtivo(){if(proj&&ativo&&ta)ficheiros[ativo]=ta.value}
+function desenharAbas(){
+ var a=$("abas");a.innerHTML="";
+ if(!proj){a.style.display="none";return}
+ a.style.display="flex";
+ Object.keys(ficheiros).sort().forEach(function(c){
+  var b=document.createElement("button");b.type="button";b.className="aba"+(c===ativo?" on":"")+((ficheiros[c]!==origs[c])?" mod":"");
+  b.textContent=c;b.appendChild(document.createElement("i"));
+  b.addEventListener("click",function(){abrirFicheiro(c)});a.appendChild(b);
+ });
+}
+function abrirFicheiro(c){
+ guardarAtivo();
+ if(!Object.prototype.hasOwnProperty.call(ficheiros,c))return;
+ ativo=c;nome=c;$("nometxt").textContent=proj+" / "+c;
+ lingua=linguaDe(c);
+ temSite=lingua==="html";
+ guardavel=true;
+ h=ta.value=ficheiros[c];orig=origs[c];
+ enviar({lumeEd:"aberto",caminho:c});
+ desenharAbas();
+ mostrar(temSite?"site":"cod");
+}
+function receberProjeto(d){
+ /* d.ficheiros = {caminho: texto}; mantem as alteracoes ainda nao guardadas dos ficheiros que o chat nao mudou */
+ guardarAtivo();
+ var novos=d.ficheiros||{},manter={};
+ Object.keys(novos).forEach(function(c){
+  var tinha=Object.prototype.hasOwnProperty.call(ficheiros,c);
+  if(tinha&&ficheiros[c]!==origs[c]&&origs[c]===novos[c])manter[c]=ficheiros[c];
+  origs[c]=novos[c];
+ });
+ var f2={};Object.keys(novos).forEach(function(c){f2[c]=Object.prototype.hasOwnProperty.call(manter,c)?manter[c]:novos[c]});
+ Object.keys(origs).forEach(function(c){if(!Object.prototype.hasOwnProperty.call(novos,c))delete origs[c]});
+ ficheiros=f2;proj=String(d.projeto||"projeto");
+ var alvo=(typeof d.aberto==="string"&&ficheiros[d.aberto]!==undefined)?d.aberto:(ficheiros[ativo]!==undefined?ativo:Object.keys(ficheiros).sort()[0]);
+ if(alvo===undefined){ativo="";ta.value="";h=orig="";$("nometxt").textContent=proj;desenharAbas();mostrar("cod");return}
+ if(alvo===ativo){
+  if(ta.value!==ficheiros[ativo]&&ficheiros[ativo]===novos[ativo]){ta.value=h=ficheiros[ativo];orig=origs[ativo];pintar()}
+  orig=origs[ativo];marcar();desenharAbas();return;
+ }
+ ativo="";abrirFicheiro(alvo);
+}
+function guardarFicheiro(){
+ guardarAtivo();
+ if(proj){enviar({lumeEd:"guardar",caminho:ativo,texto:ta.value});origs[ativo]=ta.value;orig=ta.value;marcar();desenharAbas()}
+ else{enviar({lumeEd:"guardar",texto:ta.value});orig=ta.value;marcar()}
+}
+function acaoFicheiro(tipo){
+ var c;
+ if(tipo==="novo"){c=prompt("Nome do ficheiro (ex.: app.xl ou src/lista.xl)","");if(!c)return;enviar({lumeEd:"novoFicheiro",caminho:c.trim()})}
+ else if(tipo==="renomear"){c=prompt("Novo nome para "+ativo,ativo);if(!c||c===ativo)return;enviar({lumeEd:"renomearFicheiro",de:ativo,para:c.trim()})}
+ else if(tipo==="apagar"){if(!confirm("Apagar "+ativo+"?"))return;enviar({lumeEd:"apagarFicheiro",caminho:ativo})}
+ else if(tipo==="desfazerFicheiro"){enviar({lumeEd:"desfazerFicheiro",caminho:ativo})}
+}
+
 /* ---------- vistas ---------- */
 function iframe(){
  if(fr)fr.remove();
@@ -224,7 +289,7 @@ function mostrar(w){
  modo=w;
  $("bsite").classList.toggle("on",w==="site");$("bcod").classList.toggle("on",w==="cod");
  $("desfazer").hidden=$("refazer").hidden=(w!=="cod");
- $("exec").hidden=!temSite;$("bsite").hidden=!temSite;$("guardar").hidden=!guardavel;
+ $("exec").hidden=!(temSite||(proj&&lingua==="xl"));$("bsite").hidden=!temSite;$("guardar").hidden=!guardavel;
  $("estado").style.display=w==="cod"?"flex":"none";
  if(w==="site"){
   h=ta.value;
@@ -237,7 +302,10 @@ function mostrar(w){
   pintar();sinc();posicao();
  }
 }
-function executar(){h=ta.value;iframe();mostrar("site")}
+function executar(){
+ if(proj&&lingua==="xl"){guardarAtivo();enviar({lumeEd:"executar",caminho:ativo,texto:ta.value});return}
+ h=ta.value;iframe();mostrar("site")
+}
 function fecharMenu(){$("menu").style.display="none";$("fundo").style.display="none"}
 function abrirMenu(){
  var m=$("menu");m.innerHTML="";var cur=ta.value;
@@ -246,9 +314,10 @@ function abrirMenu(){
   ["Copiar como Markdown",IC.cop,function(){enviar({lumeEd:"copiar",texto:md,msg:"Markdown copiado"})}],
   ["Transferir ("+nome+")",IC.baixar,function(){enviar({lumeEd:"baixar",nome:nome,conteudo:cur,mime:temSite?"text/html":"text/plain"})}],
   ["Transferir como texto (.txt)",IC.baixar,function(){enviar({lumeEd:"baixar",nome:nome.replace(/\.[^.]+$/,"")+".txt",conteudo:cur,mime:"text/plain"})}]];
- if(temSite||lingua==="html"||lingua==="css")itens.push(["Formatar código",IC.cod,function(){ta.value=lingua==="css"?formatarCss(ta.value):formatar(ta.value);h=ta.value;pintar();posicao();if(modo==="site")executar()}]);
+ if(temSite||lingua==="html"||lingua==="xl"||lingua==="css")itens.push(["Formatar código",IC.cod,function(){ta.value=lingua==="css"?formatarCss(ta.value):formatar(ta.value);h=ta.value;pintar();posicao();if(modo==="site")executar()}]);
  itens.push(["Repor o código original",IC.rec,function(){ta.value=orig;h=orig;pintar();posicao();if(modo==="site")executar()}]);
  if(temSite)itens.push(["Recarregar o site",IC.rec,function(){executar()}]);
+ if(proj){itens.push(["Novo ficheiro",IC.cod,function(){acaoFicheiro("novo")}]);if(ativo){itens.push(["Renomear ficheiro",IC.cod,function(){acaoFicheiro("renomear")}]);itens.push(["Voltar à versão anterior",IC.rec,function(){acaoFicheiro("desfazerFicheiro")}]);itens.push(["Apagar ficheiro",IC.fechar,function(){acaoFicheiro("apagar")}])}}
  itens.forEach(function(it){
   var b=document.createElement("button");b.type="button";b.className="item";b.innerHTML=it[1];
   var s=document.createElement("span");s.textContent=it[0];b.appendChild(s);
@@ -275,7 +344,7 @@ $("desfazer").addEventListener("click",function(){ta.focus();document.execComman
 $("refazer").addEventListener("click",function(){ta.focus();document.execCommand("redo");pintar()});
 $("bmais").addEventListener("click",abrirMenu);
 $("guardar").innerHTML=IC.ok;
-$("guardar").addEventListener("click",function(){enviar({lumeEd:"guardar",texto:ta.value});orig=ta.value;marcar()});
+$("guardar").addEventListener("click",guardarFicheiro);
 $("fundo").addEventListener("click",fecharMenu);
 function aplicarTema(t){
  if(!t||typeof t!=="object")return;
@@ -285,7 +354,9 @@ function aplicarTema(t){
 window.addEventListener("message",function(e){
  var d=e.data;if(!d||e.source!==parent)return;
  if(d.lumeTema){aplicarTema(d.tema);return}
+ if(d.lumeProjeto===true){if(d.tema)aplicarTema(d.tema);receberProjeto(d);return}
  if(d.lumeAbrir!==true||typeof d.html!=="string")return;
+ proj=null;ficheiros={};origs={};ativo="";desenharAbas();
  h=orig=d.html;nome=String(d.nome||"app.html");$("nometxt").textContent=nome;
  lingua=/^(html|css|js|texto)$/.test(d.lingua)?d.lingua:"html";
  temSite=d.site!==false&&lingua==="html";
